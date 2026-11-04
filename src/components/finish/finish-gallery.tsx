@@ -14,7 +14,18 @@ const smooth = () =>
  * counter, and thumbnails on larger screens. The first image is the room
  * scene the finish card morphs into.
  */
-export function FinishGallery({ images, name }: { images: CatalogueImage[]; name: string }) {
+export function FinishGallery({
+  images,
+  name,
+  aspect = "aspect-[4/5] sm:aspect-[6/5]",
+  sizes = "(min-width: 1024px) 58vw, 100vw",
+}: {
+  images: CatalogueImage[];
+  name: string;
+  /** Frame proportions (Tailwind aspect classes), per breakpoint. */
+  aspect?: string;
+  sizes?: string;
+}) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -33,7 +44,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (images.length === 0) return <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />;
+  if (images.length === 0) return <div className={cn("bg-line", aspect)} />;
 
   return (
     <div aria-roledescription="carousel" aria-label={`${name} photographs`}>
@@ -46,7 +57,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
             e.preventDefault();
             go(index + (e.key === "ArrowRight" ? 1 : -1));
           }}
-          className="scrollbar-none flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto bg-line sm:aspect-[6/5]"
+          className={cn("scrollbar-none flex snap-x snap-mandatory overflow-x-auto bg-line", aspect)}
         >
           {images.map((img, i) => (
             <div
@@ -61,7 +72,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
                 alt={img.alt}
                 fill
                 priority={i === 0}
-                sizes="(min-width: 1024px) 58vw, 100vw"
+                sizes={sizes}
                 quality={80}
                 placeholder={img.blurDataURL ? "blur" : "empty"}
                 blurDataURL={img.blurDataURL}

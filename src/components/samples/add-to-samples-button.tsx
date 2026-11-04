@@ -14,10 +14,13 @@ import type { SampleItem } from "@/lib/samples/selection";
 export function AddToSamplesButton({
   finish,
   size = "default",
+  quietMessage = false,
   className,
 }: {
   finish: SampleItem;
   size?: "default" | "compact";
+  /** Announce the confirmation to screen readers only (where there is no room to show it). */
+  quietMessage?: boolean;
   className?: string;
 }) {
   const { has, add, remove, count, limit, isFull } = useSamples();
@@ -37,6 +40,7 @@ export function AddToSamplesButton({
   }
 
   const compact = size === "compact";
+  const hideMessage = compact || quietMessage;
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
@@ -73,9 +77,9 @@ export function AddToSamplesButton({
         )}
       </button>
       {/* Visible on the full-size button; announced for both. */}
-      <p aria-live="polite" className={cn("text-[0.8125rem] text-ink-muted", compact && "sr-only")}>
+      <p aria-live="polite" className={cn("text-[0.8125rem] text-ink-muted", hideMessage && "sr-only")}>
         {message}
-        {!compact && message && count > 0 && (
+        {!hideMessage && message && count > 0 && (
           <>
             {" "}
             <Link href="/samples" className="text-navy underline underline-offset-4">

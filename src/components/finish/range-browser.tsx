@@ -3,7 +3,17 @@
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
-import { distinct, matches, readFilters, type FilterableFinish, type RangeFilters } from "@/lib/catalogue/filter";
+import {
+  distinct,
+  filtersToQuery,
+  isFiltered,
+  matches,
+  NO_FILTERS,
+  readFilters,
+  type FilterableFinish,
+  type RangeFilters,
+} from "@/lib/catalogue/filter";
+import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 
@@ -33,9 +43,12 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
  */
 export function RangeBrowser({
   items,
+  formats = [],
   colourSwatches = {},
 }: {
   items: RangeItem[];
+  /** Plank formats with their dimensions; shown when there is more than one. */
+  formats?: FormatOption[];
   colourSwatches?: Record<string, string>;
 }) {
   const router = useRouter();
@@ -46,16 +59,11 @@ export function RangeBrowser({
   const styles = distinct(items.map((i) => i.style));
   const colours = distinct(items.map((i) => i.colourFamily));
   const visible = items.filter((i) => matches(i, filters));
-  const active = Boolean(filters.style || filters.colour || filters.q);
+  const active = isFiltered(filters);
   const [view, setView] = useState<GridView>("large");
 
   function update(next: Partial<RangeFilters>) {
-    const merged = { ...filters, ...next };
-    const sp = new URLSearchParams();
-    if (merged.style) sp.set("style", merged.style);
-    if (merged.colour) sp.set("colour", merged.colour);
-    if (merged.q) sp.set("q", merged.q);
-    const qs = sp.toString();
+    const qs = filtersToQuery({ ...filters, ...next });
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   }
 
@@ -78,7 +86,24 @@ export function RangeBrowser({
                   {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
                 </Chip>
               ))}
-            {styles.length > 1 && <span className="mx-2 h-6 w-px shrink-0 bg-line" aria-hidden="true" />}
+            {styles.length > 1 && <Divider />}
+            {formats.length > 1 && (
+              <>
+                {formats.map((f) => (
+                  <Chip
+                    key={f.format}
+                    pressed={filters.format === f.format}
+                    onClick={() => update({ format: filters.format === f.format ? null : f.format })}
+                  >
+                    <span className="flex items-baseline gap-2 whitespace-nowrap">
+                      {f.label}
+                      {f.size && <span className="data text-[0.75rem] opacity-70">{f.size}</span>}
+                    </span>
+                  </Chip>
+                ))}
+                <Divider />
+              </>
+            )}
             <Chip pressed={!filters.colour} onClick={() => update({ colour: null })}>
               All colours
             </Chip>
@@ -132,7 +157,7 @@ export function RangeBrowser({
         {active && (
           <button
             type="button"
-            onClick={() => update({ style: null, colour: null, q: "" })}
+            onClick={() => update(NO_FILTERS)}
             className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4"
           >
             Clear filters
@@ -150,6 +175,10 @@ export function RangeBrowser({
       )}
     </>
   );
+}
+
+function Divider() {
+  return <span className="mx-2 h-6 w-px shrink-0 bg-line" aria-hidden="true" />;
 }
 
 export type GridView = "large" | "small";

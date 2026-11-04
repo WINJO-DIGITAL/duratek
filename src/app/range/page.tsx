@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import { PageTransition } from "@/components/layout/page-transition";
 import { Suspense } from "react";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
-import { getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { PageTransition } from "@/components/layout/page-transition";
+import { byTone, getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { formatOptions, plankFormat } from "@/lib/catalogue/format";
+import { countWord } from "@/lib/number-words";
 
 export const metadata: Metadata = {
   title: "The range",
@@ -13,19 +15,19 @@ export const metadata: Metadata = {
 };
 
 export default async function RangePage() {
-  const finishes = await getFinishes();
+  // Light to dark, measured from each swatch, so the grid reads as one palette.
+  const finishes = byTone(await getFinishes());
   const items: RangeItem[] = finishes.map((f, i) => ({
     id: f.id,
     name: f.name,
     style: f.style,
     colourFamily: f.colourFamily,
+    format: plankFormat(f.specs),
     card: (
       <FinishCard
         finish={f}
         priority={i < 3}
         headingLevel="h2"
-        aspect="aspect-[4/5]"
-          media="texture"
         sizes="(min-width: 1024px) 31vw, 48vw"
       />
     ),
@@ -41,16 +43,16 @@ export default async function RangePage() {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" title="The range">
+        <SectionIntro as="h1" size="lg" eyebrow="The range" title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}>
           <p>
-            {finishes.length} finishes, every one with a 0.55mm wear layer, Scratch Shield surface protection and a
-            waterproof rigid SPC core. Choose up to three free samples.
+            Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.
+            Choose up to three free samples.
           </p>
         </SectionIntro>
         <div className="mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
           <Suspense fallback={<RangeGrid items={items} />}>
-            <RangeBrowser items={items} colourSwatches={colourSwatches} />
+            <RangeBrowser items={items} formats={formatOptions(finishes)} colourSwatches={colourSwatches} />
           </Suspense>
         </div>
       </div>

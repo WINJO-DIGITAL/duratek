@@ -1,24 +1,22 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
-import { grainImage, imagesOfKind, leadImage } from "@/lib/catalogue/mappers";
+import { FORMAT_LABELS, measureLine, plankFormat } from "@/lib/catalogue/format";
+import { grainImage, leadImage } from "@/lib/catalogue/mappers";
 import type { Finish } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
-import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { colourFamilyLabel } from "@/lib/config";
 import { FinishImage } from "./finish-image";
 
-/** Small square tag for finish attributes. */
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex h-6 items-center border border-line px-2 text-[0.75rem] text-ink-muted">{children}</span>
-  );
-}
-
+/**
+ * A finish, labelled like a piece in a gallery: the plank first, the name in
+ * display type, then colour family, format and measurements (in the data face).
+ */
 export function FinishCard({
   finish,
   sizes,
   aspect = "aspect-[4/5]",
-  media = "room",
+  media = "texture",
   priority = false,
   headingLevel: H = "h3",
   className,
@@ -32,11 +30,12 @@ export function FinishCard({
   headingLevel?: "h2" | "h3";
   className?: string;
 }) {
-  const room = leadImage(finish);
-  // Clean swatch first: it shows the grain without a room in the way.
-  const grain = imagesOfKind(finish, "swatch")[0] ?? grainImage(finish);
-  const primary = media === "texture" ? (grain ?? room) : room;
-  const reveal = media === "texture" && grain && room && room !== grain ? room : undefined;
+  const room = finish.images.find((i) => i.kind === "room");
+  const grain = grainImage(finish);
+  const primary = media === "texture" ? (grain ?? leadImage(finish)) : (room ?? leadImage(finish));
+  const reveal = media === "texture" && room && room !== primary ? room : undefined;
+  const format = plankFormat(finish.specs);
+  const measures = measureLine(finish.specs);
 
   return (
     <article className={cn("reveal group relative flex flex-col", className)}>
@@ -52,26 +51,27 @@ export function FinishCard({
             />
           )}
           {reveal && (
-            // Room scene fades in over the texture on devices that can hover.
+            // Room scene fades in over the grain on devices that can hover.
             <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-700 ease-calm [@media(hover:hover)]:block [@media(hover:hover)]:group-hover:opacity-100">
               <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
             </div>
           )}
         </div>
       </ViewTransition>
-      <div className="mt-4">
-        <H className="text-display-sm leading-tight text-navy">
+
+      <div className="mt-4 border-t border-navy/15 pt-3">
+        <H className="text-[1.3125rem] font-normal leading-tight tracking-[-0.01em] text-navy sm:text-[1.5rem]">
           <Link href={`/range/${finish.slug}`} className="after:absolute after:inset-0 after:content-['']">
             {finish.name}
           </Link>
         </H>
-        <p className="mt-0.5 text-[0.9375rem] text-ink-muted">{STYLE_LABELS[finish.style]}</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <Tag>{colourFamilyLabel(finish.colourFamily)}</Tag>
-          {finish.specs.thickness_mm ? <Tag>{finish.specs.thickness_mm}mm</Tag> : null}
-          {finish.specs.plank_length_mm && finish.specs.plank_length_mm > 1400 ? <Tag>Extra long</Tag> : null}
-        </div>
+        <p className="mt-1 text-[0.875rem] text-ink-muted">
+          {colourFamilyLabel(finish.colourFamily)}
+          {format && <> · {FORMAT_LABELS[format]}</>}
+        </p>
+        {measures && <p className="data mt-1.5 text-[0.8125rem] text-ink-muted">{measures}</p>}
       </div>
+
       {/* Above the stretched link so it stays independently clickable. */}
       <AddToSamplesButton
         finish={{ id: finish.id, slug: finish.slug, name: finish.name }}

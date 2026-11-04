@@ -7,13 +7,19 @@ import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
 import { FinishGallery } from "@/components/finish/finish-gallery";
+import { GrainZoom } from "@/components/finish/grain-zoom";
+import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
+import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Check } from "@/components/ui/icons";
-import { getFinish, getFinishes, imagesOfKind, specRows } from "@/lib/catalogue";
+import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
+import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
+import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import type { Finish } from "@/lib/catalogue/types";
 import { JsonLd } from "@/components/seo/json-ld";
-import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { cn } from "@/lib/cn";
+import { colourFamilyLabel } from "@/lib/config";
+import { countWord } from "@/lib/number-words";
 import { siteUrl } from "@/lib/site";
 
 export async function generateStaticParams() {
@@ -37,6 +43,44 @@ function related(all: Finish[], finish: Finish, n = 4): Finish[] {
   const same = others.filter((f) => f.colourFamily === finish.colourFamily);
   const rest = others.filter((f) => f.colourFamily !== finish.colourFamily);
   return [...same, ...rest].slice(0, n);
+}
+
+/** Every plank format in the range, to scale; this finish's is filled with its grain. */
+function scalePlanks(all: Finish[], finish: Finish): ScalePlank[] {
+  const current = plankFormat(finish.specs);
+  return formatOptions(all).flatMap(({ format, label }) => {
+    const specs = format === current ? finish.specs : all.find((f) => plankFormat(f.specs) === format)?.specs;
+    if (!specs?.plank_width_mm || !specs.plank_length_mm) return [];
+    return [
+      {
+        key: format,
+        label,
+        width_mm: specs.plank_width_mm,
+        length_mm: specs.plank_length_mm,
+        current: format === current,
+        image: format === current ? grainImage(finish) : undefined,
+      },
+    ];
+  });
+}
+
+const SAMPLE_BUTTON_ID = "finish-sample";
+
+/** Rows whose values are measurements, set in the data face. */
+const MEASURED = new Set(["Plank size", "Thickness", "Wear layer", "Pack coverage"]);
+
+/** Spec table: measurements in the data face, everything else in the body face. */
+function SpecList({ rows, className }: { rows: { label: string; value: React.ReactNode }[]; className?: string }) {
+  return (
+    <dl className={className}>
+      {rows.map((r) => (
+        <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
+          <dt className="text-ink-muted">{r.label}</dt>
+          <dd className={cn("text-right text-navy", MEASURED.has(r.label) && "data")}>{r.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 export default function FinishPage({ params }: PageProps<"/range/[slug]">) {
@@ -72,14 +116,13 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const [finish, all] = await Promise.all([getFinish(slug), getFinishes()]);
   if (!finish) notFound();
 
-  // Room scenes first (the card photo morphs into the first), then grain.
-  const gallery = [
-    ...imagesOfKind(finish, "room"),
-    ...imagesOfKind(finish, "closeup"),
-    ...imagesOfKind(finish, "swatch"),
-  ];
+  // The plank leads; rooms and close-ups follow in their own gallery.
+  const grain = grainImage(finish);
+  const gallery = [...imagesOfKind(finish, "room"), ...imagesOfKind(finish, "closeup")].filter((i) => i !== grain);
   const specs = specRows(finish.specs);
-  const keySpecs = specs.filter((r) => ["Plank size", "Thickness", "Wear layer", "Pack coverage"].includes(r.label));
+  const keySpecs = specs.filter((r) => MEASURED.has(r.label));
+  const format = plankFormat(finish.specs);
+  const planks = scalePlanks(all, finish);
   const sample = { id: finish.id, slug: finish.slug, name: finish.name };
 
   return (
@@ -93,7 +136,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               name: `Duratek ${finish.name}`,
               description: finish.description,
               url: siteUrl(`/range/${finish.slug}`),
-              image: gallery.slice(0, 6).map((i) => i.src),
+              image: [grain, ...gallery].filter(Boolean).slice(0, 6).map((i) => i!.src),
               brand: { "@type": "Brand", name: "Duratek" },
               category: "SPC click flooring",
               additionalProperty: specs.map((r) => ({ "@type": "PropertyValue", name: r.label, value: r.value })),
@@ -109,12 +152,22 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           ],
         }}
       />
-      {/* Gallery beside a sticky information panel */}
+      {/* The plank first, beside a sticky information panel */}
       <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">
           <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
             <div>
-              <FinishGallery images={gallery} name={finish.name} />
+              {grain ? (
+                <GrainZoom
+                  image={grain}
+                  name={finish.name}
+                  priority
+                  sizes="(min-width: 1024px) 54vw, 100vw"
+                  className="aspect-[4/5] sm:aspect-[6/5]"
+                />
+              ) : (
+                <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />
+              )}
             </div>
           </ViewTransition>
         </div>
@@ -127,91 +180,108 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               </Link>
             </nav>
             <h1 className="mt-5 text-display-lg text-navy">{finish.name}</h1>
-            <p className="mt-1 font-display text-display-sm text-ink-muted">
-              {STYLE_LABELS[finish.style]} · {colourFamilyLabel(finish.colourFamily)}
+            <p className="mt-2 text-[1rem] text-ink-muted">
+              {colourFamilyLabel(finish.colourFamily)}
+              {format && <> · {FORMAT_LABELS[format]}</>}
             </p>
 
             <div className="mt-6">
               <ColourSwatches
                 current={finish.slug}
-                options={all.map((f) => ({ slug: f.slug, name: f.name, swatch: imagesOfKind(f, "swatch")[0] }))}
+                options={byTone(all).map((f) => ({ slug: f.slug, name: f.name, swatch: imagesOfKind(f, "swatch")[0] }))}
               />
             </div>
 
-            <dl className="mt-8 border-t border-line">
-              {keySpecs.map((r) => (
-                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                  <dt className="text-ink-muted">{r.label}</dt>
-                  <dd className="text-right text-navy">{r.value}</dd>
-                </div>
-              ))}
-            </dl>
+            <SpecList rows={keySpecs} className="mt-8 border-t border-line" />
 
             <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-3">
-              <AddToSamplesButton finish={sample} />
+              <div id={SAMPLE_BUTTON_ID}>
+                <AddToSamplesButton finish={sample} />
+              </div>
               <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
                 Where to buy
               </ButtonLink>
             </div>
-
-            <ul className="mt-8 grid gap-3 text-[0.875rem] text-navy sm:grid-cols-2">
-              {[
-                "Up to 3 free samples",
-                "Waterproof rigid SPC core",
-                "Scratch Shield surface protection",
-                "Residential lifetime warranty",
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-2">
-                  <Check size={16} className="mt-0.5 shrink-0 text-green-ink" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
+            <p className="mt-6 text-[0.875rem] text-ink-muted">Up to three free samples, posted to you.</p>
           </div>
         </aside>
       </div>
 
+      {gallery.length > 0 && (
+        <section aria-labelledby="rooms-heading" className="pt-section">
+          <div className="container-page">
+            <h2 id="rooms-heading" className="eyebrow font-sans">
+              {finish.name} in the room
+            </h2>
+            <div className="mt-6">
+              <FinishGallery
+                images={gallery}
+                name={finish.name}
+                aspect="aspect-[4/5] sm:aspect-[3/2] lg:aspect-[2/1]"
+                sizes="(min-width: 1440px) 1360px, 100vw"
+              />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {planks.length > 0 && (
+        <section aria-labelledby="scale-heading" className="pt-section">
+          <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-4">
+              <h2 id="scale-heading" className="text-display-md text-navy">
+                To scale
+              </h2>
+              <p className="mt-4 text-ink-muted">
+                {planks.length > 1
+                  ? `The range comes in ${countWord(planks.length).toLowerCase()} plank sizes, drawn here to the same scale. ${finish.name} is the ${(format ? FORMAT_LABELS[format] : "").toLowerCase()}.`
+                  : `${finish.name}, drawn to scale.`}
+              </p>
+            </div>
+            <PlankScale planks={planks} className="lg:col-span-8" />
+          </div>
+        </section>
+      )}
+
       {/* About and full specification */}
       <section aria-labelledby="about-heading" className="py-section">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
-          <h2 id="about-heading" className="text-display-lg text-navy lg:col-span-5">
+          <h2 id="about-heading" className="text-display-md text-navy lg:col-span-4">
             About {finish.name}
           </h2>
-          <div className="space-y-4 text-lede text-ink-muted lg:col-span-7">
+          <div className="space-y-4 text-lede text-ink-muted lg:col-span-8">
             {finish.description.split(/\n\n+/).map((p) => (
               <p key={p.slice(0, 32)}>{p}</p>
             ))}
           </div>
 
-          <div className="lg:col-span-7 lg:col-start-6">
+          <div className="lg:col-span-8 lg:col-start-5">
             <h3 className="eyebrow font-sans">Specification</h3>
-            <dl className="mt-4 grid border-t border-line sm:grid-cols-2 sm:gap-x-10">
-              {specs.map((r) => (
-                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                  <dt className="text-ink-muted">{r.label}</dt>
-                  <dd className="text-right text-navy">{r.value}</dd>
-                </div>
-              ))}
-              <div className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                <dt className="text-ink-muted">Warranty</dt>
-                <dd className="text-right text-navy">
-                  <Link href="/warranty" className="underline underline-offset-4 hover:text-green-ink">
-                    Residential lifetime, 10 year commercial
-                  </Link>
-                </dd>
-              </div>
-            </dl>
-            <p className="mt-4 text-[0.8125rem] text-ink-muted">
+            <SpecList
+              className="mt-4 grid border-t border-line sm:grid-cols-2 sm:gap-x-10"
+              rows={[
+                ...specs,
+                {
+                  label: "Warranty",
+                  value: (
+                    <Link href="/warranty" className="underline underline-offset-4 hover:text-green-ink">
+                      Residential lifetime, 10 year commercial
+                    </Link>
+                  ),
+                },
+              ]}
+            />
+            <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
+            <p className="mt-3 text-[0.8125rem] text-ink-muted">
               Always follow the product&apos;s installation and care guidance, including subfloor preparation.
             </p>
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="related-heading" className="py-section">
+      <section aria-labelledby="related-heading" className="pb-section">
         <div className="container-page">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-t border-line pt-section-sm">
             <h2 id="related-heading" className="text-display-md text-navy">
               You might also like
             </h2>
@@ -222,15 +292,17 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               View all finishes <ArrowRight size={16} />
             </Link>
           </div>
-          <ul className="mt-10 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          <ul className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
             {related(all, finish).map((f) => (
               <li key={f.id}>
-                <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, (min-width: 640px) 48vw, 100vw" />
+                <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, 48vw" />
               </li>
             ))}
           </ul>
         </div>
       </section>
+
+      <StickySampleBar finish={sample} watch={SAMPLE_BUTTON_ID} />
     </article>
   );
 }

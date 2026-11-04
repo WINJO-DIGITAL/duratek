@@ -89,6 +89,7 @@
   --spacing-cta: 3.375rem; /* 54px large call to action (home hero) */
   --spacing-header: 4rem;
   --spacing-bottom-bar: 4rem;
+  --spacing-sample-bar: 3.75rem; /* phone sticky "Add to samples" bar on finish pages */
   --container-page: 90rem;
   --container-prose: 38rem;
 
