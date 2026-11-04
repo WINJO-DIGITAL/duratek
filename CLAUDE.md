@@ -213,7 +213,7 @@ Confident, calm and precise. Short sentences. No hype, no unverified claims. Nev
 - Design tokens (colour, spacing, type) defined once and reused. No hard-coded one-off values.
 - Small, focused components. Co-locate styles and tests.
 - Conventional commits. Work on branches; open PRs.
-- Run lint, typecheck and tests before declaring work done. Check each page at 390px, 768px and 1440px.
+- Run lint, typecheck, tests and a production build (`next build`) before declaring work done or pushing: the production branch deploys on push, and only the build catches prerendering errors. Check each page at 390px, 768px and 1440px.
 - No numbers as list or bullet markers (no "01, 02, 03" or "1. 2. 3."), on the site or in written summaries. On the site, use the green square marker, or round colour swatches where a list is about colour. Position counters such as "1 / 8" in a gallery are fine.
 
 ## Build order

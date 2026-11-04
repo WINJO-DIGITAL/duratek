@@ -1,3 +1,4 @@
+import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/wordmark";
 import type { NavData } from "@/lib/catalogue/nav";
@@ -69,6 +70,13 @@ function LinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
   );
 }
 
+/** Copyright year. Cached (re-checked daily) so the footer can still be prerendered. */
+async function copyrightYear() {
+  "use cache";
+  cacheLife("days");
+  return new Date().getFullYear();
+}
+
 /**
  * Site footer, top to bottom: brand line and link groups (Range, Need help?,
  * Trade); Say hello and Stay in touch (from src/lib/contact.ts, hidden until
@@ -77,7 +85,8 @@ function LinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
  * Newsletter sign-up still to come (needs a consented storage location
  * agreed with the client).
  */
-export function SiteFooter({ nav }: { nav: NavData }) {
+export async function SiteFooter({ nav }: { nav: NavData }) {
+  const year = await copyrightYear();
   const help: FooterLink[] = GENERAL_CONTACT.phone
     ? [{ href: telHref(GENERAL_CONTACT.phone), label: GENERAL_CONTACT.phone, tel: true }, ...HELP]
     : HELP;
@@ -127,7 +136,7 @@ export function SiteFooter({ nav }: { nav: NavData }) {
             </ul>
           </nav>
           <div className="space-y-1 lg:text-right">
-            <p>© {new Date().getFullYear()} Duratek. All rights reserved.</p>
+            <p>© {year} Duratek. All rights reserved.</p>
             {companyLine.length > 0 && <p>{companyLine.join(" · ")}</p>}
           </div>
         </div>
