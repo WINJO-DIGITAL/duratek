@@ -76,7 +76,7 @@ export function SiteFooter() {
       </div>
       {/* Oversized wordmark: the closing signature of every page. */}
       <div className="container-page overflow-hidden" aria-hidden="true">
-        <Wordmark tone="dark" className="block translate-y-[0.14em] text-[min(27vw,26.5rem)] leading-[0.8] tracking-[-0.055em]" />
+        <Wordmark tone="dark" className="h-auto w-full translate-y-[8%]" />
       </div>
       <div className="border-t border-white/10">
         <p className="container-page py-6 text-[0.8125rem] text-on-dark-muted">© Duratek. All rights reserved.</p>

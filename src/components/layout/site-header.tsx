@@ -114,7 +114,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
         {/* Wordmark: left on mobile, centred on desktop */}
         <Link href="/" className="-mx-2 flex min-h-tap items-center px-2 lg:mx-0 lg:justify-self-center" aria-label="Duratek home">
-          <Wordmark tone={overlay ? "dark" : "light"} className="transition-colors duration-500 lg:text-[1.75rem]" />
+          <Wordmark tone={overlay ? "dark" : "light"} className="h-[22px] lg:h-[26px]" />
         </Link>
 
         {/* Desktop: right nav */}

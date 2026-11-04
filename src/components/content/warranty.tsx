@@ -1,3 +1,5 @@
+import Image from "next/image";
+import scratchShield from "../../../public/brand/scratch-shield.png";
 import { cn } from "@/lib/cn";
 import { WARRANTY_DISCLAIMER } from "@/lib/config";
 
@@ -17,8 +19,8 @@ export function WarrantyDisclaimer({ tone = "light", className }: { tone?: "ligh
 }
 
 /*
- * Badge placeholders: typographic seals until the client supplies the Scratch
- * Shield and warranty artwork. Replace the internals with the real files.
+ * Warranty badge placeholders: typographic seals until the client supplies
+ * the warranty artwork. Replace the internals with the real files.
  */
 function Seal({
   top,
@@ -57,6 +59,17 @@ export function WarrantyBadges({ tone = "light", className }: { tone?: "light" |
   );
 }
 
-export function ScratchShieldBadge({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
-  return <Seal tone={tone} top="Duratek" big="Scratch Shield" bottom="Surface protection" className={className} />;
+/**
+ * The client's Scratch Shield artwork (duratek-scratch-shield.png, trimmed to
+ * its transparent bounds). next/image serves it as AVIF/WebP at the size used.
+ */
+export function ScratchShieldBadge({ className }: { className?: string }) {
+  return (
+    <Image
+      src={scratchShield}
+      alt="Duratek Scratch Shield"
+      sizes="(min-width: 640px) 10rem, 9rem"
+      className={cn("h-auto w-36 sm:w-40", className)}
+    />
+  );
 }

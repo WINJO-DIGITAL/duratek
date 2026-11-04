@@ -44,7 +44,7 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
       <div className="container-page relative flex h-header shrink-0 items-center justify-between border-b border-line">
         <span aria-hidden="true" className="dropdown-line absolute inset-x-0 -bottom-px block h-px bg-green" />
         <Link href="/" onClick={close} aria-label="Duratek home" className="-mx-2 flex min-h-tap items-center px-2">
-          <Wordmark />
+          <Wordmark className="h-[22px]" />
         </Link>
         <button type="button" className="-mr-2 flex size-tap items-center justify-center" onClick={close} autoFocus>
           <Close />

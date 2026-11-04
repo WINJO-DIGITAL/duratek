@@ -206,7 +206,7 @@ export default async function HomePage() {
             <div className="max-w-xl bg-off-white p-6 sm:p-10 lg:ml-auto">
               <div className="grid grid-cols-[1fr_auto] items-start gap-6">
                 <h2 className="reveal text-display-md text-navy">Made for life as it happens.</h2>
-                <ScratchShieldBadge className="hidden w-28! sm:flex" />
+                <ScratchShieldBadge className="hidden w-28! sm:block" />
               </div>
               <p className="mt-5 text-ink-muted">
                 Scratch Shield is the clear finish on top of every Duratek plank. It helps the floor stand up to chair

@@ -26,6 +26,10 @@
   --color-green-ink: #3d7f3b;
   --color-green-ink-hover: #336b31;
   --color-green-on-navy: #54ae51;
+  /* Logo artwork's own colours, sampled from the client's logo file. Used by
+     the logo only; UI colour stays on the brand tokens above. */
+  --color-logo-green: #468e3c;
+  --color-logo-navy: #123066;
 
   /* Surfaces */
   --color-off-white: #f7f6f2; /* page and collection sections */
