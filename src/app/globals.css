@@ -318,50 +318,10 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Motion: scroll-driven reveals. Tied to scroll position (no JavaScript).
- * Browsers without animation-timeline support, and reduced-motion users,
- * simply see the content in place.
+ * Motion: scroll reveals. Elements with .reveal (text) or .reveal-img
+ * (photographs) are animated by RevealObserver with the Web Animations API,
+ * so there are no styles here: without script they simply show.
  * ------------------------------------------------------------------------- */
-@supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .reveal {
-      animation: reveal-up linear both;
-      animation-timeline: view();
-      animation-range: entry 5% entry 60%;
-    }
-    .reveal-img {
-      animation: reveal-img linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 30%;
-    }
-    .reveal-img > img,
-    .reveal-img > div > img {
-      animation: reveal-img-scale linear both;
-      animation-timeline: view();
-      animation-range: entry 0% cover 40%;
-    }
-  }
-}
-
-@keyframes reveal-up {
-  from {
-    opacity: 0;
-    translate: 0 28px;
-  }
-}
-@keyframes reveal-img {
-  from {
-    clip-path: inset(12% 4% 0 4%);
-  }
-  to {
-    clip-path: inset(0);
-  }
-}
-@keyframes reveal-img-scale {
-  from {
-    scale: 1.08;
-  }
-}
 
 /* ---------------------------------------------------------------------------
  * Range dropdown: the panel fades down from the header and the page behind

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
+import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { getNavData } from "@/lib/catalogue/nav";
 import "./globals.css";
@@ -46,6 +47,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+        <RevealObserver />
         <SiteHeader nav={nav} />
         <main id="main" className="flex-1">
           {children}
