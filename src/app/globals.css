@@ -287,13 +287,6 @@
   background: transparent;
 }
 
-@keyframes stagger-in {
-  from {
-    opacity: 0;
-    translate: 0 12px;
-  }
-}
-
 /* Quiet menu link with a green underline that draws in on hover/focus. */
 @utility nav-link {
   display: inline-flex;
@@ -319,12 +312,6 @@
   from {
     opacity: 0;
     scale: 0.6;
-  }
-}
-
-@keyframes hero-ring {
-  to {
-    stroke-dashoffset: 0;
   }
 }
 
@@ -373,4 +360,12 @@
   font-size: 0.9em;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
+}
+
+/* Label swap in the floor library: the new name settles in. */
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }

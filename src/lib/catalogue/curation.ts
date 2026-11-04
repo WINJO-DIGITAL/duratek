@@ -46,3 +46,31 @@ export function curateImages(images: CatalogueImage[]): CatalogueImage[] {
   const kept = images.filter((i) => !isRetired(i));
   return [...kept.filter((i) => !isSecondaryRoom(i)), ...kept.filter(isSecondaryRoom)];
 }
+
+/**
+ * Editorial picks for the home page, by file name, in order of preference.
+ * The floor must be the subject: camera low, boards running away from it.
+ * Falls back to the first floor-led room scene if none is available.
+ */
+export const EDITORIAL = {
+  hero: ["Hawkshead_Kitchen.png", "Cartmel_Oak_Lounge.png", "Keswick_Oak_Kitchen.png"],
+  room: [
+    "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
+    "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
+    "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_kitchen_2.png",
+  ],
+} as const;
+
+/** The first preferred file present among the images, in preference order. */
+export function pickByFileName<T extends { image: CatalogueImage }>(
+  candidates: T[],
+  preferences: readonly string[],
+  exclude: ReadonlySet<string> = new Set(),
+): T | undefined {
+  const available = candidates.filter((c) => !exclude.has(c.image.src));
+  for (const name of preferences) {
+    const hit = available.find((c) => fileName(c.image.src) === name);
+    if (hit) return hit;
+  }
+  return available[0];
+}
