@@ -63,17 +63,17 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
                   onClick={close}
                   className="group flex min-h-16 items-center justify-between gap-4"
                 >
-                  <span className="flex items-center gap-3 font-display text-display-sm">
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        "h-px bg-green transition-[width] duration-500 ease-calm",
-                        current ? "w-5" : "w-0 group-hover:w-5",
-                      )}
-                    />
-                    <span className={cn("transition-colors duration-300", current ? "text-green-ink" : "group-hover:text-green-ink")}>
-                      {item.label}
-                    </span>
+                  {/* Green underline draws in under the label: full for the current page, on hover otherwise. */}
+                  <span
+                    className={cn(
+                      "relative font-display text-display-sm transition-colors duration-300",
+                      "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:bg-green after:transition-transform after:duration-500 after:ease-calm",
+                      current
+                        ? "text-green-ink after:scale-x-100"
+                        : "after:scale-x-0 group-hover:text-green-ink group-hover:after:scale-x-100 group-focus-visible:after:scale-x-100",
+                    )}
+                  >
+                    {item.label}
                   </span>
                   {item.href === "/samples" ? (
                     <SampleCount />
