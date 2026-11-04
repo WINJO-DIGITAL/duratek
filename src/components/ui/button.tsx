@@ -19,6 +19,9 @@ const sizes: Record<ButtonSize, string> = {
 /** Boxed variants get horizontal padding by size; quiet links get none. */
 const padding: Record<ButtonSize, string> = { md: "px-6", lg: "px-8" };
 const isQuiet = (v: ButtonVariant) => v === "quiet" || v === "quiet-on-dark";
+/** Classes for a button look on another element (e.g. a link that opens a dialog). */
+export const buttonClass = (variant: ButtonVariant = "primary", size: ButtonSize = "md") => classesFor(variant, size);
+
 const classesFor = (variant: ButtonVariant, size: ButtonSize) =>
   cn(base, sizes[size], isQuiet(variant) ? "px-0" : padding[size], buttonVariants[variant]);
 
@@ -33,7 +36,7 @@ export const buttonVariants: Record<ButtonVariant, string> = {
   "quiet-on-dark": "text-on-dark underline-offset-[6px] hover:underline",
 };
 
-function Arrow() {
+export function Arrow() {
   return (
     <ArrowRight
       size={18}

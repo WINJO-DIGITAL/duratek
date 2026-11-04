@@ -369,3 +369,44 @@
     transform: translateY(4px);
   }
 }
+
+/* Sample tray: a sheet rising from the bottom on phones, a drawer from the
+   right on desktop. Native <dialog>, so focus and Escape are handled. */
+.sample-tray {
+  opacity: 0;
+  translate: 0 100%;
+}
+.sample-tray[open] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 300ms var(--ease-calm),
+    translate 450ms var(--ease-calm);
+}
+@starting-style {
+  .sample-tray[open] {
+    opacity: 0;
+    translate: 0 100%;
+  }
+}
+.sample-tray[open][data-closing] {
+  opacity: 0;
+  translate: 0 100%;
+  transition:
+    opacity 200ms var(--ease-calm),
+    translate 220ms var(--ease-calm);
+}
+@media (min-width: 64rem) {
+  .sample-tray,
+  .sample-tray[open][data-closing] {
+    translate: 100% 0;
+  }
+  @starting-style {
+    .sample-tray[open] {
+      translate: 100% 0;
+    }
+  }
+}
+.sample-tray::backdrop {
+  background: rgb(24 54 76 / 0.35);
+}

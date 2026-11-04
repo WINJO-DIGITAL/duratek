@@ -10,12 +10,14 @@ import { FinishGallery } from "@/components/finish/finish-gallery";
 import { GrainZoom } from "@/components/finish/grain-zoom";
 import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
 import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
+import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
 import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import { relatedFinishes } from "@/lib/catalogue/related";
+import { compareHref } from "@/lib/saved/saved";
 import type { Finish } from "@/lib/catalogue/types";
 import { JsonLd } from "@/components/seo/json-ld";
 import { cn } from "@/lib/cn";
@@ -118,6 +120,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const format = plankFormat(finish.specs);
   const planks = scalePlanks(all, finish);
   const sample = { id: finish.id, slug: finish.slug, name: finish.name };
+  const related = relatedFinishes(all, finish);
 
   return (
     <article>
@@ -195,8 +198,17 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
                 Where to buy
               </ButtonLink>
+              <SaveButton finish={sample} />
             </div>
-            <p className="mt-6 text-[0.875rem] text-ink-muted">Up to three free samples, posted to you.</p>
+            <p className="mt-6 text-[0.875rem] text-ink-muted">
+              Up to three free samples, posted to you.{" "}
+              <Link
+                href={compareHref([finish.slug, ...related.slice(0, 2).map((f) => f.slug)])}
+                className="text-navy underline underline-offset-4 hover:text-green-ink"
+              >
+                Compare with similar finishes
+              </Link>
+            </p>
           </div>
         </aside>
       </div>
@@ -287,7 +299,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             </Link>
           </div>
           <ul className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
-            {relatedFinishes(all, finish).map((f) => (
+            {related.map((f) => (
               <li key={f.id}>
                 <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, 48vw" />
               </li>

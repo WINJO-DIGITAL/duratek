@@ -4,7 +4,7 @@ import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
 import { ScratchShieldBadge } from "@/components/content/warranty";
 import { FinishImage } from "@/components/finish/finish-image";
-import { ButtonLink } from "@/components/ui/button";
+import { AskForDocuments } from "@/components/content/ask-for-documents";
 import { getFinishes, imagesOfKind } from "@/lib/catalogue";
 import { imagePool, takeFrom, type PooledImage } from "@/lib/catalogue/image-pool";
 import { cn } from "@/lib/cn";
@@ -103,7 +103,7 @@ export default async function TechnologyPage() {
               </p>
             </SectionIntro>
             <div className="lg:justify-self-end">
-              <ButtonLink href="/contact">Ask for documents</ButtonLink>
+              <AskForDocuments />
             </div>
           </div>
         </section>

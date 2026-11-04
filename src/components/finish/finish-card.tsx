@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ViewTransition } from "react";
+import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { FORMAT_LABELS, measureLine, plankFormat } from "@/lib/catalogue/format";
 import { grainImage, leadImage } from "@/lib/catalogue/mappers";
@@ -58,6 +59,12 @@ export function FinishCard({
           )}
         </div>
       </ViewTransition>
+      {/* Above the stretched link, in the photo's corner. */}
+      <SaveButton
+        finish={{ id: finish.id, slug: finish.slug, name: finish.name }}
+        variant="overlay"
+        className="absolute right-2 top-2 z-10"
+      />
 
       <div className="mt-4 border-t border-navy/15 pt-3">
         <H className="text-[1.3125rem] font-normal leading-tight tracking-[-0.01em] text-navy sm:text-[1.5rem]">

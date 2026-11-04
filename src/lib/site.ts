@@ -5,4 +5,4 @@ export function siteUrl(path = ""): string {
 }
 
 /** Built public pages, for the sitemap. Add routes here as they are built. */
-export const PUBLIC_ROUTES = ["/", "/range", "/inspiration", "/technology", "/warranty", "/samples", "/where-to-buy"] as const;
+export const PUBLIC_ROUTES = ["/", "/range", "/inspiration", "/technology", "/warranty", "/samples", "/where-to-buy", "/trade", "/trade/apply", "/privacy", "/cookies"] as const;

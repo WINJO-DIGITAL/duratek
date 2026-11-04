@@ -9,6 +9,8 @@ import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
 import { TRADE_NAV } from "@/lib/config";
 import { finishMenuNav, MobileMenu } from "./mobile-menu";
+import { SampleTrayLink } from "@/components/samples/sample-tray-link";
+import { SavedLink } from "./saved-link";
 import { ScrollProgress } from "./scroll-progress";
 import { RangeMenu } from "./range-menu";
 import { SampleCount } from "./sample-count";
@@ -121,14 +123,14 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
         {/* Desktop: right nav */}
         <div className="hidden items-center justify-self-end lg:-mr-3 lg:flex">
-          <Link
-            href="/samples"
+          <SavedLink onDark={overlay} />
+          <SampleTrayLink
             aria-current={isActive(pathname, "/samples") ? "page" : undefined}
             className={linkClass(isActive(pathname, "/samples"))}
           >
             Samples
             <SampleCount />
-          </Link>
+          </SampleTrayLink>
           <span className={cn("mx-2 h-5 w-px transition-colors duration-300", overlay ? "bg-white/30" : "bg-line")} aria-hidden="true" />
           <Link
             href={TRADE_NAV.href}

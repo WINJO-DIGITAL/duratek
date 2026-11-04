@@ -12,9 +12,9 @@ import { NavSwatch } from "./nav-swatch";
 import { SampleCount } from "./sample-count";
 
 const SECONDARY = [
+  { href: "/saved", label: "Saved finishes" },
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
-  { href: "/contact", label: "Contact" },
   { href: TRADE_NAV.href, label: "Trade accounts" },
 ];
 

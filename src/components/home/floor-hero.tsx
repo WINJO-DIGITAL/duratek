@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FinishImage } from "@/components/finish/finish-image";
+import { OrderSamplesButton } from "@/components/samples/order-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 
@@ -40,14 +41,11 @@ export function FloorHero({
             <ButtonLink href="/range" variant="on-dark" size="lg">
               Explore the range
             </ButtonLink>
-            <ButtonLink
-              href="/samples"
+            <OrderSamplesButton
               variant="quiet-on-dark"
               arrow={false}
               className="underline decoration-white/40 decoration-1 hover:decoration-white"
-            >
-              Order free samples
-            </ButtonLink>
+            />
           </div>
         </div>
 

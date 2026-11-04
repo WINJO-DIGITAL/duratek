@@ -2,10 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState, type ComponentType, type MouseEvent } from "react";
+import { useRef, useState, type ComponentProps, type ComponentType, type MouseEvent } from "react";
 import { Briefcase, Pin, Planks, Swatches } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
+import { SampleTrayLink } from "@/components/samples/sample-tray-link";
 import { isActive, SampleCount } from "./site-header";
+
+/** Samples opens the tray rather than navigating; the rest are plain links. */
+function TabLink({ href, ...props }: ComponentProps<typeof Link> & { href: string }) {
+  return href === "/samples" ? <SampleTrayLink {...props} /> : <Link href={href} {...props} />;
+}
 
 const ITEMS: { href: string; label: string; icon: ComponentType<{ size?: number }> }[] = [
   { href: "/range", label: "Range", icon: Planks },
@@ -35,7 +41,7 @@ export function MobileBottomBar() {
 
   const onTap = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    if (isActive(pathname, href)) return;
+    if (isActive(pathname, href) || href === "/samples") return;
     setPending({ href, from: pathname });
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setPending(null), PENDING_TIMEOUT);
@@ -61,7 +67,7 @@ export function MobileBottomBar() {
                   selected ? "scale-x-100" : "scale-x-0",
                 )}
               />
-              <Link
+              <TabLink
                 href={href}
                 aria-current={current ? "page" : undefined}
                 onClick={(e) => onTap(e, href)}
@@ -81,7 +87,7 @@ export function MobileBottomBar() {
                   {href === "/samples" && <SampleCount className="absolute -right-3 -top-2" />}
                 </span>
                 {label}
-              </Link>
+              </TabLink>
             </li>
           );
         })}

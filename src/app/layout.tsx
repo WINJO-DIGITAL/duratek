@@ -4,6 +4,7 @@ import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SampleTray } from "@/components/samples/sample-tray";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getNavData } from "@/lib/catalogue/nav";
 import { siteUrl } from "@/lib/site";
@@ -73,6 +74,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         </main>
         <SiteFooter nav={nav} />
         <MobileBottomBar />
+        <SampleTray catalogue={nav.catalogue} />
       </body>
     </html>
   );

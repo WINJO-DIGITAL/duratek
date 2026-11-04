@@ -1,11 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
+import { SampleTrayLink } from "@/components/samples/sample-tray-link";
 import { Check } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
 import { useSamples } from "@/lib/samples/use-samples";
 import type { SampleItem } from "@/lib/samples/selection";
+import { openSampleTray } from "@/lib/samples/tray";
 
 /**
  * "Add to samples". Adds calmly with a spoken and visible confirmation; when
@@ -36,7 +37,11 @@ export function AddToSamplesButton({
     }
     const result = add(finish);
     if (result === "added") setMessage(`${finish.name} added. ${count + 1} of ${limit} samples chosen.`);
-    if (result === "full") setMessage(`You can order up to ${limit} free samples. Remove one to add ${finish.name}.`);
+    if (result === "full") {
+      // Explain the limit, and offer the swap in the tray where possible.
+      setMessage(`You can order up to ${limit} free samples. Remove one to add ${finish.name}.`);
+      openSampleTray({ swapIn: finish });
+    }
   }
 
   const compact = size === "compact";
@@ -47,8 +52,8 @@ export function AddToSamplesButton({
       <button
         type="button"
         onClick={onClick}
-        aria-pressed={added}
-        aria-disabled={blocked || undefined}
+        aria-pressed={blocked ? undefined : added}
+        aria-haspopup={blocked ? "dialog" : undefined}
         className={cn(
           "group inline-flex min-h-tap items-center justify-center gap-2 rounded-none font-medium transition-colors duration-300",
           compact ? "px-0 text-[0.875rem]" : "px-6 text-[0.9375rem]",
@@ -56,7 +61,7 @@ export function AddToSamplesButton({
           added && compact && "text-green-ink",
           !added && !blocked && !compact && "bg-green-ink text-white hover:bg-green-ink-hover",
           !added && !blocked && compact && "text-navy hover:text-green-ink",
-          blocked && (compact ? "text-ink-muted" : "border border-line bg-transparent text-ink-muted"),
+          blocked && (compact ? "text-ink-muted hover:text-navy" : "border border-navy/30 bg-transparent text-navy hover:border-navy"),
         )}
       >
         {added ? (
@@ -68,7 +73,10 @@ export function AddToSamplesButton({
             </span>
           </>
         ) : blocked ? (
-          <span>{`Sample limit reached (${limit})`}</span>
+          <span>
+            Swap into samples
+            <span className="sr-only">. You have chosen {limit}, the most per request.</span>
+          </span>
         ) : (
           <>
             <span aria-hidden="true" className="text-lg leading-none">+</span>
@@ -82,9 +90,9 @@ export function AddToSamplesButton({
         {!hideMessage && message && count > 0 && (
           <>
             {" "}
-            <Link href="/samples" className="text-navy underline underline-offset-4">
+            <SampleTrayLink className="text-navy underline underline-offset-4">
               View samples
-            </Link>
+            </SampleTrayLink>
           </>
         )}
       </p>

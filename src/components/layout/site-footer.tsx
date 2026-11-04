@@ -21,14 +21,12 @@ const PRIMARY: FooterLink[] = [
 const MORE: FooterLink[] = [
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
-  { href: "/contact", label: "Contact" },
-  { href: "/trade/login", label: "Trade log in" },
+  { href: "/saved", label: "Saved finishes" },
 ];
 
 const LEGAL: FooterLink[] = [
   { href: "/privacy", label: "Privacy" },
   { href: "/cookies", label: "Cookies" },
-  { href: "/terms", label: "Terms" },
 ];
 
 /** A quiet labelled line of links that wraps. */

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
-import Link from "next/link";
+import { AskForDocuments } from "@/components/content/ask-for-documents";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyBadges, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishImage } from "@/components/finish/finish-image";
@@ -73,14 +73,7 @@ export default async function WarrantyPage() {
                   like the full warranty terms or the technical sheet first, ask and we’ll send them.
                 </p>
               </SectionIntro>
-              <p className="mt-6">
-                <Link
-                  href="/contact"
-                  className="inline-flex min-h-tap items-center text-navy underline underline-offset-4 hover:text-green-ink"
-                >
-                  Contact us
-                </Link>
-              </p>
+              <AskForDocuments look="link" label="Ask for the warranty terms" className="mt-6" />
             </div>
           </div>
         </section>

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
+import { OrderSamplesButton } from "@/components/samples/order-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowUpRight, Phone } from "@/components/ui/icons";
 import { PostcodeSearch } from "@/components/where-to-buy/postcode-search";
@@ -103,7 +104,7 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-              <ButtonLink href="/samples">Order free samples</ButtonLink>
+              <OrderSamplesButton />
               <ButtonLink href="#online" variant="quiet" arrow={false}>
                 Buy online
               </ButtonLink>
