@@ -56,6 +56,14 @@
   --text-display-xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
   --text-display-xl--line-height: 1.04;
   --text-display-xl--letter-spacing: -0.035em;
+  /* Home hero headline: 42px on phones, about 60px at 1440, never above 66px.
+     Lighter than other headings, tracked in slightly. */
+  --text-display-hero: clamp(2.625rem, 2.2rem + 1.75vw, 4.125rem);
+  --text-display-hero--line-height: 1.08;
+  --text-display-hero--letter-spacing: -0.028em;
+  --text-display-hero--font-weight: 400;
+  --text-hero-lede: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem); /* 17px phones, 19px desktop */
+  --text-hero-lede--line-height: 1.65;
   --text-display-lg: clamp(2.25rem, 1.5rem + 3vw, 4rem);
   --text-display-lg--line-height: 1.08;
   --text-display-lg--letter-spacing: -0.03em;
@@ -73,6 +81,7 @@
   --spacing-section: clamp(4rem, 2.5rem + 6vw, 9rem);
   --spacing-section-sm: clamp(2.5rem, 1.8rem + 3vw, 5rem);
   --spacing-tap: 2.75rem; /* 44px minimum touch target */
+  --spacing-cta: 3.375rem; /* 54px large call to action (home hero) */
   --spacing-header: 4rem;
   --spacing-bottom-bar: 4rem;
   --container-page: 90rem;

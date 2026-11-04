@@ -23,8 +23,9 @@ function subscribeReducedMotion(cb: () => void) {
 const getReducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
 /**
- * Full-bleed hero: room scenes crossfade with a slow zoom. Round finish
- * swatches pick the slide; the active swatch's ring fills as it plays.
+ * Full-bleed hero: room scenes crossfade with a slow, slight zoom. Round finish
+ * swatches pick the slide (and pause it there); the active swatch has a fine
+ * ring that fills as it plays.
  * Pauses on hover/focus and has a visible pause control (WCAG 2.2.2).
  * Reduced motion: no autoplay and no zoom.
  */
@@ -85,7 +86,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               className={cn(
                 "object-cover object-[50%_70%]",
                 !reduced && "transition-transform ease-linear",
-                !reduced && (i === index ? "scale-[1.08] duration-[9000ms]" : "scale-100 duration-0"),
+                !reduced && (i === index ? "scale-[1.04] duration-[9000ms]" : "scale-100 duration-0"),
               )}
             />
           </div>
@@ -110,41 +111,46 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             >
               Shown: <span className="text-white">{current.name}</span>
             </Link>
-            <ul className="flex items-center gap-2" aria-label="Choose a finish">
+            <ul className="flex items-center gap-1" aria-label="Choose a finish">
               {slides.map((s, i) => (
                 <li key={s.slug}>
                   <button
                     type="button"
-                    onClick={() => go(i)}
-                    aria-current={i === index || undefined}
+                    onClick={() => {
+                      go(i);
+                      // A chosen floor stays on screen until play is pressed.
+                      setPaused(true);
+                    }}
+                    aria-pressed={i === index}
                     className="group relative flex size-tap items-center justify-center rounded-full"
                   >
-                    {/* Progress ring around the active swatch */}
-                    <svg className="absolute inset-0 -rotate-90" viewBox="0 0 44 44" aria-hidden="true">
-                      <circle cx="22" cy="22" r="20.5" fill="none" stroke="rgb(255 255 255 / 0.25)" strokeWidth="1.5" />
-                      {i === index && (
+                    {/* Active swatch only: a fine ring with a gap, which fills
+                        as the slide plays and is solid when paused. */}
+                    {i === index && (
+                      <svg className="absolute inset-0 -rotate-90" viewBox="0 0 44 44" aria-hidden="true">
+                        <circle cx="22" cy="22" r="18" fill="none" stroke="rgb(255 255 255 / 0.35)" strokeWidth="1.25" />
                         <circle
                           key={`${index}-${playing}`}
                           cx="22"
                           cy="22"
-                          r="20.5"
+                          r="18"
                           fill="none"
                           stroke="white"
-                          strokeWidth="1.5"
-                          strokeDasharray="128.8"
-                          strokeDashoffset={playing ? 128.8 : 0}
+                          strokeWidth="1.25"
+                          strokeDasharray="113.1"
+                          strokeDashoffset={playing ? 113.1 : 0}
                           style={playing ? { animation: `hero-ring ${INTERVAL}ms linear forwards` } : undefined}
                         />
-                      )}
-                    </svg>
+                      </svg>
+                    )}
                     <span
                       className={cn(
-                        "relative block size-8 overflow-hidden rounded-full transition-transform duration-500 ease-calm",
-                        i === index ? "scale-100" : "scale-[0.82] opacity-80 group-hover:scale-90 group-hover:opacity-100",
+                        "relative block size-[1.625rem] overflow-hidden rounded-full ring-1 ring-white/25 transition-opacity duration-300 ease-calm",
+                        i === index ? "opacity-100" : "opacity-70 group-hover:opacity-100",
                       )}
                     >
                       {s.swatch ? (
-                        <Image src={s.swatch.src} alt="" fill sizes="32px" quality={70} className="object-cover" />
+                        <Image src={s.swatch.src} alt="" fill sizes="26px" quality={70} className="object-cover" />
                       ) : (
                         <span className="absolute inset-0 bg-white/40" />
                       )}

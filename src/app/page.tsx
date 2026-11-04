@@ -122,23 +122,34 @@ export default async function HomePage() {
         {/* 1. Hero */}
         <section className="on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-svh">
           <HeroCarousel slides={heroSlides} />
+          {/* Scrims, neutral rather than navy so the floor keeps its own colour:
+              a light one under the header, a deeper one behind the copy. */}
+          <div className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/40 to-transparent" aria-hidden="true" />
           <div
-            className="absolute inset-0 -z-10 bg-gradient-to-t from-navy/95 via-navy/75 to-navy/30 lg:bg-gradient-to-r lg:from-navy/85 lg:via-navy/40 lg:to-navy/0"
+            className="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 from-5% via-black/45 via-55% to-transparent to-90% lg:from-black/65 lg:via-black/25 lg:via-40% lg:to-transparent lg:to-75%"
             aria-hidden="true"
           />
-          <div className="container-page pb-28 pt-32 sm:pb-32 lg:pb-36">
-            <p className="eyebrow text-green-on-navy">The performance collection</p>
-            <h1 className="mt-4 max-w-[14ch] text-display-xl text-on-dark">
-              Beautifully considered. <span className="font-light">Built to perform.</span>
+          <div className="absolute inset-y-0 left-0 -z-10 hidden w-3/5 bg-gradient-to-r from-black/30 to-transparent lg:block" aria-hidden="true" />
+          <div className="container-page pb-24 pt-32 sm:pb-32">
+            {/* White label over the photo for legibility; the brand green stays on the marker. */}
+            <p className="eyebrow text-on-dark/90 before:bg-green-on-navy">The performance collection</p>
+            <h1 className="mt-5 max-w-[12ch] text-display-hero text-on-dark sm:mt-6 sm:max-w-none">
+              <span className="sm:block">Beautifully considered.</span>{" "}
+              <span className="font-light sm:block">Built to perform.</span>
             </h1>
-            <p className="mt-6 max-w-md text-lede text-on-dark-muted">
+            <p className="mt-5 max-w-[26rem] text-hero-lede text-on-dark/85 sm:mt-6">
               Oak-look click flooring with a waterproof rigid core, a 0.55mm wear layer and a scratch-resistant finish.
             </p>
-            <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
-              <ButtonLink href="/range" variant="on-dark">
+            <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-2 sm:mt-10">
+              <ButtonLink href="/range" variant="on-dark" size="lg">
                 Explore the range
               </ButtonLink>
-              <ButtonLink href="/samples" variant="quiet-on-dark" arrow={false}>
+              <ButtonLink
+                href="/samples"
+                variant="quiet-on-dark"
+                arrow={false}
+                className="underline decoration-white/40 decoration-1 hover:decoration-white"
+              >
                 Order free samples
               </ButtonLink>
             </div>
