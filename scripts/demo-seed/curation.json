@@ -1,0 +1,147 @@
+{
+  "$comment": "Hand curation of the Kwik Floors Duratek collection for the client preview. Image indexes refer to each product's images array in products.json. Kinds: room | closeup | swatch. 'room' labels feed the alt text. Colour families are a judgement from the photography, not client data; confirm with the client. Size diagrams are deliberately excluded.",
+  "source": {
+    "collection": "https://www.kwikfloors.co.uk/collections/duratekplank/products.json?limit=250",
+    "retailer_url": "https://www.kwikfloors.co.uk/collections/duratek"
+  },
+  "colour_families": [
+    { "id": "natural", "label": "Natural oak" },
+    { "id": "warm", "label": "Warm oak" },
+    { "id": "greige", "label": "Greige" },
+    { "id": "grey", "label": "Grey" }
+  ],
+  "finishes": [
+    {
+      "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "natural",
+      "images": [
+        { "i": 1, "kind": "room", "room": "kitchen" },
+        { "i": 7, "kind": "room", "room": "open-plan living space" },
+        { "i": 0, "kind": "room", "room": "children's playroom" },
+        { "i": 2, "kind": "room", "room": "bathroom" },
+        { "i": 12, "kind": "room", "room": "kitchen" },
+        { "i": 9, "kind": "closeup" },
+        { "i": 13, "kind": "closeup" },
+        { "i": 16, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm",
+      "colour_family": "natural",
+      "images": [
+        { "i": 1, "kind": "room", "room": "kitchen and dining area" },
+        { "i": 0, "kind": "room", "room": "kitchen" },
+        { "i": 2, "kind": "room", "room": "living area" },
+        { "i": 4, "kind": "closeup" },
+        { "i": 3, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "hawkshead-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "warm",
+      "images": [
+        { "i": 1, "kind": "room", "room": "kitchen" },
+        { "i": 0, "kind": "room", "room": "kitchen" },
+        { "i": 3, "kind": "closeup" },
+        { "i": 2, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "grey",
+      "images": [
+        { "i": 0, "kind": "room", "room": "living room" },
+        { "i": 1, "kind": "room", "room": "kitchen" },
+        { "i": 2, "kind": "room", "room": "children's playroom" },
+        { "i": 3, "kind": "room", "room": "hallway" },
+        { "i": 4, "kind": "closeup" },
+        { "i": 5, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm",
+      "colour_family": "natural",
+      "images": [
+        { "i": 1, "kind": "room", "room": "kitchen" },
+        { "i": 3, "kind": "room", "room": "dining room" },
+        { "i": 0, "kind": "room", "room": "hallway and stairs" },
+        { "i": 2, "kind": "closeup" },
+        { "i": 4, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "cartmel-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "greige",
+      "images": [
+        { "i": 1, "kind": "room", "room": "living room" },
+        { "i": 3, "kind": "room", "room": "kitchen" },
+        { "i": 0, "kind": "room", "room": "bathroom" },
+        { "i": 2, "kind": "room", "room": "bathroom" },
+        { "i": 4, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "grey",
+      "images": [
+        { "i": 2, "kind": "room", "room": "kitchen" },
+        { "i": 0, "kind": "room", "room": "bathroom" },
+        { "i": 1, "kind": "room", "room": "hallway" },
+        { "i": 4, "kind": "room", "room": "bathroom" },
+        { "i": 5, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "warm",
+      "images": [
+        { "i": 2, "kind": "room", "room": "living room" },
+        { "i": 0, "kind": "room", "room": "kitchen" },
+        { "i": 1, "kind": "room", "room": "hallway" },
+        { "i": 3, "kind": "closeup" },
+        { "i": 4, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "ambleside-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "greige",
+      "images": [
+        { "i": 1, "kind": "room", "room": "kitchen" },
+        { "i": 3, "kind": "room", "room": "bedroom" },
+        { "i": 0, "kind": "room", "room": "bathroom" },
+        { "i": 2, "kind": "room", "room": "shower room" },
+        { "i": 4, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm",
+      "colour_family": "greige",
+      "images": [
+        { "i": 0, "kind": "room", "room": "hallway" },
+        { "i": 1, "kind": "room", "room": "bathroom" },
+        { "i": 2, "kind": "swatch" }
+      ]
+    },
+    {
+      "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm",
+      "colour_family": "greige",
+      "images": [
+        { "i": 0, "kind": "room", "room": "living room" },
+        { "i": 1, "kind": "room", "room": "bathroom" },
+        { "i": 2, "kind": "swatch" }
+      ]
+    }
+  ],
+  "inspiration": [
+    { "title": "Light through the kitchen", "mood": "Calm and light", "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm", "i": 1 },
+    { "title": "Space to play", "mood": "Calm and light", "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm", "i": 0 },
+    { "title": "A quiet hallway", "mood": "Calm and light", "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm", "i": 0 },
+    { "title": "Kitchen, dining, together", "mood": "Warm and natural", "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm", "i": 1 },
+    { "title": "Honey tones in the living room", "mood": "Warm and natural", "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm", "i": 2 },
+    { "title": "Set for dinner", "mood": "Warm and natural", "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm", "i": 3 },
+    { "title": "Slate and softness", "mood": "Cool and contemporary", "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm", "i": 0 },
+    { "title": "Dark cabinetry, pale floor", "mood": "Cool and contemporary", "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm", "i": 2 },
+    { "title": "Bathrooms that can take it", "mood": "Cool and contemporary", "handle": "cartmel-oak-luxury-click-vinyl-flooring-5mm", "i": 0 },
+    { "title": "Evening in the lounge", "mood": "Warm and natural", "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm", "i": 0 }
+  ]
+}
