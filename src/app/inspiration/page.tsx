@@ -19,7 +19,7 @@ function Story({ item, finishes, large }: { item: InspirationItem; finishes: Map
   const shown = item.finishIds.map((id) => finishes.get(id)).filter((f): f is Finish => Boolean(f));
   return (
     <figure className="flex flex-col">
-      <div className={cn("relative overflow-hidden bg-stone", large ? "aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/2]")}>
+      <div className={cn("relative overflow-hidden bg-line", large ? "aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/2]")}>
         <FinishImage image={item.image} sizes={large ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 30vw, (min-width: 640px) 50vw, 100vw"} />
       </div>
       <figcaption className="mt-4">
@@ -73,7 +73,7 @@ export default async function InspirationPage() {
             key={mood}
             id={slugify(mood)}
             aria-labelledby={`${slugify(mood)}-h`}
-            className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-sage")}
+            className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-white")}
           >
             <div className="container-page">
               <h2 id={`${slugify(mood)}-h`} className="text-display-md text-navy">

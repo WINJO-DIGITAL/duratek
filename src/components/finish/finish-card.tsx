@@ -24,7 +24,7 @@ export function FinishCard({
   const image = leadImage(finish);
   return (
     <article className={cn("group relative flex flex-col", className)}>
-      <div className={cn("relative overflow-hidden bg-stone", aspect)}>
+      <div className={cn("relative overflow-hidden bg-line", aspect)}>
         {image && (
           <FinishImage
             image={image}

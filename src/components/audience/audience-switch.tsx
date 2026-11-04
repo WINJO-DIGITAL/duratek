@@ -48,7 +48,7 @@ export function AudienceSwitch() {
             onClick={() => setAudience(audience === p.id ? null : p.id)}
             className={cn(
               "min-h-tap px-4 text-[0.9375rem] font-medium transition-colors duration-300 sm:px-6",
-              audience === p.id ? "bg-navy text-cream" : "text-navy hover:bg-sage",
+              audience === p.id ? "bg-navy text-off-white" : "text-navy hover:bg-white",
             )}
           >
             {p.label}
@@ -56,7 +56,7 @@ export function AudienceSwitch() {
         ))}
       </div>
 
-      <div className="mt-8 grid gap-px bg-stone md:grid-cols-2">
+      <div className="mt-8 grid gap-px bg-line md:grid-cols-2">
         {PATHS.map((p) => {
           const chosen = audience === p.id;
           const muted = audience !== null && !chosen;
@@ -66,10 +66,10 @@ export function AudienceSwitch() {
               aria-labelledby={`audience-${p.id}`}
               className={cn(
                 "flex flex-col p-6 transition-colors duration-500 sm:p-10",
-                chosen ? "on-dark bg-navy text-on-dark" : "bg-cream",
+                chosen ? "on-dark bg-navy text-on-dark" : "bg-off-white",
               )}
             >
-              <p className={cn("eyebrow", chosen && "text-green-light")}>{p.label}</p>
+              <p className={cn("eyebrow", chosen && "text-green-on-navy")}>{p.label}</p>
               <h3 id={`audience-${p.id}`} className={cn("mt-3 text-display-sm", chosen ? "text-on-dark" : "text-navy")}>
                 {p.title}
               </h3>

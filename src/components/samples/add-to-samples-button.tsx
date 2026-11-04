@@ -48,11 +48,11 @@ export function AddToSamplesButton({
         className={cn(
           "group inline-flex min-h-tap items-center justify-center gap-2 rounded-none font-medium transition-colors duration-300",
           compact ? "px-0 text-[0.875rem]" : "px-6 text-[0.9375rem]",
-          added && !compact && "border border-green-ink bg-white text-green-ink hover:bg-sage",
+          added && !compact && "border border-green-ink bg-white text-green-ink hover:bg-off-white",
           added && compact && "text-green-ink",
           !added && !blocked && !compact && "bg-green-ink text-white hover:bg-green-ink-hover",
           !added && !blocked && compact && "text-navy hover:text-green-ink",
-          blocked && (compact ? "text-ink-muted" : "border border-stone bg-transparent text-ink-muted"),
+          blocked && (compact ? "text-ink-muted" : "border border-line bg-transparent text-ink-muted"),
         )}
       >
         {added ? (

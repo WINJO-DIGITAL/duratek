@@ -12,8 +12,8 @@ export const buttonVariants: Record<ButtonVariant, string> = {
   /** Green on light: the one primary action on a screen. */
   primary: "bg-green-ink px-6 text-white hover:bg-green-ink-hover",
   /** Cream on navy. */
-  "on-dark": "bg-cream px-6 text-navy hover:bg-white",
-  outline: "border border-navy px-6 text-navy hover:bg-navy hover:text-cream",
+  "on-dark": "bg-off-white px-6 text-navy hover:bg-white",
+  outline: "border border-navy px-6 text-navy hover:bg-navy hover:text-off-white",
   /** Quiet secondary link: underline on hover only, no box. */
   quiet: "px-0 text-navy underline-offset-[6px] hover:underline",
   "quiet-on-dark": "px-0 text-on-dark underline-offset-[6px] hover:underline",

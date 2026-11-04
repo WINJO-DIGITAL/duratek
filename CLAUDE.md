@@ -159,16 +159,18 @@ Money is stored as integer pence.
 - **Trade application**: short form, email confirmation, owner approval flow.
 - **Trade area**: prices, documents, shortlists.
 
-## Brand theme (from the Duratek page on kwikfloors.co.uk)
+## Brand theme (Duratek navy, green and white)
 
-Sampled from screen recordings, so close but not exact. Replace with the client's brand guidelines when supplied.
+Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, taupe or natural-wood brand palette, and do not introduce beige, brown or gold as alternative brand colours. Take Ted Todd's editorial approach (premium typography, generous whitespace, large photography, elegant composition), but the identity must feel unmistakably Duratek.
 
-- Navy `#1b324b` (panels, headings); deep navy `#0c2140` (footer, top bar)
-- Duratek green `#4b943e` (wordmark); light green `#9fd18f` (accents on dark); button/label green `#3f7d4e`
-- Sage `#ebefe8` and cream `#fbfaf6` section backgrounds; muted text `#5d6a74`
+- Primary navy `#18364C`: hero sections, footer and important feature areas; navy typography on light backgrounds.
+- Duratek green `#4B9B48`: accent text, subtle highlights, selected navigation details, interactive elements. For WCAG AA, small green text and button fills use the darker `#3D7F3B` on light backgrounds, and `#54AE51` on navy (same hue).
+- White `#FFFFFF`: prominent headings on navy; alternating sections.
+- Off-white `#F7F6F2`: spacious product and collection sections.
+- Secondary text: muted slate grey `#5A6B78` (on navy: `#B9C6D0`).
 - Headings: Source Serif 4 (regular weight, italic for emphasis). Body: Inter.
 - Small tracked uppercase green eyebrow labels above headings (e.g. "DURATEK SURFACE TECHNOLOGY", "ENGINEERED DURABILITY")
-- Buttons: square-cornered. Cream on navy, or green on light, with a trailing arrow ("Shop full Duratek range →").
+- Buttons: square-cornered. Off-white on navy, or green on light, with a trailing arrow ("Shop full Duratek range →").
 - The wordmark is lowercase "duratek": "dura" in green, "tek" bold (white on navy). Use a placeholder text version only; use the real SVG when supplied.
 - Badges: Scratch Shield, Residential Lifetime Warranty and Commercial 10 Year Warranty artwork. Use placeholders until the client supplies the files.
 

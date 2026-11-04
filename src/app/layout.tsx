@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#fbfaf6",
+  themeColor: "#f7f6f2",
   viewportFit: "cover",
 };
 
@@ -39,7 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="flex min-h-dvh flex-col pb-[calc(var(--spacing-bottom-bar)+env(safe-area-inset-bottom))] lg:pb-0">
         <a
           href="#main"
-          className="sr-only z-50 bg-navy px-4 py-3 text-cream focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+          className="sr-only z-50 bg-navy px-4 py-3 text-off-white focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
         >
           Skip to content
         </a>

@@ -14,7 +14,7 @@ export function SpecStrip({ className }: { className?: string }) {
         <div
           key={s.value}
           className={cn(
-            "flex flex-col-reverse gap-1 border-stone py-6 pr-4 lg:py-8",
+            "flex flex-col-reverse gap-1 border-line py-6 pr-4 lg:py-8",
             i % 2 === 1 && "border-l pl-4 lg:pl-8",
             i >= 2 && "border-t lg:border-t-0",
             i === 2 && "lg:border-l lg:pl-8",

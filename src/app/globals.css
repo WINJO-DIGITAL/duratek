@@ -3,8 +3,13 @@
 /*
  * Duratek design tokens. Defined once here and consumed through Tailwind
  * utilities (bg-navy, text-ink-muted, font-display, py-section, ...).
- * Colours are sampled from the Duratek page on kwikfloors.co.uk; replace with
- * the client's brand guidelines when supplied.
+ *
+ * Palette: Duratek navy, green and white only. No beige, brown, taupe or gold
+ * as brand colours; warmth comes from the floor photography, not the UI.
+ * Green is one hue at three strengths so every use passes WCAG AA:
+ *   green          #4B9B48  brand green: wordmark, rules, indicators, large text
+ *   green-ink      #3D7F3B  small green text and button fills on light (4.5:1+)
+ *   green-on-navy  #54AE51  small green text on navy (4.5:1)
  */
 @theme {
   /* Reset Tailwind's default palette so only brand colours exist. */
@@ -16,26 +21,23 @@
   --color-current: currentColor;
 
   /* Brand */
-  --color-navy: #1b324b; /* panels, headings */
-  --color-navy-deep: #0c2140; /* footer, top bar */
-  --color-green: #4b943e; /* wordmark only */
-  --color-green-light: #9fd18f; /* accents on dark */
-  --color-green-ink: #3f7d4e; /* buttons, eyebrow labels */
-  --color-green-ink-hover: #336843;
+  --color-navy: #18364c; /* heroes, footer, feature areas, headings on light */
+  --color-green: #4b9b48;
+  --color-green-ink: #3d7f3b;
+  --color-green-ink-hover: #336b31;
+  --color-green-on-navy: #54ae51;
 
   /* Surfaces */
-  --color-cream: #fbfaf6;
-  --color-sage: #ebefe8;
-  --color-stone: #e2e3dc; /* hairlines, image placeholders */
-  --color-oak: #b99a77; /* warm floor tone, used sparingly */
+  --color-off-white: #f7f6f2; /* page and collection sections */
+  --color-line: #e1e6ea; /* cool hairlines and image placeholders */
 
   /* Text */
-  --color-ink: #1b324b;
-  --color-ink-muted: #5d6a74;
-  --color-on-dark: #fbfaf6;
-  --color-on-dark-muted: #c3ccd3;
+  --color-ink: #18364c;
+  --color-ink-muted: #5a6b78; /* muted slate */
+  --color-on-dark: #ffffff;
+  --color-on-dark-muted: #b9c6d0;
 
-  --color-focus: #3f7d4e;
+  --color-focus: #3d7f3b;
   --color-error: #a3352b;
 
   /* Type */
@@ -85,7 +87,7 @@
     scroll-behavior: smooth;
   }
   body {
-    background: var(--color-cream);
+    background: var(--color-off-white);
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01", "cv11";
@@ -105,7 +107,7 @@
     outline-offset: 3px;
   }
   .on-dark :focus-visible {
-    outline-color: var(--color-green-light);
+    outline-color: var(--color-green-on-navy);
   }
   @media (prefers-reduced-motion: reduce) {
     html {

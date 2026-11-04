@@ -80,7 +80,7 @@ export default async function TechnologyPage() {
         const img = chapterImages[i];
         const flip = i % 2 === 1;
         return (
-          <section key={c.eyebrow} className={cn("py-section", i % 2 === 1 && "bg-sage")}>
+          <section key={c.eyebrow} className={cn("py-section", i % 2 === 1 && "bg-white")}>
             <div className="container-page grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
               <div className={cn("lg:col-span-5", flip ? "lg:order-2 lg:col-start-8" : "lg:order-1")}>
                 <p className="font-display text-[0.9375rem] text-green-ink tabular-nums">{String(i + 1).padStart(2, "0")}</p>
@@ -94,7 +94,7 @@ export default async function TechnologyPage() {
               </div>
               {img && (
                 <figure className={cn("lg:col-span-6", flip ? "lg:order-1 lg:col-start-1" : "lg:order-2 lg:col-start-7")}>
-                  <div className={cn("relative overflow-hidden bg-stone", i % 3 === 0 ? "aspect-[4/5]" : "aspect-[4/3]")}>
+                  <div className={cn("relative overflow-hidden bg-line", i % 3 === 0 ? "aspect-[4/5]" : "aspect-[4/3]")}>
                     <FinishImage image={img.image} sizes="(min-width: 1024px) 45vw, 100vw" />
                   </div>
                   <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">{img.finish.name}</figcaption>
@@ -105,7 +105,7 @@ export default async function TechnologyPage() {
         );
       })}
 
-      <section className="border-t border-stone py-section">
+      <section className="border-t border-line py-section">
         <div className="container-page grid gap-10 lg:grid-cols-2 lg:items-end">
           <SectionIntro eyebrow="Quality and assurance" title="Considered from every angle.">
             <p>

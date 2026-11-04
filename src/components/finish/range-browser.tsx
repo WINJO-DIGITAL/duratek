@@ -18,7 +18,7 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
       onClick={onClick}
       className={cn(
         "min-h-tap shrink-0 border px-4 text-[0.875rem] transition-colors duration-300",
-        pressed ? "border-navy bg-navy text-cream" : "border-navy/20 text-navy hover:border-navy",
+        pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
       )}
     >
       {children}
@@ -53,7 +53,7 @@ export function RangeBrowser({ items }: { items: RangeItem[] }) {
 
   return (
     <>
-      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] border-y border-stone bg-cream/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm">
+      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] border-y border-line bg-off-white/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm">
         <div role="group" aria-label="Filter finishes" className="scrollbar-none flex items-center gap-2 overflow-x-auto">
           {styles.length > 1 &&
             styles.map((s) => (
@@ -61,7 +61,7 @@ export function RangeBrowser({ items }: { items: RangeItem[] }) {
                 {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
               </Chip>
             ))}
-          {styles.length > 1 && <span className="mx-2 h-6 w-px shrink-0 bg-stone" aria-hidden="true" />}
+          {styles.length > 1 && <span className="mx-2 h-6 w-px shrink-0 bg-line" aria-hidden="true" />}
           <Chip pressed={!filters.colour} onClick={() => update({ colour: null })}>
             All colours
           </Chip>
@@ -97,7 +97,7 @@ export function RangeBrowser({ items }: { items: RangeItem[] }) {
       {visible.length > 0 ? (
         <RangeGrid items={visible} />
       ) : (
-        <div className="mt-10 border border-stone bg-white p-8 sm:p-12">
+        <div className="mt-10 border border-line bg-white p-8 sm:p-12">
           <h2 className="text-display-sm text-navy">No finishes match those filters.</h2>
           <p className="mt-3 text-ink-muted">Try another colour, or clear the filters to see the full range.</p>
         </div>

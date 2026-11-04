@@ -44,7 +44,7 @@ const GROUPS = [
  */
 export function SiteFooter() {
   return (
-    <footer className="on-dark bg-navy-deep text-on-dark">
+    <footer className="on-dark border-t border-white/10 bg-navy text-on-dark">
       <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_2fr]">
         <div className="max-w-xs">
           <Wordmark tone="dark" className="text-[1.75rem]" />
@@ -55,7 +55,7 @@ export function SiteFooter() {
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
           {GROUPS.map((group) => (
             <div key={group.title}>
-              <h2 className="eyebrow font-sans text-green-light">{group.title}</h2>
+              <h2 className="eyebrow font-sans text-green-on-navy">{group.title}</h2>
               <ul className="mt-3">
                 {group.links.map((l) => (
                   <li key={l.href}>

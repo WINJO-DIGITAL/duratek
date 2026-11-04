@@ -7,7 +7,7 @@ import { cn } from "@/lib/cn";
 export function Wordmark({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
   return (
     <span className={cn("font-sans text-[1.5rem] leading-none tracking-[-0.03em]", className)}>
-      <span className={tone === "dark" ? "text-green-light" : "text-green"}>dura</span>
+      <span className="text-green">dura</span>
       <span className={cn("font-bold", tone === "dark" ? "text-white" : "text-navy")}>tek</span>
     </span>
   );

@@ -50,7 +50,7 @@ export function SiteHeader() {
   }, [searchOpen]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-stone bg-cream/95 backdrop-blur-sm supports-[backdrop-filter]:bg-cream/85">
+    <header className="sticky top-0 z-40 border-b border-line bg-off-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-off-white/85">
       <div className="container-page flex h-header items-center justify-between gap-6">
         <Link href="/" className="-mx-2 flex min-h-tap items-center px-2" aria-label="Duratek home">
           <Wordmark />
@@ -65,7 +65,7 @@ export function SiteHeader() {
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
               className={cn(
                 "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] text-navy transition-colors hover:text-green-ink",
-                "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300",
+                "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300",
                 "aria-[current=page]:after:scale-x-100",
               )}
             >
@@ -73,7 +73,7 @@ export function SiteHeader() {
               {item.href === "/samples" && <SampleCount />}
             </Link>
           ))}
-          <span className="mx-3 h-5 w-px bg-stone" aria-hidden="true" />
+          <span className="mx-3 h-5 w-px bg-line" aria-hidden="true" />
           <Link
             href={TRADE_NAV.href}
             aria-current={isActive(pathname, TRADE_NAV.href) ? "page" : undefined}
@@ -112,7 +112,7 @@ export function SiteHeader() {
           id="site-search"
           role="search"
           action="/range"
-          className="container-page flex gap-2 border-t border-stone pb-3 pt-3 lg:hidden"
+          className="container-page flex gap-2 border-t border-line pb-3 pt-3 lg:hidden"
         >
           <label htmlFor="site-search-input" className="sr-only">
             Search finishes
@@ -124,7 +124,7 @@ export function SiteHeader() {
             type="search"
             placeholder="Search finishes, e.g. Keswick"
             autoComplete="off"
-            className="min-h-tap w-full border border-stone bg-white px-4 text-base text-navy placeholder:text-ink-muted"
+            className="min-h-tap w-full border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
           />
           <button type="submit" className="min-h-tap shrink-0 bg-green-ink px-4 text-[0.9375rem] font-medium text-white">
             Search
@@ -135,12 +135,12 @@ export function SiteHeader() {
       <dialog
         ref={menuRef}
         aria-label="Menu"
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-cream p-0 text-navy backdrop:bg-navy-deep/40 open:flex open:flex-col lg:hidden"
+        className="m-0 h-dvh max-h-none w-full max-w-none bg-off-white p-0 text-navy backdrop:bg-navy/40 open:flex open:flex-col lg:hidden"
         onClick={(e) => {
           if (e.target === e.currentTarget) e.currentTarget.close();
         }}
       >
-        <div className="container-page flex h-header shrink-0 items-center justify-between border-b border-stone">
+        <div className="container-page flex h-header shrink-0 items-center justify-between border-b border-line">
           <Wordmark />
           <button
             type="button"
@@ -155,7 +155,7 @@ export function SiteHeader() {
         <nav aria-label="Menu" className="container-page flex flex-1 flex-col overflow-y-auto py-6">
           <ul className="flex flex-col">
             {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item) => (
-              <li key={item.href} className="border-b border-stone">
+              <li key={item.href} className="border-b border-line">
                 <Link
                   href={item.href}
                   aria-current={pathname === item.href ? "page" : undefined}

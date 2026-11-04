@@ -58,14 +58,14 @@ export default function FinishPage({ params }: PageProps<"/range/[slug]">) {
 function FinishSkeleton() {
   return (
     <div aria-busy="true" aria-label="Loading finish">
-      <div className="aspect-[4/5] animate-pulse bg-stone sm:aspect-[16/10] lg:aspect-[21/9]" />
+      <div className="aspect-[4/5] animate-pulse bg-line sm:aspect-[16/10] lg:aspect-[21/9]" />
       <div className="container-page grid gap-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-16">
         <div className="space-y-4 lg:col-span-7">
-          <div className="h-4 w-40 bg-stone" />
-          <div className="h-12 w-3/4 bg-stone" />
-          <div className="h-24 w-full max-w-prose bg-stone/70" />
+          <div className="h-4 w-40 bg-line" />
+          <div className="h-12 w-3/4 bg-line" />
+          <div className="h-24 w-full max-w-prose bg-line/70" />
         </div>
-        <div className="h-64 bg-stone/70 lg:col-span-5" />
+        <div className="h-64 bg-line/70 lg:col-span-5" />
       </div>
     </div>
   );
@@ -87,7 +87,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   return (
     <article>
       {/* Full-bleed room scene */}
-      <div className="relative aspect-[4/5] bg-stone sm:aspect-[16/10] lg:aspect-[21/9]">
+      <div className="relative aspect-[4/5] bg-line sm:aspect-[16/10] lg:aspect-[21/9]">
         {hero && <FinishImage image={hero} sizes="100vw" priority quality={80} className="object-[50%_75%]" />}
       </div>
 
@@ -117,14 +117,14 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           <h2 id="specs-heading" className="eyebrow font-sans">
             Specification
           </h2>
-          <dl className="mt-4 border-t border-stone">
+          <dl className="mt-4 border-t border-line">
             {specs.map((r) => (
-              <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-4 border-b border-stone py-3 text-[0.9375rem]">
+              <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-4 border-b border-line py-3 text-[0.9375rem]">
                 <dt className="text-ink-muted">{r.label}</dt>
                 <dd className="text-navy">{r.value}</dd>
               </div>
             ))}
-            <div className="grid grid-cols-[9rem_1fr] gap-4 border-b border-stone py-3 text-[0.9375rem]">
+            <div className="grid grid-cols-[9rem_1fr] gap-4 border-b border-line py-3 text-[0.9375rem]">
               <dt className="text-ink-muted">Warranty</dt>
               <dd className="text-navy">
                 Residential lifetime, 10 year commercial{" "}
@@ -142,7 +142,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
       </div>
 
       {gallery.length > 0 && (
-        <section aria-labelledby="gallery-heading" className="bg-sage py-section-sm">
+        <section aria-labelledby="gallery-heading" className="bg-white py-section-sm">
           <div className="container-page">
             <h2 id="gallery-heading" className="text-display-sm text-navy">
               In the room, and up close
@@ -151,7 +151,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               {gallery.map((img, i) => {
                 const lead = i === 0 && galleryLayout(gallery.length).lead;
                 return (
-                  <li key={img.src} className={cn("relative overflow-hidden bg-stone", lead ? lead : "aspect-square")}>
+                  <li key={img.src} className={cn("relative overflow-hidden bg-line", lead ? lead : "aspect-square")}>
                     <FinishImage image={img} sizes={lead ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 30vw, 50vw"} />
                   </li>
                 );

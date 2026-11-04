@@ -53,12 +53,12 @@ export default async function HomePage() {
       <section className="on-dark relative isolate flex min-h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-[calc(100svh-var(--spacing-header))]">
         {hero && <FinishImage image={hero.image} sizes="100vw" priority quality={80} className="-z-10 object-[50%_70%]" />}
         <div
-          className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-deep/95 via-navy-deep/65 to-navy-deep/10 lg:bg-gradient-to-r lg:from-navy-deep/85 lg:via-navy-deep/40 lg:to-navy-deep/0"
+          className="absolute inset-0 -z-10 bg-gradient-to-t from-navy/95 via-navy/65 to-navy/10 lg:bg-gradient-to-r lg:from-navy/85 lg:via-navy/40 lg:to-navy/0"
           aria-hidden="true"
         />
         <div className="container-page pb-12 pt-32 sm:pb-16 lg:pb-24">
           <Wordmark tone="dark" className="hidden text-[2.5rem] sm:inline" />
-          <p className="eyebrow text-green-light sm:mt-8">The performance collection</p>
+          <p className="eyebrow text-green-on-navy sm:mt-8">The performance collection</p>
           <h1 className="mt-4 max-w-[14ch] text-display-xl text-on-dark">
             Beautifully considered. <em className="italic">Built to perform.</em>
           </h1>
@@ -90,7 +90,7 @@ export default async function HomePage() {
       </section>
 
       {/* 3. A style for every space */}
-      <section className="bg-sage py-section">
+      <section className="bg-white py-section">
         <div className="container-page">
           {styles.length > 1 ? (
             <>
@@ -116,7 +116,7 @@ export default async function HomePage() {
           {lifeImage && <FinishImage image={lifeImage.image} sizes="100vw" className="object-[50%_70%]" />}
         </div>
         <div className="container-page relative -mt-24 sm:-mt-40 lg:absolute lg:inset-x-0 lg:bottom-16 lg:mt-0">
-          <div className="max-w-xl bg-cream p-6 sm:p-10 lg:ml-auto">
+          <div className="max-w-xl bg-off-white p-6 sm:p-10 lg:ml-auto">
             <div className="grid grid-cols-[1fr_auto] items-start gap-6">
               <div>
                 <p className="eyebrow">Duratek surface technology</p>
@@ -153,7 +153,7 @@ export default async function HomePage() {
           </div>
           {wearGrain && (
             <figure className="order-1 lg:order-2">
-              <div className="relative aspect-[4/5] overflow-hidden bg-stone">
+              <div className="relative aspect-[4/5] overflow-hidden bg-line">
                 <FinishImage image={wearGrain.image} sizes="(min-width: 1024px) 45vw, 100vw" />
               </div>
               <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">{wearGrain.finish.name}, grain detail</figcaption>
@@ -187,7 +187,7 @@ export default async function HomePage() {
           </div>
           {unilinCloseup && (
             <div className="lg:col-span-6 lg:col-start-7">
-              <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden bg-stone sm:w-4/5">
+              <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden bg-line sm:w-4/5">
                 <FinishImage image={unilinCloseup.image} sizes="(min-width: 1024px) 40vw, 80vw" />
               </div>
             </div>
@@ -196,7 +196,7 @@ export default async function HomePage() {
       </section>
 
       {/* 9. Homeowner / Trade */}
-      <section className="border-t border-stone py-section" aria-labelledby="audience-heading">
+      <section className="border-t border-line py-section" aria-labelledby="audience-heading">
         <div className="container-page">
           <p className="eyebrow">Two ways in</p>
           <h2 id="audience-heading" className="mt-4 text-display-md text-navy">
@@ -209,16 +209,16 @@ export default async function HomePage() {
       </section>
 
       {/* 10. Considered from every angle */}
-      <section className="bg-sage py-section">
+      <section className="bg-white py-section">
         <div className="container-page grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
           <div className="grid grid-cols-5 gap-4">
             {consideredA && (
-              <div className="relative col-span-3 aspect-[3/4] overflow-hidden bg-stone">
+              <div className="relative col-span-3 aspect-[3/4] overflow-hidden bg-line">
                 <FinishImage image={consideredA.image} sizes="(min-width: 1024px) 28vw, 60vw" />
               </div>
             )}
             {consideredB && (
-              <div className="relative col-span-2 mt-16 aspect-[3/4] self-start overflow-hidden bg-stone">
+              <div className="relative col-span-2 mt-16 aspect-[3/4] self-start overflow-hidden bg-line">
                 <FinishImage image={consideredB.image} sizes="(min-width: 1024px) 18vw, 40vw" />
               </div>
             )}
@@ -248,7 +248,7 @@ export default async function HomePage() {
           <div className="lg:justify-self-end">
             <WarrantyBadges />
           </div>
-          <div className="border-t border-stone pt-6 lg:col-span-2">
+          <div className="border-t border-line pt-6 lg:col-span-2">
             <WarrantyDisclaimer />
             <Link
               href="/warranty"
@@ -261,18 +261,18 @@ export default async function HomePage() {
       </section>
 
       {/* 12. Where to buy */}
-      <section className="bg-sage py-section-sm">
+      <section className="bg-white py-section-sm">
         <div className="container-page">
           <PostcodeBand />
         </div>
       </section>
 
       {/* 13. Closing */}
-      <section className="on-dark relative isolate overflow-hidden bg-navy-deep">
+      <section className="on-dark relative isolate overflow-hidden bg-navy">
         {closingImage && <FinishImage image={closingImage.image} sizes="100vw" className="-z-20" />}
-        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy-deep/90 via-navy-deep/70 to-navy-deep/30" aria-hidden="true" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-navy/90 via-navy/70 to-navy/30" aria-hidden="true" />
         <div className="container-page py-section">
-          <p className="eyebrow text-green-light">Duratek performance flooring</p>
+          <p className="eyebrow text-green-on-navy">Duratek performance flooring</p>
           <h2 className="mt-4 max-w-[16ch] text-display-lg text-on-dark">
             Timeless in style. <em className="italic">Resilient by design.</em>
           </h2>
@@ -292,7 +292,7 @@ function StyleTile({ style, image }: { style: FinishStyle; image?: { image: Fini
   const copy = STYLE_COPY[style];
   return (
     <Link href={`/range?style=${style}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden bg-stone sm:aspect-[5/4]">
+      <div className="relative aspect-[4/5] overflow-hidden bg-line sm:aspect-[5/4]">
         {image && (
           <FinishImage
             image={image.image}
@@ -314,7 +314,7 @@ function SingleStyle({ style, image }: { style: FinishStyle; image?: { image: Fi
   const copy = STYLE_COPY[style];
   return (
     <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
-      <div className="relative aspect-[4/5] overflow-hidden bg-stone sm:aspect-[16/10] lg:col-span-7">
+      <div className="relative aspect-[4/5] overflow-hidden bg-line sm:aspect-[16/10] lg:col-span-7">
         {image && <FinishImage image={image.image} sizes="(min-width: 1024px) 58vw, 100vw" />}
       </div>
       <div className="lg:col-span-4 lg:col-start-9">

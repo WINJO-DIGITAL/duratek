@@ -35,15 +35,15 @@ export default async function WarrantyPage() {
 
       {/* The disclaimer leads: it governs everything below. */}
       <div className="container-page">
-        <div className="border-l-2 border-green-ink bg-sage px-5 py-4 sm:px-6">
+        <div className="border-l-2 border-green-ink bg-white px-5 py-4 sm:px-6">
           <WarrantyDisclaimer className="text-[0.875rem] text-navy" />
         </div>
       </div>
 
       <section className="py-section" aria-label="Warranty cover">
         <div className="container-page">
-          <div className="grid gap-px border border-stone bg-stone md:grid-cols-2">
-            <div className="bg-cream p-6 sm:p-10">
+          <div className="grid gap-px border border-line bg-line md:grid-cols-2">
+            <div className="bg-off-white p-6 sm:p-10">
               <p className="eyebrow">Residential</p>
               <h2 className="mt-3 text-display-md text-navy">
                 Lifetime warranty
@@ -53,7 +53,7 @@ export default async function WarrantyPage() {
                 <strong className="font-semibold text-navy">25 years</strong>.
               </p>
             </div>
-            <div className="bg-cream p-6 sm:p-10">
+            <div className="bg-off-white p-6 sm:p-10">
               <p className="eyebrow">Commercial</p>
               <h2 className="mt-3 text-display-md text-navy">
                 10 year warranty
@@ -70,10 +70,10 @@ export default async function WarrantyPage() {
         </div>
       </section>
 
-      <section className="bg-sage py-section">
+      <section className="bg-white py-section">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
           {image && (
-            <div className="relative aspect-[4/3] overflow-hidden bg-stone lg:col-span-6">
+            <div className="relative aspect-[4/3] overflow-hidden bg-line lg:col-span-6">
               <FinishImage
                 image={image.image}
                 sizes="(min-width: 1024px) 50vw, 100vw"

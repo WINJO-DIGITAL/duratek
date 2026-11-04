@@ -19,19 +19,19 @@ const SLAB_STYLES: CSSProperties[] = [
     border: "1px solid rgb(255 255 255 / 0.85)",
   },
   {
-    background: "linear-gradient(135deg, rgb(214 228 236 / 0.6), rgb(235 239 232 / 0.35))",
+    background: "linear-gradient(135deg, rgb(214 228 236 / 0.6), rgb(247 246 242 / 0.35))",
     border: "1px solid rgb(255 255 255 / 0.6)",
   },
   {},
   {
-    backgroundColor: "#a5aba6",
+    backgroundColor: "#a9b3ba",
     backgroundImage:
       "radial-gradient(rgb(255 255 255 / 0.25) 1px, transparent 1.5px), radial-gradient(rgb(0 0 0 / 0.12) 1px, transparent 1.5px)",
     backgroundSize: "7px 7px, 11px 11px",
     backgroundPosition: "0 0, 3px 4px",
   },
   {
-    backgroundColor: "#2f3d36",
+    backgroundColor: "#4e6577",
     backgroundImage: "repeating-linear-gradient(45deg, rgb(255 255 255 / 0.05) 0 2px, transparent 2px 6px)",
   },
 ];
@@ -61,7 +61,7 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
                   (woodImage ? (
                     <Image src={woodImage.src} alt="" fill sizes="400px" quality={70} loading="eager" className="object-cover" />
                   ) : (
-                    <div className="absolute inset-0 bg-oak" />
+                    <div className="absolute inset-0 bg-navy/30" />
                   ))}
               </div>
             );
@@ -69,9 +69,9 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
         </div>
       </div>
 
-      <ol id={listId} className={cn("border-t", dark ? "border-white/15" : "border-stone")} onMouseLeave={() => setActive(null)}>
+      <ol id={listId} className={cn("border-t", dark ? "border-white/15" : "border-line")} onMouseLeave={() => setActive(null)}>
         {LAYERS.map((layer, i) => (
-          <li key={layer.name} className={cn("border-b", dark ? "border-white/15" : "border-stone")}>
+          <li key={layer.name} className={cn("border-b", dark ? "border-white/15" : "border-line")}>
             <button
               type="button"
               aria-pressed={active === i}
@@ -84,7 +84,7 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
                 active === i && (dark ? "text-on-dark" : "text-navy"),
               )}
             >
-              <span className={cn("font-display text-[0.9375rem] tabular-nums", dark ? "text-green-light" : "text-green-ink")}>
+              <span className={cn("font-display text-[0.9375rem] tabular-nums", dark ? "text-green-on-navy" : "text-green-ink")}>
                 {String(i + 1).padStart(2, "0")}
               </span>
               <span>
