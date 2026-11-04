@@ -109,3 +109,13 @@ export const YouTube = (p: IconProps) => (
     <path d="m10 9.5 4.5 2.5-4.5 2.5z" />
   </Icon>
 );
+export const ArrowUpRight = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M7 17 17 7M9 7h8v8" />
+  </Icon>
+);
+export const Phone = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <path d="M5 4.5h3.2l1.6 4-2 1.3a10 10 0 0 0 6.4 6.4l1.3-2 4 1.6V19a1.5 1.5 0 0 1-1.6 1.5A15.5 15.5 0 0 1 3.5 6.1 1.5 1.5 0 0 1 5 4.5z" />
+  </Icon>
+);

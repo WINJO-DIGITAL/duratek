@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "@/components/ui/icons";
+import { PostcodeSearch } from "@/components/where-to-buy/postcode-search";
 
 /** Postcode search that hands off to /where-to-buy. Works without JavaScript. */
 export function PostcodeBand() {
@@ -16,26 +16,7 @@ export function PostcodeBand() {
           .
         </p>
       </div>
-      <form action="/where-to-buy" method="get" role="search" className="flex w-full max-w-xl gap-0 lg:justify-self-end">
-        <label htmlFor="postcode-band" className="sr-only">
-          Your postcode
-        </label>
-        <input
-          id="postcode-band"
-          name="postcode"
-          inputMode="text"
-          autoComplete="postal-code"
-          placeholder="Enter your postcode"
-          className="min-h-14 w-full min-w-0 border border-r-0 border-navy/30 bg-white px-5 text-base uppercase text-navy placeholder:normal-case placeholder:text-ink-muted"
-        />
-        <button
-          type="submit"
-          className="group inline-flex min-h-14 shrink-0 items-center gap-3 bg-green-ink px-5 font-medium text-white transition-colors hover:bg-green-ink-hover sm:px-6"
-        >
-          <span>Search</span>
-          <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />
-        </button>
-      </form>
+      <PostcodeSearch id="postcode-band" className="lg:justify-self-end" />
     </div>
   );
 }
