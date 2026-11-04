@@ -1,24 +1,28 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/wordmark";
+import { ArrowRight } from "@/components/ui/icons";
 import type { NavData } from "@/lib/catalogue/nav";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 import { COMPANY, GENERAL_CONTACT, telHref } from "@/lib/contact";
 import { FooterContact } from "./footer-contact";
 
-type FooterLink = { href: string; label: string; tel?: boolean };
+type FooterLink = { href: string; label: string };
 
-const HELP: FooterLink[] = [
+/** The five places people actually go, set large. */
+const PRIMARY: FooterLink[] = [
+  { href: "/range", label: "The range" },
+  { href: "/inspiration", label: "Inspiration" },
   { href: "/samples", label: "Free samples" },
   { href: "/where-to-buy", label: "Where to buy" },
-  { href: "/warranty", label: "Warranty" },
-  { href: "/contact", label: "Contact" },
+  { href: "/trade", label: "Trade accounts" },
 ];
 
-const TRADE: FooterLink[] = [
-  { href: "/trade", label: "Trade accounts" },
-  { href: "/trade/apply", label: "Apply" },
-  { href: "/trade/login", label: "Log in" },
+const MORE: FooterLink[] = [
+  { href: "/technology", label: "Technology" },
+  { href: "/warranty", label: "Warranty" },
+  { href: "/contact", label: "Contact" },
+  { href: "/trade/login", label: "Trade log in" },
 ];
 
 const LEGAL: FooterLink[] = [
@@ -27,46 +31,26 @@ const LEGAL: FooterLink[] = [
   { href: "/terms", label: "Terms" },
 ];
 
-/** Range column from the live catalogue: every style and colour family that has finishes. */
-function rangeLinks(nav: NavData): FooterLink[] {
-  return [
-    { href: "/range", label: `All ${nav.finishCount} finishes` },
-    ...nav.styles.map((s) => ({
-      href: `/range?style=${s}`,
-      label: STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s,
-    })),
-    ...nav.colourFamilies.map((c) => ({ href: `/range?colour=${c}`, label: colourFamilyLabel(c) })),
-    { href: "/inspiration", label: "Inspiration" },
-    { href: "/technology", label: "Technology" },
-  ];
-}
-
-function LinkGroup({ title, links }: { title: string; links: FooterLink[] }) {
+/** A quiet labelled line of links that wraps. */
+function LinkLine({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div>
       <h2 className="eyebrow font-sans text-green-on-navy">{title}</h2>
-      <ul className="mt-3">
-        {links.map((l) => (
-          <li key={l.href}>
-            {l.tel ? (
-              <a
-                href={l.href}
-                className="flex min-h-tap items-center text-[0.9375rem] tabular-nums text-on-dark transition-colors hover:text-white"
-              >
-                {l.label}
-              </a>
-            ) : (
-              <Link
-                href={l.href}
-                className="flex min-h-tap items-center text-[0.9375rem] text-on-dark-muted transition-colors hover:text-white"
-              >
-                {l.label}
-              </Link>
-            )}
-          </li>
-        ))}
-      </ul>
+      <ul className="-ml-1 mt-2 flex flex-wrap gap-x-5">{children}</ul>
     </div>
+  );
+}
+
+function LineLink({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <li>
+      <Link
+        href={href}
+        className="inline-flex min-h-tap items-center px-1 text-[0.9375rem] text-on-dark underline decoration-white/0 underline-offset-[6px] transition-[text-decoration-color] duration-300 hover:decoration-green-on-navy"
+      >
+        {children}
+      </Link>
+    </li>
   );
 }
 
@@ -78,8 +62,9 @@ async function copyrightYear() {
 }
 
 /**
- * Site footer, top to bottom: brand line and link groups (Range, Need help?,
- * Trade); Say hello and Stay in touch (from src/lib/contact.ts, hidden until
+ * Site footer, top to bottom: the five primary destinations set large, with
+ * a quiet column (description, call us, shop by style and colour, more);
+ * Say hello and Stay in touch (from src/lib/contact.ts, hidden until
  * the client's details are entered); the oversized wordmark; and a darker
  * legal strip with legal links, copyright and registered company details.
  * Newsletter sign-up still to come (needs a consented storage location
@@ -87,9 +72,6 @@ async function copyrightYear() {
  */
 export async function SiteFooter({ nav }: { nav: NavData }) {
   const year = await copyrightYear();
-  const help: FooterLink[] = GENERAL_CONTACT.phone
-    ? [{ href: telHref(GENERAL_CONTACT.phone), label: GENERAL_CONTACT.phone, tel: true }, ...HELP]
-    : HELP;
   const companyLine = [
     COMPANY.legalName,
     COMPANY.registrationNumber && `Company no. ${COMPANY.registrationNumber}`,
@@ -99,20 +81,67 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
 
   return (
     <footer className="on-dark border-t border-white/10 bg-navy text-on-dark">
-      <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_1.4fr]">
-        <div>
-          <p className="max-w-[14ch] font-display text-display-md text-on-dark">
-            Click flooring for homes that <span className="font-light">get used.</span>
-          </p>
-          <p className="mt-5 max-w-xs text-[0.9375rem] leading-relaxed text-on-dark-muted">
+      <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1.3fr_1fr] lg:gap-20">
+        {/* Primary destinations, large: what people come to the footer for. */}
+        <nav aria-label="Footer">
+          <ul className="border-t border-white/15">
+            {PRIMARY.map((l) => (
+              <li key={l.href} className="border-b border-white/15">
+                <Link
+                  href={l.href}
+                  className="group flex min-h-16 items-center justify-between gap-6 py-3 font-display text-[1.75rem] font-light leading-tight text-on-dark transition-colors duration-300 hover:text-white sm:min-h-20 sm:text-[2.25rem]"
+                >
+                  {l.label}
+                  <ArrowRight
+                    size={24}
+                    className="shrink-0 text-green-on-navy transition-transform duration-300 ease-calm group-hover:translate-x-1 motion-reduce:transition-none"
+                  />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="space-y-8 lg:pt-1">
+          <p className="max-w-[24ch] text-lede text-on-dark-muted">
             Waterproof SPC click flooring, with free samples and trade accounts.
           </p>
+          {GENERAL_CONTACT.phone && (
+            <LinkLine title="Call us">
+              <li>
+                <a
+                  href={telHref(GENERAL_CONTACT.phone)}
+                  className="inline-flex min-h-tap items-center px-1 text-[0.9375rem] tabular-nums text-on-dark hover:text-white"
+                >
+                  {GENERAL_CONTACT.phone}
+                </a>
+              </li>
+            </LinkLine>
+          )}
+          {nav.styles.length > 1 && (
+            <LinkLine title="Shop by style">
+              {nav.styles.map((st) => (
+                <LineLink key={st} href={`/range?style=${st}`}>
+                  {STYLE_LABELS[st as keyof typeof STYLE_LABELS] ?? st}
+                </LineLink>
+              ))}
+            </LinkLine>
+          )}
+          <LinkLine title="Shop by colour">
+            {nav.colourFamilies.map((c) => (
+              <LineLink key={c} href={`/range?colour=${c}`}>
+                {colourFamilyLabel(c)}
+              </LineLink>
+            ))}
+          </LinkLine>
+          <LinkLine title="More">
+            {MORE.map((l) => (
+              <LineLink key={l.href} href={l.href}>
+                {l.label}
+              </LineLink>
+            ))}
+          </LinkLine>
         </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-3">
-          <LinkGroup title="Range" links={rangeLinks(nav)} />
-          <LinkGroup title="Need help?" links={help} />
-          <LinkGroup title="Trade" links={TRADE} />
-        </nav>
       </div>
 
       <FooterContact />
