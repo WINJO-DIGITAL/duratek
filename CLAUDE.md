@@ -62,7 +62,7 @@ Audience switch: a "Homeowner / Trade professional" choice (Luvanto's "What desc
 
 Luvanto's structure, filled with the Duratek content from https://www.kwikfloors.co.uk/pages/Duratekflooring. Order:
 
-1. **Hero**: full-bleed room photograph, wordmark, eyebrow "THE PERFORMANCE COLLECTION", heading "Beautifully considered. Built to perform.", one primary CTA (Explore the range) and one quiet secondary link (Order free samples).
+1. **Hero**: full-bleed room photograph, wordmark, heading (no eyebrow label above it) "Beautifully considered. Built to perform.", one primary CTA (Explore the range) and one quiet secondary link (Order free samples).
 2. **Spec strip**: 0.55mm Protective wear layer · Scratch Shield Surface protection · Waterproof Rigid SPC core · Unilin Precision click system.
 3. **A style for every space**: two large image tiles, Straight plank and Herringbone, each linking to the filtered range.
 4. **Popular finishes**: a horizontal scroll of finish cards (image, name, style, "Add to samples"). No prices.

@@ -131,9 +131,7 @@ export default async function HomePage() {
           />
           <div className="absolute inset-y-0 left-0 -z-10 hidden w-3/5 bg-gradient-to-r from-black/30 to-transparent lg:block" aria-hidden="true" />
           <div className="container-page pb-24 pt-32 sm:pb-32">
-            {/* White label over the photo for legibility; the brand green stays on the marker. */}
-            <p className="eyebrow text-on-dark/90 before:bg-green-on-navy">The performance collection</p>
-            <h1 className="mt-5 max-w-[12ch] text-display-hero text-on-dark sm:mt-6 sm:max-w-none">
+            <h1 className="max-w-[12ch] text-display-hero text-on-dark sm:max-w-none">
               <span className="sm:block">Beautifully considered.</span>{" "}
               <span className="font-light sm:block">Built to perform.</span>
             </h1>
