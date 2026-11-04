@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Close, Menu, Search } from "@/components/ui/icons";
 import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
-import { PRIMARY_NAV, TRADE_NAV } from "@/lib/config";
+import { TRADE_NAV } from "@/lib/config";
 import { MobileMenu } from "./mobile-menu";
 import { RangeMenu } from "./range-menu";
 import { SampleCount } from "./sample-count";
@@ -18,6 +18,14 @@ export function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
+/** Pages whose hero is a full-bleed photo the header can sit over. */
+const OVERLAY_ROUTES = new Set(["/"]);
+
+const LEFT_NAV = [
+  { href: "/inspiration", label: "Inspiration" },
+  { href: "/where-to-buy", label: "Where to buy" },
+];
+
 export function SiteHeader({ nav }: { nav: NavData }) {
   const pathname = usePathname();
   // Search is open only on the page where it was opened, so it closes itself
@@ -25,8 +33,13 @@ export function SiteHeader({ nav }: { nav: NavData }) {
   const [searchOpenOn, setSearchOpenOn] = useState<string | null>(null);
   const searchOpen = searchOpenOn === pathname;
   const [scrolled, setScrolled] = useState(false);
+  const [rangeOpen, setRangeOpen] = useState(false);
   const menuRef = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
+  const onRangeOpenChange = useCallback((o: boolean) => setRangeOpen(o), []);
+
+  // Transparent over the home hero until the page scrolls or a panel opens.
+  const overlay = OVERLAY_ROUTES.has(pathname) && !scrolled && !searchOpen && !rangeOpen;
 
   // Close the menu dialog on navigation.
   useEffect(() => {
@@ -37,60 +50,94 @@ export function SiteHeader({ nav }: { nav: NavData }) {
     if (searchOpen) searchInput.current?.focus();
   }, [searchOpen]);
 
-  // A soft shadow once the page scrolls under the header.
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > 24);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [pathname]);
+
+  const linkClass = (active: boolean) =>
+    cn(
+      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] transition-colors duration-500",
+      "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-500 after:ease-calm",
+      "hover:after:scale-x-100",
+      active && "after:scale-x-100",
+      overlay ? "text-white hover:text-white/80" : "text-navy hover:text-green-ink",
+    );
 
   return (
     <header
       style={{ viewTransitionName: "site-header" }}
+      data-overlay={overlay || undefined}
       className={cn(
-        "sticky top-0 z-40 border-b bg-off-white/95 backdrop-blur-md transition-[box-shadow,border-color] duration-500 supports-[backdrop-filter]:bg-off-white/85",
-        scrolled ? "border-transparent shadow-[0_10px_30px_-18px_rgb(24_54_76/0.35)]" : "border-line",
+        "sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-500 ease-calm",
+        overlay
+          ? "border-white/15 bg-transparent"
+          : "border-line bg-off-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-off-white/85",
+        !overlay && scrolled && "border-transparent shadow-[0_10px_30px_-18px_rgb(24_54_76/0.35)]",
       )}
     >
-      <div className="container-page flex h-header items-center justify-between gap-6">
-        <Link href="/" className="-mx-2 flex min-h-tap items-center px-2" aria-label="Duratek home">
-          <Wordmark />
-        </Link>
+      {/* Soft scrim so white text stays legible over any photo. */}
+      <div
+        aria-hidden="true"
+        className={cn(
+          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-[180%] bg-gradient-to-b from-navy/45 to-transparent transition-opacity duration-500",
+          overlay ? "opacity-100" : "opacity-0",
+        )}
+      />
 
-        {/* Desktop navigation */}
-        <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
-          <RangeMenu nav={nav} active={isActive(pathname, "/range")} />
-          {PRIMARY_NAV.filter((i) => i.href !== "/range").map((item) => (
+      <div className="container-page flex h-header items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
+        {/* Desktop: left nav */}
+        <nav aria-label="Main" className="hidden items-center lg:-ml-4 lg:flex">
+          <RangeMenu nav={nav} active={isActive(pathname, "/range")} onDark={overlay} onOpenChange={onRangeOpenChange} />
+          {LEFT_NAV.map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
-              className={cn(
-                "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] text-navy transition-colors duration-300 hover:text-green-ink",
-                "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-500 after:ease-calm",
-                "hover:after:scale-x-100 aria-[current=page]:after:scale-x-100",
-              )}
+              className={linkClass(isActive(pathname, item.href))}
             >
               {item.label}
-              {item.href === "/samples" && <SampleCount />}
             </Link>
           ))}
-          <span className="mx-3 h-5 w-px bg-line" aria-hidden="true" />
+        </nav>
+
+        {/* Wordmark: left on mobile, centred on desktop */}
+        <Link href="/" className="-mx-2 flex min-h-tap items-center px-2 lg:mx-0 lg:justify-self-center" aria-label="Duratek home">
+          <Wordmark tone={overlay ? "dark" : "light"} className="transition-colors duration-500 lg:text-[1.75rem]" />
+        </Link>
+
+        {/* Desktop: right nav */}
+        <div className="hidden items-center justify-self-end lg:-mr-3 lg:flex">
+          <Link
+            href="/samples"
+            aria-current={isActive(pathname, "/samples") ? "page" : undefined}
+            className={linkClass(isActive(pathname, "/samples"))}
+          >
+            Samples
+            <SampleCount />
+          </Link>
+          <span className={cn("mx-2 h-5 w-px transition-colors duration-500", overlay ? "bg-white/30" : "bg-line")} aria-hidden="true" />
           <Link
             href={TRADE_NAV.href}
             aria-current={isActive(pathname, TRADE_NAV.href) ? "page" : undefined}
-            className="flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted transition-colors duration-300 hover:text-navy aria-[current=page]:text-green-ink"
+            className={cn(
+              "flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] transition-colors duration-500",
+              overlay
+                ? "text-white/85 hover:text-white"
+                : "text-ink-muted hover:text-navy aria-[current=page]:text-green-ink",
+            )}
           >
             {TRADE_NAV.label}
           </Link>
-        </nav>
+        </div>
 
         {/* Mobile and tablet controls */}
-        <div className="-mr-2 flex items-center lg:hidden">
+        <div className={cn("-mr-2 flex items-center transition-colors duration-500 lg:hidden", overlay ? "text-white" : "text-navy")}>
           <button
             type="button"
-            className="flex size-tap items-center justify-center text-navy"
+            className="flex size-tap items-center justify-center"
             aria-expanded={searchOpen}
             aria-controls="site-search"
             onClick={() => setSearchOpenOn(searchOpen ? null : pathname)}
@@ -103,7 +150,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
           </button>
           <button
             type="button"
-            className="flex size-tap items-center justify-center text-navy"
+            className="flex size-tap items-center justify-center"
             aria-haspopup="dialog"
             onClick={() => menuRef.current?.showModal()}
           >

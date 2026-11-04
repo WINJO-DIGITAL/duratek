@@ -9,10 +9,13 @@ import { SpecStrip } from "@/components/content/spec-strip";
 import { ScratchShieldBadge, WarrantyBadges, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { FinishImage } from "@/components/finish/finish-image";
-import { Wordmark } from "@/components/brand/wordmark";
+import { ColourIndex, type ColourIndexItem } from "@/components/home/colour-index";
+import { HowItWorks, type Step } from "@/components/home/how-it-works";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowRight } from "@/components/ui/icons";
-import { getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { getFinishes, imagesOfKind, leadImage } from "@/lib/catalogue";
+import { distinct } from "@/lib/catalogue/filter";
+import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 import { imagePool, takeFrom } from "@/lib/catalogue/image-pool";
 import type { Finish, FinishStyle } from "@/lib/catalogue/types";
 
@@ -47,11 +50,56 @@ export default async function HomePage() {
   const closingImage = nextRoom();
   const woodSwatch = finishes.map((f) => imagesOfKind(f, "swatch")[0]).find(Boolean);
 
+  const colourItems: ColourIndexItem[] = distinct(finishes.map((f) => f.colourFamily)).map((c) => {
+    const inFamily = finishes.filter((f) => f.colourFamily === c);
+    return {
+      id: c,
+      label: colourFamilyLabel(c),
+      count: inFamily.length,
+      href: `/range?colour=${c}`,
+      // Prefer a room scene that isn't the hero photo.
+      image:
+        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => img.src !== hero?.image.src) ??
+        (inFamily[0] && leadImage(inFamily[0])),
+    };
+  });
+
+  const steps: Step[] = [
+    {
+      title: "Discover",
+      body: "Browse the range and real room scenes to find the look that suits your home.",
+      href: "/range",
+      cta: "Explore the range",
+      image: nextRoom()?.image,
+    },
+    {
+      title: "Shortlist",
+      body: "Narrow it down by colour, then open each finish for room scenes, close-ups and the full specification.",
+      href: "/range",
+      cta: "Browse by colour",
+      image: nextRoom()?.image,
+    },
+    {
+      title: "Sample",
+      body: "Order up to three free samples and see them in your own light, against your own walls.",
+      href: "/samples",
+      cta: "Order free samples",
+      image: nextRoom()?.image,
+    },
+    {
+      title: "Buy",
+      body: "Find a local stockist, or buy Duratek online.",
+      href: "/where-to-buy",
+      cta: "Where to buy",
+      image: nextRoom()?.image,
+    },
+  ];
+
   return (
     <PageTransition>
       <>
         {/* 1. Hero */}
-        <section className="on-dark relative isolate flex min-h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-[calc(100svh-var(--spacing-header))]">
+        <section className="on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-svh">
           {hero && (
             <FinishImage image={hero.image} sizes="100vw" priority quality={80} className="-z-10 object-[50%_70%]" />
           )}
@@ -60,8 +108,7 @@ export default async function HomePage() {
             aria-hidden="true"
           />
           <div className="container-page pb-12 pt-32 sm:pb-16 lg:pb-24">
-            <Wordmark tone="dark" className="hidden text-[2.5rem] sm:inline" />
-            <p className="eyebrow text-green-on-navy sm:mt-8">The performance collection</p>
+            <p className="eyebrow text-green-on-navy">The performance collection</p>
             <h1 className="mt-4 max-w-[14ch] text-display-xl text-on-dark">
               Beautifully considered. <em className="italic">Built to perform.</em>
             </h1>
@@ -105,13 +152,43 @@ export default async function HomePage() {
                 </div>
               </>
             ) : (
-              styles[0] && <SingleStyle style={styles[0]} image={styleImages[0]} />
+              styles[0] && (
+                <>
+                  <div className="flex flex-wrap items-end justify-between gap-6">
+                    <SectionIntro eyebrow="The Duratek collection" title="Explore by colour.">
+                      <p>
+                        {finishes.length} {STYLE_LABELS[styles[0]].toLowerCase()} finishes in {colourItems.length} colour
+                        families.
+                      </p>
+                    </SectionIntro>
+                    <ButtonLink href="/range" variant="outline">
+                      View all finishes
+                    </ButtonLink>
+                  </div>
+                  <div className="mt-12">
+                    <ColourIndex items={colourItems} />
+                  </div>
+                </>
+              )
             )}
           </div>
         </section>
 
         {/* 4. Popular finishes */}
         <PopularFinishes finishes={finishes.slice(0, POPULAR_COUNT)} />
+
+        {/* How it works: the homeowner journey */}
+        <section className="border-t border-line py-section" aria-labelledby="how-heading">
+          <div className="container-page">
+            <p className="eyebrow">How it works</p>
+            <h2 id="how-heading" className="mt-4 text-display-md text-navy">
+              From first look to fitted floor.
+            </h2>
+            <div className="mt-12">
+              <HowItWorks steps={steps} />
+            </div>
+          </div>
+        </section>
 
         {/* 5. Made for life as it happens: full-bleed with inset panel */}
         <section className="relative isolate">
@@ -323,25 +400,6 @@ function StyleTile({ style, image }: { style: FinishStyle; image?: { image: Fini
         {copy.cta} <ArrowRight size={16} />
       </span>
     </Link>
-  );
-}
-
-function SingleStyle({ style, image }: { style: FinishStyle; image?: { image: Finish["images"][number] } }) {
-  const copy = STYLE_COPY[style];
-  return (
-    <div className="grid gap-10 lg:grid-cols-12 lg:items-center">
-      <div className="relative aspect-[4/5] overflow-hidden bg-line sm:aspect-[16/10] lg:col-span-7">
-        {image && <FinishImage image={image.image} sizes="(min-width: 1024px) 58vw, 100vw" />}
-      </div>
-      <div className="lg:col-span-4 lg:col-start-9">
-        <SectionIntro eyebrow="The Duratek collection" title={copy.title}>
-          <p>{copy.body}</p>
-        </SectionIntro>
-        <ButtonLink href={`/range?style=${style}`} variant="outline" className="mt-8">
-          {copy.cta}
-        </ButtonLink>
-      </div>
-    </div>
   );
 }
 

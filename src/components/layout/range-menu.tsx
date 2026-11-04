@@ -17,7 +17,18 @@ const CLOSE_DELAY = 220; // grace period to move the cursor into the panel
  * button opens it for keyboard and touch users. Escape or leaving closes it.
  * "Range" itself stays a normal link to /range.
  */
-export function RangeMenu({ nav, active }: { nav: NavData; active: boolean }) {
+export function RangeMenu({
+  nav,
+  active,
+  onDark = false,
+  onOpenChange,
+}: {
+  nav: NavData;
+  active: boolean;
+  /** Header is transparent over a dark hero: use light text. */
+  onDark?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
   const pathname = usePathname();
   const panelId = useId();
   const [open, setOpen] = useState(false);
@@ -29,6 +40,10 @@ export function RangeMenu({ nav, active }: { nav: NavData; active: boolean }) {
 
   // Closes itself when the route changes.
   const isOpen = open && openedOn === pathname;
+
+  useEffect(() => {
+    onOpenChange?.(isOpen);
+  }, [isOpen, onOpenChange]);
 
   const schedule = (next: boolean, delay: number) => {
     clearTimeout(timer.current);
@@ -78,7 +93,8 @@ export function RangeMenu({ nav, active }: { nav: NavData; active: boolean }) {
         href="/range"
         aria-current={active ? "page" : undefined}
         className={cn(
-          "relative flex min-h-tap items-center pl-4 pr-1 text-[0.9375rem] text-navy transition-colors hover:text-green-ink",
+          "relative flex min-h-tap items-center pl-4 pr-1 text-[0.9375rem] transition-colors duration-500",
+          onDark ? "text-white hover:text-white/80" : "text-navy hover:text-green-ink",
           "after:absolute after:inset-x-4 after:bottom-2 after:right-1 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300",
           (active || isOpen) && "after:scale-x-100",
         )}
@@ -96,7 +112,10 @@ export function RangeMenu({ nav, active }: { nav: NavData; active: boolean }) {
           setOpenedOn(pathname);
           setHasOpened(true);
         }}
-        className="flex size-8 items-center justify-center text-navy hover:text-green-ink"
+        className={cn(
+          "flex size-8 items-center justify-center transition-colors duration-500",
+          onDark ? "text-white" : "text-navy hover:text-green-ink",
+        )}
       >
         <svg
           width="12"

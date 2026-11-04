@@ -5,13 +5,12 @@ import { notFound } from "next/navigation";
 import { Suspense, ViewTransition } from "react";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
-import { FinishImage } from "@/components/finish/finish-image";
+import { FinishGallery } from "@/components/finish/finish-gallery";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
+import { ArrowLeft, ArrowRight, Check } from "@/components/ui/icons";
 import { getFinish, getFinishes, imagesOfKind, leadImage, specRows } from "@/lib/catalogue";
 import type { Finish } from "@/lib/catalogue/types";
-import { cn } from "@/lib/cn";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 
 export async function generateStaticParams() {
@@ -31,14 +30,6 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
       ? { images: [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] }
       : undefined,
   };
-}
-
-/** Grid shape by image count, so the gallery never leaves holes. */
-function galleryLayout(n: number): { grid: string; lead: string | false } {
-  if (n <= 1) return { grid: "grid-cols-1", lead: "aspect-[16/9]" };
-  if (n === 3) return { grid: "grid-cols-2 lg:grid-cols-3", lead: "col-span-2 aspect-square lg:row-span-2" };
-  if (n === 5) return { grid: "grid-cols-2 lg:grid-cols-4", lead: "col-span-2 aspect-square lg:row-span-2" };
-  return { grid: "grid-cols-2", lead: false }; // 2 or 4: equal tiles
 }
 
 function related(all: Finish[], finish: Finish, n = 4): Finish[] {
@@ -81,98 +72,111 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const [finish, all] = await Promise.all([getFinish(slug), getFinishes()]);
   if (!finish) notFound();
 
-  const [hero, ...moreRooms] = imagesOfKind(finish, "room");
-  // Lead with the clean swatch, then close-ups and rooms. One large tile plus
-  // up to four small ones fills the 2x2 + 4 pattern without gaps.
-  const gallery = [...imagesOfKind(finish, "swatch"), ...imagesOfKind(finish, "closeup"), ...moreRooms].slice(0, 5);
+  // Room scenes first (the card photo morphs into the first), then grain.
+  const gallery = [
+    ...imagesOfKind(finish, "room"),
+    ...imagesOfKind(finish, "closeup"),
+    ...imagesOfKind(finish, "swatch"),
+  ];
   const specs = specRows(finish.specs);
+  const keySpecs = specs.filter((r) => ["Plank size", "Thickness", "Wear layer", "Pack coverage"].includes(r.label));
   const sample = { id: finish.id, slug: finish.slug, name: finish.name };
-  const meta = [STYLE_LABELS[finish.style], colourFamilyLabel(finish.colourFamily)].join(" · ");
 
   return (
     <article>
-      {/* Full-bleed room scene */}
-      <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
-        <div className="relative aspect-[4/5] bg-line sm:aspect-[16/10] lg:aspect-[21/9]">
-          {hero && <FinishImage image={hero} sizes="100vw" priority quality={80} className="object-[50%_75%]" />}
-        </div>
-      </ViewTransition>
-
-      <div className="container-page grid gap-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-16">
+      {/* Gallery beside a sticky information panel */}
+      <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">
-          <nav aria-label="Breadcrumb">
-            <Link
-              href="/range"
-              className="inline-flex min-h-tap items-center gap-2 text-[0.875rem] text-ink-muted hover:text-navy"
-            >
-              <ArrowLeft size={16} /> The range
-            </Link>
-          </nav>
-          <p className="eyebrow mt-4">{meta}</p>
-          <h1 className="mt-3 text-display-lg text-navy">{finish.name}</h1>
-          <div className="mt-6 max-w-prose space-y-4 text-lede text-ink-muted">
+          <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
+            <div>
+              <FinishGallery images={gallery} name={finish.name} />
+            </div>
+          </ViewTransition>
+        </div>
+
+        <aside className="lg:col-span-5">
+          <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)]">
+            <nav aria-label="Breadcrumb">
+              <Link href="/range" className="nav-link gap-2">
+                <ArrowLeft size={16} /> The range
+              </Link>
+            </nav>
+            <p className="eyebrow mt-5">The Duratek collection</p>
+            <h1 className="mt-3 text-display-lg text-navy">{finish.name}</h1>
+            <p className="mt-1 font-display text-display-sm text-ink-muted">
+              {STYLE_LABELS[finish.style]} · {colourFamilyLabel(finish.colourFamily)}
+            </p>
+
+            <dl className="mt-8 border-t border-line">
+              {keySpecs.map((r) => (
+                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
+                  <dt className="text-ink-muted">{r.label}</dt>
+                  <dd className="text-right text-navy">{r.value}</dd>
+                </div>
+              ))}
+            </dl>
+
+            <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-3">
+              <AddToSamplesButton finish={sample} />
+              <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
+                Where to buy
+              </ButtonLink>
+            </div>
+
+            <ul className="mt-8 grid gap-3 text-[0.875rem] text-navy sm:grid-cols-2">
+              {[
+                "Up to 3 free samples",
+                "Waterproof rigid SPC core",
+                "Scratch Shield surface protection",
+                "Residential lifetime warranty",
+              ].map((b) => (
+                <li key={b} className="flex items-start gap-2">
+                  <Check size={16} className="mt-0.5 shrink-0 text-green-ink" />
+                  {b}
+                </li>
+              ))}
+            </ul>
+            <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
+          </div>
+        </aside>
+      </div>
+
+      {/* About and full specification */}
+      <section aria-labelledby="about-heading" className="py-section">
+        <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
+          <h2 id="about-heading" className="text-display-lg text-navy lg:col-span-5">
+            About {finish.name}
+          </h2>
+          <div className="space-y-4 text-lede text-ink-muted lg:col-span-7">
             {finish.description.split(/\n\n+/).map((p) => (
               <p key={p.slice(0, 32)}>{p}</p>
             ))}
           </div>
-          <div className="mt-10 flex flex-wrap items-start gap-x-8 gap-y-3">
-            <AddToSamplesButton finish={sample} />
-            <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
-              Where to buy
-            </ButtonLink>
+
+          <div className="lg:col-span-7 lg:col-start-6">
+            <h3 className="eyebrow font-sans">Specification</h3>
+            <dl className="mt-4 grid border-t border-line sm:grid-cols-2 sm:gap-x-10">
+              {specs.map((r) => (
+                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
+                  <dt className="text-ink-muted">{r.label}</dt>
+                  <dd className="text-right text-navy">{r.value}</dd>
+                </div>
+              ))}
+              <div className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
+                <dt className="text-ink-muted">Warranty</dt>
+                <dd className="text-right text-navy">
+                  <Link href="/warranty" className="underline underline-offset-4 hover:text-green-ink">
+                    Residential lifetime, 10 year commercial
+                  </Link>
+                </dd>
+              </div>
+            </dl>
+            <p className="mt-4 text-[0.8125rem] text-ink-muted">
+              Always follow the product&apos;s installation and care guidance, including subfloor preparation.
+            </p>
           </div>
         </div>
-
-        <aside className="lg:col-span-5" aria-labelledby="specs-heading">
-          <h2 id="specs-heading" className="eyebrow font-sans">
-            Specification
-          </h2>
-          <dl className="mt-4 border-t border-line">
-            {specs.map((r) => (
-              <div key={r.label} className="grid grid-cols-[9rem_1fr] gap-4 border-b border-line py-3 text-[0.9375rem]">
-                <dt className="text-ink-muted">{r.label}</dt>
-                <dd className="text-navy">{r.value}</dd>
-              </div>
-            ))}
-            <div className="grid grid-cols-[9rem_1fr] gap-4 border-b border-line py-3 text-[0.9375rem]">
-              <dt className="text-ink-muted">Warranty</dt>
-              <dd className="text-navy">
-                Residential lifetime, 10 year commercial{" "}
-                <Link href="/warranty" className="whitespace-nowrap underline underline-offset-4 hover:text-green-ink">
-                  Details
-                </Link>
-              </dd>
-            </div>
-          </dl>
-          <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
-          <p className="mt-4 text-[0.8125rem] text-ink-muted">
-            Always follow the product&apos;s installation and care guidance, including subfloor preparation.
-          </p>
-        </aside>
-      </div>
-
-      {gallery.length > 0 && (
-        <section aria-labelledby="gallery-heading" className="bg-white py-section-sm">
-          <div className="container-page">
-            <h2 id="gallery-heading" className="text-display-sm text-navy">
-              In the room, and up close
-            </h2>
-            <ul className={cn("mt-8 grid gap-3 sm:gap-4", galleryLayout(gallery.length).grid)}>
-              {gallery.map((img, i) => {
-                const lead = i === 0 && galleryLayout(gallery.length).lead;
-                return (
-                  <li key={img.src} className={cn("relative overflow-hidden bg-line", lead ? lead : "aspect-square")}>
-                    <FinishImage
-                      image={img}
-                      sizes={lead ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 30vw, 50vw"}
-                    />
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        </section>
-      )}
+      </section>
 
       <section aria-labelledby="related-heading" className="py-section">
         <div className="container-page">

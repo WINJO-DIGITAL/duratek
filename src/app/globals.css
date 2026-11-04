@@ -131,12 +131,23 @@
 }
 
 @utility eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7em;
   font-size: var(--text-eyebrow);
   line-height: var(--text-eyebrow--line-height);
   letter-spacing: var(--text-eyebrow--letter-spacing);
   font-weight: var(--text-eyebrow--font-weight);
   text-transform: uppercase;
   color: var(--color-green-ink);
+  /* Small square marker before section labels. */
+  &::before {
+    content: "";
+    width: 0.5em;
+    height: 0.5em;
+    flex: none;
+    background: currentColor;
+  }
 }
 
 @utility scrollbar-none {

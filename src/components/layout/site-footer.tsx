@@ -45,11 +45,13 @@ const GROUPS = [
 export function SiteFooter() {
   return (
     <footer className="on-dark border-t border-white/10 bg-navy text-on-dark">
-      <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_2fr]">
-        <div className="max-w-xs">
-          <Wordmark tone="dark" className="text-[1.75rem]" />
-          <p className="mt-4 text-[0.9375rem] leading-relaxed text-on-dark-muted">
-            Waterproof SPC click flooring. Beautifully considered. Built to perform.
+      <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_1.4fr]">
+        <div>
+          <p className="max-w-[14ch] font-display text-display-md text-on-dark">
+            Beautifully considered. <em className="italic">Built to perform.</em>
+          </p>
+          <p className="mt-5 max-w-xs text-[0.9375rem] leading-relaxed text-on-dark-muted">
+            Waterproof SPC click flooring with Scratch Shield surface protection.
           </p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">
@@ -72,10 +74,12 @@ export function SiteFooter() {
           ))}
         </nav>
       </div>
+      {/* Oversized wordmark: the closing signature of every page. */}
+      <div className="container-page overflow-hidden" aria-hidden="true">
+        <Wordmark tone="dark" className="block translate-y-[0.14em] text-[min(27vw,26.5rem)] leading-[0.8] tracking-[-0.055em]" />
+      </div>
       <div className="border-t border-white/10">
-        <p className="container-page py-6 text-[0.8125rem] text-on-dark-muted">
-          © Duratek. All rights reserved.
-        </p>
+        <p className="container-page py-6 text-[0.8125rem] text-on-dark-muted">© Duratek. All rights reserved.</p>
       </div>
     </footer>
   );

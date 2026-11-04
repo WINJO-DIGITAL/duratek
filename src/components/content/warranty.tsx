@@ -41,7 +41,7 @@ function Seal({
         className,
       )}
     >
-      <span className={cn("eyebrow text-[0.625rem]", tone === "dark" && "text-green-on-navy")}>{top}</span>
+      <span className={cn("eyebrow text-[0.625rem] before:hidden", tone === "dark" && "text-green-on-navy")}>{top}</span>
       <span className="mt-2 font-display text-[1.75rem] leading-none">{big}</span>
       <span className="mt-2 text-[0.6875rem] font-medium uppercase tracking-[0.14em]">{bottom}</span>
     </div>

@@ -25,7 +25,8 @@ export default async function RangePage() {
         priority={i < 3}
         headingLevel="h2"
         aspect="aspect-[4/5]"
-        sizes="(min-width: 1024px) 31vw, (min-width: 640px) 48vw, 100vw"
+          media="texture"
+        sizes="(min-width: 1024px) 31vw, 48vw"
       />
     ),
   }));
