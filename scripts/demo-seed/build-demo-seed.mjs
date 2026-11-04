@@ -125,6 +125,8 @@ async function main() {
   for (const [order, f] of curation.finishes.entries()) {
     const p = byHandle.get(f.handle);
     const d = parseProduct(p);
+    // Curated copy replaces the retailer's boilerplate when present.
+    if (f.description) d.description = f.description;
     const fid = uuid(`finish:${f.handle}`);
     out.push(
       `insert into public.finishes (id, name, slug, style, colour_family, description, specs, sort_order, published, is_demo) values (` +

@@ -21,7 +21,9 @@ export default async function WarrantyPage() {
     <PageTransition>
       <>
         <header className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-2 lg:items-end">
-          <SectionIntro as="h1" size="lg" eyebrow="Duratek warranty" title="Confidence for years to come." />
+          <SectionIntro as="h1" size="lg" title="Warranty">
+            <p>Two levels of cover, depending on where the floor goes.</p>
+          </SectionIntro>
           <div className="lg:justify-self-end">
             <WarrantyBadges />
           </div>
@@ -65,11 +67,10 @@ export default async function WarrantyPage() {
               </div>
             )}
             <div className="lg:col-span-5 lg:col-start-8">
-              <SectionIntro eyebrow="Getting the most from it" title="Fitted properly. Cared for simply.">
+              <SectionIntro title="Before you fit">
                 <p>
-                  Always follow the product&apos;s installation and care guidance, including subfloor preparation. Ask
-                  for the exact product&apos;s technical sheet, warranty and applicable independent test certificates
-                  for full details.
+                  Follow the installation and care guidance for your finish, including subfloor preparation. If you’d
+                  like the full warranty terms or the technical sheet first, ask and we’ll send them.
                 </p>
               </SectionIntro>
               <p className="mt-6">
@@ -77,7 +78,7 @@ export default async function WarrantyPage() {
                   href="/contact"
                   className="inline-flex min-h-tap items-center text-navy underline underline-offset-4 hover:text-green-ink"
                 >
-                  Ask us about the warranty
+                  Contact us
                 </Link>
               </p>
             </div>

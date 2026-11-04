@@ -48,10 +48,10 @@ export function SiteFooter() {
       <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_1.4fr]">
         <div>
           <p className="max-w-[14ch] font-display text-display-md text-on-dark">
-            Beautifully considered. <em className="italic">Built to perform.</em>
+            Click flooring for homes that <em className="italic">get used.</em>
           </p>
           <p className="mt-5 max-w-xs text-[0.9375rem] leading-relaxed text-on-dark-muted">
-            Waterproof SPC click flooring with Scratch Shield surface protection.
+            Waterproof SPC click flooring, with free samples and trade accounts.
           </p>
         </div>
         <nav aria-label="Footer" className="grid grid-cols-2 gap-x-6 gap-y-10 sm:grid-cols-4">

@@ -62,8 +62,8 @@ export default async function InspirationPage() {
     <PageTransition>
       <>
         <header className="container-page pb-10 pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" eyebrow="Inspiration" title="Rooms to live in.">
-            <p>Room scenes and colour stories, grouped by mood. See a finish you like? Add it to your samples.</p>
+          <SectionIntro as="h1" size="lg" title="Inspiration">
+            <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
           </SectionIntro>
           <nav aria-label="Moods" className="mt-8 flex flex-wrap gap-2">
             {moods.map((m) => (

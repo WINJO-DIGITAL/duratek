@@ -93,7 +93,7 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
           <div className="stagger-in mt-10">
             <div style={{ "--i": 6 } as React.CSSProperties}>
               <div className="flex items-baseline justify-between">
-                <p className="eyebrow">Popular finishes</p>
+                <p className="eyebrow">Finishes</p>
                 <Link href="/range" onClick={close} className="text-[0.875rem] text-navy underline-offset-4 hover:underline">
                   All {nav.finishCount}
                 </Link>

@@ -24,12 +24,12 @@ const POPULAR_COUNT = 8;
 const STYLE_COPY: Record<FinishStyle, { title: string; body: string; cta: string }> = {
   plank: {
     title: "Straight plank",
-    body: "Quietly contemporary. Elegant wood-effect planks create a calm, uninterrupted flow throughout the home.",
+    body: "Long boards laid end to end. The simplest layout, and the one that makes a room look biggest.",
     cta: "Explore straight plank",
   },
   herringbone: {
     title: "Herringbone",
-    body: "Tradition reimagined. The familiar rhythm of parquet brings character, movement and architectural interest.",
+    body: "Short blocks laid in a zigzag, as in a parquet floor. More pattern, more movement.",
     cta: "Explore herringbone",
   },
 };
@@ -38,13 +38,11 @@ export default async function HomePage() {
   const finishes = await getFinishes();
   const nextRoom = takeFrom(imagePool(finishes, "room"));
   const hero = nextRoom();
-  // Close-ups from finishes other than the hero's, so sections stay varied.
-  const nextCloseup = takeFrom(imagePool(finishes, "closeup").filter((c) => c.finish.id !== hero?.finish.id));
   const styles = (["plank", "herringbone"] as const).filter((s) => finishes.some((f) => f.style === s));
   const styleImages = styles.map(() => nextRoom());
   const lifeImage = nextRoom();
   const wearGrain = finishes.map((f) => ({ image: imagesOfKind(f, "swatch")[0], finish: f })).find((x) => x.image);
-  const unilinCloseup = nextCloseup();
+  const fittingImage = nextRoom();
   const consideredA = nextRoom();
   const consideredB = nextRoom();
   const closingImage = nextRoom();
@@ -57,38 +55,37 @@ export default async function HomePage() {
       label: colourFamilyLabel(c),
       count: inFamily.length,
       href: `/range?colour=${c}`,
-      // Prefer a room scene that isn't the hero photo.
-      image:
-        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => img.src !== hero?.image.src) ??
-        (inFamily[0] && leadImage(inFamily[0])),
+      // The lead photo of a finish other than the hero's (lead photos are the
+      // curated professional room scenes).
+      image: leadImage(inFamily.find((f) => f.id !== hero?.finish.id) ?? inFamily[0]),
     };
   });
 
   const steps: Step[] = [
     {
       title: "Discover",
-      body: "Browse the range and real room scenes to find the look that suits your home.",
+      body: `Look through all ${finishes.length} finishes and the photos of each one in real rooms.`,
       href: "/range",
       cta: "Explore the range",
       image: nextRoom()?.image,
     },
     {
       title: "Shortlist",
-      body: "Narrow it down by colour, then open each finish for room scenes, close-ups and the full specification.",
+      body: "Filter by colour, then open a finish for close-ups of the grain and the full specification.",
       href: "/range",
       cta: "Browse by colour",
       image: nextRoom()?.image,
     },
     {
       title: "Sample",
-      body: "Order up to three free samples and see them in your own light, against your own walls.",
+      body: "Order up to three samples, free. Put them down in the room they’re for and look at them in daylight and in the evening.",
       href: "/samples",
       cta: "Order free samples",
       image: nextRoom()?.image,
     },
     {
       title: "Buy",
-      body: "Find a local stockist, or buy Duratek online.",
+      body: "Buy from a stockist near you, or order online.",
       href: "/where-to-buy",
       cta: "Where to buy",
       image: nextRoom()?.image,
@@ -113,7 +110,7 @@ export default async function HomePage() {
               Beautifully considered. <em className="italic">Built to perform.</em>
             </h1>
             <p className="mt-6 max-w-md text-lede text-on-dark-muted">
-              Refined wood-inspired design meets the quiet confidence of advanced flooring technology.
+              Oak-look click flooring with a waterproof rigid core, a 0.55mm wear layer and a scratch-resistant finish.
             </p>
             <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-3">
               <ButtonLink href="/range" variant="on-dark">
@@ -155,15 +152,12 @@ export default async function HomePage() {
               styles[0] && (
                 <>
                   <div className="flex flex-wrap items-end justify-between gap-6">
-                    <SectionIntro eyebrow="The Duratek collection" title="Explore by colour.">
+                    <SectionIntro title="Start with colour.">
                       <p>
                         {finishes.length} {STYLE_LABELS[styles[0]].toLowerCase()} finishes in {colourItems.length} colour
                         families.
                       </p>
                     </SectionIntro>
-                    <ButtonLink href="/range" variant="outline">
-                      View all finishes
-                    </ButtonLink>
                   </div>
                   <div className="mt-12">
                     <ColourIndex items={colourItems} />
@@ -175,14 +169,13 @@ export default async function HomePage() {
         </section>
 
         {/* 4. Popular finishes */}
-        <PopularFinishes finishes={finishes.slice(0, POPULAR_COUNT)} />
+        <PopularFinishes finishes={finishes.slice(0, POPULAR_COUNT)} total={finishes.length} />
 
         {/* How it works: the homeowner journey */}
         <section className="border-t border-line py-section" aria-labelledby="how-heading">
           <div className="container-page">
-            <p className="eyebrow">How it works</p>
-            <h2 id="how-heading" className="mt-4 text-display-md text-navy">
-              From first look to fitted floor.
+            <h2 id="how-heading" className="text-display-md text-navy">
+              How it works
             </h2>
             <div className="mt-12">
               <HowItWorks steps={steps} />
@@ -198,19 +191,12 @@ export default async function HomePage() {
           <div className="container-page relative -mt-24 sm:-mt-40 lg:absolute lg:inset-x-0 lg:bottom-16 lg:mt-0">
             <div className="max-w-xl bg-off-white p-6 sm:p-10 lg:ml-auto">
               <div className="grid grid-cols-[1fr_auto] items-start gap-6">
-                <div>
-                  <p className="eyebrow">Duratek surface technology</p>
-                  <h2 className="mt-4 text-display-md text-navy">Made for life as it happens.</h2>
-                </div>
+                <h2 className="text-display-md text-navy">Made for life as it happens.</h2>
                 <ScratchShieldBadge className="hidden w-28! sm:flex" />
               </div>
               <p className="mt-5 text-ink-muted">
-                Duratek Scratch Shield is designed to help protect the beauty of your floor from everyday scuffs,
-                abrasion and surface wear. A sophisticated protective finish complements the robust wear layer beneath,
-                without compromising the natural appearance of the floor.
-              </p>
-              <p className="mt-4 font-display text-[1.125rem] italic text-navy">
-                Because the most beautiful spaces are the ones you can truly live in.
+                Scratch Shield is the clear finish on top of every Duratek plank. It helps the floor stand up to chair
+                legs, dropped keys and grit walked in on shoes, and you can’t see it once it’s down.
               </p>
             </div>
           </div>
@@ -220,15 +206,14 @@ export default async function HomePage() {
         <section className="py-section">
           <div className="container-page grid items-center gap-10 lg:grid-cols-2 lg:gap-20">
             <div className="order-2 lg:order-1">
-              <p className="eyebrow">Engineered durability</p>
-              <p className="mt-6 font-display text-[clamp(5rem,3rem+9vw,10rem)] leading-[0.85] tracking-[-0.04em] text-navy">
+              <p className="font-display text-[clamp(5rem,3rem+9vw,10rem)] leading-[0.85] tracking-[-0.04em] text-navy">
                 0.55<span className="ml-2 text-[0.35em] tracking-normal text-ink-muted">mm</span>
               </p>
               <h2 className="mt-8 text-display-md text-navy">Protection you can feel confident in.</h2>
               <p className="mt-5 max-w-prose text-lede text-ink-muted">
-                Our substantial 0.55mm transparent wear layer helps defend the decorative surface against daily traffic
-                and abrasion. Paired with the Scratch Shield finish, it creates a resilient foundation for busy homes
-                and beautiful interiors.
+                Under the finish is a clear wear layer that protects the printed wood design. Ours is 0.55mm thick.
+                It’s the layer that takes the foot traffic in a hallway or kitchen, and the number worth comparing when
+                you look at other floors.
               </p>
             </div>
             {wearGrain && (
@@ -247,7 +232,7 @@ export default async function HomePage() {
         {/* 7. Performance beneath the surface: dark, interactive */}
         <section className="on-dark bg-navy py-section">
           <div className="container-page">
-            <SectionIntro eyebrow="Thoughtful construction" title="Performance beneath the surface." tone="dark" />
+            <SectionIntro eyebrow="Five layers" title="Performance beneath the surface." tone="dark" />
             <div className="mt-12 lg:mt-16">
               <LayerBreakdown woodImage={woodSwatch} />
             </div>
@@ -258,21 +243,18 @@ export default async function HomePage() {
         <section className="py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-center">
             <div className="lg:col-span-5">
-              <SectionIntro eyebrow="Precision in every detail" title="Beautifully fitted. Effortlessly finished.">
+              <SectionIntro eyebrow="Fitting" title="Beautifully fitted. Effortlessly finished.">
                 <p>
-                  A secure floor begins with a precise connection. Duratek&apos;s Unilin click-lock system is designed
-                  to deliver dependable plank alignment and efficient floating installation, in accordance with the
-                  fitting instructions.
+                  The planks use Unilin’s click-lock joint. Each one locks into the next along its edges, and the floor
+                  floats over the subfloor rather than being glued down, which makes for a quick install when you follow
+                  the fitting instructions.
                 </p>
               </SectionIntro>
-              <p className="mt-6 font-display text-[1.125rem] italic text-navy">
-                Engineered connections. A refined, seamless finish.
-              </p>
             </div>
-            {unilinCloseup && (
+            {fittingImage && (
               <div className="lg:col-span-6 lg:col-start-7">
                 <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden bg-line sm:w-4/5">
-                  <FinishImage image={unilinCloseup.image} sizes="(min-width: 1024px) 40vw, 80vw" />
+                  <FinishImage image={fittingImage.image} sizes="(min-width: 1024px) 40vw, 80vw" />
                 </div>
               </div>
             )}
@@ -282,8 +264,7 @@ export default async function HomePage() {
         {/* 9. Homeowner / Trade */}
         <section className="border-t border-line py-section" aria-labelledby="audience-heading">
           <div className="container-page">
-            <p className="eyebrow">Two ways in</p>
-            <h2 id="audience-heading" className="mt-4 text-display-md text-navy">
+            <h2 id="audience-heading" className="text-display-md text-navy">
               What describes you best?
             </h2>
             <div className="mt-8">
@@ -307,11 +288,10 @@ export default async function HomePage() {
                 </div>
               )}
             </div>
-            <SectionIntro eyebrow="Quality and assurance" title="Considered from every angle.">
+            <SectionIntro title="Considered from every angle.">
               <p>
-                Waterproof SPC construction, a durable surface finish and a precision locking system come together in a
-                flooring collection designed for lasting appeal. Ask for the exact product&apos;s technical sheet,
-                warranty and applicable independent test certificates for full performance details.
+                We would rather you had the facts than a slogan. Ask for the technical sheet, the warranty terms and the
+                test certificates for the finish you’re looking at, and we’ll send them over.
               </p>
               <p className="font-display text-[1.125rem] italic text-navy">
                 Scratch-resistant does not mean scratch-proof.
@@ -321,7 +301,7 @@ export default async function HomePage() {
                   href="/technology"
                   className="inline-flex min-h-tap items-center gap-2 text-navy underline-offset-4 hover:underline"
                 >
-                  How Duratek is made <ArrowRight size={16} />
+                  What’s inside a plank <ArrowRight size={16} />
                 </Link>
               </p>
             </SectionIntro>
@@ -332,7 +312,7 @@ export default async function HomePage() {
         <section className="py-section">
           <div className="container-page grid gap-10 lg:grid-cols-2 lg:items-end">
             <SectionIntro eyebrow="Duratek warranty" title="Confidence for years to come.">
-              <p>A residential lifetime warranty and a 10 year commercial warranty.</p>
+              <p>Lifetime cover in the home, defined as 25 years, and 10 years in light and medium commercial use.</p>
             </SectionIntro>
             <div className="lg:justify-self-end">
               <WarrantyBadges />
@@ -364,12 +344,11 @@ export default async function HomePage() {
             aria-hidden="true"
           />
           <div className="container-page py-section">
-            <p className="eyebrow text-green-on-navy">Duratek performance flooring</p>
-            <h2 className="mt-4 max-w-[16ch] text-display-lg text-on-dark">
+            <h2 className="max-w-[16ch] text-display-lg text-on-dark">
               Timeless in style. <em className="italic">Resilient by design.</em>
             </h2>
             <p className="mt-5 max-w-md text-lede text-on-dark-muted">
-              Explore the Duratek collection and choose your perfect finish.
+              {finishes.length} finishes. Up to three samples, free.
             </p>
             <div className="mt-10">
               <ClosingCtaActions />
@@ -403,21 +382,20 @@ function StyleTile({ style, image }: { style: FinishStyle; image?: { image: Fini
   );
 }
 
-function PopularFinishes({ finishes }: { finishes: Finish[] }) {
+function PopularFinishes({ finishes, total }: { finishes: Finish[]; total: number }) {
   return (
     <section className="py-section" aria-labelledby="popular-heading">
       <div className="container-page flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="eyebrow">The collection</p>
-          <h2 id="popular-heading" className="mt-4 text-display-md text-navy">
-            Popular finishes
+          <h2 id="popular-heading" className="text-display-md text-navy">
+            In the range
           </h2>
         </div>
         <Link
           href="/range"
           className="inline-flex min-h-tap items-center gap-2 text-navy underline-offset-4 hover:underline"
         >
-          View all finishes <ArrowRight size={16} />
+          All {total} finishes <ArrowRight size={16} />
         </Link>
       </div>
       <ul

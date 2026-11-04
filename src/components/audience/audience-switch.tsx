@@ -16,7 +16,7 @@ const PATHS: {
     id: "homeowner",
     label: "Homeowner",
     title: "Choosing for your home",
-    body: "Order up to three free samples, see them in your own light, then find a stockist or buy online.",
+    body: "See finishes at home before you commit, then buy from a stockist or online.",
     primary: { href: "/samples", label: "Order free samples" },
     secondary: { href: "/where-to-buy", label: "Where to buy" },
   },

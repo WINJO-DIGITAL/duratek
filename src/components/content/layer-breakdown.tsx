@@ -6,11 +6,11 @@ import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 
 const LAYERS = [
-  { name: "Protective top finish", detail: "Designed for scratch and scuff resistance." },
-  { name: "0.55mm wear layer", detail: "Everyday durability." },
-  { name: "Decorative layer", detail: "Authentic wood-inspired character." },
-  { name: "SPC rigid core", detail: "Waterproof, stable construction." },
-  { name: "Integrated underlay", detail: "Added comfort and sound reduction." },
+  { name: "Protective top finish", detail: "Scratch Shield. Helps resist scuffs and scratches." },
+  { name: "0.55mm wear layer", detail: "Clear, and protects the design from wear." },
+  { name: "Decorative layer", detail: "The printed oak pattern you see." },
+  { name: "SPC rigid core", detail: "Rigid, stable and waterproof." },
+  { name: "Integrated underlay", detail: "Comfort underfoot, and less noise." },
 ] as const;
 
 const SLAB_STYLES: CSSProperties[] = [

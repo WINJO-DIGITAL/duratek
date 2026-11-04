@@ -34,7 +34,7 @@ export default async function RangePage() {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="The Duratek collection" title="The range">
+        <SectionIntro as="h1" size="lg" title="The range">
           <p>
             {finishes.length} finishes, every one with a 0.55mm wear layer, Scratch Shield surface protection and a
             waterproof rigid SPC core. Choose up to three free samples.

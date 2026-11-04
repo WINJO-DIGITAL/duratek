@@ -101,8 +101,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 <ArrowLeft size={16} /> The range
               </Link>
             </nav>
-            <p className="eyebrow mt-5">The Duratek collection</p>
-            <h1 className="mt-3 text-display-lg text-navy">{finish.name}</h1>
+            <h1 className="mt-5 text-display-lg text-navy">{finish.name}</h1>
             <p className="mt-1 font-display text-display-sm text-ink-muted">
               {STYLE_LABELS[finish.style]} · {colourFamilyLabel(finish.colourFamily)}
             </p>

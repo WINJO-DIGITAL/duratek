@@ -15,41 +15,27 @@ export const metadata: Metadata = {
     "Scratch Shield surface protection, a 0.55mm wear layer, a waterproof rigid SPC core, integrated underlay and the Unilin click-lock system.",
 };
 
-const CHAPTERS: { eyebrow: string; title: string; body: string[]; note?: string }[] = [
+const CHAPTERS: { title: string; body: string; note?: string }[] = [
   {
-    eyebrow: "Scratch Shield",
-    title: "Made for life as it happens.",
-    body: [
-      "Duratek Scratch Shield is designed to help protect the beauty of your floor from everyday scuffs, abrasion and surface wear. A sophisticated protective finish complements the robust wear layer beneath, without compromising the natural appearance of the floor.",
-    ],
+    title: "Scratch Shield",
+    body: "A clear protective finish over the wear layer. It helps the surface resist the scuffs and fine scratches that build up in a busy home, and it doesn’t change how the floor looks.",
     note: "Scratch-resistant does not mean scratch-proof.",
   },
   {
-    eyebrow: "0.55mm wear layer",
-    title: "Protection you can feel confident in.",
-    body: [
-      "Our substantial 0.55mm transparent wear layer helps defend the decorative surface against daily traffic and abrasion. Paired with the Scratch Shield finish, it creates a resilient foundation for busy homes and beautiful interiors.",
-    ],
+    title: "The 0.55mm wear layer",
+    body: "The clear layer between the finish and the printed wood design. It protects that design from foot traffic and abrasion, so it’s the figure to look for when you compare one floor with another.",
   },
   {
-    eyebrow: "Waterproof rigid SPC core",
-    title: "Stable underneath. Practical every day.",
-    body: [
-      "Beneath the wood-effect surface, a rigid SPC core provides stability: a waterproof, practical core for the demands of everyday living.",
-    ],
+    title: "Rigid SPC core",
+    body: "SPC is stone plastic composite: a dense, rigid board that keeps each plank stable. It’s waterproof, so the same floor can run through the kitchen, the downstairs loo and the utility room.",
   },
   {
-    eyebrow: "Integrated underlay",
-    title: "Comfort built in.",
-    body: ["Every Duratek plank has an integrated underlay, adding comfort underfoot and reducing sound."],
+    title: "Integrated underlay",
+    body: "The underlay is bonded to the back of every plank. It makes the floor more comfortable to stand on and helps cut down noise.",
   },
   {
-    eyebrow: "Unilin click-lock",
-    title: "Beautifully fitted. Effortlessly finished.",
-    body: [
-      "A secure floor begins with a precise connection. Duratek's Unilin click-lock system is designed to deliver dependable plank alignment and efficient floating installation, in accordance with the fitting instructions.",
-    ],
-    note: "Engineered connections. A refined, seamless finish.",
+    title: "Unilin click-lock",
+    body: "Each plank clicks into the next using Unilin’s locking joint, and the finished floor floats over the subfloor instead of being glued. Follow the fitting instructions, including subfloor preparation.",
   },
 ];
 
@@ -64,10 +50,10 @@ export default async function TechnologyPage() {
     <PageTransition>
       <>
         <header className="container-page pb-section-sm pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" eyebrow="Duratek technology" title="Performance beneath the surface.">
+          <SectionIntro as="h1" size="lg" title="What’s inside a Duratek plank">
             <p>
-              Refined wood-inspired design meets the quiet confidence of advanced flooring technology. Five layers, each
-              with a job to do.
+              Five layers, from the clear finish you walk on down to the underlay that sits on your subfloor. Here’s what
+              each one does.
             </p>
           </SectionIntro>
         </header>
@@ -82,16 +68,14 @@ export default async function TechnologyPage() {
           const img = chapterImages[i];
           const flip = i % 2 === 1;
           return (
-            <section key={c.eyebrow} className={cn("py-section", i % 2 === 1 && "bg-white")}>
+            <section key={c.title} className={cn("py-section", i % 2 === 1 && "bg-white")}>
               <div className="container-page grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
                 <div className={cn("lg:col-span-5", flip ? "lg:order-2 lg:col-start-8" : "lg:order-1")}>
                   <p className="font-display text-[0.9375rem] text-green-ink tabular-nums">
                     {String(i + 1).padStart(2, "0")}
                   </p>
-                  <SectionIntro eyebrow={c.eyebrow} title={c.title} className="mt-2">
-                    {c.body.map((p) => (
-                      <p key={p.slice(0, 24)}>{p}</p>
-                    ))}
+                  <SectionIntro title={c.title} className="mt-2">
+                    <p>{c.body}</p>
                   </SectionIntro>
                   {c.note && <p className="mt-6 font-display text-[1.125rem] italic text-navy">{c.note}</p>}
                   {i === 0 && <ScratchShieldBadge className="mt-8" />}
@@ -115,15 +99,14 @@ export default async function TechnologyPage() {
 
         <section className="border-t border-line py-section">
           <div className="container-page grid gap-10 lg:grid-cols-2 lg:items-end">
-            <SectionIntro eyebrow="Quality and assurance" title="Considered from every angle.">
+            <SectionIntro title="Technical sheets and certificates">
               <p>
-                Ask for the exact product&apos;s technical sheet, warranty and applicable independent test certificates
-                for full performance details. Always follow the product&apos;s installation and care guidance, including
-                subfloor preparation.
+                Ask for the technical sheet, the warranty terms and any independent test certificates for the finish
+                you’re considering, and always follow its installation and care guidance.
               </p>
             </SectionIntro>
             <div className="lg:justify-self-end">
-              <ButtonLink href="/samples">Order free samples</ButtonLink>
+              <ButtonLink href="/contact">Ask for documents</ButtonLink>
             </div>
           </div>
         </section>
