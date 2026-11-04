@@ -145,3 +145,159 @@
     display: none;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Motion: page transitions (React <ViewTransition>, View Transitions API).
+ * Old content leaves quickly; new content arrives slower with a small lift.
+ * The header and bottom bar are anchored so only the page content moves.
+ * Unsupported browsers navigate normally.
+ * ------------------------------------------------------------------------- */
+:root {
+  --vt-exit: 180ms;
+  --vt-enter: 420ms;
+}
+
+::view-transition {
+  pointer-events: none;
+}
+
+/* Anchor site chrome. */
+::view-transition-group(site-header),
+::view-transition-group(bottom-bar) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header),
+::view-transition-old(bottom-bar) {
+  display: none;
+}
+::view-transition-new(site-header),
+::view-transition-new(bottom-bar) {
+  animation: none;
+}
+
+::view-transition-old(.page-exit) {
+  animation: var(--vt-exit) var(--ease-calm) both vt-fade-out;
+}
+::view-transition-new(.page-enter) {
+  animation:
+    var(--vt-enter) var(--ease-calm) calc(var(--vt-exit) * 0.6) both vt-fade-in,
+    calc(var(--vt-enter) + 180ms) var(--ease-calm) both vt-rise;
+}
+
+/* Finish photo morphs from card to detail hero. */
+::view-transition-group(.finish-morph) {
+  animation-duration: 520ms;
+  animation-timing-function: var(--ease-calm);
+}
+::view-transition-image-pair(.finish-morph) {
+  animation-name: vt-soften;
+}
+
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-rise {
+  from {
+    translate: 0 14px;
+  }
+}
+@keyframes vt-soften {
+  40% {
+    filter: blur(2px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay: 0s !important;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion: menus. Dialog fades and settles on open and close (discrete
+ * transitions); items stagger in using --i.
+ * ------------------------------------------------------------------------- */
+.menu-sheet {
+  opacity: 0;
+  translate: 0 -10px;
+  transition:
+    opacity 420ms var(--ease-calm),
+    translate 520ms var(--ease-calm),
+    overlay 420ms allow-discrete,
+    display 420ms allow-discrete;
+}
+.menu-sheet[open] {
+  opacity: 1;
+  translate: 0 0;
+}
+@starting-style {
+  .menu-sheet[open] {
+    opacity: 0;
+    translate: 0 -10px;
+  }
+}
+.menu-sheet::backdrop {
+  background: rgb(24 54 76 / 0);
+  transition:
+    background 420ms var(--ease-calm),
+    overlay 420ms allow-discrete,
+    display 420ms allow-discrete;
+}
+.menu-sheet[open]::backdrop {
+  background: rgb(24 54 76 / 0.35);
+}
+@starting-style {
+  .menu-sheet[open]::backdrop {
+    background: rgb(24 54 76 / 0);
+  }
+}
+
+.stagger-in > * {
+  animation: stagger-in 620ms var(--ease-calm) both;
+  animation-delay: calc(var(--i, 0) * 55ms + 90ms);
+}
+@keyframes stagger-in {
+  from {
+    opacity: 0;
+    translate: 0 12px;
+  }
+}
+
+/* Quiet menu link with a green underline that draws in on hover/focus. */
+@utility nav-link {
+  display: inline-flex;
+  min-height: 2.25rem;
+  align-items: center;
+  font-size: 0.9375rem;
+  color: var(--color-ink-muted);
+  background-image: linear-gradient(var(--color-green), var(--color-green));
+  background-size: 0% 1px;
+  background-position: 0 calc(100% - 0.45rem);
+  background-repeat: no-repeat;
+  transition:
+    color 300ms var(--ease-calm),
+    background-size 450ms var(--ease-calm);
+  &:hover,
+  &:focus-visible {
+    color: var(--color-navy);
+    background-size: 100% 1px;
+  }
+}
+
+@keyframes badge-pop {
+  from {
+    opacity: 0;
+    scale: 0.6;
+  }
+}

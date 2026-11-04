@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ViewTransition } from "react";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { leadImage } from "@/lib/catalogue/mappers";
 import type { Finish } from "@/lib/catalogue/types";
@@ -24,16 +25,19 @@ export function FinishCard({
   const image = leadImage(finish);
   return (
     <article className={cn("group relative flex flex-col", className)}>
-      <div className={cn("relative overflow-hidden bg-line", aspect)}>
-        {image && (
-          <FinishImage
-            image={image}
-            sizes={sizes}
-            priority={priority}
-            className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
-          />
-        )}
-      </div>
+      {/* Same name as the detail page hero: the photo morphs into it on click. */}
+      <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
+        <div className={cn("relative overflow-hidden bg-line", aspect)}>
+          {image && (
+            <FinishImage
+              image={image}
+              sizes={sizes}
+              priority={priority}
+              className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
+            />
+          )}
+        </div>
+      </ViewTransition>
       <div className="mt-4 flex items-start justify-between gap-4">
         <div>
           <H className="text-display-sm text-navy">

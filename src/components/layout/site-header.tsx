@@ -5,38 +5,26 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Close, Menu, Search } from "@/components/ui/icons";
-import { PRIMARY_NAV, TRADE_NAV } from "@/lib/config";
+import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
-import { useSamples } from "@/lib/samples/use-samples";
+import { PRIMARY_NAV, TRADE_NAV } from "@/lib/config";
+import { MobileMenu } from "./mobile-menu";
+import { RangeMenu } from "./range-menu";
+import { SampleCount } from "./sample-count";
+
+export { SampleCount };
 
 export function isActive(pathname: string, href: string) {
   return pathname === href || pathname.startsWith(`${href}/`);
 }
 
-function SampleCount({ className }: { className?: string }) {
-  const { count } = useSamples();
-  if (count === 0) return null;
-  return (
-    <span
-      className={cn(
-        "inline-flex size-5 items-center justify-center rounded-full bg-green-ink text-[0.6875rem] font-semibold text-white tabular-nums",
-        className,
-      )}
-    >
-      {count}
-      <span className="sr-only"> chosen</span>
-    </span>
-  );
-}
-
-export { SampleCount };
-
-export function SiteHeader() {
+export function SiteHeader({ nav }: { nav: NavData }) {
   const pathname = usePathname();
   // Search is open only on the page where it was opened, so it closes itself
   // when the route changes (e.g. after submitting to /range).
   const [searchOpenOn, setSearchOpenOn] = useState<string | null>(null);
   const searchOpen = searchOpenOn === pathname;
+  const [scrolled, setScrolled] = useState(false);
   const menuRef = useRef<HTMLDialogElement>(null);
   const searchInput = useRef<HTMLInputElement>(null);
 
@@ -49,8 +37,22 @@ export function SiteHeader() {
     if (searchOpen) searchInput.current?.focus();
   }, [searchOpen]);
 
+  // A soft shadow once the page scrolls under the header.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-line bg-off-white/95 backdrop-blur-sm supports-[backdrop-filter]:bg-off-white/85">
+    <header
+      style={{ viewTransitionName: "site-header" }}
+      className={cn(
+        "sticky top-0 z-40 border-b bg-off-white/95 backdrop-blur-md transition-[box-shadow,border-color] duration-500 supports-[backdrop-filter]:bg-off-white/85",
+        scrolled ? "border-transparent shadow-[0_10px_30px_-18px_rgb(24_54_76/0.35)]" : "border-line",
+      )}
+    >
       <div className="container-page flex h-header items-center justify-between gap-6">
         <Link href="/" className="-mx-2 flex min-h-tap items-center px-2" aria-label="Duratek home">
           <Wordmark />
@@ -58,15 +60,16 @@ export function SiteHeader() {
 
         {/* Desktop navigation */}
         <nav aria-label="Main" className="hidden items-center gap-1 lg:flex">
-          {PRIMARY_NAV.map((item) => (
+          <RangeMenu nav={nav} active={isActive(pathname, "/range")} />
+          {PRIMARY_NAV.filter((i) => i.href !== "/range").map((item) => (
             <Link
               key={item.href}
               href={item.href}
               aria-current={isActive(pathname, item.href) ? "page" : undefined}
               className={cn(
-                "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] text-navy transition-colors hover:text-green-ink",
-                "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300",
-                "aria-[current=page]:after:scale-x-100",
+                "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] text-navy transition-colors duration-300 hover:text-green-ink",
+                "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-500 after:ease-calm",
+                "hover:after:scale-x-100 aria-[current=page]:after:scale-x-100",
               )}
             >
               {item.label}
@@ -77,7 +80,7 @@ export function SiteHeader() {
           <Link
             href={TRADE_NAV.href}
             aria-current={isActive(pathname, TRADE_NAV.href) ? "page" : undefined}
-            className="flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted transition-colors hover:text-navy aria-[current=page]:text-navy"
+            className="flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted transition-colors duration-300 hover:text-navy aria-[current=page]:text-green-ink"
           >
             {TRADE_NAV.label}
           </Link>
@@ -92,7 +95,10 @@ export function SiteHeader() {
             aria-controls="site-search"
             onClick={() => setSearchOpenOn(searchOpen ? null : pathname)}
           >
-            {searchOpen ? <Close /> : <Search />}
+            <span className="relative block size-5">
+              <Search className={cn("absolute inset-0 transition-[opacity,rotate] duration-300", searchOpen && "rotate-90 opacity-0")} />
+              <Close className={cn("absolute inset-0 transition-[opacity,rotate] duration-300", !searchOpen && "-rotate-90 opacity-0")} />
+            </span>
             <span className="sr-only">{searchOpen ? "Close search" : "Search finishes"}</span>
           </button>
           <button
@@ -107,83 +113,39 @@ export function SiteHeader() {
         </div>
       </div>
 
-      {searchOpen && (
-        <form
-          id="site-search"
-          role="search"
-          action="/range"
-          className="container-page flex gap-2 border-t border-line pb-3 pt-3 lg:hidden"
-        >
-          <label htmlFor="site-search-input" className="sr-only">
-            Search finishes
-          </label>
-          <input
-            ref={searchInput}
-            id="site-search-input"
-            name="q"
-            type="search"
-            placeholder="Search finishes, e.g. Keswick"
-            autoComplete="off"
-            className="min-h-tap w-full border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
-          />
-          <button type="submit" className="min-h-tap shrink-0 bg-green-ink px-4 text-[0.9375rem] font-medium text-white">
-            Search
-          </button>
-        </form>
-      )}
-
-      <dialog
-        ref={menuRef}
-        aria-label="Menu"
-        className="m-0 h-dvh max-h-none w-full max-w-none bg-off-white p-0 text-navy backdrop:bg-navy/40 open:flex open:flex-col lg:hidden"
-        onClick={(e) => {
-          if (e.target === e.currentTarget) e.currentTarget.close();
-        }}
+      {/* Search: grid-rows 0fr -> 1fr animates the height smoothly. */}
+      <div
+        className={cn(
+          "grid transition-[grid-template-rows,opacity] duration-500 ease-calm lg:hidden",
+          searchOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
+        )}
+        inert={!searchOpen}
       >
-        <div className="container-page flex h-header shrink-0 items-center justify-between border-b border-line">
-          <Wordmark />
-          <button
-            type="button"
-            className="-mr-2 flex size-tap items-center justify-center"
-            onClick={() => menuRef.current?.close()}
-            autoFocus
-          >
-            <Close />
-            <span className="sr-only">Close menu</span>
-          </button>
+        <div className="overflow-hidden">
+          <form id="site-search" role="search" action="/range" className="container-page flex gap-2 border-t border-line pb-3 pt-3">
+            <label htmlFor="site-search-input" className="sr-only">
+              Search finishes
+            </label>
+            <input
+              ref={searchInput}
+              id="site-search-input"
+              name="q"
+              type="search"
+              placeholder="Search finishes, e.g. Keswick"
+              autoComplete="off"
+              className="min-h-tap w-full border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
+            />
+            <button
+              type="submit"
+              className="min-h-tap shrink-0 bg-green-ink px-4 text-[0.9375rem] font-medium text-white transition-colors hover:bg-green-ink-hover"
+            >
+              Search
+            </button>
+          </form>
         </div>
-        <nav aria-label="Menu" className="container-page flex flex-1 flex-col overflow-y-auto py-6">
-          <ul className="flex flex-col">
-            {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item) => (
-              <li key={item.href} className="border-b border-line">
-                <Link
-                  href={item.href}
-                  aria-current={pathname === item.href ? "page" : undefined}
-                  className="flex min-h-14 items-center justify-between font-display text-display-sm aria-[current=page]:text-green-ink"
-                  onClick={() => menuRef.current?.close()}
-                >
-                  {item.label}
-                  {item.href === "/samples" && <SampleCount />}
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <ul className="mt-8 grid grid-cols-2 gap-x-6 text-[0.9375rem] text-ink-muted">
-            {[
-              { href: "/technology", label: "Technology" },
-              { href: "/warranty", label: "Warranty" },
-              { href: "/contact", label: "Contact" },
-              { href: TRADE_NAV.href, label: "Trade accounts" },
-            ].map((item) => (
-              <li key={item.href}>
-                <Link href={item.href} className="flex min-h-tap items-center hover:text-navy" onClick={() => menuRef.current?.close()}>
-                  {item.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </dialog>
+      </div>
+
+      <MobileMenu nav={nav} ref={menuRef} />
     </header>
   );
 }

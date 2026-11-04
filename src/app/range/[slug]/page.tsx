@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, ViewTransition } from "react";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { FinishImage } from "@/components/finish/finish-image";
@@ -26,7 +27,9 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
   return {
     title: finish.name,
     description: finish.description.split("\n")[0],
-    openGraph: image ? { images: [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] } : undefined,
+    openGraph: image
+      ? { images: [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] }
+      : undefined,
   };
 }
 
@@ -49,9 +52,11 @@ export default function FinishPage({ params }: PageProps<"/range/[slug]">) {
   // params are awaited inside Suspense so the skeleton can serve as the
   // instant App Shell on client navigation.
   return (
-    <Suspense fallback={<FinishSkeleton />}>
-      <FinishContent params={params} />
-    </Suspense>
+    <PageTransition>
+      <Suspense fallback={<FinishSkeleton />}>
+        <FinishContent params={params} />
+      </Suspense>
+    </PageTransition>
   );
 }
 
@@ -87,14 +92,19 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   return (
     <article>
       {/* Full-bleed room scene */}
-      <div className="relative aspect-[4/5] bg-line sm:aspect-[16/10] lg:aspect-[21/9]">
-        {hero && <FinishImage image={hero} sizes="100vw" priority quality={80} className="object-[50%_75%]" />}
-      </div>
+      <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
+        <div className="relative aspect-[4/5] bg-line sm:aspect-[16/10] lg:aspect-[21/9]">
+          {hero && <FinishImage image={hero} sizes="100vw" priority quality={80} className="object-[50%_75%]" />}
+        </div>
+      </ViewTransition>
 
       <div className="container-page grid gap-12 py-12 sm:py-16 lg:grid-cols-12 lg:gap-16">
         <div className="lg:col-span-7">
           <nav aria-label="Breadcrumb">
-            <Link href="/range" className="inline-flex min-h-tap items-center gap-2 text-[0.875rem] text-ink-muted hover:text-navy">
+            <Link
+              href="/range"
+              className="inline-flex min-h-tap items-center gap-2 text-[0.875rem] text-ink-muted hover:text-navy"
+            >
               <ArrowLeft size={16} /> The range
             </Link>
           </nav>
@@ -152,7 +162,10 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 const lead = i === 0 && galleryLayout(gallery.length).lead;
                 return (
                   <li key={img.src} className={cn("relative overflow-hidden bg-line", lead ? lead : "aspect-square")}>
-                    <FinishImage image={img} sizes={lead ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 30vw, 50vw"} />
+                    <FinishImage
+                      image={img}
+                      sizes={lead ? "(min-width: 1024px) 60vw, 100vw" : "(min-width: 1024px) 30vw, 50vw"}
+                    />
                   </li>
                 );
               })}
@@ -167,7 +180,10 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <h2 id="related-heading" className="text-display-md text-navy">
               You might also like
             </h2>
-            <Link href="/range" className="inline-flex min-h-tap items-center gap-2 text-navy underline-offset-4 hover:underline">
+            <Link
+              href="/range"
+              className="inline-flex min-h-tap items-center gap-2 text-navy underline-offset-4 hover:underline"
+            >
               View all finishes <ArrowRight size={16} />
             </Link>
           </div>
