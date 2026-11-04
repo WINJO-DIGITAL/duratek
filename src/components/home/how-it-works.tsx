@@ -79,9 +79,7 @@ export function HowItWorks({ steps }: { steps: Step[] }) {
         className="grid gap-8 border-line sm:grid-cols-2 lg:col-span-8 lg:border-l lg:pl-16"
       >
         <div key={active} className="animate-[stagger-in_600ms_var(--ease-calm)_both] self-center">
-          <p className="font-display text-[0.9375rem] tabular-nums text-green-ink">
-            {String(active + 1).padStart(2, "0")} / {String(steps.length).padStart(2, "0")}
-          </p>
+          <p className="eyebrow">{step.title}</p>
           <p className="mt-3 text-lede text-ink-muted">{step.body}</p>
           <Link href={step.href} className="mt-6 inline-flex min-h-tap items-center gap-2 text-navy underline-offset-4 hover:underline">
             {step.cta} <ArrowRight size={16} />

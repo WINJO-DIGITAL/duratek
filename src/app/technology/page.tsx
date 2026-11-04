@@ -71,10 +71,7 @@ export default async function TechnologyPage() {
             <section key={c.title} className={cn("py-section", i % 2 === 1 && "bg-white")}>
               <div className="container-page grid items-center gap-10 lg:grid-cols-12 lg:gap-16">
                 <div className={cn("lg:col-span-5", flip ? "lg:order-2 lg:col-start-8" : "lg:order-1")}>
-                  <p className="font-display text-[0.9375rem] text-green-ink tabular-nums">
-                    {String(i + 1).padStart(2, "0")}
-                  </p>
-                  <SectionIntro title={c.title} className="mt-2">
+                  <SectionIntro title={c.title}>
                     <p>{c.body}</p>
                   </SectionIntro>
                   {c.note && <p className="mt-6 font-medium text-navy">{c.note}</p>}

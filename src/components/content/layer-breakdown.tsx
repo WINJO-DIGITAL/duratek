@@ -79,14 +79,20 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
               onFocus={() => setActive(i)}
               onClick={() => setActive(active === i ? null : i)}
               className={cn(
-                "flex w-full items-baseline gap-5 py-4 text-left transition-colors duration-300 min-h-tap",
+                "flex w-full items-start gap-5 py-4 text-left transition-colors duration-300 min-h-tap",
                 dark ? "text-on-dark-muted hover:text-on-dark" : "text-ink-muted hover:text-navy",
                 active === i && (dark ? "text-on-dark" : "text-navy"),
               )}
             >
-              <span className={cn("font-display text-[0.9375rem] tabular-nums", dark ? "text-green-on-navy" : "text-green-ink")}>
-                {String(i + 1).padStart(2, "0")}
-              </span>
+              {/* Square marker: filled for the selected layer */}
+              <span
+                aria-hidden="true"
+                className={cn(
+                  "mt-[0.6rem] size-2 shrink-0 border transition-colors duration-300",
+                  dark ? "border-green-on-navy" : "border-green-ink",
+                  active === i && (dark ? "bg-green-on-navy" : "bg-green-ink"),
+                )}
+              />
               <span>
                 <span className={cn("block font-display text-display-sm", dark ? "text-on-dark" : "text-navy")}>{layer.name}</span>
                 <span className="mt-1 block text-[0.9375rem]">{layer.detail}</span>

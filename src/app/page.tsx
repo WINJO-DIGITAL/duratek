@@ -37,7 +37,14 @@ const STYLE_COPY: Record<FinishStyle, { title: string; body: string; cta: string
 
 export default async function HomePage() {
   const finishes = await getFinishes();
-  const nextRoom = takeFrom(imagePool(finishes, "room"));
+  // Every pooled photo used on the page, so the colour index can avoid repeats.
+  const usedSrcs = new Set<string>();
+  const takeRoom = takeFrom(imagePool(finishes, "room"));
+  const nextRoom = () => {
+    const next = takeRoom();
+    if (next) usedSrcs.add(next.image.src);
+    return next;
+  };
   const hero = nextRoom();
   // Hero carousel: the hero photo plus the next four from the pool, so no
   // later section repeats a hero image.
@@ -57,22 +64,11 @@ export default async function HomePage() {
   const consideredA = nextRoom();
   const consideredB = nextRoom();
   const closingImage = nextRoom();
-  const woodSwatch = finishes.map((f) => imagesOfKind(f, "swatch")[0]).find(Boolean);
-
-  const heroSrcs = new Set(heroSlides.map((sl) => sl.image.src));
-  const colourItems: ColourIndexItem[] = distinct(finishes.map((f) => f.colourFamily)).map((c) => {
-    const inFamily = finishes.filter((f) => f.colourFamily === c);
-    return {
-      id: c,
-      label: colourFamilyLabel(c),
-      count: inFamily.length,
-      href: `/range?colour=${c}`,
-      // First room scene not already in the hero carousel.
-      image:
-        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => !heroSrcs.has(img.src)) ??
-        leadImage(inFamily[0]),
-    };
-  });
+  // A different finish's swatch from the one in the wear-layer section.
+  const woodSwatch = finishes
+    .filter((f) => f.id !== wearGrain?.finish.id)
+    .map((f) => imagesOfKind(f, "swatch")[0])
+    .find(Boolean);
 
   const steps: Step[] = [
     {
@@ -104,6 +100,21 @@ export default async function HomePage() {
       image: nextRoom()?.image,
     },
   ];
+
+  const colourItems: ColourIndexItem[] = distinct(finishes.map((f) => f.colourFamily)).map((c) => {
+    const inFamily = finishes.filter((f) => f.colourFamily === c);
+    return {
+      id: c,
+      label: colourFamilyLabel(c),
+      swatch: imagesOfKind(inFamily[0], "swatch")[0],
+      count: inFamily.length,
+      href: `/range?colour=${c}`,
+      // First room scene not already used elsewhere on the page.
+      image:
+        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => !usedSrcs.has(img.src)) ??
+        leadImage(inFamily[0]),
+    };
+  });
 
   return (
     <PageTransition>

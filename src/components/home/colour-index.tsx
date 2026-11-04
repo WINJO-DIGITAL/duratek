@@ -13,6 +13,7 @@ export interface ColourIndexItem {
   count: number;
   href: string;
   image?: CatalogueImage;
+  swatch?: CatalogueImage;
 }
 
 /**
@@ -33,13 +34,15 @@ export function ColourIndex({ items }: { items: ColourIndexItem[] }) {
               onFocus={() => setActive(i)}
               className="group grid min-h-20 grid-cols-[3rem_1fr_auto] items-center gap-4 py-4 sm:min-h-24 sm:grid-cols-[5rem_1fr_auto] lg:min-h-28"
             >
+              {/* Round colour swatch in place of a number */}
               <span
+                aria-hidden="true"
                 className={cn(
-                  "font-display text-display-sm tabular-nums transition-colors duration-500",
-                  active === i ? "text-green-ink" : "text-ink-muted",
+                  "relative block size-8 overflow-hidden rounded-full bg-line ring-offset-2 ring-offset-white transition-[box-shadow,scale] duration-500 ease-calm sm:size-10",
+                  active === i ? "scale-100 ring-1 ring-navy" : "scale-90",
                 )}
               >
-                {String(i + 1).padStart(2, "0")}
+                {item.swatch && <Image src={item.swatch.src} alt="" fill sizes="40px" quality={70} className="object-cover" />}
               </span>
               <span
                 className={cn(
