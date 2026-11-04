@@ -312,3 +312,9 @@
     scale: 0.6;
   }
 }
+
+@keyframes hero-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

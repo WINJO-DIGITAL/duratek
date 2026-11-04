@@ -10,6 +10,7 @@ import { ScratchShieldBadge, WarrantyBadges, WarrantyDisclaimer } from "@/compon
 import { FinishCard } from "@/components/finish/finish-card";
 import { FinishImage } from "@/components/finish/finish-image";
 import { ColourIndex, type ColourIndexItem } from "@/components/home/colour-index";
+import { HeroCarousel, type HeroSlide } from "@/components/home/hero-carousel";
 import { HowItWorks, type Step } from "@/components/home/how-it-works";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowRight } from "@/components/ui/icons";
@@ -38,6 +39,16 @@ export default async function HomePage() {
   const finishes = await getFinishes();
   const nextRoom = takeFrom(imagePool(finishes, "room"));
   const hero = nextRoom();
+  // Hero carousel: the hero photo plus the next four from the pool, so no
+  // later section repeats a hero image.
+  const heroSlides: HeroSlide[] = [hero, nextRoom(), nextRoom(), nextRoom(), nextRoom()]
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .map(({ image, finish }) => ({
+      image,
+      swatch: imagesOfKind(finish, "swatch")[0],
+      name: finish.name,
+      slug: finish.slug,
+    }));
   const styles = (["plank", "herringbone"] as const).filter((s) => finishes.some((f) => f.style === s));
   const styleImages = styles.map(() => nextRoom());
   const lifeImage = nextRoom();
@@ -48,6 +59,7 @@ export default async function HomePage() {
   const closingImage = nextRoom();
   const woodSwatch = finishes.map((f) => imagesOfKind(f, "swatch")[0]).find(Boolean);
 
+  const heroSrcs = new Set(heroSlides.map((sl) => sl.image.src));
   const colourItems: ColourIndexItem[] = distinct(finishes.map((f) => f.colourFamily)).map((c) => {
     const inFamily = finishes.filter((f) => f.colourFamily === c);
     return {
@@ -55,9 +67,10 @@ export default async function HomePage() {
       label: colourFamilyLabel(c),
       count: inFamily.length,
       href: `/range?colour=${c}`,
-      // The lead photo of a finish other than the hero's (lead photos are the
-      // curated professional room scenes).
-      image: leadImage(inFamily.find((f) => f.id !== hero?.finish.id) ?? inFamily[0]),
+      // First room scene not already in the hero carousel.
+      image:
+        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => !heroSrcs.has(img.src)) ??
+        leadImage(inFamily[0]),
     };
   });
 
@@ -97,14 +110,12 @@ export default async function HomePage() {
       <>
         {/* 1. Hero */}
         <section className="on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-svh">
-          {hero && (
-            <FinishImage image={hero.image} sizes="100vw" priority quality={80} className="-z-10 object-[50%_70%]" />
-          )}
+          <HeroCarousel slides={heroSlides} />
           <div
             className="absolute inset-0 -z-10 bg-gradient-to-t from-navy/95 via-navy/65 to-navy/10 lg:bg-gradient-to-r lg:from-navy/85 lg:via-navy/40 lg:to-navy/0"
             aria-hidden="true"
           />
-          <div className="container-page pb-12 pt-32 sm:pb-16 lg:pb-24">
+          <div className="container-page pb-28 pt-32 sm:pb-32 lg:pb-36">
             <p className="eyebrow text-green-on-navy">The performance collection</p>
             <h1 className="mt-4 max-w-[14ch] text-display-xl text-on-dark">
               Beautifully considered. <em className="italic">Built to perform.</em>
@@ -120,14 +131,6 @@ export default async function HomePage() {
                 Order free samples
               </ButtonLink>
             </div>
-            {hero && (
-              <p className="mt-10 text-[0.8125rem] text-on-dark-muted">
-                Shown:{" "}
-                <Link href={`/range/${hero.finish.slug}`} className="underline underline-offset-4 hover:text-white">
-                  {hero.finish.name}
-                </Link>
-              </p>
-            )}
           </div>
         </section>
 

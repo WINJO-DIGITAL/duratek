@@ -33,11 +33,6 @@
           "room": "kitchen"
         },
         {
-          "i": 7,
-          "kind": "room",
-          "room": "open-plan living space"
-        },
-        {
           "i": 0,
           "kind": "room",
           "room": "children's playroom"
@@ -51,6 +46,11 @@
           "i": 12,
           "kind": "room",
           "room": "kitchen"
+        },
+        {
+          "i": 7,
+          "kind": "room",
+          "room": "open-plan living space"
         },
         {
           "i": 9,
