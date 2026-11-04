@@ -256,39 +256,34 @@
  * transitions); items stagger in using --i.
  * ------------------------------------------------------------------------- */
 /* Mobile menu: unfolds from the top like a blind. */
-.menu-sheet {
-  clip-path: inset(0 0 100% 0);
-  transition:
-    clip-path 420ms var(--ease-calm),
-    overlay 420ms allow-discrete,
-    display 420ms allow-discrete;
-}
+/* Open: @starting-style unfolds it. Close: closeMenu() sets [data-closing]
+   while the dialog is still open and modal, so the roll-up never depends on
+   discrete display/overlay transitions (unsupported in iOS Safari). */
 .menu-sheet[open] {
   clip-path: inset(0);
-  transition:
-    clip-path 750ms var(--ease-curtain),
-    overlay 750ms allow-discrete,
-    display 750ms allow-discrete;
+  transition: clip-path 750ms var(--ease-curtain);
 }
 @starting-style {
   .menu-sheet[open] {
     clip-path: inset(0 0 100% 0);
   }
 }
-.menu-sheet::backdrop {
-  background: rgb(24 54 76 / 0);
-  transition:
-    background 420ms var(--ease-calm),
-    overlay 420ms allow-discrete,
-    display 420ms allow-discrete;
+.menu-sheet[open][data-closing] {
+  clip-path: inset(0 0 100% 0);
+  transition: clip-path 420ms var(--ease-calm);
 }
 .menu-sheet[open]::backdrop {
   background: rgb(24 54 76 / 0.35);
+  transition: background 750ms var(--ease-calm);
 }
 @starting-style {
   .menu-sheet[open]::backdrop {
     background: rgb(24 54 76 / 0);
   }
+}
+.menu-sheet[open][data-closing]::backdrop {
+  background: rgb(24 54 76 / 0);
+  transition: background 420ms var(--ease-calm);
 }
 
 .stagger-in > * {

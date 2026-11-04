@@ -18,24 +18,58 @@ const SECONDARY = [
   { href: TRADE_NAV.href, label: "Trade accounts" },
 ];
 
+const CLOSE_FALLBACK = 600; // ms; a little longer than the CSS close transition
+
+/**
+ * Animated close. The sheet stays modal (in the top layer, full screen) while
+ * the curtain rolls up, and only then is the dialog closed. Closing first and
+ * animating after relies on `transition-behavior: allow-discrete` for
+ * `overlay`, which iOS Safari lacks: there the sheet dropped out of the top
+ * layer mid-animation and rendered, half laid out, under the header.
+ */
+export function closeMenu(dialog: HTMLDialogElement | null) {
+  if (!dialog?.open || "closing" in dialog.dataset) return;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    dialog.close();
+    return;
+  }
+  dialog.dataset.closing = "";
+  const done = () => {
+    dialog.removeEventListener("transitionend", onEnd);
+    clearTimeout(fallback);
+    delete dialog.dataset.closing;
+    if (dialog.open) dialog.close();
+  };
+  const onEnd = (e: TransitionEvent) => {
+    if (e.target === dialog && e.propertyName === "clip-path") done();
+  };
+  dialog.addEventListener("transitionend", onEnd);
+  const fallback = setTimeout(done, CLOSE_FALLBACK);
+}
+
 /**
  * Full-screen menu for phones and tablets. Native <dialog> gives focus
- * trapping and Escape; CSS (.menu-sheet) eases it in and out, and items
- * stagger in each time it opens.
+ * trapping; CSS (.menu-sheet) unfolds it on open, closeMenu() rolls it up,
+ * and items stagger in each time it opens.
  */
 export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDialogElement | null> }) {
   const pathname = usePathname();
   // Remount the content on each open so the stagger replays.
   const [openCount, setOpenCount] = useState(0);
-  const close = () => ref.current?.close();
+  const close = () => closeMenu(ref.current);
 
   return (
     <dialog
       ref={ref}
       aria-label="Menu"
-      className="menu-sheet m-0 h-dvh max-h-none w-full max-w-none bg-off-white p-0 text-navy open:flex open:flex-col lg:hidden"
+      className="menu-sheet fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none bg-off-white p-0 text-navy open:flex open:flex-col lg:hidden"
       onClick={(e) => {
         if (e.target === e.currentTarget) close();
+      }}
+      onCancel={(e) => {
+        // Escape: run the same animated close instead of the instant one.
+        e.preventDefault();
+        close();
       }}
       onToggle={(e) => {
         if ((e.currentTarget as HTMLDialogElement).open) setOpenCount((n) => n + 1);

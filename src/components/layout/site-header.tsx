@@ -41,9 +41,12 @@ export function SiteHeader({ nav }: { nav: NavData }) {
   // Transparent over the home hero until the page scrolls or a panel opens.
   const overlay = OVERLAY_ROUTES.has(pathname) && !scrolled && !searchOpen && !rangeOpen;
 
-  // Close the menu dialog on navigation.
+  // Close the menu on navigation (instantly if its close is still running).
   useEffect(() => {
-    menuRef.current?.close();
+    const d = menuRef.current;
+    if (!d?.open) return;
+    delete d.dataset.closing;
+    d.close();
   }, [pathname]);
 
   useEffect(() => {
