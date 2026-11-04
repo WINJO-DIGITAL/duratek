@@ -99,6 +99,9 @@
   html {
     -webkit-text-size-adjust: 100%;
     scroll-behavior: smooth;
+    /* Sticky header (plus its 1px border): anchors and the router's
+       scroll-into-view land below it, not underneath it. */
+    scroll-padding-top: calc(var(--spacing-header) + 1px);
   }
   body {
     background: var(--color-off-white);
@@ -336,11 +339,6 @@
       animation-timeline: view();
       animation-range: entry 0% cover 40%;
     }
-    /* Reading progress under the header. */
-    .scroll-progress {
-      animation: scroll-progress linear both;
-      animation-timeline: scroll(root block);
-    }
   }
 }
 
@@ -361,14 +359,6 @@
 @keyframes reveal-img-scale {
   from {
     scale: 1.08;
-  }
-}
-@keyframes scroll-progress {
-  from {
-    scale: 0 1;
-  }
-  to {
-    scale: 1 1;
   }
 }
 

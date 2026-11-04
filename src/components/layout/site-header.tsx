@@ -9,6 +9,7 @@ import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
 import { TRADE_NAV } from "@/lib/config";
 import { finishMenuNav, MobileMenu } from "./mobile-menu";
+import { ScrollProgress } from "./scroll-progress";
 import { RangeMenu } from "./range-menu";
 import { SampleCount } from "./sample-count";
 
@@ -95,15 +96,8 @@ export function SiteHeader({ nav }: { nav: NavData }) {
         )}
       />
 
-      {/* Reading progress: grows with scroll (CSS scroll timeline); hidden where unsupported. */}
-      <span
-        aria-hidden="true"
-        style={{ scale: "0 1" }}
-        className={cn(
-          "scroll-progress pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-left bg-green transition-opacity duration-300",
-          overlay && "opacity-0",
-        )}
-      />
+      {/* Reading progress: draws across as the page scrolls down, retracts on the way up. */}
+      <ScrollProgress onDark={overlay} />
       <div className="container-page flex h-header items-center justify-between gap-6 lg:grid lg:grid-cols-[1fr_auto_1fr]">
         {/* Desktop: left nav */}
         <nav aria-label="Main" className="hidden items-center lg:-ml-4 lg:flex">
