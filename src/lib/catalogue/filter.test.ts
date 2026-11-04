@@ -36,4 +36,12 @@ describe("range filters", () => {
     expect(matches(keswick, { ...f, q: "OAK kes" })).toBe(true);
     expect(matches(honister, { ...f, q: "oak" })).toBe(false);
   });
+
+  it("searches the extra keywords, ignoring hyphens", () => {
+    const f = NO_FILTERS;
+    const long = { ...fellside, keywords: "Natural oak Extra-long plank" };
+    expect(matches(long, { ...f, q: "extra long" })).toBe(true);
+    expect(matches(long, { ...f, q: "extra-long natural" })).toBe(true);
+    expect(matches(long, { ...f, q: "grey" })).toBe(false);
+  });
 });

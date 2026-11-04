@@ -15,6 +15,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
 import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
+import { relatedFinishes } from "@/lib/catalogue/related";
 import type { Finish } from "@/lib/catalogue/types";
 import { JsonLd } from "@/components/seo/json-ld";
 import { cn } from "@/lib/cn";
@@ -36,13 +37,6 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
     description: finish.description.split("\n")[0],
     alternates: { canonical: `/range/${finish.slug}` },
   };
-}
-
-function related(all: Finish[], finish: Finish, n = 4): Finish[] {
-  const others = all.filter((f) => f.id !== finish.id);
-  const same = others.filter((f) => f.colourFamily === finish.colourFamily);
-  const rest = others.filter((f) => f.colourFamily !== finish.colourFamily);
-  return [...same, ...rest].slice(0, n);
 }
 
 /** Every plank format in the range, to scale; this finish's is filled with its grain. */
@@ -293,7 +287,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             </Link>
           </div>
           <ul className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
-            {related(all, finish).map((f) => (
+            {relatedFinishes(all, finish).map((f) => (
               <li key={f.id}>
                 <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, 48vw" />
               </li>

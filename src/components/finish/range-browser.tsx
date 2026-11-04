@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
+import { Close, Search } from "@/components/ui/icons";
 import {
   distinct,
   filtersToQuery,
@@ -61,6 +62,14 @@ export function RangeBrowser({
   const visible = items.filter((i) => matches(i, filters));
   const active = isFiltered(filters);
   const [view, setView] = useState<GridView>("large");
+  // Raw text as typed (the URL holds the trimmed query).
+  const [text, setText] = useState(filters.q);
+  const [lastQ, setLastQ] = useState(filters.q);
+  if (filters.q !== lastQ) {
+    // The query changed elsewhere (header search, Clear filters): follow it.
+    setLastQ(filters.q);
+    if (filters.q !== text.trim()) setText(filters.q);
+  }
 
   function update(next: Partial<RangeFilters>) {
     const qs = filtersToQuery({ ...filters, ...next });
@@ -144,7 +153,15 @@ export function RangeBrowser({
         </div>
       </div>
 
-      <div className="mt-6 flex min-h-tap flex-wrap items-center justify-between gap-3">
+      <div className="mt-6 flex min-h-tap flex-wrap items-center gap-x-6 gap-y-3">
+        <SearchField
+          value={text}
+          onChange={(v) => {
+            setText(v);
+            update({ q: v.trim() });
+          }}
+          className="flex w-full sm:order-last sm:ml-auto sm:w-64"
+        />
         <p aria-live="polite" className="text-[0.9375rem] text-ink-muted">
           {visible.length} {visible.length === 1 ? "finish" : "finishes"}
           {filters.q && (
@@ -174,6 +191,41 @@ export function RangeBrowser({
         </div>
       )}
     </>
+  );
+}
+
+function SearchField({
+  value,
+  onChange,
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}) {
+  return (
+    <div role="search" className={cn("relative shrink-0 items-center", className)}>
+      <Search size={18} className="pointer-events-none absolute left-3 text-ink-muted" aria-hidden="true" />
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search finishes"
+        aria-label="Search finishes"
+        enterKeyHint="search"
+        className="min-h-tap w-full border border-navy/20 bg-white pl-10 pr-10 text-[0.9375rem] text-navy placeholder:text-ink-muted focus:border-navy [&::-webkit-search-cancel-button]:hidden"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="absolute right-0 flex size-tap items-center justify-center text-ink-muted hover:text-navy"
+        >
+          <Close size={16} />
+          <span className="sr-only">Clear search</span>
+        </button>
+      )}
+    </div>
   );
 }
 

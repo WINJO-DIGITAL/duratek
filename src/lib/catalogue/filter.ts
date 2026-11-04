@@ -6,6 +6,8 @@ export interface FilterableFinish {
   colourFamily: string;
   /** Plank format ("standard" | "extra-long"), if known. */
   format?: string;
+  /** Extra words search should match, such as the colour family and format labels. */
+  keywords?: string;
 }
 
 export interface RangeFilters {
@@ -45,8 +47,8 @@ export function matches(f: FilterableFinish, filters: RangeFilters): boolean {
   if (filters.format && f.format !== filters.format) return false;
   if (filters.colour && f.colourFamily !== filters.colour) return false;
   if (filters.q) {
-    const words = filters.q.toLowerCase().split(/\s+/).filter(Boolean);
-    const hay = f.name.toLowerCase();
+    const words = filters.q.toLowerCase().replace(/-/g, " ").split(/\s+/).filter(Boolean);
+    const hay = `${f.name} ${f.keywords ?? ""}`.toLowerCase().replace(/-/g, " ");
     if (!words.every((w) => hay.includes(w))) return false;
   }
   return true;

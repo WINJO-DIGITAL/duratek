@@ -5,7 +5,8 @@ import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
 import { PageTransition } from "@/components/layout/page-transition";
 import { byTone, getFinishes, imagesOfKind } from "@/lib/catalogue";
-import { formatOptions, plankFormat } from "@/lib/catalogue/format";
+import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
+import { colourFamilyLabel } from "@/lib/config";
 import { countWord } from "@/lib/number-words";
 
 export const metadata: Metadata = {
@@ -17,21 +18,25 @@ export const metadata: Metadata = {
 export default async function RangePage() {
   // Light to dark, measured from each swatch, so the grid reads as one palette.
   const finishes = byTone(await getFinishes());
-  const items: RangeItem[] = finishes.map((f, i) => ({
-    id: f.id,
-    name: f.name,
-    style: f.style,
-    colourFamily: f.colourFamily,
-    format: plankFormat(f.specs),
-    card: (
-      <FinishCard
-        finish={f}
-        priority={i < 3}
-        headingLevel="h2"
-        sizes="(min-width: 1024px) 31vw, 48vw"
-      />
-    ),
-  }));
+  const items: RangeItem[] = finishes.map((f, i) => {
+    const format = plankFormat(f.specs);
+    return {
+      id: f.id,
+      name: f.name,
+      style: f.style,
+      colourFamily: f.colourFamily,
+      format,
+      keywords: [colourFamilyLabel(f.colourFamily), format && FORMAT_LABELS[format]].filter(Boolean).join(" "),
+      card: (
+        <FinishCard
+          finish={f}
+          priority={i < 3}
+          headingLevel="h2"
+          sizes="(min-width: 1024px) 31vw, 48vw"
+        />
+      ),
+    };
+  });
 
   // One swatch per colour family for the round filter chips.
   const colourSwatches: Record<string, string> = {};
