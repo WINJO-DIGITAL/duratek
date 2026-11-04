@@ -41,7 +41,8 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
         if ((e.currentTarget as HTMLDialogElement).open) setOpenCount((n) => n + 1);
       }}
     >
-      <div className="container-page flex h-header shrink-0 items-center justify-between border-b border-line">
+      <div className="container-page relative flex h-header shrink-0 items-center justify-between border-b border-line">
+        <span aria-hidden="true" className="dropdown-line absolute inset-x-0 -bottom-px block h-px bg-green" />
         <Link href="/" onClick={close} aria-label="Duratek home" className="-mx-2 flex min-h-tap items-center px-2">
           <Wordmark />
         </Link>
@@ -98,9 +99,16 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
                   All {nav.finishCount}
                 </Link>
               </div>
-              <div className="scrollbar-none -mx-[var(--spacing-gutter)] mt-4 flex snap-x scroll-px-[var(--spacing-gutter)] gap-3 overflow-x-auto px-[var(--spacing-gutter)] sm:grid sm:grid-cols-4 sm:overflow-visible">
-                {nav.featured.map((f) => (
-                  <NavSwatch key={f.id} finish={f} onNavigate={close} sizes="(min-width: 640px) 22vw, 36vw" className="w-[36vw] shrink-0 snap-start sm:w-auto" />
+              <div className="swatch-reveal scrollbar-none -mx-[var(--spacing-gutter)] mt-4 flex snap-x scroll-px-[var(--spacing-gutter)] gap-3 overflow-x-auto px-[var(--spacing-gutter)] sm:grid sm:grid-cols-4 sm:overflow-visible">
+                {nav.featured.map((f, i) => (
+                  <NavSwatch
+                    key={f.id}
+                    finish={f}
+                    onNavigate={close}
+                    sizes="(min-width: 640px) 22vw, 36vw"
+                    className="w-[36vw] shrink-0 snap-start sm:w-auto"
+                    style={{ "--i": i + 4 } as React.CSSProperties}
+                  />
                 ))}
               </div>
             </div>

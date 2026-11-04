@@ -82,6 +82,7 @@ export function RangeMenu({
   return (
     <div
       ref={root}
+      data-open={isOpen || undefined}
       className="flex items-center"
       onMouseEnter={() => schedule(true, OPEN_DELAY)}
       onMouseLeave={() => schedule(false, CLOSE_DELAY)}
@@ -129,18 +130,21 @@ export function RangeMenu({
         <span className="sr-only">{isOpen ? "Close range menu" : "Open range menu"}</span>
       </button>
 
-      {/* Panel spans the full width under the header. */}
+      {/* Dims and softens the page behind the open panel. */}
+      <div
+        aria-hidden="true"
+        className="dropdown-scrim absolute inset-x-0 top-full h-[100dvh] bg-navy/20 backdrop-blur-[2px]"
+      />
+
+      {/* Panel spans the full width under the header and unfolds from it. */}
       <div
         id={panelId}
         role="region"
         aria-label="The range"
         inert={!isOpen}
-        className={cn(
-          "absolute inset-x-0 top-full border-b border-line bg-off-white shadow-[0_24px_48px_-24px_rgb(24_54_76/0.25)]",
-          "transition-[opacity,translate,visibility] duration-500 ease-calm",
-          isOpen ? "visible translate-y-0 opacity-100" : "invisible -translate-y-2 opacity-0",
-        )}
+        className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-[0_32px_48px_-28px_rgb(24_54_76/0.35)]"
       >
+        <span aria-hidden="true" className="dropdown-line absolute inset-x-0 top-0 block h-px bg-green" />
         {hasOpened && (
           <div className={cn("container-page grid grid-cols-12 gap-10 py-10", isOpen && "stagger-in")}>
             <div className="col-span-3" style={{ "--i": 0 } as React.CSSProperties}>
@@ -191,10 +195,14 @@ export function RangeMenu({
                 ))}
               </ul>
             </div>
-            <div className="col-span-5 grid grid-cols-4 gap-4" style={{ "--i": 3 } as React.CSSProperties}>
-              {nav.featured.map((f) => (
-                <NavSwatch key={f.id} finish={f} onNavigate={close} sizes="140px" />
-              ))}
+            <div className="col-span-5" style={{ "--i": 3 } as React.CSSProperties}>
+              <div className={cn("grid grid-cols-4 gap-4", isOpen && "swatch-reveal")}>
+                {nav.featured.map((f, i) => (
+                  <div key={f.id} style={{ "--i": i } as React.CSSProperties}>
+                    <NavSwatch finish={f} onNavigate={close} sizes="140px" />
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

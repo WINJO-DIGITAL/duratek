@@ -76,6 +76,8 @@
 
   /* Motion: slow and deliberate */
   --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); /* fast start, long soft settle */
+  --ease-curtain: cubic-bezier(0.65, 0, 0.25, 1); /* visible draw-down, gentle landing */
   --default-transition-duration: 280ms;
   --default-transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
 
@@ -240,23 +242,24 @@
  * Motion: menus. Dialog fades and settles on open and close (discrete
  * transitions); items stagger in using --i.
  * ------------------------------------------------------------------------- */
+/* Mobile menu: unfolds from the top like a blind. */
 .menu-sheet {
-  opacity: 0;
-  translate: 0 -10px;
+  clip-path: inset(0 0 100% 0);
   transition:
-    opacity 420ms var(--ease-calm),
-    translate 520ms var(--ease-calm),
+    clip-path 420ms var(--ease-calm),
     overlay 420ms allow-discrete,
     display 420ms allow-discrete;
 }
 .menu-sheet[open] {
-  opacity: 1;
-  translate: 0 0;
+  clip-path: inset(0);
+  transition:
+    clip-path 750ms var(--ease-curtain),
+    overlay 750ms allow-discrete,
+    display 750ms allow-discrete;
 }
 @starting-style {
   .menu-sheet[open] {
-    opacity: 0;
-    translate: 0 -10px;
+    clip-path: inset(0 0 100% 0);
   }
 }
 .menu-sheet::backdrop {
@@ -376,5 +379,62 @@
   }
   to {
     scale: 1 1;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Premium dropdown: the panel unfolds from the header (clip-path curtain),
+ * a green line draws across its top, the page behind dims, and the content
+ * and swatches arrive in sequence. Closing is quicker than opening.
+ * ------------------------------------------------------------------------- */
+.dropdown-panel {
+  clip-path: inset(0 0 100% 0);
+  visibility: hidden;
+  transition:
+    clip-path 380ms var(--ease-calm),
+    visibility 0s linear 380ms;
+}
+[data-open] > .dropdown-panel {
+  /* Negative bottom inset keeps the drop shadow visible. */
+  clip-path: inset(0 0 -48px 0);
+  visibility: visible;
+  transition:
+    clip-path 750ms var(--ease-curtain),
+    visibility 0s;
+}
+.dropdown-line {
+  scale: 0 1;
+  transform-origin: left;
+  transition: scale 300ms var(--ease-calm);
+}
+[data-open] .dropdown-line,
+.menu-sheet[open] .dropdown-line {
+  scale: 1 1;
+  transition: scale 1000ms var(--ease-out-expo) 120ms;
+}
+/* Never takes the pointer: hovering the page must still count as leaving the menu. */
+.dropdown-scrim {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 380ms var(--ease-calm);
+}
+[data-open] > .dropdown-scrim {
+  opacity: 1;
+  transition: opacity 600ms var(--ease-calm);
+}
+.swatch-reveal > * {
+  animation: swatch-in 900ms var(--ease-out-expo) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 220ms);
+}
+@keyframes swatch-in {
+  from {
+    opacity: 0;
+    clip-path: inset(100% 0 0 0);
+    translate: 0 10px;
+  }
+  to {
+    opacity: 1;
+    clip-path: inset(0);
+    translate: 0 0;
   }
 }
