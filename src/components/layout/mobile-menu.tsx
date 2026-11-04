@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, type RefObject } from "react";
+import type { MouseEvent, RefObject } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { ArrowRight, Close } from "@/components/ui/icons";
 import type { NavData } from "@/lib/catalogue/nav";
@@ -18,11 +18,11 @@ const SECONDARY = [
   { href: TRADE_NAV.href, label: "Trade accounts" },
 ];
 
-const CLOSE_FALLBACK = 600; // ms; a little longer than the CSS close transition
+const CLOSE_FALLBACK = 350; // ms; a little longer than the CSS close fade (200ms)
 
 /**
  * Animated close. The sheet stays modal (in the top layer, full screen) while
- * the curtain rolls up, and only then is the dialog closed. Closing first and
+ * it fades out, and only then is the dialog closed. Closing first and
  * animating after relies on `transition-behavior: allow-discrete` for
  * `overlay`, which iOS Safari lacks: there the sheet dropped out of the top
  * layer mid-animation and rendered, half laid out, under the header.
@@ -41,22 +41,76 @@ export function closeMenu(dialog: HTMLDialogElement | null) {
     if (dialog.open) dialog.close();
   };
   const onEnd = (e: TransitionEvent) => {
-    if (e.target === dialog && e.propertyName === "clip-path") done();
+    if (e.target === dialog && e.propertyName === "opacity") done();
   };
   dialog.addEventListener("transitionend", onEnd);
   const fallback = setTimeout(done, CLOSE_FALLBACK);
 }
 
+const NAV_FALLBACK = 5000; // ms; close anyway if a navigation never lands
+
+/**
+ * Link taps that leave the page keep the menu up until the new page is ready
+ * (the header closes it when the path changes), so the old page never shows
+ * again in between. [data-menu-nav] tells the page transition to skip the
+ * old page and let the menu dissolve into the new one. Same-page links (or
+ * only the query changing) close at once.
+ */
+function onMenuLinkClick(
+  e: MouseEvent<HTMLAnchorElement>,
+  dialog: HTMLDialogElement | null,
+) {
+  if (!dialog?.open) return;
+  if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0)
+    return;
+  const url = new URL(e.currentTarget.href, window.location.href);
+  if (url.pathname === window.location.pathname) {
+    dialog.close();
+    return;
+  }
+  document.documentElement.dataset.menuNav = "";
+  window.clearTimeout(navFallback);
+  navFallback = window.setTimeout(() => {
+    if (dialog.open) dialog.close();
+    delete document.documentElement.dataset.menuNav;
+  }, NAV_FALLBACK);
+}
+
+let navFallback: number | undefined;
+
+/**
+ * Called by the header when the path changes: the menu has been closed with
+ * the new page, so cancel the fallback. The flag is cleared on the next
+ * interaction (or back/forward), never on a timer that could cut the page
+ * fade short.
+ */
+export function finishMenuNav() {
+  window.clearTimeout(navFallback);
+  const root = document.documentElement;
+  if (!("menuNav" in root.dataset)) return;
+  const clear = () => {
+    delete root.dataset.menuNav;
+    for (const type of EVENTS) window.removeEventListener(type, clear, true);
+  };
+  for (const type of EVENTS) window.addEventListener(type, clear, true);
+}
+const EVENTS = ["pointerdown", "keydown", "popstate"] as const;
+
 /**
  * Full-screen menu for phones and tablets. Native <dialog> gives focus
- * trapping; CSS (.menu-sheet) unfolds it on open, closeMenu() rolls it up,
- * and items stagger in each time it opens.
+ * trapping; CSS (.menu-sheet) fades it in, closeMenu() fades it out.
  */
-export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDialogElement | null> }) {
+export function MobileMenu({
+  nav,
+  ref,
+}: {
+  nav: NavData;
+  ref: RefObject<HTMLDialogElement | null>;
+}) {
   const pathname = usePathname();
-  // Remount the content on each open so the stagger replays.
-  const [openCount, setOpenCount] = useState(0);
   const close = () => closeMenu(ref.current);
+  const go = (e: MouseEvent<HTMLAnchorElement>) =>
+    onMenuLinkClick(e, ref.current);
 
   return (
     <dialog
@@ -71,31 +125,48 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
         e.preventDefault();
         close();
       }}
-      onToggle={(e) => {
-        if ((e.currentTarget as HTMLDialogElement).open) setOpenCount((n) => n + 1);
-      }}
     >
       <div className="container-page relative flex h-header shrink-0 items-center justify-between border-b border-line">
-        <span aria-hidden="true" className="dropdown-line absolute inset-x-0 -bottom-px block h-px bg-green" />
-        <Link href="/" onClick={close} aria-label="Duratek home" className="-mx-2 flex min-h-tap items-center px-2">
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 -bottom-px block h-px bg-green"
+        />
+        <Link
+          href="/"
+          onClick={go}
+          aria-label="Duratek home"
+          className="-mx-2 flex min-h-tap items-center px-2"
+        >
           <Wordmark className="h-[22px]" />
         </Link>
-        <button type="button" className="-mr-2 flex size-tap items-center justify-center" onClick={close} autoFocus>
+        <button
+          type="button"
+          className="-mr-2 flex size-tap items-center justify-center"
+          onClick={close}
+          autoFocus
+        >
           <Close />
           <span className="sr-only">Close menu</span>
         </button>
       </div>
 
-      <nav aria-label="Menu" key={openCount} className="container-page flex flex-1 flex-col overflow-y-auto pb-10 pt-4">
-        <ul className="stagger-in flex flex-col">
-          {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item, i) => {
-            const current = item.href === "/" ? pathname === "/" : pathname === item.href || pathname.startsWith(`${item.href}/`);
+      <nav
+        aria-label="Menu"
+        className="container-page flex flex-1 flex-col overflow-y-auto pb-10 pt-4"
+      >
+        <ul className="flex flex-col">
+          {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item) => {
+            const current =
+              item.href === "/"
+                ? pathname === "/"
+                : pathname === item.href ||
+                  pathname.startsWith(`${item.href}/`);
             return (
-              <li key={item.href} style={{ "--i": i } as React.CSSProperties} className="border-b border-line">
+              <li key={item.href} className="border-b border-line">
                 <Link
                   href={item.href}
                   aria-current={current ? "page" : undefined}
-                  onClick={close}
+                  onClick={go}
                   className="group flex min-h-16 items-center justify-between gap-4"
                 >
                   {/* Green underline draws in under the label: full for the current page, on hover otherwise. */}
@@ -125,23 +196,27 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
         </ul>
 
         {nav.featured.length > 0 && (
-          <div className="stagger-in mt-10">
-            <div style={{ "--i": 6 } as React.CSSProperties}>
+          <div className="mt-10">
+            <div>
               <div className="flex items-baseline justify-between">
                 <p className="eyebrow">Finishes</p>
-                <Link href="/range" onClick={close} className="text-[0.875rem] text-navy underline-offset-4 hover:underline">
+                <Link
+                  href="/range"
+                  onClick={go}
+                  className="text-[0.875rem] text-navy underline-offset-4 hover:underline"
+                >
                   All {nav.finishCount}
                 </Link>
               </div>
-              <div className="swatch-reveal scrollbar-none -mx-[var(--spacing-gutter)] mt-4 flex snap-x scroll-px-[var(--spacing-gutter)] gap-3 overflow-x-auto px-[var(--spacing-gutter)] sm:grid sm:grid-cols-4 sm:overflow-visible">
-                {nav.featured.map((f, i) => (
+              <div className="scrollbar-none -mx-[var(--spacing-gutter)] mt-4 flex snap-x scroll-px-[var(--spacing-gutter)] gap-3 overflow-x-auto px-[var(--spacing-gutter)] sm:grid sm:grid-cols-4 sm:overflow-visible">
+                {nav.featured.map((f) => (
                   <NavSwatch
                     key={f.id}
                     finish={f}
-                    onNavigate={close}
+                    onNavigate={go}
+                    eager
                     sizes="(min-width: 640px) 22vw, 36vw"
                     className="w-[36vw] shrink-0 snap-start sm:w-auto"
-                    style={{ "--i": i + 4 } as React.CSSProperties}
                   />
                 ))}
               </div>
@@ -149,10 +224,14 @@ export function MobileMenu({ nav, ref }: { nav: NavData; ref: RefObject<HTMLDial
           </div>
         )}
 
-        <ul className="stagger-in mt-10 grid grid-cols-2 gap-x-6">
-          {SECONDARY.map((item, i) => (
-            <li key={item.href} style={{ "--i": 7 + i } as React.CSSProperties}>
-              <Link href={item.href} onClick={close} className="nav-link min-h-tap">
+        <ul className="mt-10 grid grid-cols-2 gap-x-6">
+          {SECONDARY.map((item) => (
+            <li key={item.href}>
+              <Link
+                href={item.href}
+                onClick={go}
+                className="nav-link min-h-tap"
+              >
                 {item.label}
               </Link>
             </li>

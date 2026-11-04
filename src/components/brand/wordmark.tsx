@@ -42,12 +42,12 @@ export function Wordmark({
       {title && <title>{title}</title>}
       {/* On navy and photography the artwork green reads too dark; the
           same-hue on-navy green keeps "dura" legible. */}
-      <g className={cn("transition-[fill] duration-500", tone === "dark" ? "fill-green-on-navy" : "fill-logo-green")}>
+      <g className={tone === "dark" ? "fill-green-on-navy" : "fill-logo-green"}>
         {DURA.map((d) => (
           <path key={d.slice(0, 12)} d={d} />
         ))}
       </g>
-      <g className={cn("transition-[fill] duration-500", tone === "dark" ? "fill-white" : "fill-logo-navy")}>
+      <g className={tone === "dark" ? "fill-white" : "fill-logo-navy"}>
         {TEK.map((d) => (
           <path key={d.slice(0, 12)} d={d} />
         ))}

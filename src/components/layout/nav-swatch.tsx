@@ -7,12 +7,15 @@ import { cn } from "@/lib/cn";
 export function NavSwatch({
   finish,
   onNavigate,
+  eager = false,
   className,
   style,
   sizes = "160px",
 }: {
   finish: NavFinish;
-  onNavigate?: () => void;
+  onNavigate?: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  /** Load with the page (low priority) so the photo is ready when the menu opens. */
+  eager?: boolean;
   className?: string;
   style?: React.CSSProperties;
   sizes?: string;
@@ -27,6 +30,8 @@ export function NavSwatch({
             fill
             sizes={sizes}
             quality={70}
+            loading={eager ? "eager" : undefined}
+            fetchPriority={eager ? "low" : undefined}
             placeholder={finish.image.blurDataURL ? "blur" : "empty"}
             blurDataURL={finish.image.blurDataURL}
             className="object-cover transition-transform duration-[900ms] ease-calm group-hover:scale-[1.06] motion-reduce:transition-none"

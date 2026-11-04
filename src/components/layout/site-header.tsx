@@ -2,13 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { Close, Menu, Search } from "@/components/ui/icons";
 import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
 import { TRADE_NAV } from "@/lib/config";
-import { MobileMenu } from "./mobile-menu";
+import { finishMenuNav, MobileMenu } from "./mobile-menu";
 import { RangeMenu } from "./range-menu";
 import { SampleCount } from "./sample-count";
 
@@ -41,12 +41,17 @@ export function SiteHeader({ nav }: { nav: NavData }) {
   // Transparent over the home hero until the page scrolls or a panel opens.
   const overlay = OVERLAY_ROUTES.has(pathname) && !scrolled && !searchOpen && !rangeOpen;
 
-  // Close the menu on navigation (instantly if its close is still running).
-  useEffect(() => {
+  // Close the menu on navigation, in the same commit as the new page (a
+  // layout effect), so the page transition's new snapshot has no menu and the
+  // old page never shows in between. Then clear the menu-navigation flag
+  // once the fade has run.
+  useLayoutEffect(() => {
     const d = menuRef.current;
-    if (!d?.open) return;
-    delete d.dataset.closing;
-    d.close();
+    if (d?.open) {
+      delete d.dataset.closing;
+      d.close();
+    }
+    finishMenuNav();
   }, [pathname]);
 
   useEffect(() => {
@@ -62,8 +67,8 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
   const linkClass = (active: boolean) =>
     cn(
-      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] transition-colors duration-500",
-      "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-500 after:ease-calm",
+      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] transition-colors duration-300",
+      "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300 after:ease-calm",
       "hover:after:scale-x-100",
       active && "after:scale-x-100",
       overlay ? "text-white hover:text-white/80" : "text-navy hover:text-green-ink",
@@ -74,7 +79,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
       style={{ viewTransitionName: "site-header" }}
       data-overlay={overlay || undefined}
       className={cn(
-        "sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-500 ease-calm",
+        "sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300 ease-calm",
         overlay
           ? "border-white/15 bg-transparent"
           : "border-line bg-off-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-off-white/85",
@@ -85,7 +90,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
       <div
         aria-hidden="true"
         className={cn(
-          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-[180%] bg-gradient-to-b from-navy/45 to-transparent transition-opacity duration-500",
+          "pointer-events-none absolute inset-x-0 top-0 -z-10 h-[180%] bg-gradient-to-b from-navy/45 to-transparent transition-opacity duration-300",
           overlay ? "opacity-100" : "opacity-0",
         )}
       />
@@ -95,7 +100,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
         aria-hidden="true"
         style={{ scale: "0 1" }}
         className={cn(
-          "scroll-progress pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-left bg-green transition-opacity duration-500",
+          "scroll-progress pointer-events-none absolute inset-x-0 -bottom-px h-0.5 origin-left bg-green transition-opacity duration-300",
           overlay && "opacity-0",
         )}
       />
@@ -130,12 +135,12 @@ export function SiteHeader({ nav }: { nav: NavData }) {
             Samples
             <SampleCount />
           </Link>
-          <span className={cn("mx-2 h-5 w-px transition-colors duration-500", overlay ? "bg-white/30" : "bg-line")} aria-hidden="true" />
+          <span className={cn("mx-2 h-5 w-px transition-colors duration-300", overlay ? "bg-white/30" : "bg-line")} aria-hidden="true" />
           <Link
             href={TRADE_NAV.href}
             aria-current={isActive(pathname, TRADE_NAV.href) ? "page" : undefined}
             className={cn(
-              "flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] transition-colors duration-500",
+              "flex min-h-tap items-center px-3 text-[0.8125rem] font-medium uppercase tracking-[0.12em] transition-colors duration-300",
               overlay
                 ? "text-white/85 hover:text-white"
                 : "text-ink-muted hover:text-navy aria-[current=page]:text-green-ink",
@@ -146,7 +151,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
         </div>
 
         {/* Mobile and tablet controls */}
-        <div className={cn("-mr-2 flex items-center transition-colors duration-500 lg:hidden", overlay ? "text-white" : "text-navy")}>
+        <div className={cn("-mr-2 flex items-center transition-colors duration-300 lg:hidden", overlay ? "text-white" : "text-navy")}>
           <button
             type="button"
             className="flex size-tap items-center justify-center"
@@ -175,7 +180,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
       {/* Search: grid-rows 0fr -> 1fr animates the height smoothly. */}
       <div
         className={cn(
-          "grid transition-[grid-template-rows,opacity] duration-500 ease-calm lg:hidden",
+          "grid transition-[grid-template-rows,opacity] duration-300 ease-calm lg:hidden",
           searchOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0",
         )}
         inert={!searchOpen}

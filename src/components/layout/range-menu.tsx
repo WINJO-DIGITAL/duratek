@@ -34,7 +34,6 @@ export function RangeMenu({
   const panelId = useId();
   const [open, setOpen] = useState(false);
   const [openedOn, setOpenedOn] = useState<string | null>(null);
-  const [hasOpened, setHasOpened] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const root = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
@@ -57,7 +56,6 @@ export function RangeMenu({
       if (next) {
         openedBy.current = "hover";
         setOpenedOn(pathname);
-        setHasOpened(true);
       }
     }, delay);
   };
@@ -100,8 +98,10 @@ export function RangeMenu({
         href="/range"
         aria-current={active ? "page" : undefined}
         className={cn(
-          "relative flex min-h-tap items-center pl-4 pr-1 text-[0.9375rem] transition-colors duration-500",
-          onDark ? "text-white hover:text-white/80" : "text-navy hover:text-green-ink",
+          "relative flex min-h-tap items-center pl-4 pr-1 text-[0.9375rem] transition-colors duration-300",
+          onDark
+            ? "text-white hover:text-white/80"
+            : "text-navy hover:text-green-ink",
           "after:absolute after:inset-x-4 after:bottom-2 after:right-1 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300",
           (active || isOpen) && "after:scale-x-100",
         )}
@@ -119,10 +119,9 @@ export function RangeMenu({
           openedBy.current = "click";
           setOpen(next);
           setOpenedOn(pathname);
-          setHasOpened(true);
         }}
         className={cn(
-          "flex size-8 items-center justify-center transition-colors duration-500",
+          "flex size-8 items-center justify-center transition-colors duration-300",
           onDark ? "text-white" : "text-navy hover:text-green-ink",
         )}
       >
@@ -131,17 +130,27 @@ export function RangeMenu({
           height="12"
           viewBox="0 0 12 12"
           aria-hidden="true"
-          className={cn("transition-transform duration-500 ease-calm", isOpen && "rotate-180")}
+          className={cn(
+            "transition-transform duration-300 ease-calm",
+            isOpen && "rotate-180",
+          )}
         >
-          <path d="M2.5 4.5 6 8l3.5-3.5" fill="none" stroke="currentColor" strokeWidth="1.4" />
+          <path
+            d="M2.5 4.5 6 8l3.5-3.5"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.4"
+          />
         </svg>
-        <span className="sr-only">{isOpen ? "Close range menu" : "Open range menu"}</span>
+        <span className="sr-only">
+          {isOpen ? "Close range menu" : "Open range menu"}
+        </span>
       </button>
 
       {/* Dims and softens the page behind the open panel. */}
       <div
         aria-hidden="true"
-        className="dropdown-scrim absolute inset-x-0 top-full h-[100dvh] bg-navy/20 backdrop-blur-[2px]"
+        className="dropdown-scrim absolute inset-x-0 top-full h-[100dvh] bg-navy/15"
       />
 
       {/* Panel spans the full width under the header and unfolds from it. */}
@@ -152,68 +161,85 @@ export function RangeMenu({
         inert={!isOpen}
         className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-[0_32px_48px_-28px_rgb(24_54_76/0.35)]"
       >
-        <span aria-hidden="true" className="dropdown-line absolute inset-x-0 top-0 block h-px bg-green" />
-        {hasOpened && (
-          <div className={cn("container-page grid grid-cols-12 gap-10 py-10", isOpen && "stagger-in")}>
-            <div className="col-span-3" style={{ "--i": 0 } as React.CSSProperties}>
-              <p className="eyebrow">The collection</p>
-              <Link
-                href="/range"
-                onClick={close}
-                className="group mt-3 inline-flex items-center gap-3 font-display text-display-sm text-navy"
-              >
-                All {nav.finishCount} finishes
-                <ArrowRight size={20} className="text-green transition-transform duration-500 ease-calm group-hover:translate-x-1" />
-              </Link>
-              <ul className="mt-5 space-y-1">
-                {nav.styles.map((s) => (
-                  <li key={s}>
-                    <Link href={`/range?style=${s}`} onClick={close} className="nav-link">
-                      {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-2" style={{ "--i": 1 } as React.CSSProperties}>
-              <p className="eyebrow">By colour</p>
-              <ul className="mt-4 space-y-1">
-                {nav.colourFamilies.map((c) => (
-                  <li key={c}>
-                    <Link href={`/range?colour=${c}`} onClick={close} className="nav-link">
-                      {colourFamilyLabel(c)}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-2" style={{ "--i": 2 } as React.CSSProperties}>
-              <p className="eyebrow">Discover</p>
-              <ul className="mt-4 space-y-1">
-                {[
-                  { href: "/inspiration", label: "Inspiration" },
-                  { href: "/technology", label: "Technology" },
-                  { href: "/warranty", label: "Warranty" },
-                ].map((l) => (
-                  <li key={l.href}>
-                    <Link href={l.href} onClick={close} className="nav-link">
-                      {l.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="col-span-5" style={{ "--i": 3 } as React.CSSProperties}>
-              <div className={cn("grid grid-cols-4 gap-4", isOpen && "swatch-reveal")}>
-                {nav.featured.map((f, i) => (
-                  <div key={f.id} style={{ "--i": i } as React.CSSProperties}>
-                    <NavSwatch finish={f} onNavigate={close} sizes="140px" />
-                  </div>
-                ))}
-              </div>
+        <span
+          aria-hidden="true"
+          className="absolute inset-x-0 top-0 block h-px bg-green"
+        />
+        {/* Always rendered so the swatch photos load with the page. */}
+        <div className="container-page grid grid-cols-12 gap-10 py-10">
+          <div className="col-span-3">
+            <p className="eyebrow">The collection</p>
+            <Link
+              href="/range"
+              onClick={close}
+              className="group mt-3 inline-flex items-center gap-3 font-display text-display-sm text-navy"
+            >
+              All {nav.finishCount} finishes
+              <ArrowRight
+                size={20}
+                className="text-green transition-transform duration-500 ease-calm group-hover:translate-x-1"
+              />
+            </Link>
+            <ul className="mt-5 space-y-1">
+              {nav.styles.map((s) => (
+                <li key={s}>
+                  <Link
+                    href={`/range?style=${s}`}
+                    onClick={close}
+                    className="nav-link"
+                  >
+                    {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="col-span-2">
+            <p className="eyebrow">By colour</p>
+            <ul className="mt-4 space-y-1">
+              {nav.colourFamilies.map((c) => (
+                <li key={c}>
+                  <Link
+                    href={`/range?colour=${c}`}
+                    onClick={close}
+                    className="nav-link"
+                  >
+                    {colourFamilyLabel(c)}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="col-span-2">
+            <p className="eyebrow">Discover</p>
+            <ul className="mt-4 space-y-1">
+              {[
+                { href: "/inspiration", label: "Inspiration" },
+                { href: "/technology", label: "Technology" },
+                { href: "/warranty", label: "Warranty" },
+              ].map((l) => (
+                <li key={l.href}>
+                  <Link href={l.href} onClick={close} className="nav-link">
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="col-span-5">
+            <div className="grid grid-cols-4 gap-4">
+              {nav.featured.map((f) => (
+                <NavSwatch
+                  key={f.id}
+                  finish={f}
+                  onNavigate={close}
+                  eager
+                  sizes="140px"
+                />
+              ))}
             </div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

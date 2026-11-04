@@ -89,8 +89,6 @@
 
   /* Motion: slow and deliberate */
   --ease-calm: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1); /* fast start, long soft settle */
-  --ease-curtain: cubic-bezier(0.65, 0, 0.25, 1); /* visible draw-down, gentle landing */
   --default-transition-duration: 280ms;
   --default-transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
 
@@ -180,8 +178,7 @@
  * Unsupported browsers navigate normally.
  * ------------------------------------------------------------------------- */
 :root {
-  --vt-exit: 180ms;
-  --vt-enter: 420ms;
+  --vt-enter: 200ms;
 }
 
 ::view-transition {
@@ -203,13 +200,19 @@
   animation: none;
 }
 
+/* The old page holds still while the new one fades in over it: no moment
+   where both are half transparent (that read as a white flash). */
 ::view-transition-old(.page-exit) {
-  animation: var(--vt-exit) var(--ease-calm) both vt-fade-out;
+  animation: none;
 }
 ::view-transition-new(.page-enter) {
-  animation:
-    var(--vt-enter) var(--ease-calm) calc(var(--vt-exit) * 0.6) both vt-fade-in,
-    calc(var(--vt-enter) + 180ms) var(--ease-calm) both vt-rise;
+  animation: var(--vt-enter) var(--ease-calm) both vt-fade-in;
+}
+/* Navigating from the mobile menu: the menu stays up until the new page is
+   ready, so skip the old page entirely and let the menu (in the root
+   snapshot) dissolve as the new page fades in. */
+:root[data-menu-nav]::view-transition-old(.page-exit) {
+  display: none;
 }
 
 /* Finish photo morphs from card to detail hero. */
@@ -221,19 +224,9 @@
   animation-name: vt-soften;
 }
 
-@keyframes vt-fade-out {
-  to {
-    opacity: 0;
-  }
-}
 @keyframes vt-fade-in {
   from {
     opacity: 0;
-  }
-}
-@keyframes vt-rise {
-  from {
-    translate: 0 14px;
   }
 }
 @keyframes vt-soften {
@@ -252,44 +245,33 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Motion: menus. Dialog fades and settles on open and close (discrete
- * transitions); items stagger in using --i.
+ * Motion: menus. Short, soft fades; no staggered items.
  * ------------------------------------------------------------------------- */
-/* Mobile menu: unfolds from the top like a blind. */
-/* Open: @starting-style unfolds it. Close: closeMenu() sets [data-closing]
-   while the dialog is still open and modal, so the roll-up never depends on
-   discrete display/overlay transitions (unsupported in iOS Safari). */
+/* Mobile menu: one short, soft fade-down. Closing is driven by closeMenu()
+   ([data-closing] while the dialog is still open and modal), so it never
+   depends on discrete display/overlay transitions (unsupported in iOS
+   Safari). The sheet is opaque and full screen, so no backdrop tint. */
 .menu-sheet[open] {
-  clip-path: inset(0);
-  transition: clip-path 750ms var(--ease-curtain);
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 300ms var(--ease-calm),
+    translate 300ms var(--ease-calm);
 }
 @starting-style {
   .menu-sheet[open] {
-    clip-path: inset(0 0 100% 0);
+    opacity: 0;
+    translate: 0 -8px;
   }
 }
 .menu-sheet[open][data-closing] {
-  clip-path: inset(0 0 100% 0);
-  transition: clip-path 420ms var(--ease-calm);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-calm);
 }
-.menu-sheet[open]::backdrop {
-  background: rgb(24 54 76 / 0.35);
-  transition: background 750ms var(--ease-calm);
-}
-@starting-style {
-  .menu-sheet[open]::backdrop {
-    background: rgb(24 54 76 / 0);
-  }
-}
-.menu-sheet[open][data-closing]::backdrop {
-  background: rgb(24 54 76 / 0);
-  transition: background 420ms var(--ease-calm);
+.menu-sheet::backdrop {
+  background: transparent;
 }
 
-.stagger-in > * {
-  animation: stagger-in 620ms var(--ease-calm) both;
-  animation-delay: calc(var(--i, 0) * 55ms + 90ms);
-}
 @keyframes stagger-in {
   from {
     opacity: 0;
@@ -391,58 +373,34 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Premium dropdown: the panel unfolds from the header (clip-path curtain),
- * a green line draws across its top, the page behind dims, and the content
- * and swatches arrive in sequence. Closing is quicker than opening.
+ * Range dropdown: the panel fades down from the header and the page behind
+ * dims slightly. Quick to open, quicker to close.
  * ------------------------------------------------------------------------- */
 .dropdown-panel {
-  clip-path: inset(0 0 100% 0);
+  opacity: 0;
+  translate: 0 -6px;
   visibility: hidden;
   transition:
-    clip-path 380ms var(--ease-calm),
-    visibility 0s linear 380ms;
+    opacity 200ms var(--ease-calm),
+    translate 200ms var(--ease-calm),
+    visibility 0s linear 200ms;
 }
 [data-open] > .dropdown-panel {
-  /* Negative bottom inset keeps the drop shadow visible. */
-  clip-path: inset(0 0 -48px 0);
+  opacity: 1;
+  translate: 0 0;
   visibility: visible;
   transition:
-    clip-path 750ms var(--ease-curtain),
+    opacity 300ms var(--ease-calm),
+    translate 300ms var(--ease-calm),
     visibility 0s;
-}
-.dropdown-line {
-  scale: 0 1;
-  transform-origin: left;
-  transition: scale 300ms var(--ease-calm);
-}
-[data-open] .dropdown-line,
-.menu-sheet[open] .dropdown-line {
-  scale: 1 1;
-  transition: scale 1000ms var(--ease-out-expo) 120ms;
 }
 /* Never takes the pointer: hovering the page must still count as leaving the menu. */
 .dropdown-scrim {
   opacity: 0;
   pointer-events: none;
-  transition: opacity 380ms var(--ease-calm);
+  transition: opacity 200ms var(--ease-calm);
 }
 [data-open] > .dropdown-scrim {
   opacity: 1;
-  transition: opacity 600ms var(--ease-calm);
-}
-.swatch-reveal > * {
-  animation: swatch-in 900ms var(--ease-out-expo) both;
-  animation-delay: calc(var(--i, 0) * 70ms + 220ms);
-}
-@keyframes swatch-in {
-  from {
-    opacity: 0;
-    clip-path: inset(100% 0 0 0);
-    translate: 0 10px;
-  }
-  to {
-    opacity: 1;
-    clip-path: inset(0);
-    translate: 0 0;
-  }
+  transition: opacity 300ms var(--ease-calm);
 }
