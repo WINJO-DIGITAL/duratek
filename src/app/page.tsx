@@ -51,7 +51,7 @@ export default async function HomePage() {
     <>
       {/* 1. Hero */}
       <section className="on-dark relative isolate flex min-h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-[calc(100svh-var(--spacing-header))]">
-        {hero && <FinishImage image={hero.image} sizes="100vw" priority quality={80} className="-z-10" />}
+        {hero && <FinishImage image={hero.image} sizes="100vw" priority quality={80} className="-z-10 object-[50%_70%]" />}
         <div
           className="absolute inset-0 -z-10 bg-gradient-to-t from-navy-deep/95 via-navy-deep/65 to-navy-deep/10 lg:bg-gradient-to-r lg:from-navy-deep/85 lg:via-navy-deep/40 lg:to-navy-deep/0"
           aria-hidden="true"
@@ -113,7 +113,7 @@ export default async function HomePage() {
       {/* 5. Made for life as it happens: full-bleed with inset panel */}
       <section className="relative isolate">
         <div className="relative aspect-[4/5] sm:aspect-[16/10] lg:aspect-[21/9]">
-          {lifeImage && <FinishImage image={lifeImage.image} sizes="100vw" />}
+          {lifeImage && <FinishImage image={lifeImage.image} sizes="100vw" className="object-[50%_70%]" />}
         </div>
         <div className="container-page relative -mt-24 sm:-mt-40 lg:absolute lg:inset-x-0 lg:bottom-16 lg:mt-0">
           <div className="max-w-xl bg-cream p-6 sm:p-10 lg:ml-auto">
