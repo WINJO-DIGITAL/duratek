@@ -14,7 +14,8 @@ const CLOSE_DELAY = 220; // grace period to move the cursor into the panel
 
 /**
  * Desktop "Range" dropdown. Hover opens it after a short delay; the chevron
- * button opens it for keyboard and touch users. Escape or leaving closes it.
+ * button opens it for keyboard and touch users (and keeps a hover-opened
+ * panel open). Escape, clicking outside or leaving closes it.
  * "Range" itself stays a normal link to /range.
  */
 export function RangeMenu({
@@ -37,6 +38,10 @@ export function RangeMenu({
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const root = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
+  // How the panel was opened. Hovering the chevron opens it before the click
+  // lands, so a click on a hover-opened panel keeps it open instead of
+  // closing it; only a click-opened panel toggles shut.
+  const openedBy = useRef<"hover" | "click">("hover");
 
   // Closes itself when the route changes.
   const isOpen = open && openedOn === pathname;
@@ -50,6 +55,7 @@ export function RangeMenu({
     timer.current = setTimeout(() => {
       setOpen(next);
       if (next) {
+        openedBy.current = "hover";
         setOpenedOn(pathname);
         setHasOpened(true);
       }
@@ -109,7 +115,9 @@ export function RangeMenu({
         aria-controls={panelId}
         onClick={() => {
           clearTimeout(timer.current);
-          setOpen(!isOpen);
+          const next = isOpen && openedBy.current === "click" ? false : true;
+          openedBy.current = "click";
+          setOpen(next);
           setOpenedOn(pathname);
           setHasOpened(true);
         }}
