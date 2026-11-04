@@ -50,7 +50,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" className="flex-1">
           {children}
         </main>
-        <SiteFooter />
+        <SiteFooter nav={nav} />
         <MobileBottomBar />
       </body>
     </html>

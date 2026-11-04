@@ -1,15 +1,18 @@
 /**
- * Contact details shown at the foot of every page (locations, phone, email,
- * opening hours, social profiles).
+ * Contact and company details shown at the foot of every page: the main
+ * phone and email, locations with opening hours, social profiles, and the
+ * registered company details in the legal strip.
  *
  * WAITING ON THE CLIENT. Leave these empty until the real details are
- * supplied: nothing is invented, and the footer block hides itself while
- * both lists are empty. Owner-editable in admin later; for now, edit here.
+ * supplied: nothing is invented, and each part of the footer that depends
+ * on them hides itself while its details are empty. Owner-editable in admin later; for now, edit here.
  */
 
 export interface ContactLocation {
   /** Short label shown as the heading, e.g. "Head office" or "Showroom". */
   name: string;
+  /** Optional line under the name, e.g. "By appointment only". */
+  note?: string;
   /** Address lines, ending with the postcode line. */
   address: string[];
   phone?: string;
@@ -25,9 +28,20 @@ export interface SocialProfile {
   url: string;
 }
 
+/** Main line and inbox, shown under "Say hello" (phone also under "Need help?"). */
+export const GENERAL_CONTACT: { phone?: string; email?: string } = {};
+
 export const CONTACT_LOCATIONS: ContactLocation[] = [];
 
 export const SOCIAL_PROFILES: SocialProfile[] = [];
+
+/** Registered company details for the legal strip (UK Companies Act disclosure). */
+export const COMPANY: {
+  legalName?: string;
+  registrationNumber?: string;
+  vatNumber?: string;
+  registeredOffice?: string;
+} = {};
 
 export const SOCIAL_LABELS: Record<SocialNetwork, string> = {
   facebook: "Facebook",

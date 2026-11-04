@@ -22,6 +22,7 @@
 
   /* Brand */
   --color-navy: #18364c; /* heroes, footer, feature areas, headings on light */
+  --color-navy-deep: #112839; /* same hue, darker: the footer's legal strip */
   --color-green: #4b9b48;
   --color-green-ink: #3d7f3b;
   --color-green-ink-hover: #336b31;
