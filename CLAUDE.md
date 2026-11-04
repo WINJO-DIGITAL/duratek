@@ -161,6 +161,8 @@ Money is stored as integer pence.
 
 ## Brand theme (Duratek navy, green and white)
 
+**Standing rule from the client:** any design idea or reference they share (a screenshot of another site, a pattern they like) is to be built in the Duratek theme below unless they say otherwise. Take the structure or idea, never the other brand's colours, fonts, logo or copy.
+
 Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, taupe or natural-wood brand palette, and do not introduce beige, brown or gold as alternative brand colours. Take Ted Todd's editorial approach (premium typography, generous whitespace, large photography, elegant composition), but the identity must feel unmistakably Duratek.
 
 - Primary navy `#18364C`: hero sections, footer and important feature areas; navy typography on light backgrounds.

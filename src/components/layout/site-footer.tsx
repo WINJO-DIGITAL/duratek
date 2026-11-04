@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/wordmark";
+import { FooterContact } from "./footer-contact";
 
 const GROUPS = [
   {
@@ -38,7 +39,8 @@ const GROUPS = [
 ] as const;
 
 /*
- * Still to add once the client supplies them: contact details, registered
+ * Contact block (locations, hours, social) shows once the client's details
+ * are entered in src/lib/contact.ts. Still to add once supplied: registered
  * company details and the newsletter sign-up (needs a consented storage
  * location agreed with the client).
  */
@@ -74,6 +76,7 @@ export function SiteFooter() {
           ))}
         </nav>
       </div>
+      <FooterContact />
       {/* Oversized wordmark: the closing signature of every page. */}
       <div className="container-page overflow-hidden" aria-hidden="true">
         <Wordmark tone="dark" className="h-auto w-full translate-y-[8%]" />

@@ -76,3 +76,36 @@ export const Briefcase = (p: IconProps) => (
     <path d="M3.5 8h17v11h-17zM9 8V5h6v3M3.5 13h17" />
   </Icon>
 );
+
+/* Social: drawn in the same 1.5px line style as the rest of the set. */
+export const Facebook = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="3" />
+    <path d="M15.5 8.5h-1.5a2 2 0 0 0-2 2v10M9.5 13h6" />
+  </Icon>
+);
+export const Instagram = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="4.5" />
+    <circle cx="12" cy="12" r="3.75" />
+    <circle cx="17" cy="7" r="0.5" fill="currentColor" />
+  </Icon>
+);
+export const Pinterest = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="8.5" />
+    <path d="M10.6 20.2 12.4 13M10.4 14.6c.5.9 1.4 1.4 2.5 1.4 2.3 0 3.8-2 3.8-4.6 0-2.6-2.1-4.4-4.7-4.4-2.9 0-4.8 2-4.8 4.5 0 1 .4 2 1.1 2.4" />
+  </Icon>
+);
+export const LinkedIn = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="3.5" y="3.5" width="17" height="17" rx="3" />
+    <path d="M8 10.5v6M8 7.5v.01M11.5 16.5v-6M11.5 13a2.5 2.5 0 0 1 5 0v3.5" />
+  </Icon>
+);
+export const YouTube = (p: IconProps) => (
+  <Icon {...p} strokeLinecap="round" strokeLinejoin="round">
+    <rect x="2.5" y="5.5" width="19" height="13" rx="4" />
+    <path d="m10 9.5 4.5 2.5-4.5 2.5z" />
+  </Icon>
+);
