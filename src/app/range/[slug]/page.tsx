@@ -10,9 +10,11 @@ import { FinishGallery } from "@/components/finish/finish-gallery";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Check } from "@/components/ui/icons";
-import { getFinish, getFinishes, imagesOfKind, leadImage, specRows } from "@/lib/catalogue";
+import { getFinish, getFinishes, imagesOfKind, specRows } from "@/lib/catalogue";
 import type { Finish } from "@/lib/catalogue/types";
+import { JsonLd } from "@/components/seo/json-ld";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { siteUrl } from "@/lib/site";
 
 export async function generateStaticParams() {
   const finishes = await getFinishes();
@@ -23,13 +25,10 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
   const { slug } = await params;
   const finish = await getFinish(slug);
   if (!finish) return {};
-  const image = leadImage(finish);
   return {
     title: finish.name,
     description: finish.description.split("\n")[0],
-    openGraph: image
-      ? { images: [{ url: image.src, width: image.width, height: image.height, alt: image.alt }] }
-      : undefined,
+    alternates: { canonical: `/range/${finish.slug}` },
   };
 }
 
@@ -85,6 +84,31 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
 
   return (
     <article>
+      <JsonLd
+        data={{
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Product",
+              name: `Duratek ${finish.name}`,
+              description: finish.description,
+              url: siteUrl(`/range/${finish.slug}`),
+              image: gallery.slice(0, 6).map((i) => i.src),
+              brand: { "@type": "Brand", name: "Duratek" },
+              category: "SPC click flooring",
+              additionalProperty: specs.map((r) => ({ "@type": "PropertyValue", name: r.label, value: r.value })),
+            },
+            {
+              "@type": "BreadcrumbList",
+              itemListElement: [
+                { "@type": "ListItem", position: 1, name: "Home", item: siteUrl("/") },
+                { "@type": "ListItem", position: 2, name: "The range", item: siteUrl("/range") },
+                { "@type": "ListItem", position: 3, name: finish.name, item: siteUrl(`/range/${finish.slug}`) },
+              ],
+            },
+          ],
+        }}
+      />
       {/* Gallery beside a sticky information panel */}
       <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">

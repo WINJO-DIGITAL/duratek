@@ -1,3 +1,4 @@
+import { curateImages } from "./curation";
 import type { CatalogueImage, Finish, FinishSpecs, ImageKind } from "./types";
 
 /** Fallback size used when an image row has no stored dimensions. */
@@ -56,9 +57,11 @@ function toSpecs(value: unknown): FinishSpecs {
 }
 
 export function toFinish(row: FinishRow): Finish {
-  const images = [...(row.finish_images ?? [])]
-    .sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || a.sort_order - b.sort_order)
-    .map(toImage);
+  const images = curateImages(
+    [...(row.finish_images ?? [])]
+      .sort((a, b) => KIND_ORDER[a.kind] - KIND_ORDER[b.kind] || a.sort_order - b.sort_order)
+      .map(toImage),
+  );
   return {
     id: row.id,
     name: row.name,
@@ -81,9 +84,12 @@ export function leadImage(finish: Finish): CatalogueImage | undefined {
   return finish.images[0];
 }
 
-/** The grain image: close-up if there is one, else the swatch. */
+/**
+ * The grain image: the plank swatch (a clean, evenly lit product scan), else
+ * a close-up. The demo close-ups are site snapshots, so they rank second.
+ */
 export function grainImage(finish: Finish): CatalogueImage | undefined {
-  return imagesOfKind(finish, "closeup")[0] ?? imagesOfKind(finish, "swatch")[0];
+  return imagesOfKind(finish, "swatch")[0] ?? imagesOfKind(finish, "closeup")[0];
 }
 
 /** Human-readable spec rows, in display order. Only includes known values. */
@@ -101,4 +107,10 @@ export function specRows(specs: FinishSpecs): { label: string; value: string }[]
   if (specs.underlay) rows.push({ label: "Underlay", value: specs.underlay });
   if (specs.click_system) rows.push({ label: "Fitting", value: specs.click_system });
   return rows;
+}
+
+/** Light to dark by measured tone; finishes without a measurement keep catalogue order at the end. */
+export function byTone(finishes: Finish[]): Finish[] {
+  const measured = finishes.filter((f) => f.tone !== undefined).sort((a, b) => b.tone! - a.tone!);
+  return [...measured, ...finishes.filter((f) => f.tone === undefined)];
 }

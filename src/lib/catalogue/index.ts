@@ -2,10 +2,11 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { publicSupabase } from "@/lib/supabase/public";
 import { toFinish, toImage, type FinishRow } from "./mappers";
+import { measureTone } from "./tone";
 import type { Finish, InspirationItem, OnlineRetailer } from "./types";
 
 export * from "./types";
-export { grainImage, imagesOfKind, leadImage, specRows } from "./mappers";
+export { byTone, grainImage, imagesOfKind, leadImage, specRows } from "./mappers";
 
 /** Cache tags. Admin mutations call updateTag() with these. */
 export const TAGS = {
@@ -27,7 +28,13 @@ export async function getFinishes(): Promise<Finish[]> {
     .order("sort_order")
     .order("name");
   if (error) throw new Error(`Failed to load finishes: ${error.message}`);
-  return (data as FinishRow[]).map(toFinish);
+  const finishes = (data as FinishRow[]).map(toFinish);
+  await Promise.all(
+    finishes.map(async (f) => {
+      f.tone = await measureTone(f.images.find((i) => i.kind === "swatch")?.blurDataURL);
+    }),
+  );
+  return finishes;
 }
 
 export async function getFinish(slug: string): Promise<Finish | null> {

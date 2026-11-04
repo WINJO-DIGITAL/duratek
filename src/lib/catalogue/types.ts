@@ -34,6 +34,8 @@ export interface Finish {
   specs: FinishSpecs;
   isDemo: boolean;
   images: CatalogueImage[];
+  /** Measured lightness of the swatch, 0 dark .. 1 light; undefined if unmeasured. */
+  tone?: number;
 }
 
 export interface InspirationItem {

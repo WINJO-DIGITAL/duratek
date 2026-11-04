@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Manrope } from "next/font/google";
+import { DM_Mono, DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/layout/reveal-observer";
 import { SiteHeader } from "@/components/layout/site-header";
+import { JsonLd } from "@/components/seo/json-ld";
 import { getNavData } from "@/lib/catalogue/nav";
+import { siteUrl } from "@/lib/site";
 import "./globals.css";
 
 // Headings and product titles.
@@ -18,6 +20,14 @@ const heading = Manrope({
 const body = DM_Sans({
   variable: "--font-body",
   subsets: ["latin"],
+  display: "swap",
+});
+
+// Data: measurements and specifications.
+const data = DM_Mono({
+  variable: "--font-data",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
@@ -39,7 +49,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nav = await getNavData();
   return (
-    <html lang="en-GB" className={`${heading.variable} ${body.variable} antialiased`}>
+    <html lang="en-GB" className={`${heading.variable} ${body.variable} ${data.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col pb-[calc(var(--spacing-bottom-bar)+env(safe-area-inset-bottom))] lg:pb-0">
         <a
           href="#main"
@@ -48,6 +58,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           Skip to content
         </a>
         <RevealObserver />
+        <JsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Duratek",
+            url: siteUrl("/"),
+            logo: siteUrl("/icon.svg"),
+          }}
+        />
         <SiteHeader nav={nav} />
         <main id="main" className="flex-1">
           {children}

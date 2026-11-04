@@ -1,3 +1,4 @@
+import { isSecondaryRoom } from "./curation";
 import type { CatalogueImage, Finish, ImageKind } from "./types";
 
 export interface PooledImage {
@@ -11,7 +12,10 @@ export interface PooledImage {
  * photography from the catalogue without hard-coding particular photos.
  */
 export function imagePool(finishes: Finish[], kind: ImageKind): PooledImage[] {
-  const perFinish = finishes.map((f) => f.images.filter((i) => i.kind === kind).map((image) => ({ image, finish: f })));
+  // Editorial use only: bathrooms and similar stay in product galleries, not here.
+  const perFinish = finishes.map((f) =>
+    f.images.filter((i) => i.kind === kind && !isSecondaryRoom(i)).map((image) => ({ image, finish: f })),
+  );
   const depth = Math.max(0, ...perFinish.map((l) => l.length));
   const out: PooledImage[] = [];
   for (let d = 0; d < depth; d++) for (const list of perFinish) if (list[d]) out.push(list[d]);

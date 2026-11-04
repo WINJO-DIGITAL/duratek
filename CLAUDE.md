@@ -38,7 +38,7 @@ Top nav (desktop): **Range · Inspiration · Where to buy · Samples · Trade** 
 
 Mobile: a compact header (wordmark, search, menu), plus a **sticky bottom bar**: Range · Samples (with count badge) · Where to buy · Trade. Fitters use this on site visits, so key actions must always be one thumb-tap away. Touch targets are at least 44px.
 
-Audience switch: a "Homeowner / Trade professional" choice (Luvanto's "What describes you best?"), done properly. It appears once as a clear block on the home page. It tailors the CTAs (homeowner → samples and where to buy, trade → apply/login) and the choice persists for the session. It is not a gate, and no content is hidden behind it.
+Audience: no homeowner/trade switch block (retired in the approved redesign, November 2026). Trade is reached from the header, the bottom bar and one quiet trade band on the home page.
 
 ### Pages
 
@@ -60,24 +60,15 @@ Audience switch: a "Homeowner / Trade professional" choice (Luvanto's "What desc
 
 ## Home page
 
-Luvanto's structure, filled with the Duratek content from https://www.kwikfloors.co.uk/pages/Duratekflooring. Order:
+Approved redesign (November 2026, "The floor is the hero"). Seven sections, then the footer:
 
-1. **Hero**: full-bleed room photograph, wordmark, heading (no eyebrow label above it) "Beautifully considered. Built to perform.", one primary CTA (Explore the range) and one quiet secondary link (Order free samples).
-2. **Spec strip**: 0.55mm Protective wear layer · Scratch Shield Surface protection · Waterproof Rigid SPC core · Unilin Precision click system.
-3. **A style for every space**: two large image tiles, Straight plank and Herringbone, each linking to the filtered range.
-4. **Popular finishes**: a horizontal scroll of finish cards (image, name, style, "Add to samples"). No prices.
-5. **Made for life as it happens**: Scratch Shield badge and copy.
-6. **Protection you can feel confident in**: 0.55mm.
-7. **Performance beneath the surface**: an interactive layer breakdown (protective top finish, 0.55mm wear layer, decorative layer, SPC rigid core, integrated underlay).
-8. **Beautifully fitted. Effortlessly finished.**: Unilin.
-9. **Homeowner / Trade switch**: two clear paths.
-10. **Considered from every angle.**
-11. **Confidence for years to come**: warranty badges plus the full disclaimer.
-12. **Where to buy band**: postcode input that goes to `/where-to-buy`.
-13. **Closing CTA**: "Timeless in style. Resilient by design."
-14. **Footer**: grouped (Range, Help, Trade, Company), contact, newsletter (email only), legal, and company details.
-
-Sections 5–8 may be condensed or restyled so the page doesn't become a long column of text blocks. Pair every one of them with imagery, and alternate layout rhythm (full-bleed, split, inset) rather than repeating identical cards.
+1. **Floor-led hero**: one full-bleed photograph, camera low, floor filling the frame; heading "Beautifully considered. Built to perform." set light; one primary action (Explore the range), one quiet sample link; the finish shown is named and linked.
+2. **The floor library**: all finishes as boards side by side, ordered light to dark (measured from each swatch); tap or hover widens a board with its name, format and Add sample. Doorway to the explorer.
+3. **Two formats, to scale**: the standard and extra-long planks drawn to scale with dimension lines (replaces the style tiles until herringbone exists).
+4. **One room**: a single editorial photograph, captioned with the finish, with Add sample.
+5. **Five layers**: the only navy section: layer diagram and the four facts (0.55mm wear layer, Scratch Shield, waterproof rigid SPC core, Unilin click), warranty line with its disclaimer, link to Technology.
+6. **Three free samples**: the tray made visible (three slots that fill as finishes are added), plus a quiet trade band ("Fitting or specifying? Open a trade account").
+7. **Where to buy**: postcode search and online retailers.
 
 ## Samples
 
@@ -163,6 +154,8 @@ Money is stored as integer pence.
 
 **Standing rule from the client:** any design idea or reference they share (a screenshot of another site, a pattern they like) is to be built in the Duratek theme below unless they say otherwise. Take the structure or idea, never the other brand's colours, fonts, logo or copy.
 
+**Approved direction (November 2026): "The floor is the hero".** Scandinavian, architectural, warm minimalism, with the warmth coming from the oak and the photography, never from the interface. Pages are mostly white and linen and photographic; navy is the ink (at most one full navy section per page); green is a small signal (selected states, the sample action, markers), never a background block. Rough proportion on a page: white and linen 62%, photography 30%, navy 6%, green 2%. No warm stone or beige neutral. Measurements (plank sizes, thickness, pack coverage, wear layer) are set in DM Mono, the data face. Finish names are set in display type like gallery labels. Product pages lead with the plank (grain), then rooms. Imagery is curated until a commissioned shoot: no playrooms, showers or bathrooms where the floor barely features, no computer-generated rooms.
+
 Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, taupe or natural-wood brand palette, and do not introduce beige, brown or gold as alternative brand colours. Take Ted Todd's editorial approach (premium typography, generous whitespace, large photography, elegant composition), but the identity must feel unmistakably Duratek.
 
 - Primary navy `#18364C`: hero sections, footer and important feature areas; navy typography on light backgrounds.
@@ -170,7 +163,7 @@ Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, tau
 - White `#FFFFFF`: prominent headings on navy; alternating sections.
 - Off-white `#F7F6F2`: spacious product and collection sections.
 - Secondary text: muted slate grey `#5A6B78` (on navy: `#B9C6D0`).
-- Headings and product titles: Manrope (medium 500; light 300 for emphasis, no italics). Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav). Avoid unnecessary bold.
+- Headings and product titles: Manrope (light 300 for large display, 400 for titles, 500 sparingly; no italics). Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav). Data (measurements and specifications): DM Mono 400. Avoid unnecessary bold.
 - Small tracked uppercase green eyebrow labels above headings (e.g. "DURATEK SURFACE TECHNOLOGY", "ENGINEERED DURABILITY")
 - Buttons: square-cornered. Off-white on navy, or green on light, with a trailing arrow ("Shop full Duratek range →").
 - The wordmark is lowercase "duratek": "dura" in green, "tek" bold (white on navy). Use a placeholder text version only; use the real SVG when supplied.

@@ -48,6 +48,8 @@
   /* Type */
   --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  /* Data face: measurements and specifications (plank sizes, thickness, pack coverage). */
+  --font-mono: var(--font-data), ui-monospace, "SFMono-Regular", Menlo, monospace;
 
   --text-eyebrow: 0.75rem;
   --text-eyebrow--line-height: 1rem;
@@ -56,7 +58,8 @@
 
   --text-display-xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
   --text-display-xl--line-height: 1.04;
-  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-xl--letter-spacing: -0.04em;
+  --text-display-xl--font-weight: 300;
   /* Home hero headline: 42px on phones, about 60px at 1440, never above 66px.
      Lighter than other headings, tracked in slightly. */
   --text-display-hero: clamp(2.625rem, 2.2rem + 1.75vw, 4.125rem);
@@ -67,7 +70,8 @@
   --text-hero-lede--line-height: 1.65;
   --text-display-lg: clamp(2.25rem, 1.5rem + 3vw, 4rem);
   --text-display-lg--line-height: 1.08;
-  --text-display-lg--letter-spacing: -0.03em;
+  --text-display-lg--letter-spacing: -0.035em;
+  --text-display-lg--font-weight: 300;
   --text-display-md: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);
   --text-display-md--line-height: 1.15;
   --text-display-md--letter-spacing: -0.025em;
@@ -109,12 +113,18 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     font-feature-settings: "ss01";
+    /* Body copy: 17px on phones, 18px from desktop (approved direction). */
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    @media (min-width: 64rem) {
+      font-size: 1.125rem;
+    }
   }
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 500;
+    font-weight: 400;
     text-wrap: balance;
   }
   p {
@@ -354,4 +364,12 @@
 [data-open] > .dropdown-scrim {
   opacity: 1;
   transition: opacity 300ms var(--ease-calm);
+}
+
+/* Measurements and specifications, set like a technical drawing. */
+@utility data {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
 }
