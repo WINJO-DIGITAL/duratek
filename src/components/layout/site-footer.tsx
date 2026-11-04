@@ -118,8 +118,8 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
       <FooterContact />
 
       {/* Oversized wordmark: the closing signature of every page. */}
-      <div className="container-page overflow-hidden" aria-hidden="true">
-        <Wordmark tone="dark" className="h-auto w-full translate-y-[8%]" />
+      <div className="container-page pb-10 sm:pb-14" aria-hidden="true">
+        <Wordmark tone="dark" className="h-auto w-full" />
       </div>
 
       <div className="bg-navy-deep">
