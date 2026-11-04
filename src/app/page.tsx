@@ -35,6 +35,16 @@ const STYLE_COPY: Record<FinishStyle, { title: string; body: string; cta: string
   },
 };
 
+/** Rooms where the floor is the subject come first; busy or tiled rooms last. */
+const FLOOR_LED = /living|hallway|dining|open-plan|kitchen/i;
+const FLOOR_HIDDEN = /bathroom|shower|playroom/i;
+function floorLedRoom(inFamily: Finish[], used: Set<string>) {
+  const rooms = inFamily.flatMap((f) => imagesOfKind(f, "room"));
+  const rank = (img: (typeof rooms)[number]) =>
+    (used.has(img.src) ? 2 : 0) + (FLOOR_HIDDEN.test(img.alt) ? 4 : FLOOR_LED.test(img.alt) ? 0 : 1);
+  return [...rooms].sort((a, b) => rank(a) - rank(b))[0];
+}
+
 export default async function HomePage() {
   const finishes = await getFinishes();
   // Every pooled photo used on the page, so the colour index can avoid repeats.
@@ -109,10 +119,10 @@ export default async function HomePage() {
       swatch: imagesOfKind(inFamily[0], "swatch")[0],
       count: inFamily.length,
       href: `/range?colour=${c}`,
-      // First room scene not already used elsewhere on the page.
-      image:
-        inFamily.flatMap((f) => imagesOfKind(f, "room")).find((img) => !usedSrcs.has(img.src)) ??
-        leadImage(inFamily[0]),
+      // Desktop photo: a room where the floor fills the frame (living
+      // spaces, hallways, kitchens) before bathrooms, showers or playrooms,
+      // preferring one not already used elsewhere on the page.
+      image: floorLedRoom(inFamily, usedSrcs) ?? leadImage(inFamily[0]),
     };
   });
 
@@ -182,7 +192,7 @@ export default async function HomePage() {
                       </p>
                     </SectionIntro>
                   </div>
-                  <div className="mt-12">
+                  <div className="mt-8 lg:mt-12">
                     <ColourIndex items={colourItems} />
                   </div>
                 </>
