@@ -48,7 +48,7 @@ export function SiteFooter() {
       <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1fr_1.4fr]">
         <div>
           <p className="max-w-[14ch] font-display text-display-md text-on-dark">
-            Click flooring for homes that <em className="italic">get used.</em>
+            Click flooring for homes that <span className="font-light">get used.</span>
           </p>
           <p className="mt-5 max-w-xs text-[0.9375rem] leading-relaxed text-on-dark-muted">
             Waterproof SPC click flooring, with free samples and trade accounts.

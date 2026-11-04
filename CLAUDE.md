@@ -168,7 +168,7 @@ Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, tau
 - White `#FFFFFF`: prominent headings on navy; alternating sections.
 - Off-white `#F7F6F2`: spacious product and collection sections.
 - Secondary text: muted slate grey `#5A6B78` (on navy: `#B9C6D0`).
-- Headings: Source Serif 4 (regular weight, italic for emphasis). Body: Inter.
+- Headings and product titles: Manrope (medium 500; light 300 for emphasis, no italics). Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav). Avoid unnecessary bold.
 - Small tracked uppercase green eyebrow labels above headings (e.g. "DURATEK SURFACE TECHNOLOGY", "ENGINEERED DURABILITY")
 - Buttons: square-cornered. Off-white on navy, or green on light, with a trailing arrow ("Shop full Duratek range →").
 - The wordmark is lowercase "duratek": "dura" in green, "tek" bold (white on navy). Use a placeholder text version only; use the real SVG when supplied.
@@ -185,7 +185,7 @@ Do NOT copy Luvanto's palette (salmon, slate) or its underlined-serif link style
 The brief: world-class UI/UX that visually SELLS Duratek and is clearly better than luvanto.com. It must not look AI-generated or templated.
 
 - Imagery leads. Large-format room photography and wood-grain close-ups, full-bleed where possible.
-- Editorial typography: Source Serif 4 display paired with Inter. No default system look.
+- Clean, understated typography: Manrope headings paired with DM Sans. No default system look.
 - Restrained palette drawn from the Duratek logo and the flooring tones. Generous white space.
 - Varied layout rhythm: full-bleed, split, inset, horizontal scroll. Never the same card block repeated down the page.
 - Slow, deliberate motion. No gratuitous animation, no bouncing, no parallax overload.

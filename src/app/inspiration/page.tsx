@@ -90,7 +90,7 @@ export default async function InspirationPage() {
               className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-white")}
             >
               <div className="container-page">
-                <h2 id={`${slugify(mood)}-h`} className="text-display-md text-navy">
+                <h2 id={`${slugify(mood)}-h`} className="reveal text-display-md text-navy">
                   {mood}
                 </h2>
                 <div className="mt-10 grid gap-x-6 gap-y-12 lg:grid-cols-12">

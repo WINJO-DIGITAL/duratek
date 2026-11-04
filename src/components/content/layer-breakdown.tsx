@@ -71,7 +71,7 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
 
       <ol id={listId} className={cn("border-t", dark ? "border-white/15" : "border-line")} onMouseLeave={() => setActive(null)}>
         {LAYERS.map((layer, i) => (
-          <li key={layer.name} className={cn("border-b", dark ? "border-white/15" : "border-line")}>
+          <li key={layer.name} className={cn("reveal border-b", dark ? "border-white/15" : "border-line")}>
             <button
               type="button"
               aria-pressed={active === i}

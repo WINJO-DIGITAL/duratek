@@ -41,17 +41,17 @@ export default async function WarrantyPage() {
             <div className="grid gap-px border border-line bg-line md:grid-cols-2">
               <div className="bg-off-white p-6 sm:p-10">
                 <p className="eyebrow">Residential</p>
-                <h2 className="mt-3 text-display-md text-navy">Lifetime warranty</h2>
+                <h2 className="reveal mt-3 text-display-md text-navy">Lifetime warranty</h2>
                 <p className="mt-4 text-lede text-ink-muted">
                   For homes. Residential lifetime is defined as{" "}
-                  <strong className="font-semibold text-navy">25 years</strong>.
+                  <strong className="font-medium text-navy">25 years</strong>.
                 </p>
               </div>
               <div className="bg-off-white p-6 sm:p-10">
                 <p className="eyebrow">Commercial</p>
-                <h2 className="mt-3 text-display-md text-navy">10 year warranty</h2>
+                <h2 className="reveal mt-3 text-display-md text-navy">10 year warranty</h2>
                 <p className="mt-4 text-lede text-ink-muted">
-                  For <strong className="font-semibold text-navy">light and medium traffic</strong> commercial areas.
+                  For <strong className="font-medium text-navy">light and medium traffic</strong> commercial areas.
                   Not applicable to heavy traffic areas.
                 </p>
               </div>
@@ -62,7 +62,7 @@ export default async function WarrantyPage() {
         <section className="bg-white py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
             {image && (
-              <div className="relative aspect-[4/3] overflow-hidden bg-line lg:col-span-6">
+              <div className="reveal-img relative aspect-[4/3] overflow-hidden bg-line lg:col-span-6">
                 <FinishImage image={image.image} sizes="(min-width: 1024px) 50vw, 100vw" />
               </div>
             )}

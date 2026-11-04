@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
-import { getFinishes } from "@/lib/catalogue";
+import { getFinishes, imagesOfKind } from "@/lib/catalogue";
 
 export const metadata: Metadata = {
   title: "The range",
@@ -31,6 +31,13 @@ export default async function RangePage() {
     ),
   }));
 
+  // One swatch per colour family for the round filter chips.
+  const colourSwatches: Record<string, string> = {};
+  for (const f of finishes) {
+    const sw = imagesOfKind(f, "swatch")[0];
+    if (sw && !colourSwatches[f.colourFamily]) colourSwatches[f.colourFamily] = sw.src;
+  }
+
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
@@ -43,7 +50,7 @@ export default async function RangePage() {
         <div className="mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
           <Suspense fallback={<RangeGrid items={items} />}>
-            <RangeBrowser items={items} />
+            <RangeBrowser items={items} colourSwatches={colourSwatches} />
           </Suspense>
         </div>
       </div>

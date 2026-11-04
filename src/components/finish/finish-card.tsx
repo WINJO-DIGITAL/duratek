@@ -39,7 +39,7 @@ export function FinishCard({
   const reveal = media === "texture" && grain && room && room !== grain ? room : undefined;
 
   return (
-    <article className={cn("group relative flex flex-col", className)}>
+    <article className={cn("reveal group relative flex flex-col", className)}>
       {/* Same name as the detail page hero: the photo morphs into it on click. */}
       <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
         <div className={cn("relative overflow-hidden bg-line", aspect)}>

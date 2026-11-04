@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense, ViewTransition } from "react";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
+import { ColourSwatches } from "@/components/finish/colour-swatches";
 import { FinishGallery } from "@/components/finish/finish-gallery";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
@@ -105,6 +106,13 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <p className="mt-1 font-display text-display-sm text-ink-muted">
               {STYLE_LABELS[finish.style]} · {colourFamilyLabel(finish.colourFamily)}
             </p>
+
+            <div className="mt-6">
+              <ColourSwatches
+                current={finish.slug}
+                options={all.map((f) => ({ slug: f.slug, name: f.name, swatch: imagesOfKind(f, "swatch")[0] }))}
+              />
+            </div>
 
             <dl className="mt-8 border-t border-line">
               {keySpecs.map((r) => (

@@ -41,25 +41,26 @@
   --color-error: #a3352b;
 
   /* Type */
-  --font-display: var(--font-source-serif), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
   --text-eyebrow: 0.75rem;
   --text-eyebrow--line-height: 1rem;
   --text-eyebrow--letter-spacing: 0.16em;
-  --text-eyebrow--font-weight: 600;
+  --text-eyebrow--font-weight: 500;
 
   --text-display-xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
-  --text-display-xl--line-height: 1.02;
-  --text-display-xl--letter-spacing: -0.02em;
+  --text-display-xl--line-height: 1.04;
+  --text-display-xl--letter-spacing: -0.035em;
   --text-display-lg: clamp(2.25rem, 1.5rem + 3vw, 4rem);
-  --text-display-lg--line-height: 1.06;
-  --text-display-lg--letter-spacing: -0.02em;
+  --text-display-lg--line-height: 1.08;
+  --text-display-lg--letter-spacing: -0.03em;
   --text-display-md: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);
-  --text-display-md--line-height: 1.12;
-  --text-display-md--letter-spacing: -0.015em;
+  --text-display-md--line-height: 1.15;
+  --text-display-md--letter-spacing: -0.025em;
   --text-display-sm: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
-  --text-display-sm--line-height: 1.2;
+  --text-display-sm--line-height: 1.25;
+  --text-display-sm--letter-spacing: -0.015em;
   --text-lede: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   --text-lede--line-height: 1.6;
 
@@ -90,13 +91,13 @@
     background: var(--color-off-white);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01", "cv11";
+    font-feature-settings: "ss01";
   }
   h1,
   h2,
   h3 {
     font-family: var(--font-display);
-    font-weight: 400;
+    font-weight: 500;
     text-wrap: balance;
   }
   p {
@@ -316,5 +317,64 @@
 @keyframes hero-ring {
   to {
     stroke-dashoffset: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Motion: scroll-driven reveals. Tied to scroll position (no JavaScript).
+ * Browsers without animation-timeline support, and reduced-motion users,
+ * simply see the content in place.
+ * ------------------------------------------------------------------------- */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 5% entry 60%;
+    }
+    .reveal-img {
+      animation: reveal-img linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 30%;
+    }
+    .reveal-img > img,
+    .reveal-img > div > img {
+      animation: reveal-img-scale linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+    /* Reading progress under the header. */
+    .scroll-progress {
+      animation: scroll-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    translate: 0 28px;
+  }
+}
+@keyframes reveal-img {
+  from {
+    clip-path: inset(12% 4% 0 4%);
+  }
+  to {
+    clip-path: inset(0);
+  }
+}
+@keyframes reveal-img-scale {
+  from {
+    scale: 1.08;
+  }
+}
+@keyframes scroll-progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
   }
 }

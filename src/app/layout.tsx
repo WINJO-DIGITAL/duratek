@@ -1,20 +1,21 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Source_Serif_4 } from "next/font/google";
+import { DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { getNavData } from "@/lib/catalogue/nav";
 import "./globals.css";
 
-const serif = Source_Serif_4({
-  variable: "--font-source-serif",
+// Headings and product titles.
+const heading = Manrope({
+  variable: "--font-heading",
   subsets: ["latin"],
-  style: ["normal", "italic"],
   display: "swap",
 });
 
-const sans = Inter({
-  variable: "--font-inter",
+// Body, navigation and buttons.
+const body = DM_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
   display: "swap",
 });
@@ -37,7 +38,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nav = await getNavData();
   return (
-    <html lang="en-GB" className={`${serif.variable} ${sans.variable} antialiased`}>
+    <html lang="en-GB" className={`${heading.variable} ${body.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col pb-[calc(var(--spacing-bottom-bar)+env(safe-area-inset-bottom))] lg:pb-0">
         <a
           href="#main"

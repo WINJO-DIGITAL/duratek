@@ -77,7 +77,7 @@ export default async function TechnologyPage() {
                   <SectionIntro title={c.title} className="mt-2">
                     <p>{c.body}</p>
                   </SectionIntro>
-                  {c.note && <p className="mt-6 font-display text-[1.125rem] italic text-navy">{c.note}</p>}
+                  {c.note && <p className="mt-6 font-medium text-navy">{c.note}</p>}
                   {i === 0 && <ScratchShieldBadge className="mt-8" />}
                 </div>
                 {img && (
@@ -85,7 +85,7 @@ export default async function TechnologyPage() {
                     className={cn("lg:col-span-6", flip ? "lg:order-1 lg:col-start-1" : "lg:order-2 lg:col-start-7")}
                   >
                     <div
-                      className={cn("relative overflow-hidden bg-line", i % 3 === 0 ? "aspect-[4/5]" : "aspect-[4/3]")}
+                      className={cn("reveal-img relative overflow-hidden bg-line", i % 3 === 0 ? "aspect-[4/5]" : "aspect-[4/3]")}
                     >
                       <FinishImage image={img.image} sizes="(min-width: 1024px) 45vw, 100vw" />
                     </div>

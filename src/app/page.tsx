@@ -112,13 +112,13 @@ export default async function HomePage() {
         <section className="on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] items-end overflow-hidden bg-navy lg:min-h-svh">
           <HeroCarousel slides={heroSlides} />
           <div
-            className="absolute inset-0 -z-10 bg-gradient-to-t from-navy/95 via-navy/65 to-navy/10 lg:bg-gradient-to-r lg:from-navy/85 lg:via-navy/40 lg:to-navy/0"
+            className="absolute inset-0 -z-10 bg-gradient-to-t from-navy/95 via-navy/75 to-navy/30 lg:bg-gradient-to-r lg:from-navy/85 lg:via-navy/40 lg:to-navy/0"
             aria-hidden="true"
           />
           <div className="container-page pb-28 pt-32 sm:pb-32 lg:pb-36">
             <p className="eyebrow text-green-on-navy">The performance collection</p>
             <h1 className="mt-4 max-w-[14ch] text-display-xl text-on-dark">
-              Beautifully considered. <em className="italic">Built to perform.</em>
+              Beautifully considered. <span className="font-light">Built to perform.</span>
             </h1>
             <p className="mt-6 max-w-md text-lede text-on-dark-muted">
               Oak-look click flooring with a waterproof rigid core, a 0.55mm wear layer and a scratch-resistant finish.
@@ -177,7 +177,7 @@ export default async function HomePage() {
         {/* How it works: the homeowner journey */}
         <section className="border-t border-line py-section" aria-labelledby="how-heading">
           <div className="container-page">
-            <h2 id="how-heading" className="text-display-md text-navy">
+            <h2 id="how-heading" className="reveal text-display-md text-navy">
               How it works
             </h2>
             <div className="mt-12">
@@ -194,7 +194,7 @@ export default async function HomePage() {
           <div className="container-page relative -mt-24 sm:-mt-40 lg:absolute lg:inset-x-0 lg:bottom-16 lg:mt-0">
             <div className="max-w-xl bg-off-white p-6 sm:p-10 lg:ml-auto">
               <div className="grid grid-cols-[1fr_auto] items-start gap-6">
-                <h2 className="text-display-md text-navy">Made for life as it happens.</h2>
+                <h2 className="reveal text-display-md text-navy">Made for life as it happens.</h2>
                 <ScratchShieldBadge className="hidden w-28! sm:flex" />
               </div>
               <p className="mt-5 text-ink-muted">
@@ -212,7 +212,7 @@ export default async function HomePage() {
               <p className="font-display text-[clamp(5rem,3rem+9vw,10rem)] leading-[0.85] tracking-[-0.04em] text-navy">
                 0.55<span className="ml-2 text-[0.35em] tracking-normal text-ink-muted">mm</span>
               </p>
-              <h2 className="mt-8 text-display-md text-navy">Protection you can feel confident in.</h2>
+              <h2 className="reveal mt-8 text-display-md text-navy">Protection you can feel confident in.</h2>
               <p className="mt-5 max-w-prose text-lede text-ink-muted">
                 Under the finish is a clear wear layer that protects the printed wood design. Ours is 0.55mm thick.
                 It’s the layer that takes the foot traffic in a hallway or kitchen, and the number worth comparing when
@@ -221,7 +221,7 @@ export default async function HomePage() {
             </div>
             {wearGrain && (
               <figure className="order-1 lg:order-2">
-                <div className="relative aspect-[4/5] overflow-hidden bg-line">
+                <div className="reveal-img relative aspect-[4/5] overflow-hidden bg-line">
                   <FinishImage image={wearGrain.image} sizes="(min-width: 1024px) 45vw, 100vw" />
                 </div>
                 <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">
@@ -256,7 +256,7 @@ export default async function HomePage() {
             </div>
             {fittingImage && (
               <div className="lg:col-span-6 lg:col-start-7">
-                <div className="relative ml-auto aspect-[3/2] w-full overflow-hidden bg-line sm:w-4/5">
+                <div className="reveal-img relative ml-auto aspect-[3/2] w-full overflow-hidden bg-line sm:w-4/5">
                   <FinishImage image={fittingImage.image} sizes="(min-width: 1024px) 40vw, 80vw" />
                 </div>
               </div>
@@ -267,7 +267,7 @@ export default async function HomePage() {
         {/* 9. Homeowner / Trade */}
         <section className="border-t border-line py-section" aria-labelledby="audience-heading">
           <div className="container-page">
-            <h2 id="audience-heading" className="text-display-md text-navy">
+            <h2 id="audience-heading" className="reveal text-display-md text-navy">
               What describes you best?
             </h2>
             <div className="mt-8">
@@ -281,12 +281,12 @@ export default async function HomePage() {
           <div className="container-page grid gap-12 lg:grid-cols-2 lg:items-center lg:gap-20">
             <div className="grid grid-cols-5 gap-4">
               {consideredA && (
-                <div className="relative col-span-3 aspect-[3/4] overflow-hidden bg-line">
+                <div className="reveal-img relative col-span-3 aspect-[3/4] overflow-hidden bg-line">
                   <FinishImage image={consideredA.image} sizes="(min-width: 1024px) 28vw, 60vw" />
                 </div>
               )}
               {consideredB && (
-                <div className="relative col-span-2 mt-16 aspect-[3/4] self-start overflow-hidden bg-line">
+                <div className="reveal-img relative col-span-2 mt-16 aspect-[3/4] self-start overflow-hidden bg-line">
                   <FinishImage image={consideredB.image} sizes="(min-width: 1024px) 18vw, 40vw" />
                 </div>
               )}
@@ -296,7 +296,7 @@ export default async function HomePage() {
                 We would rather you had the facts than a slogan. Ask for the technical sheet, the warranty terms and the
                 test certificates for the finish you’re looking at, and we’ll send them over.
               </p>
-              <p className="font-display text-[1.125rem] italic text-navy">
+              <p className="font-medium text-navy">
                 Scratch-resistant does not mean scratch-proof.
               </p>
               <p>
@@ -348,7 +348,7 @@ export default async function HomePage() {
           />
           <div className="container-page py-section">
             <h2 className="max-w-[16ch] text-display-lg text-on-dark">
-              Timeless in style. <em className="italic">Resilient by design.</em>
+              Timeless in style. <span className="font-light">Resilient by design.</span>
             </h2>
             <p className="mt-5 max-w-md text-lede text-on-dark-muted">
               {finishes.length} finishes. Up to three samples, free.
@@ -367,7 +367,7 @@ function StyleTile({ style, image }: { style: FinishStyle; image?: { image: Fini
   const copy = STYLE_COPY[style];
   return (
     <Link href={`/range?style=${style}`} className="group block">
-      <div className="relative aspect-[4/5] overflow-hidden bg-line sm:aspect-[5/4]">
+      <div className="reveal-img relative aspect-[4/5] overflow-hidden bg-line sm:aspect-[5/4]">
         {image && (
           <FinishImage
             image={image.image}
@@ -390,7 +390,7 @@ function PopularFinishes({ finishes, total }: { finishes: Finish[]; total: numbe
     <section className="py-section" aria-labelledby="popular-heading">
       <div className="container-page flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h2 id="popular-heading" className="text-display-md text-navy">
+          <h2 id="popular-heading" className="reveal text-display-md text-navy">
             In the range
           </h2>
         </div>

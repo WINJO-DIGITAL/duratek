@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { distinct, matches, readFilters, type FilterableFinish, type RangeFilters } from "@/lib/catalogue/filter";
@@ -30,7 +31,13 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
  * Filters for the range grid, kept in the URL so links like
  * /range?style=plank and the header search work and are shareable.
  */
-export function RangeBrowser({ items }: { items: RangeItem[] }) {
+export function RangeBrowser({
+  items,
+  colourSwatches = {},
+}: {
+  items: RangeItem[];
+  colourSwatches?: Record<string, string>;
+}) {
   const router = useRouter();
   const pathname = usePathname();
   const params = useSearchParams();
@@ -81,7 +88,14 @@ export function RangeBrowser({ items }: { items: RangeItem[] }) {
                 pressed={filters.colour === c}
                 onClick={() => update({ colour: filters.colour === c ? null : c })}
               >
-                {colourFamilyLabel(c)}
+                <span className="flex items-center gap-2">
+                  {colourSwatches[c] && (
+                    <span className="relative block size-5 shrink-0 overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgb(24_54_76/0.1)]">
+                      <Image src={colourSwatches[c]} alt="" fill sizes="20px" quality={70} className="object-cover" />
+                    </span>
+                  )}
+                  {colourFamilyLabel(c)}
+                </span>
               </Chip>
             ))}
           </div>
