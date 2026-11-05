@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
+import { ButtonLink } from "@/components/ui/button";
 import { PageTransition } from "@/components/layout/page-transition";
 import { byTone, getFinishes, imagesOfKind } from "@/lib/catalogue";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
@@ -54,6 +55,9 @@ export default async function RangePage() {
             Choose up to three free samples.
           </p>
         </SectionIntro>
+        <ButtonLink href="/explore" variant="quiet" className="mt-4">
+          Explore them full screen
+        </ButtonLink>
         <div className="mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
           <Suspense fallback={<RangeGrid items={items} />}>

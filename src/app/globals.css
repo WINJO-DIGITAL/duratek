@@ -422,3 +422,10 @@
     stroke-dashoffset: 0;
   }
 }
+
+/* Finish explorer: the incoming photograph fades in over the still outgoing one. */
+@keyframes explorer-in {
+  from {
+    opacity: 0;
+  }
+}

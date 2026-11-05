@@ -90,8 +90,8 @@ export default async function HomePage() {
                   </span>
                 }
               />
-              <ButtonLink href="/range" variant="quiet" className="reveal">
-                Browse the range
+              <ButtonLink href="/explore" variant="quiet" className="reveal">
+                Explore them full screen
               </ButtonLink>
             </div>
             <div className="mt-10 lg:mt-14">
