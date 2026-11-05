@@ -9,7 +9,7 @@ import { TwoFormats, type FormatSummary } from "@/components/home/two-formats";
 import { PageTransition } from "@/components/layout/page-transition";
 import { ButtonLink } from "@/components/ui/button";
 import { byTone, getFinishes, getOnlineRetailers, grainImage, imagesOfKind } from "@/lib/catalogue";
-import { EDITORIAL, pickByFileName } from "@/lib/catalogue/curation";
+import { EDITORIAL, pickAllByFileName, pickByFileName } from "@/lib/catalogue/curation";
 import { FORMAT_LABELS, formatOptions, measureLine, plankFormat } from "@/lib/catalogue/format";
 import { imagePool } from "@/lib/catalogue/image-pool";
 import type { Finish } from "@/lib/catalogue/types";
@@ -32,8 +32,10 @@ export default async function HomePage() {
   const finishes = byTone(all);
   const rooms = imagePool(finishes, "room");
 
-  const hero = pickByFileName(rooms, EDITORIAL.hero);
-  const room = pickByFileName(rooms, EDITORIAL.room, new Set(hero ? [hero.image.src] : []));
+  // Hero photographs: the curated list, else the first floor-led room scene.
+  const heroPicks = pickAllByFileName(rooms, EDITORIAL.hero);
+  const heroes = heroPicks.length ? heroPicks : rooms.slice(0, 1);
+  const room = pickByFileName(rooms, EDITORIAL.room, new Set(heroes.map((h) => h.image.src)));
 
   const boards: LibraryBoard[] = finishes.map((f) => ({
     id: f.id,
@@ -68,14 +70,12 @@ export default async function HomePage() {
     <PageTransition>
       <>
         <FloorHero
-          image={hero?.image}
-          finish={
-            hero && {
-              name: hero.finish.name,
-              slug: hero.finish.slug,
-              swatch: imagesOfKind(hero.finish, "swatch")[0],
-            }
-          }
+          slides={heroes.map((h) => ({
+            image: h.image,
+            name: h.finish.name,
+            slug: h.finish.slug,
+            swatch: imagesOfKind(h.finish, "swatch")[0],
+          }))}
         />
 
         {/* The floor library */}

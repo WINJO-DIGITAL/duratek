@@ -16,12 +16,15 @@ export function AddToSamplesButton({
   finish,
   size = "default",
   quietMessage = false,
+  short = false,
   className,
 }: {
   finish: SampleItem;
   size?: "default" | "compact";
   /** Announce the confirmation to screen readers only (where there is no room to show it). */
   quietMessage?: boolean;
+  /** Short visible labels for narrow columns; the full wording stays for screen readers. */
+  short?: boolean;
   className?: string;
 }) {
   const { has, add, remove, count, limit, isFull } = useSamples();
@@ -56,7 +59,7 @@ export function AddToSamplesButton({
         aria-haspopup={blocked ? "dialog" : undefined}
         className={cn(
           "group inline-flex min-h-tap items-center justify-center gap-2 rounded-none font-medium transition-colors duration-300",
-          compact ? "px-0 text-[0.875rem]" : "px-6 text-[0.9375rem]",
+          compact ? "justify-start px-0 text-left text-[0.875rem]" : "px-6 text-[0.9375rem]",
           added && !compact && "border border-green-ink bg-white text-green-ink hover:bg-off-white",
           added && compact && "text-green-ink",
           !added && !blocked && !compact && "bg-green-ink text-white hover:bg-green-ink-hover",
@@ -68,19 +71,33 @@ export function AddToSamplesButton({
           <>
             <Check size={18} />
             <span>
-              In your samples
+              {short ? (
+                <>
+                  In samples<span className="sr-only">: {finish.name}</span>
+                </>
+              ) : (
+                "In your samples"
+              )}
               <span className="sr-only">, select to remove</span>
             </span>
           </>
         ) : blocked ? (
           <span>
-            Swap into samples
-            <span className="sr-only">. You have chosen {limit}, the most per request.</span>
+            {short ? "Swap" : "Swap into samples"}
+            <span className="sr-only">
+              {short ? ` ${finish.name} into samples` : ""}. You have chosen {limit}, the most per request.
+            </span>
           </span>
         ) : (
           <>
             <span aria-hidden="true" className="text-lg leading-none">+</span>
-            <span>Add to samples</span>
+            {short ? (
+              <span>
+                Sample<span className="sr-only">: add {finish.name} to samples</span>
+              </span>
+            ) : (
+              <span>Add to samples</span>
+            )}
           </>
         )}
       </button>

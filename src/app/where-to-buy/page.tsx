@@ -38,11 +38,12 @@ export default function WhereToBuyPage({ searchParams }: PageProps<"/where-to-bu
           </Suspense>
         </header>
 
-        <Suspense fallback={null}>
+        {/* Results and the retailers arrive together, behind a placeholder that
+            keeps the footer below the fold, so nothing on screen moves. */}
+        <Suspense fallback={<div aria-hidden="true" className="min-h-[70svh]" />}>
           <Results searchParams={searchParams} />
+          <OnlineRetailers />
         </Suspense>
-
-        <OnlineRetailers />
       </>
     </PageTransition>
   );

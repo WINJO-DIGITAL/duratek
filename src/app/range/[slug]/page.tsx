@@ -169,7 +169,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           </ViewTransition>
         </div>
 
-        <aside className="lg:col-span-5">
+        <div className="lg:col-span-5">
           <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)]">
             <nav aria-label="Breadcrumb">
               <Link href="/range" className="nav-link gap-2">
@@ -210,7 +210,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               </Link>
             </p>
           </div>
-        </aside>
+        </div>
       </div>
 
       {gallery.length > 0 && (
@@ -270,7 +270,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 {
                   label: "Warranty",
                   value: (
-                    <Link href="/warranty" className="underline underline-offset-4 hover:text-green-ink">
+                    <Link href="/warranty" className="-my-3 inline-block py-3 underline underline-offset-4 hover:text-green-ink">
                       Residential lifetime, 10 year commercial
                     </Link>
                   ),

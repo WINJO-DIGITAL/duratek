@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { curateImages, isSecondaryRoom, pickByFileName } from "./curation";
+import { curateImages, isSecondaryRoom, pickAllByFileName, pickByFileName } from "./curation";
 import type { CatalogueImage } from "./types";
 
 const img = (file: string, alt: string, kind: CatalogueImage["kind"] = "room"): CatalogueImage => ({
@@ -35,5 +35,19 @@ describe("pickByFileName", () => {
     expect(pickByFileName([a, b], ["B.png", "A.png"], new Set([b.image.src]))).toBe(a);
     expect(pickByFileName([a, b], ["C.png"])).toBe(a);
     expect(pickByFileName([], ["C.png"])).toBeUndefined();
+  });
+});
+
+describe("pickAllByFileName", () => {
+  const c = (file: string, finish: string) => ({
+    image: { src: `https://cdn.example/${file}?v=1`, alt: "", width: 1, height: 1, kind: "room" as const },
+    finish: { id: finish },
+  });
+  it("keeps preference order, skips missing files and repeats of a finish", () => {
+    const all = [c("A.png", "f1"), c("B.png", "f2"), c("C.png", "f1")];
+    expect(pickAllByFileName(all, ["B.png", "X.png", "A.png", "C.png"]).map((x) => x.image.src)).toEqual([
+      all[1].image.src,
+      all[0].image.src,
+    ]);
   });
 });

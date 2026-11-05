@@ -121,7 +121,7 @@ export function RangeMenu({
           setOpenedOn(pathname);
         }}
         className={cn(
-          "flex size-8 items-center justify-center transition-colors duration-300",
+          "-mx-1.5 flex size-tap items-center justify-center transition-colors duration-300",
           onDark ? "text-white" : "text-navy hover:text-green-ink",
         )}
       >

@@ -53,7 +53,13 @@ export function curateImages(images: CatalogueImage[]): CatalogueImage[] {
  * Falls back to the first floor-led room scene if none is available.
  */
 export const EDITORIAL = {
-  hero: ["Hawkshead_Kitchen.png", "Cartmel_Oak_Lounge.png", "Keswick_Oak_Kitchen.png"],
+  /** The hero cross-fades through these, in order: one per finish, light and dark. */
+  hero: [
+    "Hawkshead_Kitchen.png",
+    "Keswick_Oak_Kitchen.png",
+    "Honnister_Slate_Grey_lounge.png",
+    "Cartmel_Oak_Lounge.png",
+  ],
   room: [
     "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
     "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
@@ -73,4 +79,17 @@ export function pickByFileName<T extends { image: CatalogueImage }>(
     if (hit) return hit;
   }
   return available[0];
+}
+
+/** Every preferred file present, in preference order, at most one per finish. */
+export function pickAllByFileName<T extends { image: CatalogueImage; finish: { id: string } }>(
+  candidates: T[],
+  preferences: readonly string[],
+): T[] {
+  const out: T[] = [];
+  for (const name of preferences) {
+    const hit = candidates.find((c) => fileName(c.image.src) === name);
+    if (hit && !out.some((o) => o.finish.id === hit.finish.id)) out.push(hit);
+  }
+  return out;
 }

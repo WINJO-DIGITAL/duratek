@@ -2,6 +2,7 @@ import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { publicSupabase } from "@/lib/supabase/public";
 import { toFinish, toImage, type FinishRow } from "./mappers";
+import { isRetired, isSecondaryRoom } from "./curation";
 import { measureTone } from "./tone";
 import type { Finish, InspirationItem, OnlineRetailer } from "./types";
 
@@ -51,7 +52,10 @@ export async function getInspiration(): Promise<InspirationItem[]> {
     .select("id, title, mood, image_path, alt, width, height, blur_data_url, finish_ids")
     .order("sort_order");
   if (error) throw new Error(`Failed to load inspiration: ${error.message}`);
-  return data.map((r) => ({
+  // Same curation as finish photography: no retired files, and no
+  // bathrooms or playrooms where the floor is not the subject.
+  return data
+    .map((r) => ({
     id: r.id,
     title: r.title,
     mood: r.mood,
@@ -65,7 +69,8 @@ export async function getInspiration(): Promise<InspirationItem[]> {
       blur_data_url: r.blur_data_url,
       sort_order: 0,
     }),
-  }));
+    }))
+    .filter((item) => !isRetired(item.image) && !isSecondaryRoom({ ...item.image, alt: `${item.image.alt} ${item.title}` }));
 }
 
 export async function getOnlineRetailers(): Promise<OnlineRetailer[]> {

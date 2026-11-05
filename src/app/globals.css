@@ -410,3 +410,15 @@
 .sample-tray::backdrop {
   background: rgb(24 54 76 / 0.35);
 }
+
+/* Hero progress ring: traces one photograph's hold. Duration set inline. */
+.hero-ring {
+  animation-name: hero-ring;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes hero-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}

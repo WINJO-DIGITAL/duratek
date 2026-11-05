@@ -62,7 +62,7 @@ Audience: no homeowner/trade switch block (retired in the approved redesign, Nov
 
 Approved redesign (November 2026, "The floor is the hero"). Seven sections, then the footer:
 
-1. **Floor-led hero**: one full-bleed photograph, camera low, floor filling the frame; heading "Beautifully considered. Built to perform." set light; one primary action (Explore the range), one quiet sample link; the finish shown is named and linked.
+1. **Floor-led hero**: full-bleed photographs, camera low, floor filling the frame. A few curated finishes (one per colour) each hold still for about 7 seconds, then dissolve slowly into the next (client request, November 2026); pausable, pauses on hover/focus and off screen, still under reduced motion. Heading "Beautifully considered. Built to perform." set light; one primary action (Explore the range), one quiet sample link; the finish shown is named and linked in the swatch circle, whose ring traces the time to the next photograph.
 2. **The floor library**: all finishes as boards side by side, ordered light to dark (measured from each swatch); tap or hover widens a board with its name, format and Add sample. Doorway to the explorer.
 3. **Two formats, to scale**: the standard and extra-long planks drawn to scale with dimension lines (replaces the style tiles until herringbone exists).
 4. **One room**: a single editorial photograph, captioned with the finish, with Add sample.

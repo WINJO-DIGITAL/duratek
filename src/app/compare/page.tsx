@@ -30,7 +30,7 @@ export default function ComparePage({ searchParams }: PageProps<"/compare">) {
         <SectionIntro as="h1" size="lg" eyebrow="Compare" title="Side by side.">
           <p>Up to {COMPARE_LIMIT} finishes. The link keeps your choice, so you can send it to someone.</p>
         </SectionIntro>
-        <Suspense fallback={<div aria-busy="true" className="mt-12 h-96 animate-pulse bg-line/60" />}>
+        <Suspense fallback={<CompareSkeleton />}>
           <Comparison searchParams={searchParams} />
         </Suspense>
       </div>
@@ -89,12 +89,13 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
                 </Link>
                 <SaveButton finish={sample} variant="overlay" className="absolute right-1.5 top-1.5 sm:right-2 sm:top-2" />
                 <h2 className="mt-3 text-[1.0625rem] leading-tight text-navy sm:text-[1.375rem]">
-                  <Link href={`/range/${f.slug}`} className="hover:text-green-ink">
+                  <Link href={`/range/${f.slug}`} className="-my-2 inline-block py-2 hover:text-green-ink">
                     {f.name}
                   </Link>
                 </h2>
                 <p className="mt-1 hidden text-[0.8125rem] text-ink-muted sm:block">{detail(f)}</p>
-                <AddToSamplesButton finish={sample} size="compact" className="mt-1" />
+                <AddToSamplesButton finish={sample} size="compact" short className="mt-1 sm:hidden" />
+                <AddToSamplesButton finish={sample} size="compact" className="mt-1 hidden sm:flex" />
                 {chosen.length > 1 && (
                   <Link
                     href={compareHref(slugs.filter((s) => s !== f.slug))}
@@ -148,7 +149,7 @@ function RowGroup({
                 style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
               >
                 {Array.from({ length: columns }, (_, i) => (
-                  <span key={i} className={cn("text-[0.875rem] text-navy sm:text-[0.9375rem]", r.measured && "data")}>
+                  <span key={i} className={cn("text-[0.8125rem] text-navy sm:text-[0.9375rem]", r.measured && "data text-[0.75rem] sm:text-[0.875rem]")}>
                     {r.values[i] ?? ""}
                   </span>
                 ))}
@@ -212,5 +213,26 @@ function Picker({
         );
       })}
     </ul>
+  );
+}
+
+/** Same footprint as the loaded comparison, so nothing jumps when it arrives. */
+function CompareSkeleton() {
+  return (
+    <div aria-busy="true" aria-label="Loading comparison" className="mt-12 lg:mt-16">
+      <div className="grid gap-3 sm:gap-6 lg:grid-cols-[12rem_1fr]">
+        <div className="hidden lg:block" />
+        <div className="grid grid-cols-3 gap-3 sm:gap-6">
+          {[0, 1, 2].map((i) => (
+            <div key={i}>
+              <div className="aspect-[4/5] animate-pulse bg-line/70" />
+              <div className="mt-3 h-6 w-3/4 bg-line/70" />
+              <div className="mt-2 h-11 w-1/2 bg-line/50" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="mt-12 h-64 bg-line/40" />
+    </div>
   );
 }
