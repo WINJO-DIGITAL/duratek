@@ -3,6 +3,7 @@ import { DM_Mono, DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/layout/reveal-observer";
+import { RouteScrollReset } from "@/components/layout/route-scroll-reset";
 import { SiteHeader } from "@/components/layout/site-header";
 import { SampleTray } from "@/components/samples/sample-tray";
 import { JsonLd } from "@/components/seo/json-ld";
@@ -73,6 +74,8 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <SiteFooter nav={nav} />
+        {/* After the page content, so it runs after Next's own scroll handling. */}
+        <RouteScrollReset />
         <MobileBottomBar />
         <SampleTray catalogue={nav.catalogue} />
       </body>

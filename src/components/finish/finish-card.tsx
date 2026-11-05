@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ViewTransition } from "react";
 import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { FORMAT_LABELS, measureLine, plankFormat } from "@/lib/catalogue/format";
@@ -40,8 +39,6 @@ export function FinishCard({
 
   return (
     <article className={cn("reveal group relative flex flex-col", className)}>
-      {/* Same name as the detail page hero: the photo morphs into it on click. */}
-      <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
         <div className={cn("relative overflow-hidden bg-line", aspect)}>
           {primary && (
             <FinishImage
@@ -58,7 +55,6 @@ export function FinishCard({
             </div>
           )}
         </div>
-      </ViewTransition>
       {/* Above the stretched link, in the photo's corner. */}
       <SaveButton
         finish={{ id: finish.id, slug: finish.slug, name: finish.name }}

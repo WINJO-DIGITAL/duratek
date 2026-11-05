@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense, ViewTransition } from "react";
+import { Suspense } from "react";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
@@ -152,21 +152,17 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
       {/* The plank first, beside a sticky information panel */}
       <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-7">
-          <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
-            <div>
-              {grain ? (
-                <GrainZoom
-                  image={grain}
-                  name={finish.name}
-                  priority
-                  sizes="(min-width: 1024px) 54vw, 100vw"
-                  className="aspect-[4/5] sm:aspect-[6/5]"
-                />
-              ) : (
-                <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />
-              )}
-            </div>
-          </ViewTransition>
+          {grain ? (
+            <GrainZoom
+              image={grain}
+              name={finish.name}
+              priority
+              sizes="(min-width: 1024px) 54vw, 100vw"
+              className="aspect-[4/5] sm:aspect-[6/5]"
+            />
+          ) : (
+            <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />
+          )}
         </div>
 
         <div className="lg:col-span-5">

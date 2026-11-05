@@ -104,7 +104,8 @@
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
+    /* No global smooth scrolling: it made route changes and Back/Forward
+       scroll restoration glide visibly. Animated scrolls opt in in code. */
     /* Sticky header (plus its 1px border): anchors and the router's
        scroll-into-view land below it, not underneath it. */
     scroll-padding-top: calc(var(--spacing-header) + 1px);
@@ -139,9 +140,6 @@
     outline-color: var(--color-green-on-navy);
   }
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
@@ -230,23 +228,9 @@
   display: none;
 }
 
-/* Finish photo morphs from card to detail hero. */
-::view-transition-group(.finish-morph) {
-  animation-duration: 520ms;
-  animation-timing-function: var(--ease-calm);
-}
-::view-transition-image-pair(.finish-morph) {
-  animation-name: vt-soften;
-}
-
 @keyframes vt-fade-in {
   from {
     opacity: 0;
-  }
-}
-@keyframes vt-soften {
-  40% {
-    filter: blur(2px);
   }
 }
 
