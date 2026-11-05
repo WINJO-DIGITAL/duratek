@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from "react";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 
 export interface HeroSlide {
@@ -15,6 +15,8 @@ export interface HeroSlide {
 /** How long each photograph holds, and how long the cross-fade takes. */
 const HOLD_MS = 7000;
 const FADE_MS = 1600;
+
+const noSubscribe = () => () => {};
 
 /**
  * The hero photographs. Each holds, still and uncropped by motion, then
@@ -35,8 +37,14 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
   const [held, setHeld] = useState(false); // hover or focus
   const [hidden, setHidden] = useState(false); // tab hidden or hero off screen
   const [reduced, setReduced] = useState(false);
+  // The ring is the clock: it only starts once the page is interactive, so
+  // it can't run ahead of the code that changes the photograph.
+  const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
+  // Photographs that have finished loading, and whether a change is waiting on one.
+  const [ready, setReady] = useState(() => new Set<number>());
+  const [waiting, setWaiting] = useState(false);
   const many = slides.length > 1;
-  const running = many && !userPaused && !held && !hidden && !reduced;
+  const running = mounted && many && !userPaused && !held && !hidden && !reduced && !waiting;
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -60,18 +68,27 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
     };
   }, []);
 
-  // Advance after a full hold. Restarting the timer on resume keeps the ring
-  // (a CSS animation keyed to the slide) and the change in step.
-  useEffect(() => {
-    if (!running) return;
-    const t = setTimeout(() => {
-      const next = (index + 1) % slides.length;
-      setLoaded((s) => new Set(s).add(next).add((next + 1) % slides.length));
-      setPrevious(index);
-      setIndex(next);
-    }, HOLD_MS);
-    return () => clearTimeout(t);
-  }, [running, index, slides.length]);
+  const nextIndex = (index + 1) % slides.length;
+
+  function advance() {
+    const after = (nextIndex + 1) % slides.length;
+    setLoaded((l) => new Set(l).add(nextIndex).add(after));
+    setPrevious(index);
+    setIndex(nextIndex);
+    setWaiting(false);
+  }
+
+  // The ring has traced a full hold: change now if the next photograph has
+  // loaded, otherwise as soon as it does (never fade into a placeholder).
+  function onHoldEnd() {
+    if (ready.has(nextIndex)) advance();
+    else setWaiting(true);
+  }
+
+  function onPhotoLoad(i: number) {
+    setReady((r) => new Set(r).add(i));
+    if (waiting && i === nextIndex) advance();
+  }
 
   const current = slides[index];
   if (!current) return null;
@@ -98,7 +115,10 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
                 sizes="100vw"
                 quality={80}
                 priority={i === 0}
+                loading={i === 0 ? undefined : "eager"}
                 fetchPriority={i === 0 ? "high" : "low"}
+                onLoad={() => onPhotoLoad(i)}
+                onError={() => onPhotoLoad(i)}
                 placeholder={s.image.blurDataURL ? "blur" : "empty"}
                 blurDataURL={s.image.blurDataURL}
                 className="object-cover object-[50%_75%]"
@@ -111,20 +131,22 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
       <div className="container-page grid gap-10 pb-10 pt-40 sm:pb-14 lg:grid-cols-[1fr_auto] lg:items-end lg:pb-16">
         {children}
 
-        <div
-          className="flex items-center gap-1 self-end lg:justify-self-end"
-          onPointerEnter={(e) => e.pointerType === "mouse" && setHeld(true)}
-          onPointerLeave={() => setHeld(false)}
-          onFocus={() => setHeld(true)}
-          onBlur={() => setHeld(false)}
-        >
-          <Link href={`/range/${current.slug}`} className="group flex min-h-tap items-center gap-3 text-on-dark">
+        <div className="flex items-center gap-1 self-end lg:justify-self-end">
+          {/* Hovering or focusing the finish holds it; the pause button is its own control. */}
+          <Link
+            href={`/range/${current.slug}`}
+            onPointerEnter={(e) => e.pointerType === "mouse" && setHeld(true)}
+            onPointerLeave={() => setHeld(false)}
+            onFocus={() => setHeld(true)}
+            onBlur={() => setHeld(false)}
+            className="group flex min-h-tap items-center gap-3 text-on-dark"
+          >
             <span className="relative block size-11 shrink-0">
               {/* Progress ring: traces the hold, restarts with each photograph. */}
               {many && (
                 <svg viewBox="0 0 44 44" aria-hidden="true" className="absolute inset-0 -rotate-90">
                   <circle cx="22" cy="22" r="21" fill="none" stroke="rgb(255 255 255 / 0.25)" strokeWidth="1" />
-                  {!reduced && (
+                  {mounted && !reduced && (
                     <circle
                       key={index}
                       cx="22"
@@ -137,6 +159,7 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
                       strokeDasharray={100}
                       strokeDashoffset={100}
                       className="hero-ring"
+                      onAnimationEnd={onHoldEnd}
                       style={{ animationDuration: `${HOLD_MS}ms`, animationPlayState: running ? "running" : "paused" }}
                     />
                   )}
