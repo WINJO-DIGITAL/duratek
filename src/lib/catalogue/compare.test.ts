@@ -27,6 +27,11 @@ describe("compareRows", () => {
     expect(shared.map((r) => r.label)).toEqual(["Colour", "Wear layer", "Core"]);
   });
 
+  it("compares the public RRP when there is one", () => {
+    const { different } = compareRows([{ ...keswick, rrpPence: 3333 }, { ...fellside, rrpPence: 3999 }]);
+    expect(different.find((r) => r.label === "RRP per m²")?.values).toEqual(["£33.33", "£39.99"]);
+  });
+
   it("treats a single finish as all shared", () => {
     expect(compareRows([keswick]).different).toEqual([]);
   });

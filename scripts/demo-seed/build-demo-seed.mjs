@@ -20,6 +20,8 @@ const root = path.resolve(here, "../..");
 const curation = JSON.parse(await readFile(path.join(here, "curation.json"), "utf8"));
 
 // Placeholder trade prices: repeated digits so nobody mistakes them for real.
+// Placeholder RRP (public price): also a repeated-digit fake, never a Kwik Floors price.
+const DEMO_RRP_PENCE = 3333;
 const DEMO_TIERS = [
   { name: "Demo tier A (placeholder prices)", pence: 2222 },
   { name: "Demo tier B (placeholder prices)", pence: 1111 },
@@ -148,6 +150,7 @@ async function main() {
         `insert into public.prices (finish_id, tier_id, price_per_m2_pence) values (${q(fid)}, ${q(uuid(`tier:${t.name}`))}, ${t.pence});`,
       );
     }
+    out.push(`update public.finishes set rrp_per_m2_pence = ${DEMO_RRP_PENCE} where id = ${q(fid)};`);
     out.push("");
   }
 

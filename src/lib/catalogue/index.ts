@@ -17,7 +17,7 @@ export const TAGS = {
 } as const;
 
 const FINISH_SELECT =
-  "id, name, slug, style, colour_family, description, specs, is_demo, finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
+  "id, name, slug, style, colour_family, description, specs, is_demo, rrp_per_m2_pence, finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
 
 export async function getFinishes(): Promise<Finish[]> {
   "use cache";

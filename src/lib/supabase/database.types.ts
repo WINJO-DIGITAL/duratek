@@ -77,14 +77,14 @@ isOneToOne: false
                   ]
                 },"finishes": {
                   Row: {
-                    "colour_family": string,"created_at": string,"description": string,"id": string,"is_demo": boolean,"name": string,"published": boolean,"slug": string,"sort_order": number,"specs": NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at": string
+                    "colour_family": string,"created_at": string,"description": string,"id": string,"is_demo": boolean,"name": string,"published": boolean,"rrp_per_m2_pence": number | null,"slug": string,"sort_order": number,"specs": NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "colour_family": string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name": string,"published"?: boolean,"slug": string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at"?: string
+                    "colour_family": string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name": string,"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug": string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at"?: string
                   }
                   Update: {
-                    "colour_family"?: string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name"?: string,"published"?: boolean,"slug"?: string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style"?: Database["public"]['Enums']["finish_style"],"updated_at"?: string
+                    "colour_family"?: string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name"?: string,"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug"?: string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style"?: Database["public"]['Enums']["finish_style"],"updated_at"?: string
                   }
                   Relationships: [
                     

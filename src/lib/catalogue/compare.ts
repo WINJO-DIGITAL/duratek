@@ -1,4 +1,5 @@
 import { colourFamilyLabel } from "@/lib/config";
+import { formatPence } from "@/lib/money";
 import { FORMAT_LABELS, plankFormat } from "./format";
 import { specRows } from "./mappers";
 import type { Finish } from "./types";
@@ -12,7 +13,7 @@ export interface CompareRow {
   measured: boolean;
 }
 
-const MEASURED = new Set(["Plank size", "Thickness", "Wear layer", "Pack coverage"]);
+const MEASURED = new Set(["Plank size", "Thickness", "Wear layer", "Pack coverage", "RRP per m²"]);
 
 /**
  * Rows for a side-by-side comparison, split into what differs and what every
@@ -22,6 +23,7 @@ export function compareRows(finishes: Finish[]): { different: CompareRow[]; shar
   const perFinish = finishes.map((f) => {
     const format = plankFormat(f.specs);
     const rows = new Map<string, string>([["Colour", colourFamilyLabel(f.colourFamily)]]);
+    if (f.rrpPence !== undefined) rows.set("RRP per m²", formatPence(f.rrpPence));
     if (format) rows.set("Plank format", FORMAT_LABELS[format]);
     for (const r of specRows(f.specs)) if (r.label !== "Format") rows.set(r.label, r.value);
     return rows;

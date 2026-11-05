@@ -36,6 +36,7 @@ export interface FinishRow {
   description: string;
   specs: unknown;
   is_demo: boolean;
+  rrp_per_m2_pence?: number | null;
   finish_images: ImageRow[] | null;
 }
 
@@ -71,6 +72,7 @@ export function toFinish(row: FinishRow): Finish {
     description: row.description,
     specs: toSpecs(row.specs),
     isDemo: row.is_demo,
+    rrpPence: row.rrp_per_m2_pence ?? undefined,
     images,
   };
 }

@@ -33,6 +33,8 @@ export interface Finish {
   description: string;
   specs: FinishSpecs;
   isDemo: boolean;
+  /** Public RRP per m2, in pence, set by the business. Absent until set. Not a trade price. */
+  rrpPence?: number;
   images: CatalogueImage[];
   /** Measured lightness of the swatch, 0 dark .. 1 light; undefined if unmeasured. */
   tone?: number;

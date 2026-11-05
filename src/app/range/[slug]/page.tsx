@@ -9,6 +9,7 @@ import { ColourSwatches } from "@/components/finish/colour-swatches";
 import { FinishGallery } from "@/components/finish/finish-gallery";
 import { GrainZoom } from "@/components/finish/grain-zoom";
 import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
+import { PriceBlock, PriceBlockPublic } from "@/components/trade/price-block";
 import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
 import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
@@ -185,7 +186,12 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               />
             </div>
 
-            <SpecList rows={keySpecs} className="mt-8 border-t border-line" />
+            {/* RRP is public; the trade price is read at request time, only for an approved account. */}
+            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} />}>
+              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} />
+            </Suspense>
+
+            <SpecList rows={keySpecs} className="mt-2 border-t border-line" />
 
             {/* The sample offer and actions, together in one soft panel. */}
             <div className="card mt-8 p-5 sm:p-6">

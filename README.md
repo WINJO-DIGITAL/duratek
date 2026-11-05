@@ -41,3 +41,17 @@ npm run build
   never fetched by public pages.
 - Sample requests have no public insert policy: the (upcoming) server route validates, rate-limits and
   inserts with the service role key, which must never be exposed to the client.
+
+## Trade login, prices and the owner
+
+- Public pages show the RRP (`finishes.rrp_per_m2_pence`). Trade prices come from `prices` (per tier) and
+  `price_overrides` (per account) and are read only for an approved, logged-in account.
+- The owner sets prices at `/admin/prices` and approves accounts at `/admin/accounts` (both need `is_admin`).
+- The first owner account has to be promoted in the database once. Sign up through `/trade/apply` (or the
+  Supabase dashboard), then run:
+
+  ```sql
+  update public.profiles set is_admin = true, status = 'approved'
+  where id = (select id from auth.users where email = 'owner@your-domain');
+  ```
+- Approval emails need `RESEND_API_KEY` and `EMAIL_FROM` (see `.env.example`).

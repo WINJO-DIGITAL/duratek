@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Suspense } from "react";
 import { DM_Mono, DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
 import { SiteFooter } from "@/components/layout/site-footer";
@@ -69,15 +70,24 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             logo: siteUrl("/icon.svg"),
           }}
         />
-        <SiteHeader nav={nav} />
+        {/* The chrome reads the URL (active links), which isn't known when the finish page's
+            fallback shell is regenerated, so each piece loads behind a boundary. The header's
+            fallback holds its space, so nothing moves. */}
+        <Suspense fallback={<div aria-hidden="true" className="h-[calc(var(--spacing-header)+1px)]" />}>
+          <SiteHeader nav={nav} />
+        </Suspense>
         <main id="main" className="flex-1">
           {children}
         </main>
         <SiteFooter nav={nav} />
         {/* After the page content, so it runs after Next's own scroll handling. */}
-        <RouteScrollReset />
-        <MobileBottomBar />
-        <SampleTray catalogue={nav.catalogue} />
+        <Suspense fallback={null}>
+          <RouteScrollReset />
+        </Suspense>
+        <Suspense fallback={null}>
+          <MobileBottomBar />
+          <SampleTray catalogue={nav.catalogue} />
+        </Suspense>
       </body>
     </html>
   );

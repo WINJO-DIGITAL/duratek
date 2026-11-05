@@ -2,14 +2,14 @@
 
 A premium, image-led brand website for **Duratek** (waterproof SPC click flooring). It serves two audiences:
 
-- **Homeowners**: browse the range, get inspired, order free samples, and find where to buy. No prices shown.
+- **Homeowners**: browse the range, get inspired, order free samples, and find where to buy. They see the RRP (recommended retail price) only.
 - **Trade** (fitters, retailers, contractors, specifiers): apply for an account, get approved, log in to see their own prices and download documents, and show the range to their customers.
 
 Duratek is the client's own brand. Kwik Floors and Dave's Tiles are the client's separate Shopify consumer stores. They are NOT part of this codebase, but Kwik Floors appears on the site as an online retailer, and its Duratek collection is the source of demo product data (see Demo content).
 
 ## Scope (v1)
 
-- **Public**: a visual showcase of the range, finish explorer, inspiration, free sample ordering, where to buy, and a brochure download. No prices anywhere.
+- **Public**: a visual showcase of the range, finish explorer, inspiration, free sample ordering, where to buy, and a brochure download. The only public price is the RRP per m², set by the business (client decision, November 2026); no price is shown for a finish with no RRP. Trade prices are never public.
 - **Trade**: apply, get approved, log in, see prices, download documents, build shareable shortlists, and use Customer view.
 - **Owner admin**: approve trade applications, assign price tiers, enter and edit prices, manage finishes, manage stockists, view and process sample requests, and upload documents.
 - **Out of v1**: no basket, checkout or online payment, no ordering, and no quotes. Public prices and direct selling may come in v2. Structure the code so a cart can be added later, but build none of it now.
@@ -114,7 +114,7 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 ## Security rules (non-negotiable)
 
-1. Prices are never sent to logged-out or unapproved users. Gate on the SERVER (server components / route handlers), not with CSS or client-side hiding. Customer view also strips prices on the server.
+1. Trade prices (tier and account prices) are never sent to logged-out or unapproved users; the RRP is public. Gate on the SERVER (server components / route handlers), not with CSS or client-side hiding. Customer view also strips prices on the server.
 2. Price data lives in tables protected by Row Level Security. Only approved users can read it, and only their own tier or account price.
 3. Only the owner/admin role can write prices, tiers, approvals, finishes, stockists and documents.
 4. Never expose the Supabase service-role key to the client. Never commit secrets; use env vars.
@@ -126,7 +126,7 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 - `profiles`: id (auth user), company_name, contact_name, phone, trade_type (fitter | retailer | contractor | specifier), status (pending | approved | rejected), tier_id, is_admin, list_as_stockist (bool)
 - `price_tiers`: id, name
-- `finishes`: id, name, slug, style (plank | herringbone), colour_family, description, specs (jsonb: sizes, thickness, pack coverage etc.), sort_order, published, is_demo
+- `finishes`: id, name, slug, style (plank | herringbone), colour_family, description, specs (jsonb: sizes, thickness, pack coverage etc.), rrp_per_m2_pence (public RRP, nullable), sort_order, published, is_demo
 - `finish_images`: finish_id, url, kind (swatch | room | closeup), alt, sort_order
 - `prices`: finish_id, tier_id, price_per_m2_pence (integer), updated_at
 - `price_overrides`: finish_id, profile_id, price_per_m2_pence
@@ -145,7 +145,8 @@ Money is stored as integer pence.
 - **Finish explorer** (the one signature interaction, done really well): full-screen, image-led browsing of every finish. Swipe or arrow between finishes, tap to switch between the room scene and the grain close-up, filter by style and colour family, and "Add to samples" without leaving. Smooth, slow transitions; respects prefers-reduced-motion.
 - **Sample tray**: see Samples.
 - **Where to buy**: see Where to buy.
-- **Customer view toggle**: a logged-in trader can switch, with one tap, to a mode that hides ALL prices so they can show the site to homeowners on a phone or tablet. It persists for the session and is clearly indicated, with an easy exit.
+- **Pricing, built**: the RRP shows to everyone (finish page, range cards, compare); an approved trade account also sees its own price (account price if set, else its tier price) on the finish page and the account price list, read server-side as that user under RLS. The owner sets RRPs, tier prices and tiers at `/admin/prices`, and approves accounts and assigns tiers at `/admin/accounts` (approval emails the applicant). Seed RRP and trade prices are fake repeated-digit placeholders.
+- **Customer view toggle**: a logged-in trader can switch, with one tap, to a mode that hides ALL trade prices (the public RRP stays) so they can show the site to homeowners on a phone or tablet. It persists for the session and is clearly indicated, with an easy exit.
 - **Shareable shortlists**: a trader picks finishes and shares a clean link (a PDF can come later) with no prices.
 - **Trade application**: short form, email confirmation, owner approval flow.
 - **Trade area**: prices, documents, shortlists.

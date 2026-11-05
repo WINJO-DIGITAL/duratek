@@ -6,6 +6,7 @@ import { grainImage, leadImage } from "@/lib/catalogue/mappers";
 import type { Finish } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel } from "@/lib/config";
+import { formatPence } from "@/lib/money";
 import { FinishImage } from "./finish-image";
 
 /**
@@ -78,6 +79,11 @@ export function FinishCard({
           {format && <> · {FORMAT_LABELS[format]}</>}
         </p>
         {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
+        {finish.rrpPence !== undefined && (
+          <p className="mt-2 text-[0.8125rem] text-ink-muted">
+            RRP <span className="data text-[0.875rem] text-navy">{formatPence(finish.rrpPence)}</span> per m²
+          </p>
+        )}
 
         {/* Above the stretched link so it stays independently clickable. */}
         <div className="relative z-10 mt-auto pt-3">

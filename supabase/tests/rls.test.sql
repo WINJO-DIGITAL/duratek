@@ -3,7 +3,7 @@
 -- PostgREST would set, then checks what that user can read and write.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(41);
+select plan(44);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres)
@@ -58,6 +58,9 @@ select is((select count(*)::int from public.finishes where slug = 'hidden-draft'
 select is((select count(*)::int from public.finish_images i join public.finishes f on f.id = i.finish_id where f.slug = 'hidden-draft'), 0, 'anon cannot see images of an unpublished finish');
 select throws_ok('select * from public.prices', '42501', null, 'anon cannot read prices');
 select throws_ok('select * from public.price_overrides', '42501', null, 'anon cannot read price overrides');
+select is((select count(*)::int from public.finishes where rrp_per_m2_pence = 3333), 11, 'anon can read the public RRP');
+update public.finishes set rrp_per_m2_pence = 1;
+select is((select count(*)::int from public.finishes where rrp_per_m2_pence = 1), 0, 'anon cannot change an RRP');
 select throws_ok('select * from public.my_prices', '42501', null, 'anon cannot read my_prices');
 select throws_ok('select * from public.price_tiers', '42501', null, 'anon cannot read price tiers');
 select throws_ok('select * from public.profiles', '42501', null, 'anon cannot read profiles');
@@ -145,6 +148,8 @@ reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"00000000-0000-4000-a000-000000000005","role":"authenticated"}';
 select is((select count(*)::int from public.prices), 22, 'admin sees every tier''s prices');
+update public.finishes set rrp_per_m2_pence = 4444 where slug = 'keswick-oak';
+select is((select rrp_per_m2_pence from public.finishes where slug = 'keswick-oak'), 4444, 'admin can set an RRP');
 select is((select count(*)::int from public.sample_requests), 1, 'admin can read sample requests');
 select lives_ok(
   $$update public.profiles set status = 'approved' where id = '00000000-0000-4000-a000-000000000001'$$,

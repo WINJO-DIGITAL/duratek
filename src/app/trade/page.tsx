@@ -56,6 +56,9 @@ export default async function TradePage() {
                   Online trade applications open soon.
                 </p>
               )}
+              <ButtonLink href="/trade/login" variant="quiet" arrow={false}>
+                Log in
+              </ButtonLink>
             </div>
           </div>
           {photo && (
