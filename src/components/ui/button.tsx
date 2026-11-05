@@ -3,7 +3,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { ArrowRight } from "./icons";
 
-export type ButtonVariant = "primary" | "on-dark" | "outline" | "outline-on-dark" | "quiet" | "quiet-on-dark";
+export type ButtonVariant = "primary" | "on-dark" | "outline" | "quiet" | "quiet-on-dark";
 
 export type ButtonSize = "md" | "lg";
 
@@ -31,8 +31,6 @@ export const buttonVariants: Record<ButtonVariant, string> = {
   /** Cream on navy. */
   "on-dark": "bg-off-white text-navy hover:bg-white",
   outline: "border border-navy/70 text-navy hover:border-navy hover:bg-navy hover:text-off-white",
-  /** Secondary action over photography: a clear outline, no fill. */
-  "outline-on-dark": "border border-white/60 text-on-dark backdrop-blur-[2px] hover:border-white hover:bg-white/10",
   /** Quiet secondary link: underline on hover only, no box. */
   quiet: "text-navy underline-offset-[6px] hover:underline",
   "quiet-on-dark": "text-on-dark underline-offset-[6px] hover:underline",

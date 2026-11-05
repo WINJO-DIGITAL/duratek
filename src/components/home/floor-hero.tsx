@@ -28,12 +28,16 @@ export function FloorHero({ slides }: { slides: HeroSlide[] }) {
           <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/85 sm:mt-6">
             Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4">
+          <div className="mt-8 flex flex-wrap items-center gap-x-9 gap-y-3 sm:mt-10">
             <ButtonLink href="/range" variant="on-dark" size="lg">
               Explore the range
             </ButtonLink>
-            <OrderSamplesButton variant="outline-on-dark" size="lg" arrow={false}>
-              Order 3 free samples
+            <OrderSamplesButton
+              variant="quiet-on-dark"
+              arrow={false}
+              className="underline decoration-white/40 decoration-1 hover:decoration-white"
+            >
+              Order free samples
             </OrderSamplesButton>
           </div>
         </div>

@@ -166,7 +166,7 @@ Use the existing Duratek brand identity: the warm neutrals are surfaces, not new
 - Secondary text: muted slate grey `#5A6B78` (on navy: `#B9C6D0`).
 - Headings and product titles: Manrope (light 300 for large display, 400 for titles, 500 sparingly; no italics). Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav). Data (measurements and specifications): DM Mono 400. Avoid unnecessary bold.
 - Small tracked uppercase green eyebrow labels above headings (e.g. "DURATEK SURFACE TECHNOLOGY", "ENGINEERED DURABILITY")
-- Buttons: softly rounded (10px). Ivory on navy or photography, green on light, with a trailing arrow ("Shop full Duratek range →"); a clear outline for the secondary action over photography.
+- Buttons: softly rounded (10px). Ivory on navy or photography, green on light, with a trailing arrow ("Shop full Duratek range →"). A secondary action next to a primary one is a quiet underlined link, not a second button.
 - Iconography: simple 1.5px line icons, alone (never in circles), in oak on light or green on navy, for facts and benefits cards.
 - The wordmark is lowercase "duratek": "dura" in green, "tek" bold (white on navy). Use a placeholder text version only; use the real SVG when supplied.
 - Badges: Scratch Shield, Residential Lifetime Warranty and Commercial 10 Year Warranty artwork. Use placeholders until the client supplies the files.
