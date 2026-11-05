@@ -32,7 +32,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
       <div
         role="group"
         aria-label="Finishes, light to dark"
-        className="flex h-[24rem] gap-[2px] sm:h-[30rem] lg:h-[36rem]"
+        className="frame flex h-[24rem] gap-[2px] shadow-card sm:h-[30rem] lg:h-[36rem]"
         onKeyDown={(e) => {
           if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
           e.preventDefault();
@@ -64,7 +64,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
         })}
       </div>
 
-      <div className="mt-6 grid gap-5 border-t border-navy/15 pt-5 sm:grid-cols-[1fr_auto] sm:items-start">
+      <div className="card mt-4 grid gap-5 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-6 lg:px-8">
         <div aria-live="polite">
           <p key={current.id} className="animate-[label-in_600ms_var(--ease-calm)] text-display-sm text-navy">
             {current.name}

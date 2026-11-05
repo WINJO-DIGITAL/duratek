@@ -57,7 +57,7 @@ export function FinishGallery({
             e.preventDefault();
             go(index + (e.key === "ArrowRight" ? 1 : -1));
           }}
-          className={cn("scrollbar-none flex snap-x snap-mandatory overflow-x-auto bg-line", aspect)}
+          className={cn("scrollbar-none flex snap-x snap-mandatory overflow-x-auto rounded-card bg-line shadow-card", aspect)}
         >
           {images.map((img, i) => (
             <div
@@ -84,7 +84,7 @@ export function FinishGallery({
 
         {images.length > 1 && (
           <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
-            <div className="pointer-events-auto flex items-center gap-1 bg-off-white/90 px-1 text-navy backdrop-blur-sm">
+            <div className="pointer-events-auto flex items-center gap-1 rounded-control bg-off-white/90 px-1 text-navy backdrop-blur-sm">
               <button
                 type="button"
                 onClick={() => go(index - 1)}
@@ -120,7 +120,7 @@ export function FinishGallery({
                 onClick={() => go(i)}
                 aria-current={index === i || undefined}
                 className={cn(
-                  "relative block aspect-square w-full overflow-hidden bg-line outline-offset-2 transition-opacity duration-300",
+                  "relative block aspect-square w-full overflow-hidden rounded-control bg-line outline-offset-2 transition-opacity duration-300",
                   index === i ? "opacity-100 ring-1 ring-navy ring-offset-2 ring-offset-off-white" : "opacity-60 hover:opacity-100",
                 )}
               >

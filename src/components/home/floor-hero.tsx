@@ -21,18 +21,20 @@ export function FloorHero({ slides }: { slides: HeroSlide[] }) {
       />
       <HeroShowcase slides={slides}>
         <div>
-          <h1 id="hero-heading" className="max-w-[13ch] text-display-hero font-light text-on-dark sm:max-w-none">
-            <span className="sm:block">Beautifully considered.</span> <span className="sm:block">Built to perform.</span>
+          <h1 id="hero-heading" className="max-w-[13ch] text-display-hero text-on-dark sm:max-w-none">
+            <span className="sm:block">Beautifully considered.</span>{" "}
+            <span className="font-light text-on-dark/90 sm:block">Built to perform.</span>
           </h1>
-          <div className="mt-9 flex flex-wrap items-center gap-x-9 gap-y-3">
+          <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/85 sm:mt-6">
+            Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3 sm:mt-10 sm:gap-4">
             <ButtonLink href="/range" variant="on-dark" size="lg">
               Explore the range
             </ButtonLink>
-            <OrderSamplesButton
-              variant="quiet-on-dark"
-              arrow={false}
-              className="underline decoration-white/40 decoration-1 hover:decoration-white"
-            />
+            <OrderSamplesButton variant="outline-on-dark" size="lg" arrow={false}>
+              Order 3 free samples
+            </OrderSamplesButton>
           </div>
         </div>
       </HeroShowcase>

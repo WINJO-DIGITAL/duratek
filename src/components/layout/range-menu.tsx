@@ -159,7 +159,7 @@ export function RangeMenu({
         role="region"
         aria-label="The range"
         inert={!isOpen}
-        className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-[0_32px_48px_-28px_rgb(24_54_76/0.35)]"
+        className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-card-hover"
       >
         <span
           aria-hidden="true"

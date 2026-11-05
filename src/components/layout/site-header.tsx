@@ -86,7 +86,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
         overlay
           ? "border-white/15 bg-transparent"
           : "border-line bg-off-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-off-white/85",
-        !overlay && scrolled && "border-transparent shadow-[0_10px_30px_-18px_rgb(24_54_76/0.35)]",
+        !overlay && scrolled && "border-transparent shadow-card",
       )}
     >
       {/* Soft scrim so white text stays legible over any photo. */}
@@ -193,7 +193,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
               type="search"
               placeholder="Search finishes, e.g. Keswick"
               autoComplete="off"
-              className="min-h-tap w-full border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
+              className="min-h-tap w-full rounded-control border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
             />
             <button
               type="submit"

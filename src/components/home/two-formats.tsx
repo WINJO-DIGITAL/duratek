@@ -43,7 +43,9 @@ export function TwoFormats({ formats }: { formats: FormatSummary[] }) {
           ))}
         </ul>
       </div>
-      <PlankScale planks={formats.map((f) => f.plank)} className="self-center lg:col-span-8" />
+      <div className="card self-center p-5 sm:p-10 lg:col-span-8">
+        <PlankScale planks={formats.map((f) => f.plank)} />
+      </div>
     </div>
   );
 }

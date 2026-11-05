@@ -35,7 +35,7 @@ export function SaveButton({
         className={cn(
           "inline-flex min-h-tap items-center justify-center gap-2 transition-colors duration-300",
           variant === "overlay"
-            ? "size-tap bg-off-white/90 text-navy backdrop-blur-sm hover:bg-white"
+            ? "size-tap rounded-control bg-off-white/90 text-navy backdrop-blur-sm hover:bg-white"
             : "text-[0.9375rem] text-navy hover:text-green-ink",
           saved && "text-green-ink",
           className,

@@ -2,13 +2,15 @@
 
 /*
  * Duratek design tokens. Defined once here and consumed through Tailwind
- * utilities (bg-navy, text-ink-muted, font-display, py-section, ...).
+ * utilities (bg-navy, bg-cream, rounded-card, shadow-card, font-display, ...).
  *
- * Palette: Duratek navy, green and white only. No beige, brown, taupe or gold
- * as brand colours; warmth comes from the floor photography, not the UI.
+ * Direction (client, November 2026): soft, premium, architectural minimalism.
+ * Warm ivory, cream and sand neutrals with natural oak, carrying the brand's
+ * navy (ink, headings) and green (actions, selected states). Soft radii on
+ * cards (20px) and controls (10px); never pill-shaped layouts.
  * Green is one hue at three strengths so every use passes WCAG AA:
  *   green          #4B9B48  brand green: wordmark, rules, indicators, large text
- *   green-ink      #3D7F3B  small green text and button fills on light (4.5:1+)
+ *   green-ink      #387636  small green text and button fills on ivory/cream (4.5:1+)
  *   green-on-navy  #54AE51  small green text on navy (4.5:1)
  */
 @theme {
@@ -24,17 +26,20 @@
   --color-navy: #18364c; /* heroes, footer, feature areas, headings on light */
   --color-navy-deep: #112839; /* same hue, darker: the footer's legal strip */
   --color-green: #4b9b48;
-  --color-green-ink: #3d7f3b;
-  --color-green-ink-hover: #336b31;
+  --color-green-ink: #387636; /* AA on ivory (5.2:1) and cream (4.7:1); white text on it 5.5:1 */
+  --color-green-ink-hover: #2f6430;
   --color-green-on-navy: #54ae51;
   /* Logo artwork's own colours, sampled from the client's logo file. Used by
      the logo only; UI colour stays on the brand tokens above. */
   --color-logo-green: #468e3c;
   --color-logo-navy: #123066;
 
-  /* Surfaces */
-  --color-off-white: #f7f6f2; /* page and collection sections */
-  --color-line: #e1e6ea; /* cool hairlines and image placeholders */
+  /* Surfaces: warm architectural neutrals */
+  --color-off-white: #faf7f1; /* ivory: the page */
+  --color-cream: #f3ede3; /* alternating sections, soft panels */
+  --color-sand: #e7dccb; /* soft fills, chip and card borders on cream */
+  --color-line: #e6ded2; /* warm hairlines and image placeholders */
+  --color-oak: #9a6f45; /* natural oak accent: decorative details only */
 
   /* Text */
   --color-ink: #18364c;
@@ -42,7 +47,7 @@
   --color-on-dark: #ffffff;
   --color-on-dark-muted: #b9c6d0;
 
-  --color-focus: #3d7f3b;
+  --color-focus: #387636;
   --color-error: #a3352b;
 
   /* Type */
@@ -62,7 +67,7 @@
   --text-display-xl--font-weight: 300;
   /* Home hero headline: 42px on phones, about 60px at 1440, never above 66px.
      Lighter than other headings, tracked in slightly. */
-  --text-display-hero: clamp(2.625rem, 2.2rem + 1.75vw, 4.125rem);
+  --text-display-hero: clamp(2.75rem, 2.1rem + 2.6vw, 4.75rem);
   --text-display-hero--line-height: 1.08;
   --text-display-hero--letter-spacing: -0.028em;
   --text-display-hero--font-weight: 400;
@@ -99,6 +104,12 @@
   --default-transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --radius-none: 0;
+  --radius-card: 1.25rem; /* 20px: cards, panels, framed photography */
+  --radius-control: 0.625rem; /* 10px: buttons, inputs, chips */
+
+  /* Soft, warm shadows: depth without weight */
+  --shadow-card: 0 1px 2px rgb(64 46 26 / 0.04), 0 10px 30px -18px rgb(64 46 26 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(64 46 26 / 0.05), 0 18px 40px -20px rgb(64 46 26 / 0.26);
 }
 
 @layer base {
@@ -175,6 +186,27 @@
     flex: none;
     background: currentColor;
   }
+}
+
+/* A soft card: white on ivory or cream, warm hairline, rounded, gentle shadow. */
+@utility card {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Framed photography: rounded, clipped. */
+@utility frame {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/* A calm message panel (notices, closed forms, empty states). */
+@utility notice {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
 }
 
 @utility scrollbar-none {

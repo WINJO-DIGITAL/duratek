@@ -3,6 +3,7 @@ import { SectionIntro } from "@/components/content/section-intro";
 import { FinishImage } from "@/components/finish/finish-image";
 import { PageTransition } from "@/components/layout/page-transition";
 import { ButtonLink } from "@/components/ui/button";
+import { DocumentIcon, EyeIcon, ShareIcon, TagIcon } from "@/components/ui/icons";
 import { getFinishes } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
@@ -20,6 +21,9 @@ const BENEFITS = [
   { title: "Shortlists to share", body: "Pick finishes for a job and send your customer a clean link, without prices." },
   { title: "Customer view", body: "One tap hides every price, so you can show the range to a homeowner on site." },
 ] as const;
+
+/** One icon per benefit, in BENEFITS order. */
+const BENEFIT_ICONS = [TagIcon, DocumentIcon, ShareIcon, EyeIcon];
 
 const STEPS = [
   { title: "Apply", body: "A short form: your company, your trade and how to reach you." },
@@ -48,7 +52,7 @@ export default async function TradePage() {
                   Apply for a trade account
                 </ButtonLink>
               ) : (
-                <p className="border-l-2 border-green-ink bg-white px-4 py-3 text-[0.9375rem] text-navy">
+                <p className="notice px-4 py-3 text-[0.9375rem] text-navy">
                   Online trade applications open soon.
                 </p>
               )}
@@ -56,7 +60,7 @@ export default async function TradePage() {
           </div>
           {photo && (
             <figure className="lg:col-span-5 lg:col-start-8">
-              <div className="reveal-img relative aspect-[4/5] overflow-hidden bg-line">
+              <div className="reveal-img frame relative aspect-[4/5] bg-line shadow-card">
                 <FinishImage image={photo.image} sizes="(min-width: 1024px) 38vw, 100vw" className="object-[50%_70%]" />
               </div>
               <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">{photo.finish.name}</figcaption>
@@ -64,24 +68,22 @@ export default async function TradePage() {
           )}
         </section>
 
-        <section aria-labelledby="benefits-heading" className="bg-white py-section">
+        <section aria-labelledby="benefits-heading" className="bg-cream py-section">
           <div className="container-page">
             <h2 id="benefits-heading" className="reveal text-display-md text-navy">
               What your account is for
             </h2>
-            <ul className="mt-10 grid border-t border-line sm:grid-cols-2 lg:grid-cols-4">
-              {BENEFITS.map((b, i) => (
-                <li
-                  key={b.title}
-                  className={`reveal border-b border-line py-6 sm:pr-6 lg:border-b-0 ${i > 0 ? "lg:border-l lg:pl-6" : ""} ${i % 2 === 1 ? "sm:border-l sm:pl-6" : ""}`}
-                >
-                  <p className="flex items-center gap-3 font-display text-display-sm text-navy">
-                    <span aria-hidden="true" className="size-2 shrink-0 bg-green" />
-                    {b.title}
-                  </p>
-                  <p className="mt-2 text-[0.9375rem] text-ink-muted">{b.body}</p>
-                </li>
-              ))}
+            <ul className="mt-10 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+              {BENEFITS.map((b, i) => {
+                const IconC = BENEFIT_ICONS[i] ?? TagIcon;
+                return (
+                  <li key={b.title} className="card reveal p-6">
+                    <IconC size={26} className="text-oak" />
+                    <p className="mt-6 font-display text-display-sm text-navy">{b.title}</p>
+                    <p className="mt-2 text-[0.9375rem] text-ink-muted">{b.body}</p>
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </section>

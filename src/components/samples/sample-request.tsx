@@ -54,7 +54,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
               <li key={item?.id ?? `empty-${i}`} className="flex min-h-28 items-center gap-5 py-4">
                 {f ? (
                   <>
-                    <Link href={`/range/${f.slug}`} className="relative size-20 shrink-0 overflow-hidden bg-line">
+                    <Link href={`/range/${f.slug}`} className="relative size-20 shrink-0 overflow-hidden rounded-control bg-line">
                       {f.swatch && (
                         <Image src={f.swatch.src} alt="" fill sizes="80px" quality={70} className="object-cover" />
                       )}
@@ -81,7 +81,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
                   >
                     <span
                       aria-hidden="true"
-                      className="flex size-20 shrink-0 items-center justify-center border border-dashed border-navy/25 text-2xl font-light transition-colors group-hover:border-navy/50"
+                      className="flex size-20 shrink-0 items-center justify-center rounded-control border border-dashed border-oak/40 text-2xl font-light transition-colors group-hover:border-navy/50"
                     >
                       +
                     </span>
@@ -100,7 +100,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
       {/* Form */}
       <section aria-labelledby="details-heading">
         {!enabled ? (
-          <div className="border-l-2 border-green-ink bg-white px-5 py-5 sm:px-6">
+          <div className="notice px-5 py-5 sm:px-6">
             <h2 id="details-heading" className="font-medium text-navy">
               Online sample requests open soon.
             </h2>
@@ -131,7 +131,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
               Where should we send them?
             </h2>
             {state.status === "error" && state.message && (
-              <p role="alert" className="border-l-2 border-error bg-white px-4 py-3 text-[0.9375rem] text-navy">
+              <p role="alert" className="notice border-error/50 px-4 py-3 text-[0.9375rem] text-navy">
                 {state.message}
               </p>
             )}
@@ -223,7 +223,7 @@ function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={described}
         className={cn(
-          "mt-2 min-h-14 w-full border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
+          "mt-2 min-h-14 w-full rounded-control border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
           error ? "border-error" : "border-navy/25",
           className,
         )}

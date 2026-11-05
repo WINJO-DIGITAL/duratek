@@ -9,6 +9,7 @@ import { byTone, getFinishes, grainImage, imagesOfKind } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
 import { GENERAL_CONTACT } from "@/lib/contact";
+import { ClickIcon, DropIcon, LayersIcon, ShieldIcon, UnderlayIcon } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
   title: "Technology",
@@ -39,6 +40,9 @@ const CHAPTERS: { title: string; body: string; note?: string }[] = [
     body: "Each plank clicks into the next using Unilin’s locking joint, and the finished floor floats over the subfloor instead of being glued. Follow the fitting instructions, including subfloor preparation.",
   },
 ];
+
+/** One icon per chapter, in CHAPTERS order. */
+const CHAPTER_ICONS = [ShieldIcon, LayersIcon, DropIcon, UnderlayIcon, ClickIcon];
 
 export default async function TechnologyPage() {
   const finishes = byTone(await getFinishes());
@@ -75,7 +79,7 @@ export default async function TechnologyPage() {
             {grain && (
               <figure className="lg:col-span-5">
                 <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)]">
-                  <div className="reveal-img relative aspect-[4/5] overflow-hidden bg-line">
+                  <div className="reveal-img frame relative aspect-[4/5] bg-line shadow-card">
                     <FinishImage image={grain} sizes="(min-width: 1024px) 38vw, 100vw" />
                   </div>
                   <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">{grainFinish.name}, the surface up close</figcaption>
@@ -86,18 +90,24 @@ export default async function TechnologyPage() {
               <h2 id="detail-heading" className="eyebrow font-sans">
                 Layer by layer
               </h2>
-              <div className="mt-6 border-t border-line">
-                {CHAPTERS.map((c, i) => (
-                  <article key={c.title} className="reveal border-b border-line py-8 sm:py-10">
-                    <div className="flex items-start justify-between gap-6">
-                      <h3 className="text-display-sm text-navy">{c.title}</h3>
-                      {i === 0 && <ScratchShieldBadge className="w-20! shrink-0 sm:w-24!" />}
-                    </div>
-                    <p className="mt-3 max-w-prose text-ink-muted">{c.body}</p>
-                    {c.note && <p className="mt-4 font-medium text-navy">{c.note}</p>}
-                  </article>
-                ))}
-              </div>
+              <ul className="mt-6 space-y-3 sm:space-y-4">
+                {CHAPTERS.map((c, i) => {
+                  const IconC = CHAPTER_ICONS[i] ?? LayersIcon;
+                  return (
+                    <li key={c.title} className="card reveal p-6 sm:p-8">
+                      <div className="flex items-start justify-between gap-6">
+                        <div className="flex items-center gap-3">
+                          <IconC size={24} className="shrink-0 text-oak" />
+                          <h3 className="text-display-sm text-navy">{c.title}</h3>
+                        </div>
+                        {i === 0 && <ScratchShieldBadge className="w-16! shrink-0 sm:w-20!" />}
+                      </div>
+                      <p className="mt-3 max-w-prose text-ink-muted">{c.body}</p>
+                      {c.note && <p className="mt-4 font-medium text-navy">{c.note}</p>}
+                    </li>
+                  );
+                })}
+              </ul>
             </div>
           </div>
         </section>

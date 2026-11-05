@@ -83,7 +83,7 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
             const sample = { id: f.id, slug: f.slug, name: f.name };
             return (
               <li key={f.slug} className="relative flex flex-col">
-                <Link href={`/range/${f.slug}`} className="relative block aspect-[4/5] overflow-hidden bg-line">
+                <Link href={`/range/${f.slug}`} className="relative block aspect-[4/5] overflow-hidden rounded-card bg-line shadow-card">
                   {grain && <FinishImage image={{ ...grain, alt: "" }} sizes="(min-width: 1024px) 26vw, 31vw" />}
                   <span className="sr-only">{f.name}</span>
                 </Link>
@@ -164,9 +164,9 @@ function RowGroup({
 
 /** An empty column: suggestions as swatches, plus the full list. */
 function AddSlot({ slugs, options, first }: { slugs: string[]; options: Finish[]; first: boolean }) {
-  if (!first) return <div aria-hidden="true" className="aspect-[4/5] border border-dashed border-navy/15" />;
+  if (!first) return <div aria-hidden="true" className="aspect-[4/5] rounded-card border border-dashed border-navy/15" />;
   return (
-    <div className="flex aspect-[4/5] flex-col border border-dashed border-navy/30 p-2 sm:p-4">
+    <div className="flex aspect-[4/5] flex-col rounded-card border border-dashed border-oak/40 bg-white/60 p-2 sm:p-4">
       <p className="text-[0.8125rem] text-navy sm:text-[0.9375rem]">Add a finish</p>
       <Picker options={options} chosen={slugs} compact className="mt-2 min-h-0 flex-1 overflow-y-auto" />
     </div>

@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
+import { SamplePromo } from "@/components/samples/sample-promo";
 import { ButtonLink } from "@/components/ui/button";
 import { PageTransition } from "@/components/layout/page-transition";
 import { byTone, getFinishes, imagesOfKind } from "@/lib/catalogue";
@@ -58,6 +59,12 @@ export default async function RangePage() {
         <ButtonLink href="/explore" variant="quiet" className="mt-4">
           Explore them full screen
         </ButtonLink>
+        <SamplePromo
+          className="mt-10"
+          swatches={[0, Math.floor(finishes.length / 2), finishes.length - 1]
+            .map((i) => finishes[i] && imagesOfKind(finishes[i], "swatch")[0])
+            .filter((x): x is NonNullable<typeof x> => Boolean(x))}
+        />
         <div className="mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
           <Suspense fallback={<RangeGrid items={items} />}>

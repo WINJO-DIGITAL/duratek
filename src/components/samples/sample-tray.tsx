@@ -80,7 +80,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
         e.preventDefault();
         close();
       }}
-      className="sample-tray fixed inset-x-0 bottom-0 top-auto m-0 max-h-[88dvh] w-full max-w-none overflow-hidden bg-off-white p-0 text-navy shadow-[0_-20px_60px_-30px_rgb(24_54_76/0.5)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-dvh lg:max-h-none lg:w-[28rem]"
+      className="sample-tray fixed inset-x-0 bottom-0 top-auto m-0 max-h-[88dvh] w-full max-w-none overflow-hidden rounded-t-card bg-off-white p-0 text-navy shadow-[0_-20px_60px_-30px_rgb(24_54_76/0.5)] lg:inset-y-0 lg:left-auto lg:right-0 lg:h-dvh lg:max-h-none lg:w-[28rem] lg:rounded-none lg:rounded-l-card"
     >
       <div className="flex max-h-[88dvh] flex-col pb-[env(safe-area-inset-bottom)] lg:h-full lg:max-h-none">
         <header className="flex items-start justify-between gap-4 border-b border-line px-5 pb-4 pt-5 sm:px-8 lg:pt-8">
@@ -107,7 +107,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
 
         <div className="flex-1 overflow-y-auto overscroll-contain px-5 sm:px-8">
           {swapIn && isFull && (
-            <p className="mt-5 border-l-2 border-green-ink bg-white px-4 py-3 text-[0.9375rem] text-navy">
+            <p className="mt-5 notice px-4 py-3 text-[0.9375rem] text-navy">
               You can order up to {limit} free samples. Remove one below and {swapIn.name} takes its place.
             </p>
           )}
@@ -123,7 +123,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
                 <li key={item?.id ?? `empty-${i}`} className="flex min-h-24 items-center gap-4 py-4">
                   {item ? (
                     <>
-                      <Link href={`/range/${item.slug}`} className="relative size-16 shrink-0 overflow-hidden bg-line">
+                      <Link href={`/range/${item.slug}`} className="relative size-16 shrink-0 overflow-hidden rounded-control bg-line">
                         {entry?.swatch && (
                           <Image src={entry.swatch.src} alt="" fill sizes="64px" quality={70} className="object-cover" />
                         )}
@@ -151,7 +151,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
                     <Link href="/range" className="group flex flex-1 items-center gap-4 text-ink-muted hover:text-navy">
                       <span
                         aria-hidden="true"
-                        className="flex size-16 shrink-0 items-center justify-center border border-dashed border-navy/25 text-xl font-light transition-colors group-hover:border-navy/50"
+                        className="flex size-16 shrink-0 items-center justify-center rounded-control border border-dashed border-oak/40 text-xl font-light transition-colors group-hover:border-navy/50"
                       >
                         +
                       </span>

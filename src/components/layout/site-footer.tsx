@@ -78,7 +78,7 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
   ].filter(Boolean);
 
   return (
-    <footer className="on-dark border-t border-white/10 bg-navy text-on-dark">
+    <footer className="on-dark mx-2 overflow-hidden rounded-t-card bg-navy text-on-dark sm:mx-[var(--spacing-gutter)]">
       <div className="container-page grid gap-12 py-section-sm lg:grid-cols-[1.3fr_1fr] lg:gap-20">
         {/* Primary destinations, large: what people come to the footer for. */}
         <nav aria-label="Footer">

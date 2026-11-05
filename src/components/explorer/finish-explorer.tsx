@@ -337,7 +337,7 @@ function ViewSwitch({
   className?: string;
 }) {
   return (
-    <div role="group" aria-label="View" className={cn("bg-off-white/90 p-1 backdrop-blur-sm", className)}>
+    <div role="group" aria-label="View" className={cn("rounded-control bg-off-white/90 p-1 backdrop-blur-sm", className)}>
       {(["room", "grain"] as const).map((v) => (
         <button
           key={v}
@@ -346,7 +346,7 @@ function ViewSwitch({
           disabled={v === "room" && !hasRoom}
           onClick={() => onChange(v)}
           className={cn(
-            "min-h-tap px-4 text-[0.875rem] font-medium transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-40",
+            "min-h-tap rounded-[0.375rem] px-4 text-[0.875rem] font-medium transition-colors duration-300 disabled:cursor-not-allowed disabled:opacity-40",
             view === v ? "bg-navy text-off-white" : "text-navy hover:text-green-ink",
           )}
         >
@@ -404,7 +404,7 @@ function StageArrow({ side, onClick, label }: { side: "left" | "right"; onClick:
       type="button"
       onClick={onClick}
       className={cn(
-        "absolute top-1/2 z-[5] hidden size-14 -translate-y-1/2 items-center justify-center bg-off-white/85 text-navy backdrop-blur-sm transition-colors duration-300 hover:bg-white sm:flex",
+        "absolute top-1/2 z-[5] hidden size-14 -translate-y-1/2 items-center justify-center rounded-control bg-off-white/85 text-navy backdrop-blur-sm transition-colors duration-300 hover:bg-white sm:flex",
         side === "left" ? "left-[var(--spacing-gutter)]" : "right-[var(--spacing-gutter)]",
       )}
     >
@@ -476,7 +476,7 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
       aria-pressed={pressed}
       onClick={onClick}
       className={cn(
-        "flex min-h-tap shrink-0 items-center gap-2 border px-3 text-[0.875rem] transition-colors duration-300",
+        "flex min-h-tap shrink-0 items-center gap-2 rounded-control border px-3 text-[0.875rem] transition-colors duration-300",
         pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
       )}
     >

@@ -29,7 +29,7 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
       aria-pressed={pressed}
       onClick={onClick}
       className={cn(
-        "min-h-tap shrink-0 border px-4 text-[0.875rem] transition-colors duration-300",
+        "min-h-tap shrink-0 rounded-control border px-4 text-[0.875rem] transition-colors duration-300",
         pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
       )}
     >
@@ -185,7 +185,7 @@ export function RangeBrowser({
       {visible.length > 0 ? (
         <RangeGrid items={visible} view={view} />
       ) : (
-        <div className="mt-10 border border-line bg-white p-8 sm:p-12">
+        <div className="card mt-10 p-8 sm:p-12">
           <h2 className="text-display-sm text-navy">No finishes match those filters.</h2>
           <p className="mt-3 text-ink-muted">Try another colour, or clear the filters to see the full range.</p>
         </div>
@@ -213,7 +213,7 @@ function SearchField({
         placeholder="Search finishes"
         aria-label="Search finishes"
         enterKeyHint="search"
-        className="min-h-tap w-full border border-navy/20 bg-white pl-10 pr-10 text-[0.9375rem] text-navy placeholder:text-ink-muted focus:border-navy [&::-webkit-search-cancel-button]:hidden"
+        className="min-h-tap w-full rounded-control border border-navy/20 bg-white pl-10 pr-10 text-[0.9375rem] text-navy placeholder:text-ink-muted focus:border-navy [&::-webkit-search-cancel-button]:hidden"
       />
       {value && (
         <button
@@ -258,8 +258,8 @@ export function RangeGrid({ items, view = "large" }: { items: { id: string; card
   return (
     <ul
       className={cn(
-        "mt-6 grid grid-cols-2 gap-x-3 gap-y-10 transition-[gap] sm:gap-x-6 sm:gap-y-14",
-        view === "large" ? "lg:grid-cols-3" : "lg:grid-cols-4 lg:gap-x-5 lg:gap-y-12",
+        "mt-6 grid grid-cols-2 gap-3 transition-[gap] sm:gap-6 lg:gap-8",
+        view === "large" ? "lg:grid-cols-3" : "lg:grid-cols-4 lg:gap-6",
       )}
     >
       {items.map((i) => (

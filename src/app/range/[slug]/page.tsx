@@ -13,7 +13,7 @@ import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
 import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
+import { ArrowLeft, ArrowRight, Swatches } from "@/components/ui/icons";
 import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import { relatedFinishes } from "@/lib/catalogue/related";
@@ -158,10 +158,10 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               name={finish.name}
               priority
               sizes="(min-width: 1024px) 54vw, 100vw"
-              className="aspect-[4/5] sm:aspect-[6/5]"
+              className="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
             />
           ) : (
-            <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />
+            <div className="aspect-[4/5] rounded-card bg-line sm:aspect-[6/5]" />
           )}
         </div>
 
@@ -187,24 +187,30 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
 
             <SpecList rows={keySpecs} className="mt-8 border-t border-line" />
 
-            <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-3">
-              <div id={SAMPLE_BUTTON_ID}>
-                <AddToSamplesButton finish={sample} />
+            {/* The sample offer and actions, together in one soft panel. */}
+            <div className="card mt-8 p-5 sm:p-6">
+              <p className="flex items-center gap-2.5 text-[0.9375rem] text-navy">
+                <Swatches size={20} className="shrink-0 text-oak" />
+                Up to three free samples, posted to you.
+              </p>
+              <div className="mt-4 flex flex-wrap items-start gap-x-6 gap-y-3">
+                <div id={SAMPLE_BUTTON_ID}>
+                  <AddToSamplesButton finish={sample} />
+                </div>
+                <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
+                  Where to buy
+                </ButtonLink>
+                <SaveButton finish={sample} />
               </div>
-              <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
-                Where to buy
-              </ButtonLink>
-              <SaveButton finish={sample} />
+              <p className="mt-3 border-t border-line pt-3 text-[0.875rem] text-ink-muted">
+                <Link
+                  href={compareHref([finish.slug, ...related.slice(0, 2).map((f) => f.slug)])}
+                  className="inline-block py-1 text-navy underline underline-offset-4 hover:text-green-ink"
+                >
+                  Compare with similar finishes
+                </Link>
+              </p>
             </div>
-            <p className="mt-6 text-[0.875rem] text-ink-muted">
-              Up to three free samples, posted to you.{" "}
-              <Link
-                href={compareHref([finish.slug, ...related.slice(0, 2).map((f) => f.slug)])}
-                className="text-navy underline underline-offset-4 hover:text-green-ink"
-              >
-                Compare with similar finishes
-              </Link>
-            </p>
           </div>
         </div>
       </div>
@@ -240,7 +246,9 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                   : `${finish.name}, drawn to scale.`}
               </p>
             </div>
-            <PlankScale planks={planks} className="lg:col-span-8" />
+            <div className="card p-5 sm:p-10 lg:col-span-8">
+              <PlankScale planks={planks} />
+            </div>
           </div>
         </section>
       )}
@@ -260,7 +268,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           <div className="lg:col-span-8 lg:col-start-5">
             <h3 className="eyebrow font-sans">Specification</h3>
             <SpecList
-              className="mt-4 grid border-t border-line sm:grid-cols-2 sm:gap-x-10"
+              className="card mt-4 grid px-5 py-2 sm:grid-cols-2 sm:gap-x-10 sm:px-8 sm:py-4 [&>div:last-child]:border-b-0 sm:[&>div:nth-last-child(2)]:border-b-0"
               rows={[
                 ...specs,
                 {
@@ -294,7 +302,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               View all finishes <ArrowRight size={16} />
             </Link>
           </div>
-          <ul className="mt-10 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-6 lg:grid-cols-4">
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8 lg:grid-cols-4">
             {related.map((f) => (
               <li key={f.id}>
                 <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, 48vw" />

@@ -38,49 +38,54 @@ export function FinishCard({
   const measures = measureLine(finish.specs);
 
   return (
-    <article className={cn("reveal group relative flex flex-col", className)}>
-        <div className={cn("relative overflow-hidden bg-line", aspect)}>
-          {primary && (
-            <FinishImage
-              image={primary}
-              sizes={sizes}
-              priority={priority}
-              className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
-            />
-          )}
-          {reveal && (
-            // Room scene fades in over the grain on devices that can hover.
-            <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-700 ease-calm [@media(hover:hover)]:block [@media(hover:hover)]:group-hover:opacity-100">
-              <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
-            </div>
-          )}
-        </div>
+    <article
+      className={cn(
+        "card reveal group relative flex flex-col overflow-hidden transition-shadow duration-500 ease-calm hover:shadow-card-hover",
+        className,
+      )}
+    >
+      <div className={cn("relative overflow-hidden bg-line", aspect)}>
+        {primary && (
+          <FinishImage
+            image={primary}
+            sizes={sizes}
+            priority={priority}
+            className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
+          />
+        )}
+        {reveal && (
+          // Room scene fades in over the grain on devices that can hover.
+          <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-700 ease-calm [@media(hover:hover)]:block [@media(hover:hover)]:group-hover:opacity-100">
+            <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
+          </div>
+        )}
+      </div>
       {/* Above the stretched link, in the photo's corner. */}
       <SaveButton
         finish={{ id: finish.id, slug: finish.slug, name: finish.name }}
         variant="overlay"
-        className="absolute right-2 top-2 z-10"
+        className="absolute right-3 top-3 z-10"
       />
 
-      <div className="mt-4 border-t border-navy/15 pt-3">
-        <H className="text-[1.3125rem] font-normal leading-tight tracking-[-0.01em] text-navy sm:text-[1.5rem]">
+      <div className="flex flex-1 flex-col px-4 pb-2 pt-4 sm:px-5 sm:pt-5">
+        <H className="text-[1.25rem] font-normal leading-tight tracking-[-0.01em] text-navy sm:text-[1.4375rem]">
           <Link href={`/range/${finish.slug}`} className="after:absolute after:inset-0 after:content-['']">
             {finish.name}
           </Link>
         </H>
-        <p className="mt-1 text-[0.875rem] text-ink-muted">
+        <p className="mt-1.5 text-[0.875rem] text-ink-muted">
           {colourFamilyLabel(finish.colourFamily)}
           {format && <> · {FORMAT_LABELS[format]}</>}
         </p>
-        {measures && <p className="data mt-1.5 text-[0.8125rem] text-ink-muted">{measures}</p>}
-      </div>
+        {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
 
-      {/* Above the stretched link so it stays independently clickable. */}
-      <AddToSamplesButton
-        finish={{ id: finish.id, slug: finish.slug, name: finish.name }}
-        size="compact"
-        className="relative z-10 mt-1 self-start"
-      />
+        {/* Above the stretched link so it stays independently clickable. */}
+        <div className="relative z-10 mt-auto pt-3">
+          <div className="border-t border-line pt-1">
+            <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name }} size="compact" />
+          </div>
+        </div>
+      </div>
     </article>
   );
 }

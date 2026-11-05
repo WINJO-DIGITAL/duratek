@@ -31,7 +31,7 @@ export default async function WarrantyPage() {
 
         {/* The disclaimer leads: it governs everything below. */}
         <div className="container-page">
-          <div className="border-l-2 border-green-ink bg-white px-5 py-4 sm:px-6">
+          <div className="notice px-5 py-4 sm:px-6">
             <WarrantyDisclaimer className="text-[0.875rem] text-navy" />
           </div>
         </div>
@@ -59,10 +59,10 @@ export default async function WarrantyPage() {
           </div>
         </section>
 
-        <section className="bg-white py-section">
+        <section className="bg-cream py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
             {image && (
-              <div className="reveal-img relative aspect-[4/3] overflow-hidden bg-line lg:col-span-6">
+              <div className="reveal-img frame relative aspect-[4/3] bg-line shadow-card lg:col-span-6">
                 <FinishImage image={image.image} sizes="(min-width: 1024px) 50vw, 100vw" />
               </div>
             )}

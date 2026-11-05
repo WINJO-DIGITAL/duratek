@@ -26,7 +26,7 @@ function Story({ item, finishes, large }: { item: InspirationItem; finishes: Map
     <figure className="flex flex-col">
       <div
         className={cn(
-          "relative overflow-hidden bg-line",
+          "relative overflow-hidden rounded-card bg-line",
           large ? "aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/2]",
         )}
       >
@@ -87,7 +87,7 @@ export default async function InspirationPage() {
               key={mood}
               id={slugify(mood)}
               aria-labelledby={`${slugify(mood)}-h`}
-              className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-white")}
+              className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-cream")}
             >
               <div className="container-page">
                 <h2 id={`${slugify(mood)}-h`} className="reveal text-display-md text-navy">

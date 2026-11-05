@@ -40,7 +40,7 @@ export function TradeApplicationForm() {
   return (
     <form action={action} noValidate className="max-w-xl space-y-6">
       {state.status === "error" && state.message && (
-        <p role="alert" className="border-l-2 border-error bg-white px-4 py-3 text-[0.9375rem] text-navy">
+        <p role="alert" className="notice border-error/50 px-4 py-3 text-[0.9375rem] text-navy">
           {state.message}
         </p>
       )}
@@ -61,7 +61,7 @@ export function TradeApplicationForm() {
                 required
                 className="peer absolute inset-0 opacity-0"
               />
-              <span className="flex min-h-14 items-center justify-center border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy transition-colors peer-checked:border-navy peer-checked:bg-navy peer-checked:text-off-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus">
+              <span className="flex min-h-14 items-center justify-center rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy transition-colors peer-checked:border-navy peer-checked:bg-navy peer-checked:text-off-white peer-focus-visible:outline peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-focus">
                 {t.label}
               </span>
             </label>
@@ -138,7 +138,7 @@ function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={described}
         className={cn(
-          "mt-2 min-h-14 w-full border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
+          "mt-2 min-h-14 w-full rounded-control border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
           error ? "border-error" : "border-navy/25",
           className,
         )}

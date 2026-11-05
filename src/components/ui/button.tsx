@@ -3,12 +3,12 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { ArrowRight } from "./icons";
 
-export type ButtonVariant = "primary" | "on-dark" | "outline" | "quiet" | "quiet-on-dark";
+export type ButtonVariant = "primary" | "on-dark" | "outline" | "outline-on-dark" | "quiet" | "quiet-on-dark";
 
 export type ButtonSize = "md" | "lg";
 
 const base =
-  "group inline-flex items-center justify-center gap-3 rounded-none font-medium transition-colors duration-300 disabled:cursor-not-allowed";
+  "group inline-flex items-center justify-center gap-3 rounded-control font-medium transition-colors duration-300 disabled:cursor-not-allowed";
 
 /** Height and type size. `lg` is the hero's single primary action (54px). */
 const sizes: Record<ButtonSize, string> = {
@@ -30,7 +30,9 @@ export const buttonVariants: Record<ButtonVariant, string> = {
   primary: "bg-green-ink text-white hover:bg-green-ink-hover",
   /** Cream on navy. */
   "on-dark": "bg-off-white text-navy hover:bg-white",
-  outline: "border border-navy text-navy hover:bg-navy hover:text-off-white",
+  outline: "border border-navy/70 text-navy hover:border-navy hover:bg-navy hover:text-off-white",
+  /** Secondary action over photography: a clear outline, no fill. */
+  "outline-on-dark": "border border-white/60 text-on-dark backdrop-blur-[2px] hover:border-white hover:bg-white/10",
   /** Quiet secondary link: underline on hover only, no box. */
   quiet: "text-navy underline-offset-[6px] hover:underline",
   "quiet-on-dark": "text-on-dark underline-offset-[6px] hover:underline",

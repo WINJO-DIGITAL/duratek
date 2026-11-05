@@ -31,7 +31,7 @@ export function PlankScale({ planks, className }: { planks: ScalePlank[]; classN
               <div
                 style={{ aspectRatio: `${p.length_mm} / ${p.width_mm}` }}
                 className={cn(
-                  "relative overflow-hidden",
+                  "relative overflow-hidden rounded-[3px]",
                   p.image ? "bg-line" : "border border-dashed border-navy/40",
                 )}
               >

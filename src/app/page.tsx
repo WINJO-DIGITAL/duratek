@@ -8,6 +8,7 @@ import { SampleSlots } from "@/components/home/sample-slots";
 import { TwoFormats, type FormatSummary } from "@/components/home/two-formats";
 import { PageTransition } from "@/components/layout/page-transition";
 import { ButtonLink } from "@/components/ui/button";
+import { EyeIcon, ParcelIcon, Swatches } from "@/components/ui/icons";
 import { byTone, getFinishes, getOnlineRetailers, grainImage, imagesOfKind } from "@/lib/catalogue";
 import { EDITORIAL, pickAllByFileName, pickByFileName } from "@/lib/catalogue/curation";
 import { FORMAT_LABELS, formatOptions, measureLine, plankFormat } from "@/lib/catalogue/format";
@@ -102,7 +103,7 @@ export default async function HomePage() {
 
         {/* Two formats, to scale */}
         {formats.length > 0 && (
-          <section aria-label="Plank formats" className="bg-white py-section">
+          <section aria-label="Plank formats" className="bg-cream py-section">
             <div className="container-page">
               <TwoFormats formats={formats} />
             </div>
@@ -130,23 +131,36 @@ export default async function HomePage() {
 
         <FiveLayers woodImage={layerWood} />
 
-        {/* Three free samples, then the one quiet trade band */}
-        <section id="samples" aria-labelledby="samples-heading" className="py-section">
-          <div className="container-page grid gap-12 lg:grid-cols-12 lg:gap-14">
-            <div className="lg:col-span-4">
-              <SectionIntro eyebrow="Free samples" title={<span id="samples-heading">Three free samples.</span>}>
-                <p>
-                  Put them down in the room they’re for, and look at them in daylight and in the evening. Add a sample
-                  from any finish.
-                </p>
-              </SectionIntro>
+        {/* Three free samples: the tray made visible, in its own panel. Then the one quiet trade band. */}
+        <section id="samples" aria-labelledby="samples-heading" className="py-section-sm">
+          <div className="container-page">
+            <div className="grid gap-10 rounded-card bg-cream px-5 py-10 sm:px-10 sm:py-14 lg:grid-cols-12 lg:gap-14 lg:px-16 lg:py-20">
+              <div className="lg:col-span-5">
+                <SectionIntro
+                  eyebrow="Free samples"
+                  size="lg"
+                  title={<span id="samples-heading">Three free samples, posted to you.</span>}
+                >
+                  <p>Put them down in the room they’re for, and look at them in daylight and in the evening.</p>
+                </SectionIntro>
+                <ul className="mt-8 space-y-3 text-[0.9375rem] text-navy">
+                  {[
+                    { icon: Swatches, text: "Choose any three finishes" },
+                    { icon: ParcelIcon, text: "Posted to your door, free" },
+                    { icon: EyeIcon, text: "See them in your own light" },
+                  ].map(({ icon: IconC, text }) => (
+                    <li key={text} className="flex items-center gap-3">
+                      <IconC size={22} className="shrink-0 text-oak" />
+                      {text}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div className="lg:col-span-7 lg:self-center">
+                <SampleSlots swatches={swatches} />
+              </div>
             </div>
-            <div className="lg:col-span-7 lg:col-start-6">
-              <SampleSlots swatches={swatches} />
-            </div>
-          </div>
-          <div className="container-page mt-section-sm">
-            <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-line pt-6">
+            <div className="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 px-1">
               <p className="text-navy">Fitting or specifying?</p>
               <ButtonLink href="/trade" variant="quiet">
                 Open a trade account
@@ -156,7 +170,7 @@ export default async function HomePage() {
         </section>
 
         {/* Where to buy */}
-        <section className="bg-white py-section-sm">
+        <section className="bg-cream py-section-sm">
           <div className="container-page">
             <PostcodeBand retailers={retailers} />
           </div>

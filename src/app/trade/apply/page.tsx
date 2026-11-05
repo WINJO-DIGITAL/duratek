@@ -28,7 +28,7 @@ export default function TradeApplyPage() {
           {enabled ? (
             <TradeApplicationForm />
           ) : (
-            <p className="max-w-xl border-l-2 border-green-ink bg-white px-5 py-4 text-navy">
+            <p className="max-w-xl notice px-5 py-4 text-navy">
               Online trade applications open soon.
             </p>
           )}

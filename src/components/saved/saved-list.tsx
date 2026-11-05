@@ -59,7 +59,7 @@ export function SavedList({ entries }: { entries: SavedEntry[] }) {
           <p className="min-h-tap content-center text-[0.875rem] text-ink-muted">Tick two or three to compare</p>
         )}
       </div>
-      <ul className="mt-8 grid grid-cols-2 gap-x-3 gap-y-10 sm:gap-x-6 lg:grid-cols-3">
+      <ul className="mt-8 grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8 lg:grid-cols-3">
         {saved.map((e) => {
           const on = ticked.includes(e.slug);
           return (

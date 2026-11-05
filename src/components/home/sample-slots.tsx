@@ -21,7 +21,7 @@ export function SampleSlots({ swatches }: { swatches: Record<string, CatalogueIm
           item ? (
             <li key={item.id}>
               <Link href={`/range/${item.slug}`} className="group block">
-                <div className="relative aspect-square overflow-hidden bg-line">
+                <div className="frame relative aspect-square bg-line shadow-card">
                   {swatches[item.id] && <FinishImage image={{ ...swatches[item.id]!, alt: "" }} sizes="(min-width: 1024px) 20vw, 30vw" />}
                 </div>
                 <p className="mt-3 text-[0.9375rem] leading-tight text-navy group-hover:underline group-hover:underline-offset-4">
@@ -40,7 +40,7 @@ export function SampleSlots({ swatches }: { swatches: Record<string, CatalogueIm
             <li key={`empty-${i}`}>
               <Link
                 href="#floor-library"
-                className="flex aspect-square flex-col items-center justify-center gap-2 border border-dashed border-navy/30 text-ink-muted transition-colors duration-300 hover:border-navy hover:text-navy"
+                className="flex aspect-square flex-col items-center justify-center gap-2 rounded-card border border-dashed border-oak/40 bg-white/60 text-ink-muted transition-colors duration-300 hover:border-navy hover:bg-white hover:text-navy"
               >
                 <span aria-hidden="true" className="text-2xl font-light leading-none">+</span>
                 <span className="px-2 text-center text-[0.8125rem]">Choose a finish</span>

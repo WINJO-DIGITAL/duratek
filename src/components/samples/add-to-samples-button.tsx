@@ -58,7 +58,7 @@ export function AddToSamplesButton({
         aria-pressed={blocked ? undefined : added}
         aria-haspopup={blocked ? "dialog" : undefined}
         className={cn(
-          "group inline-flex min-h-tap items-center justify-center gap-2 rounded-none font-medium transition-colors duration-300",
+          "group inline-flex min-h-tap items-center justify-center gap-2 rounded-control font-medium transition-colors duration-300",
           compact ? "justify-start px-0 text-left text-[0.875rem]" : "px-6 text-[0.9375rem]",
           added && !compact && "border border-green-ink bg-white text-green-ink hover:bg-off-white",
           added && compact && "text-green-ink",

@@ -120,7 +120,7 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
 function Notice({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section aria-live="polite" className="container-page pb-section-sm">
-      <div className="border-l-2 border-green-ink bg-white px-5 py-4 sm:px-6">
+      <div className="notice px-5 py-4 sm:px-6">
         <p className="font-medium text-navy">{title}</p>
         <p className="mt-1 text-[0.9375rem] text-ink-muted">{children}</p>
       </div>
@@ -181,7 +181,7 @@ async function OnlineRetailers() {
   const retailers = await getOnlineRetailers();
   if (retailers.length === 0) return null;
   return (
-    <section id="online" aria-labelledby="online-heading" className="scroll-mt-24 bg-white py-section-sm">
+    <section id="online" aria-labelledby="online-heading" className="scroll-mt-24 bg-cream py-section-sm">
       <div className="container-page grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
         <SectionIntro eyebrow="Buy online" title={<span id="online-heading">Order Duratek online.</span>}>
           <p>Buy Duratek from our online retailers.</p>

@@ -14,7 +14,7 @@ export function OneRoom({
 }) {
   return (
     <figure className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-14">
-      <div className="reveal-img relative -mx-[var(--spacing-gutter)] aspect-[4/5] overflow-hidden bg-line sm:mx-0 lg:col-span-7">
+      <div className="reveal-img relative -mx-[var(--spacing-gutter)] aspect-[4/5] overflow-hidden bg-line sm:mx-0 sm:rounded-card sm:shadow-card lg:col-span-7">
         <FinishImage image={image} sizes="(min-width: 1024px) 55vw, 100vw" quality={80} className="object-[50%_70%]" />
       </div>
       <figcaption className="lg:col-span-4 lg:col-start-9 lg:pb-4">
