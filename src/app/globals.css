@@ -223,7 +223,9 @@
  * Unsupported browsers navigate normally.
  * ------------------------------------------------------------------------- */
 :root {
-  --vt-enter: 200ms;
+  --vt-exit: 280ms;
+  --vt-enter: 500ms;
+  --vt-enter-delay: 90ms;
 }
 
 ::view-transition {
@@ -245,13 +247,14 @@
   animation: none;
 }
 
-/* The old page holds still while the new one fades in over it: no moment
-   where both are half transparent (that read as a white flash). */
+/* A soft crossfade: the old page fades away quickly while the new one fades
+   in a little later and settles up by a few pixels. Both pages sit on the
+   same ivory, so the brief blend between them reads as one calm dissolve. */
 ::view-transition-old(.page-exit) {
-  animation: none;
+  animation: var(--vt-exit) var(--ease-calm) both vt-fade-out;
 }
 ::view-transition-new(.page-enter) {
-  animation: var(--vt-enter) var(--ease-calm) both vt-fade-in;
+  animation: var(--vt-enter) var(--ease-calm) var(--vt-enter-delay) both vt-rise-in;
 }
 /* Navigating from the mobile menu: the menu stays up until the new page is
    ready, so skip the old page entirely and let the menu (in the root
@@ -265,6 +268,17 @@
     opacity: 0;
   }
 }
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-rise-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
+  }
+}
 
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(*),
@@ -276,7 +290,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Motion: menus. Short, soft fades; no staggered items.
+ * Motion: menus. Short, soft fades; the mobile menu links arrive in a gentle cascade.
  * ------------------------------------------------------------------------- */
 /* Mobile menu: one short, soft fade-down. Closing is driven by closeMenu()
    ([data-closing] while the dialog is still open and modal), so it never
@@ -301,6 +315,22 @@
 }
 .menu-sheet::backdrop {
   background: transparent;
+}
+/* Menu links arrive in a gentle cascade, top to bottom. */
+.menu-sheet[open] .menu-item {
+  animation: menu-item-in 420ms var(--ease-calm) both;
+  animation-delay: calc(80ms + var(--i, 0) * 40ms);
+}
+@keyframes menu-item-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet[open] .menu-item {
+    animation: none;
+  }
 }
 
 /* Quiet menu link with a green underline that draws in on hover/focus. */
