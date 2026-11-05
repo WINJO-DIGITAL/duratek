@@ -73,7 +73,7 @@ export default async function TradePage() {
             <h2 id="benefits-heading" className="reveal text-display-md text-navy">
               What your account is for
             </h2>
-            <ul className="mt-10 grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+            <ul className="mt-stack grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
               {BENEFITS.map((b, i) => {
                 const IconC = BENEFIT_ICONS[i] ?? TagIcon;
                 return (

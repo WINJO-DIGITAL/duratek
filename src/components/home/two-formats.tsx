@@ -22,21 +22,25 @@ export function TwoFormats({ formats }: { formats: FormatSummary[] }) {
             layer, core and click system.
           </p>
         </SectionIntro>
-        <ul className="mt-8 border-t border-line">
+        <ul className="mt-10 border-t border-line">
           {formats.map((f) => (
             <li key={f.format} className="border-b border-line">
               <Link
                 href={`/range?format=${f.format}`}
-                className="group flex min-h-tap items-center justify-between gap-4 py-3 text-navy"
+                className="group grid min-h-tap grid-cols-[1fr_auto] items-baseline gap-x-4 gap-y-0.5 py-4 text-navy"
               >
-                <span>
-                  {f.plank.label}
-                  <span className="data ml-3 text-[0.8125rem] text-ink-muted">
-                    {f.thickness_mm ? `${f.thickness_mm} mm thick` : null}
-                  </span>
+                <span className="font-display text-[1rem] font-medium tracking-[-0.005em]">{f.plank.label}</span>
+                <span className="row-span-2 flex items-center gap-2 self-center text-[0.875rem] font-medium">
+                  {f.count} {f.count === 1 ? "finish" : "finishes"}
+                  <ArrowRight
+                    size={16}
+                    className="transition-transform duration-200 ease-out group-hover:translate-x-[3px] motion-reduce:transition-none motion-reduce:group-hover:translate-x-0"
+                  />
                 </span>
-                <span className="flex items-center gap-2 text-[0.9375rem] group-hover:underline group-hover:underline-offset-4">
-                  {f.count} {f.count === 1 ? "finish" : "finishes"} <ArrowRight size={16} />
+                <span className="data text-[0.75rem] text-ink-muted">
+                  {[f.plank.width_mm && `${f.plank.width_mm} × ${f.plank.length_mm} mm`, f.thickness_mm && `${f.thickness_mm} mm thick`]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </span>
               </Link>
             </li>

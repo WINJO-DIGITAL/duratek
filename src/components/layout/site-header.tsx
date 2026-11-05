@@ -70,7 +70,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
   const linkClass = (active: boolean) =>
     cn(
-      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] transition-colors duration-300",
+      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] font-medium transition-colors duration-300",
       "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300 after:ease-calm",
       "hover:after:scale-x-100",
       active && "after:scale-x-100",

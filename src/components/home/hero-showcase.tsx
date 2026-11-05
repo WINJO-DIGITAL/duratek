@@ -18,6 +18,14 @@ const FADE_MS = 1600;
 
 const noSubscribe = () => () => {};
 
+const REDUCED_QUERY = "(prefers-reduced-motion: reduce)";
+const prefersReducedMotion = () => window.matchMedia(REDUCED_QUERY).matches;
+function subscribeReducedMotion(onChange: () => void) {
+  const mq = window.matchMedia(REDUCED_QUERY);
+  mq.addEventListener("change", onChange);
+  return () => mq.removeEventListener("change", onChange);
+}
+
 /**
  * The hero photographs. Each holds, still and uncropped by motion, then
  * cross-fades slowly to the next finish. The circle names the finish shown
@@ -36,7 +44,10 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
   const [userPaused, setUserPaused] = useState(false);
   const [held, setHeld] = useState(false); // hover or focus
   const [hidden, setHidden] = useState(false); // tab hidden or hero off screen
-  const [reduced, setReduced] = useState(false);
+  // Read synchronously on the first client render: if it arrived a moment
+  // later, the ring would start and (shortened to nothing by the reduced-
+  // motion CSS) end at once, advancing the photograph.
+  const reduced = useSyncExternalStore(subscribeReducedMotion, prefersReducedMotion, () => false);
   // The ring is the clock: it only starts once the page is interactive, so
   // it can't run ahead of the code that changes the photograph.
   const mounted = useSyncExternalStore(noSubscribe, () => true, () => false);
@@ -47,10 +58,6 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
   const running = mounted && many && !userPaused && !held && !hidden && !reduced && !waiting;
 
   useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const update = () => setReduced(mq.matches);
-    update();
-    mq.addEventListener("change", update);
     let offscreen = false;
     const sync = () => setHidden(document.hidden || offscreen);
     const io = new IntersectionObserver(([e]) => {
@@ -62,7 +69,6 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
     if (hero) io.observe(hero);
     document.addEventListener("visibilitychange", sync);
     return () => {
-      mq.removeEventListener("change", update);
       io.disconnect();
       document.removeEventListener("visibilitychange", sync);
     };

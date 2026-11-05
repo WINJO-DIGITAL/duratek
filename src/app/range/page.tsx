@@ -60,7 +60,7 @@ export default async function RangePage() {
           Explore them full screen
         </ButtonLink>
         <SamplePromo
-          className="mt-10"
+          className="mt-stack"
           swatches={[0, Math.floor(finishes.length / 2), finishes.length - 1]
             .map((i) => finishes[i] && imagesOfKind(finishes[i], "swatch")[0])
             .filter((x): x is NonNullable<typeof x> => Boolean(x))}

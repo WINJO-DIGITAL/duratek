@@ -172,7 +172,7 @@ export function MobileMenu({
                   {/* Green underline draws in under the label: full for the current page, on hover otherwise. */}
                   <span
                     className={cn(
-                      "relative font-display text-display-sm transition-colors duration-300",
+                      "relative font-display text-menu transition-colors duration-300",
                       "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:bg-green after:transition-transform after:duration-500 after:ease-calm",
                       current
                         ? "text-green-ink after:scale-x-100"

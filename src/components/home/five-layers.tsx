@@ -24,7 +24,7 @@ export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
       <div className="container-page">
         <div className="on-dark rounded-card bg-navy px-5 py-section-sm sm:px-10 lg:px-16">
           <SectionIntro eyebrow="Five layers" title={<span id="layers-heading">Five layers, one floor.</span>} tone="dark" />
-          <div className="mt-12 lg:mt-16">
+          <div className="mt-stack">
             <LayerBreakdown woodImage={woodImage} />
           </div>
 
@@ -35,7 +35,7 @@ export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
                 <p className={cn("mt-6 text-on-dark", data ? "data text-[1.375rem]" : "font-display text-[1.25rem] sm:text-display-sm")}>
                   {value}
                 </p>
-                <p className="mt-1 text-[0.875rem] text-on-dark-muted">{label}</p>
+                <p className="mt-1 text-[0.875rem] text-on-dark/80">{label}</p>
               </li>
             ))}
           </ul>

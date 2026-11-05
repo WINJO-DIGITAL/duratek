@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { useRef, useState, type CSSProperties, type PointerEvent } from "react";
 import { FinishImage } from "@/components/finish/finish-image";
+import { ButtonLink } from "@/components/ui/button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
-import { ArrowRight } from "@/components/ui/icons";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { boardAt, pressIntent } from "@/lib/floor-library";
@@ -142,12 +141,9 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
         </div>
         <div className="flex flex-wrap items-start gap-x-8 gap-y-2">
           <AddToSamplesButton key={current.id} finish={{ id: current.id, slug: current.slug, name: current.name }} />
-          <Link
-            href={`/range/${current.slug}`}
-            className="inline-flex min-h-tap items-center gap-2 text-[0.9375rem] text-navy underline-offset-4 hover:underline"
-          >
-            View finish <ArrowRight size={16} />
-          </Link>
+          <ButtonLink href={`/range/${current.slug}`} variant="quiet">
+            View finish
+          </ButtonLink>
         </div>
       </div>
     </div>

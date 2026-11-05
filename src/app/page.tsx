@@ -95,7 +95,7 @@ export default async function HomePage() {
                 Explore them full screen
               </ButtonLink>
             </div>
-            <div className="mt-10 lg:mt-14">
+            <div className="mt-stack">
               <FloorLibrary boards={boards} />
             </div>
           </div>
@@ -138,7 +138,6 @@ export default async function HomePage() {
               <div className="lg:col-span-5">
                 <SectionIntro
                   eyebrow="Free samples"
-                  size="lg"
                   title={<span id="samples-heading">Three free samples, posted to you.</span>}
                 >
                   <p>Put them down in the room they’re for, and look at them in daylight and in the evening.</p>

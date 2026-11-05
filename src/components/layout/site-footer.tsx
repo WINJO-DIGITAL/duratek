@@ -101,7 +101,7 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
         </nav>
 
         <div className="space-y-8 lg:pt-1">
-          <p className="max-w-[24ch] text-lede text-on-dark-muted">
+          <p className="max-w-[24ch] text-lede text-on-dark/85">
             Waterproof SPC click flooring, with free samples and trade accounts.
           </p>
           {GENERAL_CONTACT.phone && (

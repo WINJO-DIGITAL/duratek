@@ -41,12 +41,12 @@ export function PlankScale({ planks, className }: { planks: ScalePlank[]; classN
             </div>
           </div>
           <figcaption className="mt-3 flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <span className="flex items-center gap-2 text-[0.9375rem] text-navy">
+            <span className="flex items-center gap-2 font-display text-[0.9375rem] font-medium text-navy">
               {p.current && <span aria-hidden="true" className="size-2 bg-green" />}
               {p.label}
               {p.current && <span className="sr-only">(this finish)</span>}
             </span>
-            <span className="data text-[0.8125rem] text-ink-muted">
+            <span className="data text-[0.75rem] text-ink-muted">
               {p.width_mm} × {p.length_mm} mm
             </span>
           </figcaption>

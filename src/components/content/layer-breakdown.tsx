@@ -80,7 +80,7 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
               onClick={() => setActive(active === i ? null : i)}
               className={cn(
                 "flex w-full items-start gap-5 py-4 text-left transition-colors duration-300 min-h-tap",
-                dark ? "text-on-dark-muted hover:text-on-dark" : "text-ink-muted hover:text-navy",
+                dark ? "text-on-dark/80 hover:text-on-dark" : "text-navy/75 hover:text-navy",
                 active === i && (dark ? "text-on-dark" : "text-navy"),
               )}
             >

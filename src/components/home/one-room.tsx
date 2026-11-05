@@ -1,7 +1,6 @@
-import Link from "next/link";
 import { FinishImage } from "@/components/finish/finish-image";
+import { ButtonLink } from "@/components/ui/button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
-import { ArrowRight } from "@/components/ui/icons";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 
 /** A single editorial photograph, captioned with the finish, with Add sample. */
@@ -24,12 +23,9 @@ export function OneRoom({
         {finish.measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{finish.measures}</p>}
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-2">
           <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name }} />
-          <Link
-            href={`/range/${finish.slug}`}
-            className="inline-flex min-h-tap items-center gap-2 text-[0.9375rem] text-navy underline-offset-4 hover:underline"
-          >
-            View finish <ArrowRight size={16} />
-          </Link>
+          <ButtonLink href={`/range/${finish.slug}`} variant="quiet">
+            View finish
+          </ButtonLink>
         </div>
       </figcaption>
     </figure>
