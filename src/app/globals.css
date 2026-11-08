@@ -496,3 +496,20 @@
     opacity: 0;
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Print: a customer quote or shortlist prints as the document alone.
+ * ------------------------------------------------------------------------- */
+@media print {
+  body {
+    padding-bottom: 0 !important;
+    background: #fff !important;
+  }
+  body > *:not(main),
+  [data-print-hide] {
+    display: none !important;
+  }
+  main .card {
+    box-shadow: none !important;
+  }
+}

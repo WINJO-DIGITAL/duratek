@@ -20,6 +20,7 @@ export function FinishCard({
   media = "texture",
   priority = false,
   headingLevel: H = "h3",
+  showPrice = true,
   className,
 }: {
   finish: Finish;
@@ -29,6 +30,8 @@ export function FinishCard({
   media?: "room" | "texture";
   priority?: boolean;
   headingLevel?: "h2" | "h3";
+  /** Off on a trader's shared shortlist, which never shows prices. */
+  showPrice?: boolean;
   className?: string;
 }) {
   const room = finish.images.find((i) => i.kind === "room");
@@ -79,7 +82,7 @@ export function FinishCard({
           {format && <> · {FORMAT_LABELS[format]}</>}
         </p>
         {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
-        {finish.rrpPence !== undefined && (
+        {showPrice && finish.rrpPence !== undefined && (
           <p className="mt-2 text-[0.8125rem] text-ink-muted">
             RRP <span className="data text-[0.875rem] text-navy">{formatPence(finish.rrpPence)}</span> per m²
           </p>

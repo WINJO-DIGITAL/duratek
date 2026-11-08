@@ -104,7 +104,12 @@ describe("flooring quantities", () => {
 
   it("prices whole packs from a per-m² price", () => {
     expect(perPackPence(2.21, 2222)).toBe(4911); // 4910.62
-    expect(packsPrice(10, 2.21, 2222)).toBe(49106); // 49106.2
+    expect(packsPrice(10, 2.21, 2222)).toBe(49110); // whole packs: 10 x 49.11
+  });
+
+  it("regression: calculator and quote line agree for the same packs", () => {
+    const plan = planPacks(20, 10, 2.21)!;
+    expect(packsPrice(plan.packs, 2.21, 2222)).toBe(plan.packs * perPackPence(2.21, 2222));
   });
 });
 

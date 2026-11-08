@@ -49,14 +49,18 @@ export function planPacks(areaM2: number, wastagePct: number, packCoverageM2: nu
   };
 }
 
-/** Price of whole packs at a per-m² price. */
-export function packsPrice(packs: number, packCoverageM2: number, pricePerM2Pence: number): number {
-  return Math.round(packs * packCoverageM2 * pricePerM2Pence);
+/** Per-pack price from a per-m² price, to the penny. */
+export function perPackPence(packCoverageM2: number, pricePerM2Pence: number): number {
+  return Math.round(packCoverageM2 * pricePerM2Pence + Number.EPSILON);
 }
 
-/** Per-pack price from a per-m² price. */
-export function perPackPence(packCoverageM2: number, pricePerM2Pence: number): number {
-  return Math.round(packCoverageM2 * pricePerM2Pence);
+/**
+ * Price of whole packs at a per-m² price. Packs are sold whole, so the pack
+ * price is rounded once and multiplied: the calculator and a quote line for
+ * the same packs always agree to the penny.
+ */
+export function packsPrice(packs: number, packCoverageM2: number, pricePerM2Pence: number): number {
+  return packs * perPackPence(packCoverageM2, pricePerM2Pence);
 }
 
 /** Common wastage allowances, in percent. */

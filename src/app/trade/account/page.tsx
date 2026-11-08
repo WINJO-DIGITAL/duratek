@@ -10,7 +10,8 @@ import { byTone, getFinishes, grainImage } from "@/lib/catalogue";
 import { canSeeTradePrices, getAccount, inCustomerView } from "@/lib/auth/session";
 import { formatPence } from "@/lib/money";
 import { getTradePrices } from "@/lib/trade/prices";
-import { logOut, setCustomerView } from "./actions";
+import { TradeShell } from "@/components/trade/trade-shell";
+import { logOut } from "./actions";
 
 export const metadata: Metadata = {
   title: "Your trade account",
@@ -82,36 +83,16 @@ async function AccountContent() {
   ]);
 
   return (
-    <>
-      {header}
-
-      <form
-        action={setCustomerView}
-        className="card mt-stack flex flex-wrap items-center justify-between gap-x-8 gap-y-3 p-5 sm:p-6"
-      >
-        <input type="hidden" name="back" value="/trade/account" />
-        <input type="hidden" name="on" value={customerView ? "0" : "1"} />
-        <div>
-          <p className="font-medium text-navy">Customer view {customerView ? "is on" : ""}</p>
-          <p className="mt-1 text-[0.9375rem] text-ink-muted">
-            {customerView
-              ? "Trade prices are hidden everywhere until you turn it off or close the browser."
-              : "Hides every trade price, so you can show the range to a homeowner."}
-          </p>
-        </div>
-        <Button type="submit" variant={customerView ? "primary" : "outline"}>
-          {customerView ? "Show my prices again" : "Turn on Customer view"}
-        </Button>
-      </form>
-
-      <section aria-labelledby="prices-heading" className="mt-stack">
-        <h2 id="prices-heading" className="text-display-md text-navy">
-          {showTrade ? "Your prices" : "The range"}
-        </h2>
-        <p className="mt-lede max-w-[60ch] text-support text-navy/75">
-          Prices are per m². RRP is the public recommended price{showTrade ? "; yours is the price set for this account" : ""}.
-        </p>
-        <div className="card mt-8">
+    <TradeShell
+      account={account}
+      customerView={customerView}
+      current="/trade/account"
+      back="/trade/account"
+      title={showTrade ? "Your prices" : "The range"}
+      intro={<p>Prices are per m². RRP is the public recommended price{showTrade ? "; yours is the price set for this account" : ""}.</p>}
+    >
+      <section aria-label="Price list">
+        <div className="card">
           <table className="w-full border-collapse text-left">
             <caption className="sr-only">Finishes with their RRP{showTrade ? " and your price" : ""}, per square metre</caption>
             <thead>
@@ -150,6 +131,6 @@ async function AccountContent() {
           </table>
         </div>
       </section>
-    </>
+    </TradeShell>
   );
 }
