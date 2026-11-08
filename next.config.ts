@@ -6,6 +6,10 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
+  experimental: {
+    // Admin uploads (PDFs, photographs) up to 4 MB; Vercel functions accept 4.5 MB bodies.
+    serverActions: { bodySizeLimit: "4mb" },
+  },
   partialPrefetching: true,
   turbopack: {
     rules: {

@@ -60,8 +60,10 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
             </p>
           </div>
           <div className="sm:text-right">
-            <p className="eyebrow sm:justify-end">Quotation</p>
-            <p className="data mt-2 text-navy">{quote.reference}</p>
+            <h1>
+              <span className="eyebrow sm:justify-end">Quotation</span>
+              <span className="data mt-2 block text-base font-normal text-navy">{quote.reference}</span>
+            </h1>
             <p className="mt-1 text-[0.875rem] text-ink-muted">{dateFmt.format(new Date(quote.issued_at))}</p>
           </div>
         </header>

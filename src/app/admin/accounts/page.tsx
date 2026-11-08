@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { PageTransition } from "@/components/layout/page-transition";
@@ -84,6 +85,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/accou
                     {p.phone ? ` · ${p.phone}` : ""}
                   </p>
                   <p className="mt-2 text-[0.8125rem] font-medium text-navy">{STATUS_LABEL[p.status]}</p>
+                  {p.status === "approved" && (
+                    <Link href={`/admin/accounts/${p.id}`} className="mt-1 inline-block py-2 text-[0.875rem] text-navy underline decoration-green underline-offset-4">
+                      Account prices
+                    </Link>
+                  )}
                 </div>
 
                 <form action={reviewAccount} className="flex flex-wrap items-end gap-3">

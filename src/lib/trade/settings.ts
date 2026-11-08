@@ -3,9 +3,10 @@ import { emailConfigured } from "@/lib/email";
 
 /**
  * Trade applications are open only when an account can be created and the
- * owner will hear about it by email (there is no admin approvals screen yet,
- * so without email an application would go unseen). In development, account
- * creation alone is enough so the flow can be tested locally.
+ * owner will hear about it by email (applications also wait at
+ * /admin/accounts, and the overview counts them, but the applicant's
+ * confirmation needs email). In development, account creation alone is
+ * enough so the flow can be tested locally.
  */
 export function tradeApplicationsEnabled(): boolean {
   const canCreate = Boolean(

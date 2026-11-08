@@ -35,3 +35,25 @@ export function parsePriceForm(entries: Iterable<[string, unknown]>): PriceEdits
   }
   return out;
 }
+
+/**
+ * Reads the account prices form: fields named "override:<finish>", values in
+ * pounds. Blank removes the account price (the tier price applies again).
+ */
+export function parseOverrideForm(entries: Iterable<[string, unknown]>): {
+  set: { finishId: string; pence: number }[];
+  clear: string[];
+  invalid: string[];
+} {
+  const out = { set: [] as { finishId: string; pence: number }[], clear: [] as string[], invalid: [] as string[] };
+  for (const [name, raw] of entries) {
+    if (typeof raw !== "string") continue;
+    const [kind, finishId, ...rest] = name.split(":");
+    if (kind !== "override" || rest.length || !UUID.test(finishId ?? "")) continue;
+    const pence = inputToPence(raw);
+    if (pence === undefined) out.invalid.push(name);
+    else if (pence === null) out.clear.push(finishId);
+    else out.set.push({ finishId, pence });
+  }
+  return out;
+}

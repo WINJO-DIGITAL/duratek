@@ -8,6 +8,7 @@ export function Field({
   hint,
   error,
   className,
+  id: idProp,
   ...input
 }: {
   name: string;
@@ -15,7 +16,7 @@ export function Field({
   hint?: string;
   error?: string;
 } & Omit<ComponentProps<"input">, "name">) {
-  const id = `field-${name}`;
+  const id = idProp ?? `field-${name}`;
   const described = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") || undefined;
   return (
     <div>
@@ -56,6 +57,7 @@ export function SelectField({
   error,
   options,
   className,
+  id: idProp,
   ...select
 }: {
   name: string;
@@ -64,7 +66,7 @@ export function SelectField({
   error?: string;
   options: readonly { value: string; label: string }[];
 } & Omit<ComponentProps<"select">, "name">) {
-  const id = `field-${name}`;
+  const id = idProp ?? `field-${name}`;
   const described = [hint && `${id}-hint`, error && `${id}-error`].filter(Boolean).join(" ") || undefined;
   return (
     <div>
@@ -110,9 +112,10 @@ export function TextAreaField({
   hint,
   error,
   className,
+  id: idProp,
   ...area
 }: { name: string; label: string; hint?: string; error?: string } & Omit<ComponentProps<"textarea">, "name">) {
-  const id = `field-${name}`;
+  const id = idProp ?? `field-${name}`;
   return (
     <div>
       <label htmlFor={id} className="flex items-baseline justify-between gap-3 text-[0.9375rem] font-medium text-navy">
