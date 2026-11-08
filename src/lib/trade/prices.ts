@@ -1,6 +1,7 @@
 import "server-only";
 import { userSupabase } from "@/lib/supabase/server";
 import type { Account } from "@/lib/auth/session";
+import { isMissingFunction } from "@/lib/catalogue/errors";
 
 export interface TradePrice {
   /** Per m², before VAT. */
@@ -31,6 +32,7 @@ export async function getTradePrices(account: Account): Promise<Map<string, Trad
   if (account.status !== "approved") return new Map();
   const db = await userSupabase();
   const { data, error } = await db.rpc("catalogue_prices");
+  if (error && isMissingFunction(error)) return legacyTradePrices(account);
   if (error) throw new Error(`Failed to load trade prices: ${error.message}`);
   const out = new Map<string, TradePrice>();
   for (const p of data ?? []) {
@@ -51,4 +53,16 @@ export async function getPriceForQuantity(variantId: string, quantity: number) {
   const p = data?.[0];
   if (!p || p.source === "rrp") return null;
   return { netPence: p.net_pence, unit: p.price_unit, vatRateBp: p.vat_rate_bp, source: p.source, isPromotion: p.is_promotion };
+}
+
+/** Deploy safety net: the pre-migration tables, read as the user (RLS: own tier, own overrides). */
+async function legacyTradePrices(account: Account): Promise<Map<string, TradePrice>> {
+  const db = await userSupabase();
+  const [tier, overrides] = await Promise.all([
+    account.tierId
+      ? db.from("prices").select("finish_id, price_per_m2_pence").eq("tier_id", account.tierId)
+      : Promise.resolve({ data: [] as { finish_id: string; price_per_m2_pence: number }[] }),
+    db.from("price_overrides").select("finish_id, price_per_m2_pence").eq("profile_id", account.userId),
+  ]);
+  return effectivePrices(tier.data ?? [], overrides.data ?? []);
 }

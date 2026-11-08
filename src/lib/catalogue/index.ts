@@ -1,6 +1,7 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { publicSupabase } from "@/lib/supabase/public";
+import { isMissingFunction } from "./errors";
 import { toFinish, toImage, type FinishRow } from "./mappers";
 import { isRetired, isSecondaryRoom } from "./curation";
 import { measureTone } from "./tone";
@@ -17,7 +18,7 @@ export const TAGS = {
 } as const;
 
 const FINISH_SELECT =
-  "id, name, slug, style, colour_family, description, specs, is_demo, product_variants (id, is_default, active), finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
+  "id, name, slug, style, colour_family, description, specs, is_demo, rrp_per_m2_pence, product_variants (id, is_default, active), finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
 
 export async function getFinishes(): Promise<Finish[]> {
   "use cache";
@@ -36,7 +37,11 @@ export async function getFinishes(): Promise<Finish[]> {
   // Public prices come from the price resolver as a visitor: the RRP, or a
   // public promotion below it. Never a trade price (the resolver decides).
   const { data: prices, error: priceError } = await publicSupabase().rpc("catalogue_prices");
+  // Deploy safety net: before the pricing migration runs, the resolver doesn't
+  // exist yet, so keep the legacy RRP column (still maintained) instead of failing.
+  if (priceError && isMissingFunction(priceError)) return finishes;
   if (priceError) throw new Error(`Failed to load prices: ${priceError.message}`);
+  for (const f of finishes) f.rrpPence = undefined;
   for (const f of finishes) {
     const p = prices?.find((x) => x.finish_id === f.id && x.price_unit === "m2");
     if (!p) continue;

@@ -153,7 +153,14 @@ await pp.selectOption("#i-variant", { label: "Keswick Oak · DT-KESWICK-OAK" });
 const nextYear = new Date(Date.now() + 400 * 864e5).toISOString().slice(0, 10);
 await pp.fill("#i-from", nextYear);
 await pp.getByRole("button", { name: "Add price" }).click(); await pp.waitForURL(/notice=item-added/, { waitUntil: "commit" });
-check("volume break and future price saved", sql(`select count(*) from price_list_items where price_list_id='${tierA}' and (min_quantity=100 or valid_from is not null)`) === "2");
+// The URL already says item-added after the first add, so wait for the second row itself.
+let vf = "";
+for (let i = 0; i < 40; i++) {
+  vf = sql(`select count(*) from price_list_items where price_list_id='${tierA}' and (min_quantity=100 or valid_from is not null)`);
+  if (vf === "2") break;
+  await sleep(250);
+}
+check("volume break and future price saved", vf === "2", `${vf} rows; last page ${pp.url()}`);
 
 // Base grid: change tier A Keswick to 22.50 and see it in the legacy copy and for the fitter.
 await pp.goto(`${BASE}/admin/prices`); await pp.locator("form input[name^='base:']").first().waitFor();
