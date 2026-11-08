@@ -96,7 +96,10 @@ export async function addFlooringLine(_prev: QuoteFormState, form: FormData): Pr
 
   // Cost is the trader's own price for this many packs, decided on the server
   // by the price resolver (account, tier, volume breaks, promotions).
-  const price = plan && finish.defaultVariantId ? await getPriceForQuantity(finish.defaultVariantId, plan.packs) : null;
+  // The variant is looked up fresh, not from the cached catalogue.
+  const db0 = await userSupabase();
+  const { data: variant } = await db0.from("product_variants").select("id").eq("finish_id", finish.id).eq("is_default", true).eq("active", true).maybeSingle();
+  const price = plan && variant ? await getPriceForQuantity(variant.id, plan.packs) : null;
   const built = buildFlooringLine({
     finishName: finish.name,
     packCoverageM2: coverage,

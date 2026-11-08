@@ -84,7 +84,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/acc
       )}
       <form action={saveAccountPrices}>
         <input type="hidden" name="profile_id" value={profile.id} />
-        <div className="card overflow-x-auto">
+        <div className="card relative overflow-x-auto">
           <table className="w-full min-w-[30rem] border-collapse text-left">
             <caption className="sr-only">Tier and account prices per square metre</caption>
             <thead>

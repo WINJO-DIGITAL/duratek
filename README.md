@@ -24,7 +24,10 @@ npm run lint
 npm test          # unit tests (Vitest)
 npm run db:test   # RLS tests (pgTAP via supabase test db): supabase/tests/*.test.sql
 npm run build
+npm run test:e2e  # browser and security suites (local stack only; see tests/e2e/run.sh)
 ```
+
+Database, security and pricing are documented in `docs/DATABASE.md`, `docs/SECURITY.md` and `docs/PRICING.md`.
 
 ## Data
 

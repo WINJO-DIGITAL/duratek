@@ -92,7 +92,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
 
       <section aria-labelledby="lists-heading" className="mt-stack">
         <h2 id="lists-heading" className="text-display-sm text-navy">Price lists</h2>
-        <div className="card mt-6 overflow-x-auto">
+        <div className="card relative mt-6 overflow-x-auto">
           <table className="w-full min-w-[36rem] border-collapse text-left">
             <thead>
               <tr className="border-b border-line text-[0.8125rem] text-ink-muted">

@@ -12,7 +12,8 @@
     "db:test": "supabase test db",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "seed:build": "node scripts/demo-seed/build-demo-seed.mjs"
+    "seed:build": "node scripts/demo-seed/build-demo-seed.mjs",
+    "test:e2e": "bash tests/e2e/run.sh"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

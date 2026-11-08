@@ -113,7 +113,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/pri
         {sorted.length === 0 ? (
           <p className="mt-4 text-ink-muted">No prices yet.</p>
         ) : (
-          <div className="card mt-6 overflow-x-auto">
+          <div className="card relative mt-6 overflow-x-auto">
             <table className="w-full min-w-[40rem] border-collapse text-left">
               <thead>
                 <tr className="border-b border-line text-[0.8125rem] text-ink-muted">

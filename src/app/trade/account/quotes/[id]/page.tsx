@@ -92,7 +92,7 @@ async function Content({
         {quote.lines.length === 0 ? (
           <p className="mt-4 text-ink-muted">No lines yet. Add flooring from a measured area, then any accessories or labour.</p>
         ) : (
-          <div className="card mt-6 overflow-x-auto">
+          <div className="card relative mt-6 overflow-x-auto">
             <table className="w-full min-w-[40rem] border-collapse text-left">
               <caption className="sr-only">Quote lines{showTrade ? ", with your cost and margin" : ""}</caption>
               <thead>

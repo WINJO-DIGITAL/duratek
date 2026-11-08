@@ -87,7 +87,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/audit
       {(data ?? []).length === 0 ? (
         <p className="text-ink-muted">Nothing recorded yet.</p>
       ) : (
-        <div className="card overflow-x-auto">
+        <div className="card relative overflow-x-auto">
           <table className="w-full min-w-[44rem] border-collapse text-left">
             <thead>
               <tr className="border-b border-line text-[0.8125rem] text-ink-muted">

@@ -41,7 +41,7 @@ export function PricesForm({ rows, columns }: { rows: BaseRow[]; columns: BaseCo
   const [state, action, pending] = useActionState(saveBasePrices, { status: "idle" } as SavePricesState);
   return (
     <form action={action}>
-      <div className="card overflow-x-auto">
+      <div className="card relative overflow-x-auto">
         <table className="w-full min-w-[34rem] border-collapse text-left">
           <caption className="sr-only">Base prices per square metre, in pounds</caption>
           <thead>

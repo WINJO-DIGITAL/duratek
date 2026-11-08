@@ -118,7 +118,8 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 1. Trade prices (tier and account prices) are never sent to logged-out or unapproved users; the RRP is public. Gate on the SERVER (server components / route handlers), not with CSS or client-side hiding. Customer view also strips prices on the server.
 2. Price data lives in tables protected by Row Level Security. Only approved users can read it, and only their own tier or account price.
-3. Only the owner/admin role can write prices, tiers, approvals, finishes, stockists and documents.
+3. Only administrators with the matching permission can write prices, tiers, approvals, finishes, stockists and documents (roles: super_admin, admin with granted permissions, trade, stockist; see `docs/SECURITY.md`). Check with `requireAdmin(permission)` on the server and `has_permission()` in RLS.
+3a. Every price comes from the resolver (`price_for`, `catalogue_prices`; rules in `docs/PRICING.md`). Never take a price from the browser, and write prices only to `price_lists`/`price_list_items` (`prices`, `price_overrides` and `finishes.rrp_per_m2_pence` are derived copies).
 4. Never expose the Supabase service-role key to the client. Never commit secrets; use env vars.
 5. Gated documents are served via short-lived signed URLs, not public links.
 6. Validate all form input on the server. Rate-limit application, login, sample request and contact endpoints. Add a honeypot to public forms.
@@ -126,9 +127,12 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 ## Data model
 
-- `profiles`: id (auth user), company_name, contact_name, phone, trade_type (fitter | retailer | contractor | specifier), status (pending | approved | rejected), tier_id, is_admin, list_as_stockist (bool)
+- `profiles`: id (auth user), company_name, contact_name, phone, trade_type (fitter | retailer | contractor | specifier), status (pending | approved | rejected | suspended), role (super_admin | admin | trade | stockist), business_id, tier_id, is_admin (legacy, follows role), list_as_stockist (bool)
+- `businesses`, `trade_applications`, `admin_permissions`: the company, what was applied for and its review, and an administrator's permissions
 - `price_tiers`: id, name
 - `finishes`: id, name, slug, style (plank | herringbone), colour_family, description, specs (jsonb: sizes, thickness, pack coverage etc.), rrp_per_m2_pence (public RRP, nullable), sort_order, published, is_demo
+- `collections`; `product_variants`: finish_id, sku, unit_of_sale (m2 | pack | item | linear_metre), pack_coverage_m2, dimensions, vat_rate_bp, is_default (measurements are the source; `finishes.specs` keeps a display copy)
+- `price_lists` (rrp | trade | stockist | account | promotion; VAT inclusive or not; dates) and `price_list_items` (amount, unit, volume break, dates): the single source of prices
 - `finish_images`: finish_id, url, kind (swatch | room | closeup), alt, sort_order
 - `prices`: finish_id, tier_id, price_per_m2_pence (integer), updated_at
 - `price_overrides`: finish_id, profile_id, price_per_m2_pence
@@ -142,7 +146,8 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 - `quotes`: id, profile_id, reference (Q-0001 per trader), customer details, site, status (draft | sent | accepted | declined), vat_rate_bp, notes, valid_until, share_token, sent_at, responded_at
 - `quote_lines`: quote_id, kind (flooring | accessory | labour | other), finish_id, description, quantity, unit, unit_cost_pence (private), unit_sell_pence, area_m2, wastage_pct
 - A trader's quotes, costs and margins are private to that trader: the owner sees only aggregate demand (`admin_dashboard_stats()`). Customers read a quote only through `get_shared_quote(token)`, which returns sell prices.
-- Trade applications are captured as `profiles` with status = pending.
+- `saved_products`, `projects`, `project_items`; `audit_log` (append-only); `system_settings`
+- Trade applications are captured as `profiles` with status = pending, plus their `businesses` and `trade_applications` rows. Full reference: `docs/DATABASE.md`.
 
 Money is stored as integer pence.
 
