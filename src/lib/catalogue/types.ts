@@ -37,8 +37,6 @@ export interface Finish {
   rrpPence?: number;
   /** A public promotion's price per m² (VAT inclusive), when one is running and below the RRP. */
   offerPence?: number;
-  /** The variant sold by default (packs); prices and quotes refer to it. */
-  defaultVariantId?: string;
   images: CatalogueImage[];
   /** Measured lightness of the swatch, 0 dark .. 1 light; undefined if unmeasured. */
   tone?: number;

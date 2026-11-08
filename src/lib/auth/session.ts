@@ -3,7 +3,8 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { userSupabase } from "@/lib/supabase/server";
 
-import type { AccountRole, AccountStatus, Permission } from "./permissions";
+import { isMissingSchema } from "@/lib/catalogue/errors";
+import { PERMISSIONS, type AccountRole, type AccountStatus, type Permission } from "./permissions";
 
 export type { AccountRole, AccountStatus, Permission } from "./permissions";
 
@@ -34,12 +35,24 @@ export const getAccount = cache(async (): Promise<Account | null> => {
   const { data } = await db.auth.getUser();
   const user = data.user;
   if (!user) return null;
-  const [{ data: p }, perms] = await Promise.all([
+  const [profile, perms] = await Promise.all([
     db.from("profiles").select("company_name, contact_name, status, tier_id, role").eq("id", user.id).maybeSingle(),
     db.rpc("my_permissions"),
   ]);
+  let p = profile.data;
+  let permissions = ((perms.data as Permission[] | null) ?? []).filter(Boolean);
+
+  // Deploy safety net: before the roles migration runs there is no role column
+  // and no my_permissions(); fall back to the legacy is_admin flag. Only for
+  // "undefined column / function"; any other failure means no account.
+  if (profile.error && isMissingSchema(profile.error)) {
+    const legacy = await db.from("profiles").select("company_name, contact_name, status, tier_id, is_admin").eq("id", user.id).maybeSingle();
+    if (!legacy.data) return null;
+    const { is_admin, ...rest } = legacy.data as typeof legacy.data & { is_admin: boolean };
+    p = { ...rest, role: is_admin ? "super_admin" : "trade" };
+    permissions = is_admin ? PERMISSIONS.map((x) => x.value) : [];
+  }
   if (!p) return null;
-  const permissions = ((perms.data as Permission[] | null) ?? []).filter(Boolean);
   return {
     userId: user.id,
     email: user.email ?? "",
