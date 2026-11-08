@@ -215,16 +215,68 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"sample_requests": {
+                },"quote_lines": {
                   Row: {
-                    "address_line1": string,"address_line2": string | null,"created_at": string,"email": string,"finish_ids": (string)[],"id": string,"marketing_opt_in": boolean,"name": string,"phone": string | null,"postcode": string,"status": Database["public"]['Enums']["sample_status"],"town": string
+                    "area_m2": number | null,"created_at": string,"description": string,"finish_id": string | null,"id": string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"sort_order": number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence": number,"unit_sell_pence": number,"wastage_pct": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "address_line1": string,"address_line2"?: string | null,"created_at"?: string,"email": string,"finish_ids": (string)[],"id"?: string,"marketing_opt_in"?: boolean,"name": string,"phone"?: string | null,"postcode": string,"status"?: Database["public"]['Enums']["sample_status"],"town": string
+                    "area_m2"?: number | null,"created_at"?: string,"description": string,"finish_id"?: string | null,"id"?: string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"sort_order"?: number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence": number,"wastage_pct"?: number | null
                   }
                   Update: {
-                    "address_line1"?: string,"address_line2"?: string | null,"created_at"?: string,"email"?: string,"finish_ids"?: (string)[],"id"?: string,"marketing_opt_in"?: boolean,"name"?: string,"phone"?: string | null,"postcode"?: string,"status"?: Database["public"]['Enums']["sample_status"],"town"?: string
+                    "area_m2"?: number | null,"created_at"?: string,"description"?: string,"finish_id"?: string | null,"id"?: string,"kind"?: Database["public"]['Enums']["quote_line_kind"],"quantity"?: number,"quote_id"?: string,"sort_order"?: number,"unit"?: Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence"?: number,"wastage_pct"?: number | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "quote_lines_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "finishes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "quote_lines_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "my_prices"
+      referencedColumns: ["finish_id"]
+    },{
+      foreignKeyName: "quote_lines_quote_id_fkey"
+      columns: ["quote_id"]
+isOneToOne: false
+      referencedRelation: "quotes"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"quotes": {
+                  Row: {
+                    "created_at": string,"customer_email": string | null,"customer_name": string,"customer_phone": string | null,"id": string,"notes": string,"profile_id": string,"reference": string,"responded_at": string | null,"sent_at": string | null,"share_token": string,"site_address": string,"site_postcode": string | null,"status": Database["public"]['Enums']["quote_status"],"updated_at": string,"valid_until": string | null,"vat_rate_bp": number
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"customer_email"?: string | null,"customer_name": string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                  }
+                  Update: {
+                    "created_at"?: string,"customer_email"?: string | null,"customer_name"?: string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "quotes_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"sample_requests": {
+                  Row: {
+                    "address_line1": string,"address_line2": string | null,"created_at": string,"email": string,"finish_ids": (string)[],"id": string,"marketing_opt_in": boolean,"name": string,"phone": string | null,"postcode": string,"sent_at": string | null,"status": Database["public"]['Enums']["sample_status"],"town": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address_line1": string,"address_line2"?: string | null,"created_at"?: string,"email": string,"finish_ids": (string)[],"id"?: string,"marketing_opt_in"?: boolean,"name": string,"phone"?: string | null,"postcode": string,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["sample_status"],"town": string
+                  }
+                  Update: {
+                    "address_line1"?: string,"address_line2"?: string | null,"created_at"?: string,"email"?: string,"finish_ids"?: (string)[],"id"?: string,"marketing_opt_in"?: boolean,"name"?: string,"phone"?: string | null,"postcode"?: string,"sent_at"?: string | null,"status"?: Database["public"]['Enums']["sample_status"],"town"?: string
                   }
                   Relationships: [
                     
@@ -263,6 +315,26 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"trade_preferences": {
+                  Row: {
+                    "default_markup_bp": number,"default_wastage_pct": number,"profile_id": string,"quote_footer": string,"updated_at": string,"vat_registered": boolean
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "default_markup_bp"?: number,"default_wastage_pct"?: number,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean
+                  }
+                  Update: {
+                    "default_markup_bp"?: number,"default_wastage_pct"?: number,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "trade_preferences_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
@@ -277,8 +349,14 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "current_tier_id":
+            "admin_dashboard_stats":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"current_tier_id":
 { Args: Record<PropertyKey, never>; Returns: string
+                           },
+"get_shared_quote":
+{ Args: { "p_token": string }; Returns: Json
                            },
 "get_shared_shortlist":
 { Args: { "share_token": string }; Returns: {
@@ -290,10 +368,13 @@ isOneToOne: false
                            },
 "is_approved_trade":
 { Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"respond_to_quote":
+{ Args: { "p_decision": string,"p_token": string }; Returns: string
                            }
           }
           Enums: {
-            "document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","profile_status": "pending"|"approved"|"rejected","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier"
+            "document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","profile_status": "pending"|"approved"|"rejected","quote_line_kind": "flooring"|"accessory"|"labour"|"other","quote_status": "draft"|"sent"|"accepted"|"declined","quote_unit": "pack"|"m2"|"item"|"hour"|"metre","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -413,7 +494,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"profile_status": ["pending", "approved", "rejected"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"]
+            "document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"profile_status": ["pending", "approved", "rejected"],"quote_line_kind": ["flooring", "accessory", "labour", "other"],"quote_status": ["draft", "sent", "accepted", "declined"],"quote_unit": ["pack", "m2", "item", "hour", "metre"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"]
           }
         }
 } as const
