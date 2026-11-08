@@ -37,6 +37,7 @@ export interface FinishRow {
   specs: unknown;
   is_demo: boolean;
   rrp_per_m2_pence?: number | null;
+  product_variants?: { id: string; is_default: boolean; active: boolean }[] | null;
   finish_images: ImageRow[] | null;
 }
 
@@ -73,6 +74,7 @@ export function toFinish(row: FinishRow): Finish {
     specs: toSpecs(row.specs),
     isDemo: row.is_demo,
     rrpPence: row.rrp_per_m2_pence ?? undefined,
+    defaultVariantId: row.product_variants?.find((v) => v.is_default && v.active)?.id,
     images,
   };
 }

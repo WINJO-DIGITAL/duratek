@@ -32,19 +32,32 @@ const NOTICE: Record<string, string> = {
 
 async function Content({ params, searchParams }: { params: PageProps<"/admin/accounts/[id]">["params"]; searchParams: PageProps<"/admin/accounts/[id]">["searchParams"] }) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
-  await requireAdmin(`/admin/accounts/${id}`);
+  await requireAdmin("manage_pricing", `/admin/accounts/${id}`);
   if (!isUuid(id)) notFound();
   const db = await userSupabase();
   const { data: profile } = await db.from("profiles").select("id, company_name, contact_name, status, tier_id").eq("id", id).maybeSingle();
   if (!profile) notFound();
-  const [finishes, tier, tierPrices, overrides] = await Promise.all([
+  const [finishes, tier, lists, variants] = await Promise.all([
     db.from("finishes").select("id, name").order("sort_order").order("name"),
     profile.tier_id ? db.from("price_tiers").select("name").eq("id", profile.tier_id).maybeSingle() : Promise.resolve({ data: null }),
-    profile.tier_id ? db.from("prices").select("finish_id, price_per_m2_pence").eq("tier_id", profile.tier_id) : Promise.resolve({ data: [] }),
-    db.from("price_overrides").select("finish_id, price_per_m2_pence").eq("profile_id", id),
+    db.from("price_lists").select("id, kind, tier_id, profile_id"),
+    db.from("product_variants").select("id, finish_id").eq("is_default", true),
   ]);
-  const tierPrice = new Map((tierPrices.data ?? []).map((p) => [p.finish_id, p.price_per_m2_pence]));
-  const own = new Map((overrides.data ?? []).map((p) => [p.finish_id, p.price_per_m2_pence]));
+  const tierListId = (lists.data ?? []).find((l) => l.tier_id && l.tier_id === profile.tier_id)?.id;
+  const ownListId = (lists.data ?? []).find((l) => l.profile_id === profile.id)?.id;
+  const { data: baseItems } = await db
+    .from("price_list_items")
+    .select("price_list_id, variant_id, amount_pence")
+    .in("price_list_id", [tierListId, ownListId].filter((x): x is string => Boolean(x)))
+    .eq("price_unit", "m2")
+    .eq("min_quantity", 1)
+    .is("valid_from", null)
+    .is("valid_to", null);
+  const finishOfVariant = new Map((variants.data ?? []).map((v) => [v.id, v.finish_id]));
+  const pick = (listId: string | undefined) =>
+    new Map((baseItems ?? []).filter((i) => i.price_list_id === listId).map((i) => [finishOfVariant.get(i.variant_id), i.amount_pence]));
+  const tierPrice = pick(tierListId);
+  const own = pick(ownListId);
   const notice = NOTICE[String(sp.notice ?? "")];
 
   return (
@@ -54,7 +67,11 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/acc
       intro={
         <p>
           Account prices apply to this account only and win over its tier ({tier.data?.name ?? "no tier yet"}). Leave a field blank to use the tier
-          price. Per m², in pounds.
+          price. Per m², in pounds, ex VAT.{ownListId && (
+            <>
+              {" "}Volume breaks and dated prices for this account: <Link href={`/admin/prices/lists/${ownListId}`} className="underline decoration-green underline-offset-4">its price list</Link>.
+            </>
+          )}
         </p>
       }
     >

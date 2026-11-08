@@ -1,34 +1,31 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { adminAreasFor } from "@/lib/auth/admin";
+import type { AdminArea } from "@/lib/auth/permissions";
+import { getAccount } from "@/lib/auth/session";
 import { cn } from "@/lib/cn";
 
-const TABS = [
-  { href: "/admin", label: "Overview" },
-  { href: "/admin/accounts", label: "Trade accounts" },
-  { href: "/admin/prices", label: "Prices" },
-  { href: "/admin/finishes", label: "Finishes" },
-  { href: "/admin/samples", label: "Samples" },
-  { href: "/admin/stockists", label: "Where to buy" },
-  { href: "/admin/documents", label: "Documents" },
-] as const;
 
-/** The owner's screens: a quiet header with tabs. */
-export function AdminShell({
+
+/** The owner's screens: a quiet header with the tabs this person may open. */
+export async function AdminShell({
   current,
   title,
   intro,
   children,
 }: {
-  current: (typeof TABS)[number]["href"];
+  current: AdminArea;
   title: string;
   intro: ReactNode;
   children: ReactNode;
 }) {
+  const account = await getAccount();
+  const tabs = account ? adminAreasFor(account) : [];
   return (
     <div className="container-page pb-section pt-12 sm:pt-16">
       <p className="eyebrow">Owner admin</p>
       <nav aria-label="Admin" className="scrollbar-none -mx-gutter mt-4 flex gap-2 overflow-x-auto px-gutter">
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <Link
             key={t.href}
             href={t.href}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseOverrideForm, parsePriceForm } from "./prices";
+import { dateStart, parseBasePriceForm, parseOverrideForm, parsePriceForm } from "./prices";
 
 const F = "11111111-1111-4111-8111-111111111111";
 const T = "22222222-2222-4222-8222-222222222222";
@@ -42,5 +42,29 @@ describe("account price form", () => {
     ]);
     expect(r).toEqual({ set: [{ finishId: A, pence: 1950 }], clear: [B], invalid: [] });
     expect(parseOverrideForm([[`override:${A}`, "abc"]]).invalid).toEqual([`override:${A}`]);
+  });
+});
+
+describe("base price grid", () => {
+  it("sets, clears and refuses zero or junk", () => {
+    const r = parseBasePriceForm([
+      [`base:${F}:${T}`, "33.33"],
+      [`base:${T}:${F}`, ""],
+      [`base:${F}:${F}`, "0"],
+      [`base:${T}:${T}`, "abc"],
+      ["base:nope:nope", "1"],
+    ]);
+    expect(r.set).toEqual([{ listId: F, variantId: T, pence: 3333 }]);
+    expect(r.clear).toEqual([{ listId: T, variantId: F }]);
+    expect(r.invalid).toEqual([`base:${F}:${F}`, `base:${T}:${T}`]);
+  });
+});
+
+describe("dates", () => {
+  it("starts the day in London time, in winter and summer", () => {
+    expect(dateStart("2027-01-15")).toBe("2027-01-15T00:00:00.000Z");
+    expect(dateStart("2027-07-15")).toBe("2027-07-14T23:00:00.000Z");
+    expect(dateStart("")).toBeNull();
+    expect(dateStart("15/07/2027")).toBeUndefined();
   });
 });

@@ -26,3 +26,11 @@ export async function logOut() {
   (await cookies()).delete(CUSTOMER_VIEW_COOKIE);
   redirect("/");
 }
+
+/** Signs this account out on every device (for a lost phone or a shared tablet). */
+export async function logOutEverywhere() {
+  const db = await userSupabase();
+  await db.auth.signOut({ scope: "global" });
+  (await cookies()).delete(CUSTOMER_VIEW_COOKIE);
+  redirect("/trade/login?notice=signedout");
+}

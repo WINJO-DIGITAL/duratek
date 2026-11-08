@@ -11,28 +11,39 @@ import { canSeeTradePrices, getAccount, inCustomerView } from "@/lib/auth/sessio
 import { formatPence } from "@/lib/money";
 import { getTradePrices } from "@/lib/trade/prices";
 import { TradeShell } from "@/components/trade/trade-shell";
-import { logOut } from "./actions";
+import { logOut, logOutEverywhere } from "./actions";
 
 export const metadata: Metadata = {
   title: "Your trade account",
   robots: { index: false },
 };
 
-export default function TradeAccountPage() {
+export default function TradeAccountPage({ searchParams }: PageProps<"/trade/account">) {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
         <Suspense fallback={<div aria-busy="true" className="h-96 animate-pulse rounded-card bg-line/50" />}>
-          <AccountContent />
+          <AccountContent searchParams={searchParams} />
         </Suspense>
       </div>
     </PageTransition>
   );
 }
 
-async function AccountContent() {
+const ACCOUNT_NOTICE: Record<string, string> = {
+  verified: "Thank you. Your email address is confirmed.",
+  password: "Your new password is saved. Any other devices have been signed out.",
+};
+
+async function AccountContent({ searchParams }: { searchParams: PageProps<"/trade/account">["searchParams"] }) {
   const account = await getAccount();
   if (!account) redirect("/trade/login?next=/trade/account");
+  const noticeText = ACCOUNT_NOTICE[String((await searchParams).notice ?? "")];
+  const notice = noticeText && (
+    <p role="status" className="notice mb-8 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">
+      {noticeText}
+    </p>
+  );
 
   const header = (
     <div className="flex flex-wrap items-end justify-between gap-6">
@@ -50,6 +61,11 @@ async function AccountContent() {
             Log out
           </Button>
         </form>
+        <form action={logOutEverywhere}>
+          <button type="submit" className="min-h-tap text-[0.875rem] text-ink-muted underline underline-offset-4 hover:text-navy">
+            Log out on all devices
+          </button>
+        </form>
       </div>
     </div>
   );
@@ -57,14 +73,23 @@ async function AccountContent() {
   if (account.status !== "approved") {
     return (
       <>
+        {notice}
         {header}
         <div className="notice mt-stack max-w-xl px-5 py-4 text-navy">
           {account.status === "pending" ? (
             <>
               <p className="font-medium">Your application is waiting for approval.</p>
               <p className="mt-1 text-[0.9375rem] text-ink-muted">
-                We check every application by hand and will email {account.email} when your account is approved. Until
-                then you can browse the range as normal.
+                {account.emailConfirmed
+                  ? `We check every application by hand and will email ${account.email} when your account is approved. Until then you can browse the range as normal.`
+                  : `Please confirm your email address with the link we sent to ${account.email}. We then check every application by hand.`}
+              </p>
+            </>
+          ) : account.status === "suspended" ? (
+            <>
+              <p className="font-medium">This trade account is suspended.</p>
+              <p className="mt-1 text-[0.9375rem] text-ink-muted">
+                Trade prices, quotes and documents are unavailable for now. Please contact us if you think this is a mistake.
               </p>
             </>
           ) : (
@@ -91,6 +116,7 @@ async function AccountContent() {
       title={showTrade ? "Your prices" : "The range"}
       intro={<p>Prices are per m². RRP is the public recommended price{showTrade ? "; yours is the price set for this account" : ""}.</p>}
     >
+      {notice}
       <section aria-label="Price list">
         <div className="card">
           <table className="w-full border-collapse text-left">

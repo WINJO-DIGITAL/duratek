@@ -84,6 +84,11 @@ export function FinishCard({
         {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
         {showPrice && finish.rrpPence !== undefined && (
           <p className="mt-2 text-[0.8125rem] text-ink-muted">
+            {finish.offerPence !== undefined && (
+              <>
+                Offer <span className="data text-[0.875rem] font-medium text-green-ink">{formatPence(finish.offerPence)}</span>{" · "}
+              </>
+            )}
             RRP <span className="data text-[0.875rem] text-navy">{formatPence(finish.rrpPence)}</span> per m²
           </p>
         )}

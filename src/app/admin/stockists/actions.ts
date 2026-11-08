@@ -12,7 +12,7 @@ import { echo } from "@/lib/trade/quote-forms";
 import { geocodePostcode, STOCKISTS_TAG } from "@/lib/where-to-buy";
 
 export async function saveStockist(_prev: AdminFormState, form: FormData): Promise<AdminFormState> {
-  await requireAdmin("/admin/stockists");
+  await requireAdmin("manage_stockists", "/admin/stockists");
   const id = String(form.get("id") ?? "");
   const parsed = parseStockist(form);
   if (!parsed.ok) return { status: "error", errors: parsed.errors, message: "Please check the highlighted fields.", values: echo(form) };
@@ -36,7 +36,7 @@ export async function saveStockist(_prev: AdminFormState, form: FormData): Promi
 }
 
 export async function deleteStockist(form: FormData) {
-  await requireAdmin("/admin/stockists");
+  await requireAdmin("manage_stockists", "/admin/stockists");
   const id = String(form.get("id") ?? "");
   if (!isUuid(id) || form.get("confirm") !== "yes") redirect("/admin/stockists?notice=confirm");
   const db = await userSupabase();
@@ -46,7 +46,7 @@ export async function deleteStockist(form: FormData) {
 }
 
 export async function saveRetailer(_prev: AdminFormState, form: FormData): Promise<AdminFormState> {
-  await requireAdmin("/admin/stockists");
+  await requireAdmin("manage_stockists", "/admin/stockists");
   const id = String(form.get("id") ?? "");
   const parsed = parseRetailer(form);
   if (!parsed.ok) return { status: "error", errors: parsed.errors, message: "Please check the highlighted fields.", values: echo(form) };
@@ -60,7 +60,7 @@ export async function saveRetailer(_prev: AdminFormState, form: FormData): Promi
 }
 
 export async function deleteRetailer(form: FormData) {
-  await requireAdmin("/admin/stockists");
+  await requireAdmin("manage_stockists", "/admin/stockists");
   const id = String(form.get("id") ?? "");
   if (!isUuid(id) || form.get("confirm") !== "yes") redirect("/admin/stockists?notice=confirm");
   const db = await userSupabase();

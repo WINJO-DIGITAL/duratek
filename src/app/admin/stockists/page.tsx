@@ -40,7 +40,7 @@ function DeleteForm({ id, label, action }: { id: string; label: string; action: 
 }
 
 async function Content({ searchParams }: { searchParams: PageProps<"/admin/stockists">["searchParams"] }) {
-  await requireAdmin("/admin/stockists");
+  await requireAdmin("manage_stockists", "/admin/stockists");
   const notice = NOTICE[String((await searchParams).notice ?? "")];
   const db = await userSupabase();
   const [stockists, retailers] = await Promise.all([

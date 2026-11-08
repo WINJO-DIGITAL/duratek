@@ -188,12 +188,12 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             </div>
 
             {/* RRP is public; the trade price is read at request time, only for an approved account. */}
-            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} />}>
-              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} />
+            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
+              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} offerPence={finish.offerPence} />
             </Suspense>
 
             <SpecList rows={keySpecs} className="mt-2 border-t border-line" />
-            {finish.specs.pack_coverage_m2 && <PackEstimator coverageM2={finish.specs.pack_coverage_m2} rrpPence={finish.rrpPence} />}
+            {finish.specs.pack_coverage_m2 && <PackEstimator coverageM2={finish.specs.pack_coverage_m2} rrpPence={finish.offerPence ?? finish.rrpPence} />}
 
             {/* The sample offer and actions, together in one soft panel. */}
             <div className="card mt-8 p-5 sm:p-6">

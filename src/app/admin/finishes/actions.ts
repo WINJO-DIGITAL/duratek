@@ -6,13 +6,13 @@ import { redirect } from "next/navigation";
 import { TAGS } from "@/lib/catalogue";
 import { requireAdmin } from "@/lib/auth/admin";
 import type { AdminFormState } from "@/lib/admin/form-state";
-import { IMAGE_MAX_BYTES, IMAGE_TYPES, mergeSpecs, parseFinish } from "@/lib/admin/forms";
+import { IMAGE_MAX_BYTES, IMAGE_TYPES, mergeSpecs, parseFinish, variantFromFinish } from "@/lib/admin/forms";
 import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
 import { echo } from "@/lib/trade/quote-forms";
 
 export async function saveFinish(_prev: AdminFormState, form: FormData): Promise<AdminFormState> {
-  await requireAdmin("/admin/finishes");
+  await requireAdmin("manage_products", "/admin/finishes");
   const id = String(form.get("id") ?? "");
   const parsed = parseFinish(form);
   if (!parsed.ok) return { status: "error", errors: parsed.errors, message: "Please check the highlighted fields.", values: echo(form) };
@@ -33,21 +33,35 @@ export async function saveFinish(_prev: AdminFormState, form: FormData): Promise
     description: f.description,
     sort_order: f.sort_order,
     published: f.published,
-    rrp_per_m2_pence: f.rrp_per_m2_pence,
     specs: mergeSpecs(stored, f) as never,
   };
 
+  let finishId = id;
   if (isUuid(id)) {
     const { error } = await db.from("finishes").update(row).eq("id", id);
     if (error) return slugOrFail(error.code, form);
-    updateTag(TAGS.finishes);
-    refresh();
-    return { status: "saved", message: "Saved. Public pages update within a few seconds." };
+  } else {
+    const { data, error } = await db.from("finishes").insert(row).select("id").single();
+    if (error || !data) return slugOrFail(error?.code, form);
+    finishId = data.id;
   }
-  const { data, error } = await db.from("finishes").insert(row).select("id").single();
-  if (error || !data) return slugOrFail(error?.code, form);
+
+  // Measurements belong to the default variant (the database copies them into specs for display).
+  const variant = variantFromFinish(f);
+  const { data: existing } = await db.from("product_variants").select("id").eq("finish_id", finishId).eq("is_default", true).maybeSingle();
+  const { error: vError } = existing
+    ? await db.from("product_variants").update(variant).eq("id", existing.id)
+    : await db.from("product_variants").insert({ ...variant, finish_id: finishId, unit_of_sale: "pack", is_default: true });
+  if (vError) {
+    if (vError.code === "23505") return { status: "error", errors: { sku: "Another product already uses this stock code." }, values: echo(form) };
+    if (vError.code === "23514") return { status: "error", errors: { pack_coverage_m2: "Flooring sold in packs needs its pack coverage." }, values: echo(form) };
+    return { status: "error", errors: {}, message: "The finish was saved but its measurements weren’t. Please try again.", values: echo(form) };
+  }
+
   updateTag(TAGS.finishes);
-  redirect(`/admin/finishes/${data.id}?notice=created`);
+  if (!isUuid(id)) redirect(`/admin/finishes/${finishId}?notice=created`);
+  refresh();
+  return { status: "saved", message: "Saved. Public pages update within a few seconds." };
 }
 
 function slugOrFail(code: string | undefined, form: FormData): AdminFormState {
@@ -59,7 +73,7 @@ const back = (finishId: string, notice: string) => redirect(`/admin/finishes/${f
 
 /** Uploads a photograph to the public finish-images bucket and records it. */
 export async function addImage(form: FormData) {
-  await requireAdmin("/admin/finishes");
+  await requireAdmin("manage_products", "/admin/finishes");
   const finishId = String(form.get("finish_id") ?? "");
   if (!isUuid(finishId)) redirect("/admin/finishes");
   const file = form.get("file");
@@ -98,7 +112,7 @@ export async function addImage(form: FormData) {
 }
 
 export async function updateImage(form: FormData) {
-  await requireAdmin("/admin/finishes");
+  await requireAdmin("manage_products", "/admin/finishes");
   const finishId = String(form.get("finish_id") ?? "");
   const id = String(form.get("id") ?? "");
   if (!isUuid(finishId) || !isUuid(id)) redirect("/admin/finishes");

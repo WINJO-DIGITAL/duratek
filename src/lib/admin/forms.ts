@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { inputToPence } from "@/lib/money";
 import { normalisePostcode } from "@/lib/postcode";
 import type { FieldErrors, Parsed } from "@/lib/trade/quote-forms";
 
@@ -128,14 +127,12 @@ export const finishSchema = z.object({
   description: z.string().trim().max(4000, "That's too long."),
   sort_order: z.coerce.number().int().min(0).max(9999).catch(0),
   published: z.boolean(),
-  rrp_per_m2_pence: z.string().transform((v, ctx) => {
-    const p = inputToPence(v);
-    if (p === undefined) {
-      ctx.addIssue({ code: "custom", message: "Enter a price, like 33.33, or leave blank." });
-      return z.NEVER;
-    }
-    return p;
-  }),
+  /** Stock code of the default variant, e.g. DT-KESWICK-OAK. Blank: made from the web address. */
+  sku: z
+    .string()
+    .trim()
+    .toUpperCase()
+    .refine((v) => v === "" || /^[A-Z0-9][A-Z0-9-]{2,39}$/.test(v), "Use capital letters, numbers and hyphens, like DT-KESWICK-OAK."),
   thickness_mm: positive("Enter the thickness in mm.", 50),
   plank_width_mm: positive("Enter the width in mm.", 5000),
   plank_length_mm: positive("Enter the length in mm.", 5000),
@@ -159,7 +156,7 @@ export function parseFinish(form: FormData): Parsed<FinishInput> {
       description: str(form, "description"),
       sort_order: str(form, "sort_order") || "0",
       published: form.get("published") === "on",
-      rrp_per_m2_pence: str(form, "rrp"),
+      sku: str(form, "sku"),
       ...Object.fromEntries([...SPEC_NUMBER_KEYS, ...SPEC_TEXT_KEYS].map((k) => [k, str(form, k)])),
     }),
   );
@@ -193,3 +190,15 @@ export function slugify(name: string): string {
 // ---------------------------------------------------------------------------
 export const IMAGE_MAX_BYTES = 4 * 1024 * 1024;
 export const IMAGE_TYPES: Record<string, string> = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp", "image/avif": "avif" };
+
+/** The default variant row for a finish form: measurements and stock code. */
+export function variantFromFinish(input: FinishInput) {
+  return {
+    sku: input.sku || `DT-${input.slug.toUpperCase()}`.slice(0, 40),
+    name: input.format || "Standard",
+    pack_coverage_m2: input.pack_coverage_m2 ?? null,
+    length_mm: input.plank_length_mm !== undefined ? Math.round(input.plank_length_mm) : null,
+    width_mm: input.plank_width_mm !== undefined ? Math.round(input.plank_width_mm) : null,
+    thickness_mm: input.thickness_mm ?? null,
+  };
+}

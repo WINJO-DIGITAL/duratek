@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { mergeSpecs, parseFinish, parseRetailer, parseStockist, slugify } from "./forms";
+import { mergeSpecs, parseFinish, parseRetailer, parseStockist, slugify, variantFromFinish } from "./forms";
 
 const fd = (o: Record<string, string>) => {
   const f = new FormData();
@@ -38,17 +38,18 @@ describe("retailer form", () => {
 });
 
 describe("finish form", () => {
-  const base = { name: "Keswick Oak", slug: "keswick-oak", style: "plank", colour_family: "natural", description: "", rrp: "33.33", pack_coverage_m2: "2.21", thickness_mm: "5" };
+  const base = { name: "Keswick Oak", slug: "keswick-oak", style: "plank", colour_family: "natural", description: "", sku: "", pack_coverage_m2: "2.21", thickness_mm: "5" };
 
-  it("parses a finish with specs and RRP", () => {
+  it("parses a finish with specs, and makes a stock code from the web address", () => {
     const r = parseFinish(fd(base));
-    expect(r.ok && r.data).toMatchObject({ slug: "keswick-oak", rrp_per_m2_pence: 3333, pack_coverage_m2: 2.21, thickness_mm: 5, plank_width_mm: undefined });
+    expect(r.ok && r.data).toMatchObject({ slug: "keswick-oak", pack_coverage_m2: 2.21, thickness_mm: 5, plank_width_mm: undefined });
+    if (r.ok) expect(variantFromFinish(r.data)).toMatchObject({ sku: "DT-KESWICK-OAK", pack_coverage_m2: 2.21, thickness_mm: 5, width_mm: null });
   });
 
-  it("rejects bad slugs and numbers", () => {
-    const r = parseFinish(fd({ ...base, slug: "Keswick Oak!", pack_coverage_m2: "-1", rrp: "abc" }));
+  it("rejects bad slugs, stock codes and numbers", () => {
+    const r = parseFinish(fd({ ...base, slug: "Keswick Oak!", pack_coverage_m2: "-1", sku: "bad code!" }));
     expect(r.ok).toBe(false);
-    if (!r.ok) expect(Object.keys(r.errors).sort()).toEqual(["pack_coverage_m2", "rrp_per_m2_pence", "slug"]);
+    if (!r.ok) expect(Object.keys(r.errors).sort()).toEqual(["pack_coverage_m2", "sku", "slug"]);
   });
 
   it("keeps specs the form doesn't show and removes blanked ones", () => {

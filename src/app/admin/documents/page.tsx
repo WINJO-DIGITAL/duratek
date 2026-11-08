@@ -36,7 +36,7 @@ const NOTICE: Record<string, string> = {
 };
 
 async function Content({ searchParams }: { searchParams: PageProps<"/admin/documents">["searchParams"] }) {
-  await requireAdmin("/admin/documents");
+  await requireAdmin("manage_documents", "/admin/documents");
   const notice = NOTICE[String((await searchParams).notice ?? "")];
   const db = await userSupabase();
   const [{ data: docs }, finishes] = await Promise.all([db.from("documents").select("*").order("created_at", { ascending: false }), getFinishes()]);

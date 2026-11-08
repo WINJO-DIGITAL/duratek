@@ -4,6 +4,7 @@ import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, safeNext, type LoginState } from "@/lib/auth/login";
+import { siteUrl } from "@/lib/site";
 import { userSupabase } from "@/lib/supabase/server";
 
 /* Rate limit sign-in attempts per address (best effort, in memory on each
@@ -43,9 +44,28 @@ export async function logIn(_prev: LoginState, form: FormData): Promise<LoginSta
 
   const db = await userSupabase();
   const { error } = await db.auth.signInWithPassword(parsed.data);
+  // Auth only says this after the password matched, so it reveals nothing to a stranger.
+  if (error?.code === "email_not_confirmed") return { status: "unconfirmed", email: parsed.data.email };
   if (error) {
     // One message for every failure, so it can't be used to find out who has an account.
     return { status: "error", message: "Email or password isn't right.", email };
   }
   redirect(safeNext(form.get("next")));
+}
+
+const resendLimit = new Map<string, number>();
+
+/** Sends the confirmation email again. Same reply whatever happens; at most once a minute per address. */
+export async function resendConfirmation(_prev: LoginState, form: FormData): Promise<LoginState> {
+  const parsed = loginSchema.shape.email.safeParse(form.get("email"));
+  if (!parsed.success) return { status: "error", message: "Enter your email address." };
+  const email = parsed.data;
+  const last = resendLimit.get(email) ?? 0;
+  if (Date.now() - last > 60_000) {
+    resendLimit.set(email, Date.now());
+    if (resendLimit.size > 5000) resendLimit.clear();
+    const db = await userSupabase();
+    await db.auth.resend({ type: "signup", email, options: { emailRedirectTo: siteUrl("/auth/confirm?next=/trade/account") } });
+  }
+  return { status: "unconfirmed", email, resent: true };
 }

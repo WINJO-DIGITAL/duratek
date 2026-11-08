@@ -23,7 +23,7 @@ export default function AdminFinishesPage() {
 }
 
 async function Content() {
-  await requireAdmin("/admin/finishes");
+  await requireAdmin("manage_products", "/admin/finishes");
   const db = await userSupabase();
   const { data } = await db
     .from("finishes")

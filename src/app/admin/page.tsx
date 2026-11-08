@@ -4,7 +4,10 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { PageTransition } from "@/components/layout/page-transition";
 import { getFinishes } from "@/lib/catalogue";
-import { requireAdmin } from "@/lib/auth/admin";
+import { redirect } from "next/navigation";
+import { adminAreasFor, requireAdmin } from "@/lib/auth/admin";
+import { allows } from "@/lib/auth/permissions";
+import { getAccount } from "@/lib/auth/session";
 import { userSupabase } from "@/lib/supabase/server";
 
 export const metadata: Metadata = { title: "Owner admin", robots: { index: false } };
@@ -34,7 +37,14 @@ interface Stats {
 const weekFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
 
 async function Content() {
-  await requireAdmin("/admin");
+  const account = await getAccount();
+  if (!account) redirect("/trade/login?next=/admin");
+  if (!allows(account, "view_reports")) {
+    // Administrators without reports start on the first screen they may open.
+    const first = adminAreasFor(account)[0];
+    if (first) redirect(first.href);
+  }
+  await requireAdmin("view_reports", "/admin");
   const db = await userSupabase();
   const [{ data, error }, finishes] = await Promise.all([db.rpc("admin_dashboard_stats"), getFinishes()]);
   const name = new Map(finishes.map((f) => [f.id, f.name]));

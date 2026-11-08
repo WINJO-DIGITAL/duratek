@@ -6,7 +6,7 @@ import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
 
 export async function setSampleStatus(form: FormData) {
-  await requireAdmin("/admin/samples");
+  await requireAdmin("manage_samples", "/admin/samples");
   const id = String(form.get("id") ?? "");
   const status = String(form.get("status") ?? "");
   const back = String(form.get("filter") ?? "new");

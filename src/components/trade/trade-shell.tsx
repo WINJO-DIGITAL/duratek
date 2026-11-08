@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { logOut, setCustomerView } from "@/app/trade/account/actions";
+import { logOut, logOutEverywhere, setCustomerView } from "@/app/trade/account/actions";
 import { Button, ButtonLink } from "@/components/ui/button";
 import type { Account } from "@/lib/auth/session";
 import { cn } from "@/lib/cn";
@@ -48,6 +48,11 @@ export function TradeShell({
           <form action={logOut}>
             <button type="submit" className="min-h-tap text-[0.9375rem] text-ink-muted underline underline-offset-4 hover:text-navy">
               Log out
+            </button>
+          </form>
+          <form action={logOutEverywhere}>
+            <button type="submit" className="min-h-tap text-[0.875rem] text-ink-muted underline underline-offset-4 hover:text-navy">
+              Log out everywhere
             </button>
           </form>
         </div>

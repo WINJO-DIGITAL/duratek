@@ -24,8 +24,8 @@ export function TradeApplicationForm() {
         </span>
         <h2 className="mt-6 text-display-md text-navy">Thank you, {state.firstName}.</h2>
         <p className="mt-4 text-lede text-ink-muted">
-          We&rsquo;ve received your application. We&rsquo;ll check your details and email {state.email} when your
-          account is approved.
+          We&rsquo;ve received your application. Please confirm your email address with the link we&rsquo;ve sent to{" "}
+          {state.email}. We then check every application by hand and email you when your account is approved.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
           <ButtonLink href="/range">Browse the range</ButtonLink>
@@ -78,6 +78,38 @@ export function TradeApplicationForm() {
       <Field error={error("contact_name")} defaultValue={value("contact_name")} name="contact_name" label="Your name" autoComplete="name" required />
       <Field error={error("email")} defaultValue={value("email")} name="email" label="Work email" type="email" autoComplete="email" inputMode="email" required />
       <Field error={error("phone")} defaultValue={value("phone")} name="phone" label="Phone" type="tel" autoComplete="tel" required />
+
+      <fieldset className="space-y-6 border-t border-line pt-6">
+        <legend className="sr-only">Business details</legend>
+        <p className="text-[0.9375rem] font-medium text-navy">Your business</p>
+        <Field error={error("address_line1")} defaultValue={value("address_line1")} name="address_line1" label="Address" autoComplete="address-line1" required />
+        <Field error={error("address_line2")} defaultValue={value("address_line2")} name="address_line2" label="Address line 2" hint="Optional" autoComplete="address-line2" />
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field error={error("town")} defaultValue={value("town")} name="town" label="Town or city" autoComplete="address-level2" required />
+          <Field error={error("postcode")} defaultValue={value("postcode")} name="postcode" label="Postcode" autoComplete="postal-code" required className="uppercase" />
+        </div>
+        <div className="grid gap-6 sm:grid-cols-2">
+          <Field error={error("company_number")} defaultValue={value("company_number")} name="company_number" label="Company number" hint="If registered" autoComplete="off" />
+          <Field error={error("vat_number")} defaultValue={value("vat_number")} name="vat_number" label="VAT number" hint="If registered" autoComplete="off" />
+        </div>
+        <Field error={error("website")} defaultValue={value("website")} name="website" label="Website" hint="Optional" type="url" inputMode="url" autoComplete="url" />
+        <div>
+          <label htmlFor="trade-additional_info" className="flex items-baseline justify-between gap-3 text-[0.9375rem] font-medium text-navy">
+            Anything else we should know?
+            <span className="text-[0.8125rem] font-normal text-ink-muted">Optional</span>
+          </label>
+          <textarea
+            id="trade-additional_info"
+            name="additional_info"
+            rows={3}
+            maxLength={2000}
+            defaultValue={value("additional_info")}
+            placeholder="The work you do, areas you cover, typical volumes"
+            className="mt-2 w-full rounded-control border border-navy/25 bg-white px-4 py-3 text-base text-navy focus:border-navy"
+          />
+          {error("additional_info") && <p className="mt-2 text-[0.875rem] text-error">{error("additional_info")}</p>}
+        </div>
+      </fieldset>
       <Field
         error={error("password")}
         name="password"

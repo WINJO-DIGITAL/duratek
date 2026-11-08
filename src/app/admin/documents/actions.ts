@@ -11,7 +11,7 @@ const back = (notice: string) => redirect(`/admin/documents?notice=${notice}`);
 
 /** Uploads a PDF to the private documents bucket. Downloads go through short-lived signed links. */
 export async function uploadDocument(form: FormData) {
-  await requireAdmin("/admin/documents");
+  await requireAdmin("manage_documents", "/admin/documents");
   const file = form.get("file");
   const title = String(form.get("title") ?? "").trim().slice(0, 200);
   const type = String(form.get("type") ?? "") as DocumentType;
@@ -46,7 +46,7 @@ export async function uploadDocument(form: FormData) {
 }
 
 export async function updateDocument(form: FormData) {
-  await requireAdmin("/admin/documents");
+  await requireAdmin("manage_documents", "/admin/documents");
   const id = String(form.get("id") ?? "");
   if (!isUuid(id)) back("failed");
   const db = await userSupabase();

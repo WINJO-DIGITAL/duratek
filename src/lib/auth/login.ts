@@ -5,7 +5,11 @@ export const loginSchema = z.object({
   password: z.string().min(1, "Enter your password.").max(72),
 });
 
-export type LoginState = { status: "idle" } | { status: "error"; message: string; email?: string };
+export type LoginState =
+  | { status: "idle" }
+  | { status: "error"; message: string; email?: string }
+  /** Right password, email not yet confirmed. */
+  | { status: "unconfirmed"; email: string; resent?: boolean };
 
 export const DEFAULT_AFTER_LOGIN = "/trade/account";
 

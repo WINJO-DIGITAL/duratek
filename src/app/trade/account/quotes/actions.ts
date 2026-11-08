@@ -12,7 +12,8 @@ import { siteUrl } from "@/lib/site";
 import { userSupabase } from "@/lib/supabase/server";
 import { buildFlooringLine } from "@/lib/trade/flooring-line";
 import { getPreferences } from "@/lib/trade/preferences";
-import { getTradePrices } from "@/lib/trade/prices";
+import { planPacks } from "@/lib/pricing";
+import { getPriceForQuantity } from "@/lib/trade/prices";
 import { echo, parseFlooringLine, parseOtherLine, parseQuoteHeader, type FieldErrors } from "@/lib/trade/quote-forms";
 import { getQuote } from "@/lib/trade/quotes";
 
@@ -80,22 +81,26 @@ async function nextSortOrder(quoteId: string): Promise<number> {
 }
 
 export async function addFlooringLine(_prev: QuoteFormState, form: FormData): Promise<QuoteFormState> {
-  const { account } = await requireApprovedTrade("/trade/account/quotes");
+  await requireApprovedTrade("/trade/account/quotes");
   const quoteId = String(form.get("quote_id") ?? "");
   const quote = await getQuote(quoteId);
   if (!quote) return failed("That quote wasn’t found.", {}, form);
   const parsed = parseFlooringLine(form);
   if (!parsed.ok) return failed("Please check the highlighted fields.", parsed.errors, form);
 
-  const [finishes, prices, prefs] = await Promise.all([getFinishes(), getTradePrices(account), getPreferences()]);
+  const [finishes, prefs] = await Promise.all([getFinishes(), getPreferences()]);
   const finish = finishes.find((f) => f.id === parsed.data.finish_id);
   if (!finish) return failed("Choose a finish from the range.", { finish_id: "Choose a finish." }, form);
+  const coverage = finish.specs.pack_coverage_m2;
+  const plan = coverage ? planPacks(parsed.data.area_m2, parsed.data.wastage_pct, coverage) : null;
 
-  // Cost is always the trader's own price, read on the server under RLS.
+  // Cost is the trader's own price for this many packs, decided on the server
+  // by the price resolver (account, tier, volume breaks, promotions).
+  const price = plan && finish.defaultVariantId ? await getPriceForQuantity(finish.defaultVariantId, plan.packs) : null;
   const built = buildFlooringLine({
     finishName: finish.name,
-    packCoverageM2: finish.specs.pack_coverage_m2,
-    costPerM2Pence: prices.get(finish.id)?.pence,
+    packCoverageM2: coverage,
+    cost: price && (price.unit === "m2" || price.unit === "pack") ? { pence: price.netPence, unit: price.unit } : undefined,
     sellPerM2Pence: parsed.data.sell_per_m2_pence,
     defaultMarkupBp: prefs.default_markup_bp,
     areaM2: parsed.data.area_m2,

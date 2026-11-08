@@ -3,9 +3,11 @@ import { userSupabase } from "@/lib/supabase/server";
 import type { Account } from "@/lib/auth/session";
 
 export interface TradePrice {
+  /** Per m², before VAT. */
   pence: number;
   /** True when set for this account specifically, not from its tier. */
   isAccountPrice: boolean;
+  isPromotion?: boolean;
 }
 
 /** Account price where there is one, else the tier price. Pure, so it can be tested. */
@@ -20,18 +22,33 @@ export function effectivePrices(
 }
 
 /**
- * Trade prices for an approved account, read as that user so Row Level
- * Security applies: own tier and own overrides only. The caller must already
- * have checked canSeeTradePrices(); returns nothing for anyone else.
+ * Trade prices for an approved account, from the price resolver run as that
+ * user: account price, stockist or tier list, standard trade, and any trade
+ * promotion below them. Quantity 1, per m², before VAT. The caller must
+ * already have checked canSeeTradePrices(); anyone else gets nothing.
  */
 export async function getTradePrices(account: Account): Promise<Map<string, TradePrice>> {
   if (account.status !== "approved") return new Map();
   const db = await userSupabase();
-  const [tier, overrides] = await Promise.all([
-    account.tierId
-      ? db.from("prices").select("finish_id, price_per_m2_pence").eq("tier_id", account.tierId)
-      : Promise.resolve({ data: [] as { finish_id: string; price_per_m2_pence: number }[] }),
-    db.from("price_overrides").select("finish_id, price_per_m2_pence").eq("profile_id", account.userId),
-  ]);
-  return effectivePrices(tier.data ?? [], overrides.data ?? []);
+  const { data, error } = await db.rpc("catalogue_prices");
+  if (error) throw new Error(`Failed to load trade prices: ${error.message}`);
+  const out = new Map<string, TradePrice>();
+  for (const p of data ?? []) {
+    if (p.source === "rrp" || p.price_unit !== "m2") continue; // no trade price: show none
+    out.set(p.finish_id, { pence: p.net_pence, isAccountPrice: p.source === "account", isPromotion: p.is_promotion });
+  }
+  return out;
+}
+
+/**
+ * The price for buying a quantity of one variant, for quotes. Decided on the
+ * server from the signed-in account; volume breaks and promotions apply.
+ */
+export async function getPriceForQuantity(variantId: string, quantity: number) {
+  const db = await userSupabase();
+  const { data, error } = await db.rpc("price_for", { p_variant: variantId, p_quantity: quantity });
+  if (error) throw new Error(`Failed to price: ${error.message}`);
+  const p = data?.[0];
+  if (!p || p.source === "rrp") return null;
+  return { netPence: p.net_pence, unit: p.price_unit, vatRateBp: p.vat_rate_bp, source: p.source, isPromotion: p.is_promotion };
 }

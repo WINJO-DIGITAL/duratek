@@ -37,12 +37,25 @@ export default function TradeLoginPage({ searchParams }: PageProps<"/trade/login
   );
 }
 
+const LOGIN_NOTICE: Record<string, string> = {
+  link: "That link has expired or was already used. Log in, or ask for a new password link.",
+  busy: "Too many attempts. Please try again in a few minutes.",
+  signedout: "You’ve been signed out on every device.",
+};
+
 async function LoginPanel({ searchParams }: { searchParams: PageProps<"/trade/login">["searchParams"] }) {
-  const next = safeNext((await searchParams).next);
+  const sp = await searchParams;
+  const next = safeNext(sp.next);
   // Already signed in: straight to where they were going.
   if (await getAccount()) redirect(next);
+  const notice = LOGIN_NOTICE[String(sp.notice ?? "")];
   return (
     <>
+      {notice && (
+        <p role="status" className="notice mb-6 max-w-md px-4 py-3 text-[0.9375rem] text-navy">
+          {notice}
+        </p>
+      )}
       <LoginForm next={next} />
       <p className="mt-8 max-w-md text-[0.9375rem] text-ink-muted">
         No account yet?{" "}

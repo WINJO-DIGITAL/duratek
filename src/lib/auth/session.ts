@@ -3,7 +3,9 @@ import { cache } from "react";
 import { cookies } from "next/headers";
 import { userSupabase } from "@/lib/supabase/server";
 
-export type AccountStatus = "pending" | "approved" | "rejected";
+import type { AccountRole, AccountStatus, Permission } from "./permissions";
+
+export type { AccountRole, AccountStatus, Permission } from "./permissions";
 
 export interface Account {
   userId: string;
@@ -12,7 +14,12 @@ export interface Account {
   contactName: string;
   status: AccountStatus;
   tierId: string | null;
+  role: AccountRole;
+  /** Administrative permissions in force now (all of them for a super administrator). Empty for trade. */
+  permissions: Permission[];
+  /** True for an administrator who can open at least one admin screen. */
   isAdmin: boolean;
+  emailConfirmed: boolean;
 }
 
 /** Name of the session cookie that hides trade prices (Customer view). */
@@ -27,12 +34,12 @@ export const getAccount = cache(async (): Promise<Account | null> => {
   const { data } = await db.auth.getUser();
   const user = data.user;
   if (!user) return null;
-  const { data: p } = await db
-    .from("profiles")
-    .select("company_name, contact_name, status, tier_id, is_admin")
-    .eq("id", user.id)
-    .maybeSingle();
+  const [{ data: p }, perms] = await Promise.all([
+    db.from("profiles").select("company_name, contact_name, status, tier_id, role").eq("id", user.id).maybeSingle(),
+    db.rpc("my_permissions"),
+  ]);
   if (!p) return null;
+  const permissions = ((perms.data as Permission[] | null) ?? []).filter(Boolean);
   return {
     userId: user.id,
     email: user.email ?? "",
@@ -40,7 +47,10 @@ export const getAccount = cache(async (): Promise<Account | null> => {
     contactName: p.contact_name,
     status: p.status,
     tierId: p.tier_id,
-    isAdmin: p.is_admin,
+    role: p.role,
+    permissions,
+    isAdmin: permissions.length > 0,
+    emailConfirmed: Boolean(user.email_confirmed_at),
   };
 });
 

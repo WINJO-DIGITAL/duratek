@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getFinishes } from "@/lib/catalogue";
+import { allows } from "@/lib/auth/permissions";
 import { getAccount } from "@/lib/auth/session";
 import { toCsv } from "@/lib/csv";
 import { userSupabase } from "@/lib/supabase/server";
@@ -7,7 +8,7 @@ import { userSupabase } from "@/lib/supabase/server";
 /** Sample requests as CSV, for the owner only. Personal data: never cached. */
 export async function GET() {
   const account = await getAccount();
-  if (!account?.isAdmin) return new NextResponse("Not found", { status: 404 });
+  if (!allows(account, "manage_samples")) return new NextResponse("Not found", { status: 404 });
   const db = await userSupabase();
   const [{ data, error }, finishes] = await Promise.all([
     db.from("sample_requests").select("*").order("created_at", { ascending: false }).limit(10000),

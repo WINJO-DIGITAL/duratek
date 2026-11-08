@@ -98,12 +98,22 @@ export async function applyForTrade(_prev: TradeApplicationState, form: FormData
     email: app.email,
     password: app.password,
     options: {
-      emailRedirectTo: siteUrl("/trade"),
+      emailRedirectTo: siteUrl("/auth/confirm?next=/trade/account"),
+      // Self-reported details only. The database re-checks each one and never
+      // takes status, tier or role from here.
       data: {
         company_name: app.company_name,
         contact_name: app.contact_name,
         phone: app.phone,
         trade_type: app.trade_type,
+        address_line1: app.address_line1,
+        address_line2: app.address_line2,
+        town: app.town,
+        postcode: app.postcode,
+        company_number: app.company_number,
+        vat_number: app.vat_number,
+        website: app.website,
+        additional_info: app.additional_info,
       },
     },
   });
@@ -128,7 +138,7 @@ async function sendApplicationEmails(app: TradeApplication): Promise<void> {
   const applicant = sendEmail({
     to: app.email,
     subject: "Your Duratek trade application",
-    text: `Hello ${app.contact_name},\n\nThank you for applying for a Duratek trade account for ${app.company_name}. We'll check your details and email you when your account is approved.\n\nDuratek`,
+    text: `Hello ${app.contact_name},\n\nThank you for applying for a Duratek trade account for ${app.company_name}. Please confirm your email address with the separate link we've sent, then we'll check your details and email you when your account is approved.\n\nDuratek`,
     html: `<p>Hello ${escapeHtml(app.contact_name)},</p><p>Thank you for applying for a Duratek trade account for ${escapeHtml(app.company_name)}. We'll check your details and email you when your account is approved.</p><p>Duratek</p>`,
   });
   const ownerTo = process.env.OWNER_NOTIFY_EMAIL;
@@ -137,7 +147,7 @@ async function sendApplicationEmails(app: TradeApplication): Promise<void> {
         to: ownerTo,
         replyTo: app.email,
         subject: `New trade application: ${app.company_name}`,
-        text: `New trade application (pending approval)\n\nCompany: ${app.company_name}\nName: ${app.contact_name}\nEmail: ${app.email}\nPhone: ${app.phone}\nTrade: ${type}`,
+        text: `New trade application (pending approval)\n\nCompany: ${app.company_name}\nName: ${app.contact_name}\nEmail: ${app.email}\nPhone: ${app.phone}\nTrade: ${type}\nPostcode: ${app.postcode}\nCompany number: ${app.company_number || "-"}\nVAT number: ${app.vat_number || "-"}\n\nReview it at ${siteUrl("/admin/accounts")}`,
         html: `<p><strong>New trade application</strong> (pending approval)</p><p>Company: ${escapeHtml(app.company_name)}<br>Name: ${escapeHtml(app.contact_name)}<br>Email: ${escapeHtml(app.email)}<br>Phone: ${escapeHtml(app.phone)}<br>Trade: ${escapeHtml(type)}</p>`,
       })
     : Promise.resolve(false);

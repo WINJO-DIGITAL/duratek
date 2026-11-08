@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Field, SelectField, TextAreaField } from "@/components/ui/field";
 import { IDLE } from "@/lib/admin/form-state";
 import { slugify } from "@/lib/admin/forms";
-import { penceToInput } from "@/lib/money";
 
 export interface FinishValues {
   id?: string;
@@ -17,7 +16,8 @@ export interface FinishValues {
   description: string;
   sort_order: number;
   published: boolean;
-  rrp_per_m2_pence: number | null;
+  /** Stock code of the default variant. */
+  sku?: string;
   specs: Record<string, unknown>;
 }
 
@@ -58,14 +58,16 @@ export function FinishForm({ values }: { values: FinishValues }) {
           ]}
         />
         <Field name="colour_family" label="Colour family" hint="natural, warm, grey…" defaultValue={v("colour_family", values.colour_family)} error={e.colour_family} required />
-        <Field name="rrp" label="RRP per m²" hint="Public" inputMode="decimal" defaultValue={v("rrp", penceToInput(values.rrp_per_m2_pence))} error={e.rrp_per_m2_pence} placeholder="£" />
+        <Field name="sku" label="Stock code" hint="Blank: from the address" defaultValue={v("sku", values.sku ?? "")} error={e.sku} maxLength={40} className="uppercase" />
         <Field name="sort_order" label="Order" inputMode="numeric" defaultValue={v("sort_order", String(values.sort_order))} error={e.sort_order} />
       </div>
       <TextAreaField name="description" label="Description" rows={4} maxLength={4000} defaultValue={v("description", values.description)} error={e.description} />
 
       <fieldset>
         <legend className="text-[0.9375rem] font-medium text-navy">Specification</legend>
-        <p className="mt-1 text-[0.8125rem] text-ink-muted">Only confirmed figures. Pack coverage drives every pack calculation and quote.</p>
+        <p className="mt-1 text-[0.8125rem] text-ink-muted">
+          Only confirmed figures. Pack coverage drives every pack calculation and quote. Prices, including the RRP, are set under Prices.
+        </p>
         <div className="mt-4 grid gap-5 sm:grid-cols-3 lg:grid-cols-5">
           <Field name="pack_coverage_m2" label="Pack coverage" hint="m²" inputMode="decimal" defaultValue={v("pack_coverage_m2", specText(s.pack_coverage_m2))} error={e.pack_coverage_m2} />
           <Field name="plank_length_mm" label="Length" hint="mm" inputMode="decimal" defaultValue={v("plank_length_mm", specText(s.plank_length_mm))} error={e.plank_length_mm} />

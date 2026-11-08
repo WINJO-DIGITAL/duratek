@@ -48,7 +48,6 @@ const NEW_FINISH: FinishValues = {
   description: "",
   sort_order: 100,
   published: false,
-  rrp_per_m2_pence: null,
   // The construction every Duratek finish shares (product facts).
   specs: { wear_layer_mm: 0.55, core: "Rigid SPC, waterproof", surface: "Duratek Scratch Shield", underlay: "Integrated", click_system: "Unilin click-lock, floating installation" },
 };
@@ -57,7 +56,7 @@ const KIND_LABEL = { room: "Room scene", closeup: "Close-up", swatch: "Plank swa
 
 async function Content({ params, searchParams }: { params: PageProps<"/admin/finishes/[id]">["params"]; searchParams: PageProps<"/admin/finishes/[id]">["searchParams"] }) {
   const [{ id }, sp] = await Promise.all([params, searchParams]);
-  await requireAdmin(`/admin/finishes/${id}`);
+  await requireAdmin("manage_products", `/admin/finishes/${id}`);
   const notice = NOTICE[String(sp.notice ?? "")];
 
   if (id === "new") {
@@ -74,7 +73,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
   const db = await userSupabase();
   const { data: f } = await db
     .from("finishes")
-    .select("id, name, slug, style, colour_family, description, sort_order, published, is_demo, rrp_per_m2_pence, specs, finish_images (id, url, kind, alt, width, height, sort_order)")
+    .select("id, name, slug, style, colour_family, description, sort_order, published, is_demo, specs, finish_images (id, url, kind, alt, width, height, sort_order), product_variants (sku, is_default)")
     .eq("id", id)
     .maybeSingle();
   if (!f) notFound();
@@ -101,7 +100,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
       {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
 
       <div className="card p-5 sm:p-8">
-        <FinishForm values={{ ...f, specs: (f.specs ?? {}) as Record<string, unknown> }} />
+        <FinishForm values={{ ...f, sku: f.product_variants?.find((v) => v.is_default)?.sku, specs: (f.specs ?? {}) as Record<string, unknown> }} />
       </div>
 
       <section id="images" aria-labelledby="images-heading" className="mt-stack scroll-mt-24">

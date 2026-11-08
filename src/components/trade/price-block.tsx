@@ -31,15 +31,30 @@ const LOGIN_PROMPT = (
   </p>
 );
 
-/** What everyone sees, and what loads first: the RRP, set by the business. */
-export function PriceBlockPublic({ rrpPence }: { rrpPence?: number }) {
+function PublicRows({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: number }) {
+  return (
+    <>
+      {offerPence !== undefined && (
+        <Row label="Offer price">
+          <Money pence={offerPence} strong />
+        </Row>
+      )}
+      {rrpPence !== undefined && (
+        <Row label="RRP, inc VAT">
+          <Money pence={rrpPence} />
+        </Row>
+      )}
+    </>
+  );
+}
+
+/** What everyone sees, and what loads first: the RRP (and any public offer), set by the business. */
+export function PriceBlockPublic({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: number }) {
   return (
     <div className="mt-8 border-t border-line">
-      {rrpPence !== undefined && (
+      {(rrpPence !== undefined || offerPence !== undefined) && (
         <dl>
-          <Row label="RRP">
-            <Money pence={rrpPence} />
-          </Row>
+          <PublicRows rrpPence={rrpPence} offerPence={offerPence} />
         </dl>
       )}
       {LOGIN_PROMPT}
@@ -52,9 +67,9 @@ export function PriceBlockPublic({ rrpPence }: { rrpPence?: number }) {
  * here, at request time and as the signed-in user, and only for an approved
  * account that is not in Customer view; nobody else is ever sent it.
  */
-export async function PriceBlock({ finishId, slug, rrpPence }: { finishId: string; slug: string; rrpPence?: number }) {
+export async function PriceBlock({ finishId, slug, rrpPence, offerPence }: { finishId: string; slug: string; rrpPence?: number; offerPence?: number }) {
   const account = await getAccount();
-  if (!account) return <PriceBlockPublic rrpPence={rrpPence} />;
+  if (!account) return <PriceBlockPublic rrpPence={rrpPence} offerPence={offerPence} />;
 
   const back = `/range/${slug}`;
   const customerView = await inCustomerView();
@@ -64,13 +79,9 @@ export async function PriceBlock({ finishId, slug, rrpPence }: { finishId: strin
   return (
     <div className="mt-8 border-t border-line">
       <dl>
-        {rrpPence !== undefined && (
-          <Row label="RRP">
-            <Money pence={rrpPence} />
-          </Row>
-        )}
+        <PublicRows rrpPence={rrpPence} offerPence={offerPence} />
         {showTrade && (
-          <Row label={trade?.isAccountPrice ? "Your account price" : "Your trade price"}>
+          <Row label={trade?.isAccountPrice ? "Your account price, ex VAT" : trade?.isPromotion ? "Your trade offer, ex VAT" : "Your trade price, ex VAT"}>
             {trade ? <Money pence={trade.pence} strong /> : <span className="text-[0.875rem] text-ink-muted">Not set yet</span>}
           </Row>
         )}
@@ -78,6 +89,9 @@ export async function PriceBlock({ finishId, slug, rrpPence }: { finishId: strin
 
       {account.status === "pending" && (
         <p className="pt-3 text-[0.875rem] text-ink-muted">Your trade account is waiting for approval. We’ll email you.</p>
+      )}
+      {account.status === "suspended" && (
+        <p className="pt-3 text-[0.875rem] text-ink-muted">This trade account is suspended, so trade prices aren’t shown.</p>
       )}
       {account.status === "rejected" && (
         <p className="pt-3 text-[0.875rem] text-ink-muted">Trade prices aren’t available on this account.</p>

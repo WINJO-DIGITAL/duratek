@@ -31,7 +31,7 @@ const FILTERS = [
 const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 async function Content({ searchParams }: { searchParams: PageProps<"/admin/samples">["searchParams"] }) {
-  await requireAdmin("/admin/samples");
+  await requireAdmin("manage_samples", "/admin/samples");
   const raw = String((await searchParams).filter ?? "new");
   const filter = FILTERS.some((f) => f.value === raw) ? raw : "new";
   const db = await userSupabase();

@@ -7,6 +7,14 @@ const valid = {
   email: " Sam@Example.co.uk ",
   phone: "01539 000000",
   trade_type: "fitter",
+  address_line1: "1 Stricklandgate",
+  address_line2: "",
+  town: "Kendal",
+  postcode: "LA9 4AA",
+  company_number: "",
+  vat_number: "",
+  website: "",
+  additional_info: "",
   password: "a-long-passphrase",
 };
 
@@ -33,5 +41,26 @@ describe("trade application", () => {
     form.set("status", "approved");
     form.set("is_admin", "true");
     expect(Object.keys(readTradeForm(form)).sort()).toEqual(Object.keys(valid).sort());
+  });
+});
+
+describe("business details", () => {
+  const base = {
+    company_name: "Fell Floors", contact_name: "Fran", email: "fran@fell.co.uk", phone: "01539 000000", trade_type: "fitter",
+    address_line1: "1 High St", address_line2: "", town: "Kendal", postcode: "la94aa",
+    company_number: "", vat_number: "", website: "", additional_info: "", password: "a-long-password",
+  };
+  it("normalises postcode, VAT, company number and website", () => {
+    const r = tradeApplicationSchema.parse({ ...base, company_number: "sc 123456", vat_number: "123 4567 89", website: "fellfloors.co.uk" });
+    expect([r.postcode, r.company_number, r.vat_number, r.website]).toEqual(["LA9 4AA", "SC123456", "GB123456789", "https://fellfloors.co.uk"]);
+  });
+  it("keeps optional fields empty", () => {
+    const r = tradeApplicationSchema.parse(base);
+    expect([r.company_number, r.vat_number, r.website]).toEqual(["", "", ""]);
+  });
+  it("rejects bad business details", () => {
+    const r = tradeApplicationSchema.safeParse({ ...base, postcode: "12345", company_number: "ABC", vat_number: "FR123", address_line1: "" });
+    expect(r.success).toBe(false);
+    if (!r.success) expect(new Set(r.error.issues.map((i) => i.path[0]))).toEqual(new Set(["postcode", "company_number", "vat_number", "address_line1"]));
   });
 });
