@@ -68,4 +68,4 @@ Owner admin (`is_admin`, else 404): `/admin` (dashboard and analytics), `/admin/
 
 ## Deployment
 
-See the final section of `docs/TRADE_PLATFORM_REPORT.md`.
+See the last section of `docs/TRADE_PLATFORM_REPORT.md`.

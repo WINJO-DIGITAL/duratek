@@ -10,9 +10,9 @@ Duratek is the client's own brand. Kwik Floors and Dave's Tiles are the client's
 ## Scope (v1)
 
 - **Public**: a visual showcase of the range, finish explorer, inspiration, free sample ordering, where to buy, and a brochure download. The only public price is the RRP per m², set by the business (client decision, November 2026); no price is shown for a finish with no RRP. Trade prices are never public.
-- **Trade**: apply, get approved, log in, see prices, download documents, build shareable shortlists, and use Customer view.
-- **Owner admin**: approve trade applications, assign price tiers, enter and edit prices, manage finishes, manage stockists, view and process sample requests, and upload documents.
-- **Out of v1**: no basket, checkout or online payment, no ordering, and no quotes. Public prices and direct selling may come in v2. Structure the code so a cart can be added later, but build none of it now.
+- **Trade**: apply, get approved, log in, see prices, download documents, build shareable shortlists, use Customer view, and (client instruction, November 2026) work out packs and profit and build quotations for their own customers.
+- **Owner admin**: approve trade applications, assign price tiers, enter and edit prices (tier and per account), manage finishes and their photographs, manage stockists and online retailers, view and process sample requests (CSV export), upload documents, and an overview of demand.
+- **Out of v1**: no basket, checkout or online payment, and no ordering from Duratek. Trade quotations are the trader's own quotes to their customers (Duratek does not sell through them). Structure the code so a cart can be added later, but build none of it now.
 
 ## Business flow (modelled on luvanto.com, executed better)
 
@@ -53,9 +53,11 @@ Audience: no homeowner/trade switch block (retired in the approved redesign, Nov
 - `/technology`: the spec story in depth (Scratch Shield, 0.55mm, layers, Unilin)
 - `/trade`: trade landing page (benefits, apply, login)
 - `/trade/apply`, `/trade/login`
-- `/trade/account`: prices, documents, shortlists (approved only)
+- `/trade/account`: prices; `/trade/account/quotes` (and `/[id]`), `/calculator`, `/shortlists`, `/documents`, `/settings` (approved only)
+- `/q/[token]`: a trader's quote, as their customer sees it (the trader's sell prices only; never cost or margin; printable)
+- `/documents/[id]`: document download through a 60 second signed link
 - `/s/[token]`: public shared shortlist (never shows prices)
-- `/admin/...`: owner admin
+- `/admin`: owner overview; `/admin/accounts` (and `/[id]` account prices), `/admin/prices`, `/admin/finishes`, `/admin/samples`, `/admin/stockists`, `/admin/documents`
 - `/contact`, `/privacy`, `/cookies`, `/terms`
 
 ## Home page
@@ -136,6 +138,10 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 - `online_retailers`: id, name, url, logo_path, sort_order, published
 - `shortlists`: id, profile_id, name, token, finish_ids, created_at
 - `inspiration`: id, title, mood, image_path, finish_ids, sort_order, published
+- `trade_preferences`: profile_id, default_markup_bp, default_wastage_pct, vat_registered, quote_footer (private to the trader)
+- `quotes`: id, profile_id, reference (Q-0001 per trader), customer details, site, status (draft | sent | accepted | declined), vat_rate_bp, notes, valid_until, share_token, sent_at, responded_at
+- `quote_lines`: quote_id, kind (flooring | accessory | labour | other), finish_id, description, quantity, unit, unit_cost_pence (private), unit_sell_pence, area_m2, wastage_pct
+- A trader's quotes, costs and margins are private to that trader: the owner sees only aggregate demand (`admin_dashboard_stats()`). Customers read a quote only through `get_shared_quote(token)`, which returns sell prices.
 - Trade applications are captured as `profiles` with status = pending.
 
 Money is stored as integer pence.
