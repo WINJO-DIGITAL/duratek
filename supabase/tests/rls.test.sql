@@ -148,8 +148,11 @@ reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"00000000-0000-4000-a000-000000000005","role":"authenticated"}';
 select is((select count(*)::int from public.prices), 22, 'admin sees every tier''s prices');
-update public.finishes set rrp_per_m2_pence = 4444 where slug = 'keswick-oak';
-select is((select rrp_per_m2_pence from public.finishes where slug = 'keswick-oak'), 4444, 'admin can set an RRP');
+-- RRPs are written to the RRP price list; finishes.rrp_per_m2_pence follows.
+update public.price_list_items set amount_pence = 4444
+  where price_list_id = (select id from public.price_lists where kind = 'rrp')
+    and variant_id = (select v.id from public.product_variants v join public.finishes f on f.id = v.finish_id where f.slug = 'keswick-oak' and v.is_default);
+select is((select rrp_per_m2_pence from public.finishes where slug = 'keswick-oak'), 4444, 'admin can set an RRP (through the RRP price list)');
 select is((select count(*)::int from public.sample_requests), 1, 'admin can read sample requests');
 select lives_ok(
   $$update public.profiles set status = 'approved' where id = '00000000-0000-4000-a000-000000000001'$$,

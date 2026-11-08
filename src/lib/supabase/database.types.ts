@@ -23,7 +23,69 @@ export type Database = {
           }
         },"public": {
           Tables: {
-            "documents": {
+            "admin_permissions": {
+                  Row: {
+                    "granted_at": string,"granted_by": string | null,"permission": Database["public"]['Enums']["admin_permission"],"profile_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "granted_at"?: string,"granted_by"?: string | null,"permission": Database["public"]['Enums']["admin_permission"],"profile_id": string
+                  }
+                  Update: {
+                    "granted_at"?: string,"granted_by"?: string | null,"permission"?: Database["public"]['Enums']["admin_permission"],"profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "admin_permissions_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"audit_log": {
+                  Row: {
+                    "action": string,"actor_id": string | null,"actor_role": string | null,"changed_fields": (string)[] | null,"id": number,"new_data": Json | null,"occurred_at": string,"old_data": Json | null,"record_id": string | null,"table_name": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "action": string,"actor_id"?: string | null,"actor_role"?: string | null,"changed_fields"?: (string)[] | null,"id"?: never,"new_data"?: Json | null,"occurred_at"?: string,"old_data"?: Json | null,"record_id"?: string | null,"table_name": string
+                  }
+                  Update: {
+                    "action"?: string,"actor_id"?: string | null,"actor_role"?: string | null,"changed_fields"?: (string)[] | null,"id"?: never,"new_data"?: Json | null,"occurred_at"?: string,"old_data"?: Json | null,"record_id"?: string | null,"table_name"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"businesses": {
+                  Row: {
+                    "address_line1": string | null,"address_line2": string | null,"business_type": Database["public"]['Enums']["trade_type"] | null,"company_number": string | null,"created_at": string,"id": string,"name": string,"phone": string | null,"postcode": string | null,"town": string | null,"updated_at": string,"vat_number": string | null,"website": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address_line1"?: string | null,"address_line2"?: string | null,"business_type"?: Database["public"]['Enums']["trade_type"] | null,"company_number"?: string | null,"created_at"?: string,"id"?: string,"name": string,"phone"?: string | null,"postcode"?: string | null,"town"?: string | null,"updated_at"?: string,"vat_number"?: string | null,"website"?: string | null
+                  }
+                  Update: {
+                    "address_line1"?: string | null,"address_line2"?: string | null,"business_type"?: Database["public"]['Enums']["trade_type"] | null,"company_number"?: string | null,"created_at"?: string,"id"?: string,"name"?: string,"phone"?: string | null,"postcode"?: string | null,"town"?: string | null,"updated_at"?: string,"vat_number"?: string | null,"website"?: string | null
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"collections": {
+                  Row: {
+                    "created_at": string,"description": string,"id": string,"is_demo": boolean,"name": string,"published": boolean,"slug": string,"sort_order": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name": string,"published"?: boolean,"slug": string,"sort_order"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name"?: string,"published"?: boolean,"slug"?: string,"sort_order"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"documents": {
                   Row: {
                     "created_at": string,"finish_id": string | null,"id": string,"storage_path": string,"title": string,"trade_only": boolean,"type": Database["public"]['Enums']["document_type"]
                   }
@@ -77,17 +139,23 @@ isOneToOne: false
                   ]
                 },"finishes": {
                   Row: {
-                    "colour_family": string,"created_at": string,"description": string,"id": string,"is_demo": boolean,"name": string,"published": boolean,"rrp_per_m2_pence": number | null,"slug": string,"sort_order": number,"specs": NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at": string
+                    "collection_id": string | null,"colour_family": string,"created_at": string,"description": string,"id": string,"is_demo": boolean,"name": string,"product_type": Database["public"]['Enums']["product_type"],"published": boolean,"rrp_per_m2_pence": number | null,"slug": string,"sort_order": number,"specs": NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "colour_family": string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name": string,"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug": string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at"?: string
+                    "collection_id"?: string | null,"colour_family": string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name": string,"product_type"?: Database["public"]['Enums']["product_type"],"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug": string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style": Database["public"]['Enums']["finish_style"],"updated_at"?: string
                   }
                   Update: {
-                    "colour_family"?: string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name"?: string,"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug"?: string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style"?: Database["public"]['Enums']["finish_style"],"updated_at"?: string
+                    "collection_id"?: string | null,"colour_family"?: string,"created_at"?: string,"description"?: string,"id"?: string,"is_demo"?: boolean,"name"?: string,"product_type"?: Database["public"]['Enums']["product_type"],"published"?: boolean,"rrp_per_m2_pence"?: number | null,"slug"?: string,"sort_order"?: number,"specs"?: NonNullable<Json>,"style"?: Database["public"]['Enums']["finish_style"],"updated_at"?: string
                   }
                   Relationships: [
-                    
+                    {
+      foreignKeyName: "finishes_collection_id_fkey"
+      columns: ["collection_id"]
+isOneToOne: false
+      referencedRelation: "collections"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"inspiration": {
                   Row: {
@@ -116,6 +184,58 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"price_list_items": {
+                  Row: {
+                    "amount_pence": number,"created_at": string,"created_by": string | null,"id": string,"min_quantity": number,"price_list_id": string,"price_unit": Database["public"]['Enums']["unit_of_sale"],"updated_at": string,"valid_from": string | null,"valid_to": string | null,"variant_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "amount_pence": number,"created_at"?: string,"created_by"?: string | null,"id"?: string,"min_quantity"?: number,"price_list_id": string,"price_unit": Database["public"]['Enums']["unit_of_sale"],"updated_at"?: string,"valid_from"?: string | null,"valid_to"?: string | null,"variant_id": string
+                  }
+                  Update: {
+                    "amount_pence"?: number,"created_at"?: string,"created_by"?: string | null,"id"?: string,"min_quantity"?: number,"price_list_id"?: string,"price_unit"?: Database["public"]['Enums']["unit_of_sale"],"updated_at"?: string,"valid_from"?: string | null,"valid_to"?: string | null,"variant_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "price_list_items_price_list_id_fkey"
+      columns: ["price_list_id"]
+isOneToOne: false
+      referencedRelation: "price_lists"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "price_list_items_variant_id_fkey"
+      columns: ["variant_id"]
+isOneToOne: false
+      referencedRelation: "product_variants"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"price_lists": {
+                  Row: {
+                    "active": boolean,"audience": Database["public"]['Enums']["promotion_audience"] | null,"code": string,"created_at": string,"currency": string,"description": string,"id": string,"is_default": boolean,"is_demo": boolean,"kind": Database["public"]['Enums']["price_list_kind"],"name": string,"prices_include_vat": boolean,"profile_id": string | null,"tier_id": string | null,"updated_at": string,"valid_from": string | null,"valid_to": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "active"?: boolean,"audience"?: Database["public"]['Enums']["promotion_audience"] | null,"code": string,"created_at"?: string,"currency"?: string,"description"?: string,"id"?: string,"is_default"?: boolean,"is_demo"?: boolean,"kind": Database["public"]['Enums']["price_list_kind"],"name": string,"prices_include_vat": boolean,"profile_id"?: string | null,"tier_id"?: string | null,"updated_at"?: string,"valid_from"?: string | null,"valid_to"?: string | null
+                  }
+                  Update: {
+                    "active"?: boolean,"audience"?: Database["public"]['Enums']["promotion_audience"] | null,"code"?: string,"created_at"?: string,"currency"?: string,"description"?: string,"id"?: string,"is_default"?: boolean,"is_demo"?: boolean,"kind"?: Database["public"]['Enums']["price_list_kind"],"name"?: string,"prices_include_vat"?: boolean,"profile_id"?: string | null,"tier_id"?: string | null,"updated_at"?: string,"valid_from"?: string | null,"valid_to"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "price_lists_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "price_lists_tier_id_fkey"
+      columns: ["tier_id"]
+isOneToOne: true
+      referencedRelation: "price_tiers"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"price_overrides": {
                   Row: {
@@ -195,23 +315,113 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"profiles": {
+                },"product_variants": {
                   Row: {
-                    "company_name": string,"contact_name": string,"created_at": string,"id": string,"is_admin": boolean,"list_as_stockist": boolean,"phone": string | null,"status": Database["public"]['Enums']["profile_status"],"tier_id": string | null,"trade_type": Database["public"]['Enums']["trade_type"] | null,"updated_at": string
+                    "active": boolean,"created_at": string,"finish_id": string,"id": string,"is_default": boolean,"is_demo": boolean,"length_mm": number | null,"name": string,"pack_coverage_m2": number | null,"sku": string,"sort_order": number,"thickness_mm": number | null,"unit_of_sale": Database["public"]['Enums']["unit_of_sale"],"units_per_pack": number | null,"updated_at": string,"vat_rate_bp": number,"width_mm": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "company_name"?: string,"contact_name"?: string,"created_at"?: string,"id": string,"is_admin"?: boolean,"list_as_stockist"?: boolean,"phone"?: string | null,"status"?: Database["public"]['Enums']["profile_status"],"tier_id"?: string | null,"trade_type"?: Database["public"]['Enums']["trade_type"] | null,"updated_at"?: string
+                    "active"?: boolean,"created_at"?: string,"finish_id": string,"id"?: string,"is_default"?: boolean,"is_demo"?: boolean,"length_mm"?: number | null,"name": string,"pack_coverage_m2"?: number | null,"sku": string,"sort_order"?: number,"thickness_mm"?: number | null,"unit_of_sale": Database["public"]['Enums']["unit_of_sale"],"units_per_pack"?: number | null,"updated_at"?: string,"vat_rate_bp"?: number,"width_mm"?: number | null
                   }
                   Update: {
-                    "company_name"?: string,"contact_name"?: string,"created_at"?: string,"id"?: string,"is_admin"?: boolean,"list_as_stockist"?: boolean,"phone"?: string | null,"status"?: Database["public"]['Enums']["profile_status"],"tier_id"?: string | null,"trade_type"?: Database["public"]['Enums']["trade_type"] | null,"updated_at"?: string
+                    "active"?: boolean,"created_at"?: string,"finish_id"?: string,"id"?: string,"is_default"?: boolean,"is_demo"?: boolean,"length_mm"?: number | null,"name"?: string,"pack_coverage_m2"?: number | null,"sku"?: string,"sort_order"?: number,"thickness_mm"?: number | null,"unit_of_sale"?: Database["public"]['Enums']["unit_of_sale"],"units_per_pack"?: number | null,"updated_at"?: string,"vat_rate_bp"?: number,"width_mm"?: number | null
                   }
                   Relationships: [
                     {
+      foreignKeyName: "product_variants_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "finishes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "product_variants_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "my_prices"
+      referencedColumns: ["finish_id"]
+    }
+                  ]
+                },"profiles": {
+                  Row: {
+                    "business_id": string | null,"company_name": string,"contact_name": string,"created_at": string,"id": string,"is_admin": boolean,"list_as_stockist": boolean,"phone": string | null,"role": Database["public"]['Enums']["account_role"],"status": Database["public"]['Enums']["profile_status"],"status_changed_at": string | null,"status_changed_by": string | null,"status_reason": string | null,"tier_id": string | null,"trade_type": Database["public"]['Enums']["trade_type"] | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "business_id"?: string | null,"company_name"?: string,"contact_name"?: string,"created_at"?: string,"id": string,"is_admin"?: boolean,"list_as_stockist"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["account_role"],"status"?: Database["public"]['Enums']["profile_status"],"status_changed_at"?: string | null,"status_changed_by"?: string | null,"status_reason"?: string | null,"tier_id"?: string | null,"trade_type"?: Database["public"]['Enums']["trade_type"] | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "business_id"?: string | null,"company_name"?: string,"contact_name"?: string,"created_at"?: string,"id"?: string,"is_admin"?: boolean,"list_as_stockist"?: boolean,"phone"?: string | null,"role"?: Database["public"]['Enums']["account_role"],"status"?: Database["public"]['Enums']["profile_status"],"status_changed_at"?: string | null,"status_changed_by"?: string | null,"status_reason"?: string | null,"tier_id"?: string | null,"trade_type"?: Database["public"]['Enums']["trade_type"] | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "profiles_business_id_fkey"
+      columns: ["business_id"]
+isOneToOne: false
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "profiles_tier_id_fkey"
       columns: ["tier_id"]
 isOneToOne: false
       referencedRelation: "price_tiers"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"project_items": {
+                  Row: {
+                    "area_m2": number | null,"created_at": string,"finish_id": string | null,"id": string,"note": string,"project_id": string,"room_name": string | null,"sort_order": number,"variant_id": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"note"?: string,"project_id": string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null
+                  }
+                  Update: {
+                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"note"?: string,"project_id"?: string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "project_items_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "finishes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "project_items_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "my_prices"
+      referencedColumns: ["finish_id"]
+    },{
+      foreignKeyName: "project_items_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "project_items_variant_id_fkey"
+      columns: ["variant_id"]
+isOneToOne: false
+      referencedRelation: "product_variants"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"projects": {
+                  Row: {
+                    "archived": boolean,"created_at": string,"customer_name": string | null,"id": string,"name": string,"notes": string,"profile_id": string,"site_postcode": string | null,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "archived"?: boolean,"created_at"?: string,"customer_name"?: string | null,"id"?: string,"name": string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
+                  }
+                  Update: {
+                    "archived"?: boolean,"created_at"?: string,"customer_name"?: string | null,"id"?: string,"name"?: string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "projects_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
       referencedColumns: ["id"]
     }
                   ]
@@ -249,14 +459,14 @@ isOneToOne: false
                   ]
                 },"quotes": {
                   Row: {
-                    "created_at": string,"customer_email": string | null,"customer_name": string,"customer_phone": string | null,"id": string,"notes": string,"profile_id": string,"reference": string,"responded_at": string | null,"sent_at": string | null,"share_token": string,"site_address": string,"site_postcode": string | null,"status": Database["public"]['Enums']["quote_status"],"updated_at": string,"valid_until": string | null,"vat_rate_bp": number
+                    "created_at": string,"customer_email": string | null,"customer_name": string,"customer_phone": string | null,"id": string,"notes": string,"profile_id": string,"project_id": string | null,"reference": string,"responded_at": string | null,"sent_at": string | null,"share_token": string,"site_address": string,"site_postcode": string | null,"status": Database["public"]['Enums']["quote_status"],"updated_at": string,"valid_until": string | null,"vat_rate_bp": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"customer_email"?: string | null,"customer_name": string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                    "created_at"?: string,"customer_email"?: string | null,"customer_name": string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
                   }
                   Update: {
-                    "created_at"?: string,"customer_email"?: string | null,"customer_name"?: string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                    "created_at"?: string,"customer_email"?: string | null,"customer_name"?: string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
                   }
                   Relationships: [
                     {
@@ -264,6 +474,12 @@ isOneToOne: false
       columns: ["profile_id"]
 isOneToOne: false
       referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "quotes_project_id_fkey"
+      columns: ["project_id"]
+isOneToOne: false
+      referencedRelation: "projects"
       referencedColumns: ["id"]
     }
                   ]
@@ -280,6 +496,38 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"saved_products": {
+                  Row: {
+                    "created_at": string,"finish_id": string,"profile_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"finish_id": string,"profile_id"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"finish_id"?: string,"profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "saved_products_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "finishes"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "saved_products_finish_id_fkey"
+      columns: ["finish_id"]
+isOneToOne: false
+      referencedRelation: "my_prices"
+      referencedColumns: ["finish_id"]
+    },{
+      foreignKeyName: "saved_products_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"shortlists": {
                   Row: {
@@ -303,17 +551,63 @@ isOneToOne: false
                   ]
                 },"stockists": {
                   Row: {
-                    "address": string,"created_at": string,"id": string,"lat": number | null,"lng": number | null,"name": string,"phone": string | null,"postcode": string,"published": boolean,"type": Database["public"]['Enums']["stockist_type"],"website": string | null
+                    "address": string,"created_at": string,"id": string,"lat": number | null,"lng": number | null,"name": string,"phone": string | null,"postcode": string,"profile_id": string | null,"published": boolean,"type": Database["public"]['Enums']["stockist_type"],"website": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "address": string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"phone"?: string | null,"postcode": string,"published"?: boolean,"type": Database["public"]['Enums']["stockist_type"],"website"?: string | null
+                    "address": string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"name": string,"phone"?: string | null,"postcode": string,"profile_id"?: string | null,"published"?: boolean,"type": Database["public"]['Enums']["stockist_type"],"website"?: string | null
                   }
                   Update: {
-                    "address"?: string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"phone"?: string | null,"postcode"?: string,"published"?: boolean,"type"?: Database["public"]['Enums']["stockist_type"],"website"?: string | null
+                    "address"?: string,"created_at"?: string,"id"?: string,"lat"?: number | null,"lng"?: number | null,"name"?: string,"phone"?: string | null,"postcode"?: string,"profile_id"?: string | null,"published"?: boolean,"type"?: Database["public"]['Enums']["stockist_type"],"website"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "stockists_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"system_settings": {
+                  Row: {
+                    "description": string,"is_public": boolean,"key": string,"updated_at": string,"updated_by": string | null,"value": NonNullable<Json>
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "description"?: string,"is_public"?: boolean,"key": string,"updated_at"?: string,"updated_by"?: string | null,"value": NonNullable<Json>
+                  }
+                  Update: {
+                    "description"?: string,"is_public"?: boolean,"key"?: string,"updated_at"?: string,"updated_by"?: string | null,"value"?: NonNullable<Json>
                   }
                   Relationships: [
                     
+                  ]
+                },"trade_applications": {
+                  Row: {
+                    "additional_info": string,"business_id": string | null,"decision_note": string | null,"id": string,"profile_id": string,"reviewed_at": string | null,"reviewed_by": string | null,"submitted_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "additional_info"?: string,"business_id"?: string | null,"decision_note"?: string | null,"id"?: string,"profile_id": string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"submitted_at"?: string
+                  }
+                  Update: {
+                    "additional_info"?: string,"business_id"?: string | null,"decision_note"?: string | null,"id"?: string,"profile_id"?: string,"reviewed_at"?: string | null,"reviewed_by"?: string | null,"submitted_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "trade_applications_business_id_fkey"
+      columns: ["business_id"]
+isOneToOne: false
+      referencedRelation: "businesses"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "trade_applications_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
                   ]
                 },"trade_preferences": {
                   Row: {
@@ -349,8 +643,21 @@ isOneToOne: true
                 }
           }
           Functions: {
-            "admin_dashboard_stats":
+            "_resolve_price":
+{ Args: { "p_at": string,"p_quantity": number,"p_uid": string,"p_variant": string }; Returns: {
+              "amount_pence": number,"currency": string,"gross_pence": number,"is_promotion": boolean,"min_quantity": number,"net_pence": number,"price_list_id": string,"price_unit": Database["public"]['Enums']["unit_of_sale"],"prices_include_vat": boolean,"rrp_amount_pence": number,"rrp_includes_vat": boolean,"rrp_price_unit": Database["public"]['Enums']["unit_of_sale"],"source": Database["public"]['Enums']["price_list_kind"],"variant_id": string,"vat_rate_bp": number
+            }[]
+                           },
+"admin_dashboard_stats":
 { Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"backfill_foundation":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"catalogue_prices":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "amount_pence": number,"currency": string,"finish_id": string,"gross_pence": number,"is_promotion": boolean,"net_pence": number,"price_unit": Database["public"]['Enums']["unit_of_sale"],"prices_include_vat": boolean,"rrp_amount_pence": number,"rrp_includes_vat": boolean,"source": Database["public"]['Enums']["price_list_kind"],"variant_id": string,"vat_rate_bp": number
+            }[]
                            },
 "current_tier_id":
 { Args: Record<PropertyKey, never>; Returns: string
@@ -363,18 +670,40 @@ isOneToOne: true
               "finish_ids": (string)[],"name": string
             }[]
                            },
+"has_permission":
+{ Args: { "p": Database["public"]['Enums']["admin_permission"] }; Returns: boolean
+                           },
 "is_admin":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
 "is_approved_trade":
 { Args: Record<PropertyKey, never>; Returns: boolean
                            },
+"is_super_admin":
+{ Args: Record<PropertyKey, never>; Returns: boolean
+                           },
+"my_permissions":
+{ Args: Record<PropertyKey, never>; Returns: Database["public"]['Enums']["admin_permission"][]
+                           },
+"price_for":
+{ Args: { "p_at"?: string,"p_quantity"?: number,"p_variant": string }; Returns: {
+              "amount_pence": number,"currency": string,"gross_pence": number,"is_promotion": boolean,"min_quantity": number,"net_pence": number,"price_list_id": string,"price_unit": Database["public"]['Enums']["unit_of_sale"],"prices_include_vat": boolean,"rrp_amount_pence": number,"rrp_includes_vat": boolean,"rrp_price_unit": Database["public"]['Enums']["unit_of_sale"],"source": Database["public"]['Enums']["price_list_kind"],"variant_id": string,"vat_rate_bp": number
+            }[]
+                           },
+"price_for_account":
+{ Args: { "p_at"?: string,"p_profile": string,"p_quantity"?: number,"p_variant": string }; Returns: {
+              "amount_pence": number,"currency": string,"gross_pence": number,"is_promotion": boolean,"min_quantity": number,"net_pence": number,"price_list_id": string,"price_unit": Database["public"]['Enums']["unit_of_sale"],"prices_include_vat": boolean,"rrp_amount_pence": number,"rrp_includes_vat": boolean,"rrp_price_unit": Database["public"]['Enums']["unit_of_sale"],"source": Database["public"]['Enums']["price_list_kind"],"variant_id": string,"vat_rate_bp": number
+            }[]
+                           },
+"refresh_legacy_prices":
+{ Args: { "p_finish": string }; Returns: undefined
+                           },
 "respond_to_quote":
 { Args: { "p_decision": string,"p_token": string }; Returns: string
                            }
           }
           Enums: {
-            "document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","profile_status": "pending"|"approved"|"rejected","quote_line_kind": "flooring"|"accessory"|"labour"|"other","quote_status": "draft"|"sent"|"accepted"|"declined","quote_unit": "pack"|"m2"|"item"|"hour"|"metre","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier"
+            "account_role": "super_admin"|"admin"|"trade"|"stockist","admin_permission": "manage_accounts"|"manage_pricing"|"manage_products"|"manage_stockists"|"manage_samples"|"manage_documents"|"manage_settings"|"view_reports"|"view_audit","document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","price_list_kind": "rrp"|"trade"|"stockist"|"account"|"promotion","product_type": "flooring"|"accessory","profile_status": "pending"|"approved"|"rejected"|"suspended","promotion_audience": "public"|"trade"|"stockist"|"all","quote_line_kind": "flooring"|"accessory"|"labour"|"other","quote_status": "draft"|"sent"|"accepted"|"declined","quote_unit": "pack"|"m2"|"item"|"hour"|"metre","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier","unit_of_sale": "m2"|"pack"|"item"|"linear_metre"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -494,7 +823,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"profile_status": ["pending", "approved", "rejected"],"quote_line_kind": ["flooring", "accessory", "labour", "other"],"quote_status": ["draft", "sent", "accepted", "declined"],"quote_unit": ["pack", "m2", "item", "hour", "metre"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"]
+            "account_role": ["super_admin", "admin", "trade", "stockist"],"admin_permission": ["manage_accounts", "manage_pricing", "manage_products", "manage_stockists", "manage_samples", "manage_documents", "manage_settings", "view_reports", "view_audit"],"document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"price_list_kind": ["rrp", "trade", "stockist", "account", "promotion"],"product_type": ["flooring", "accessory"],"profile_status": ["pending", "approved", "rejected", "suspended"],"promotion_audience": ["public", "trade", "stockist", "all"],"quote_line_kind": ["flooring", "accessory", "labour", "other"],"quote_status": ["draft", "sent", "accepted", "declined"],"quote_unit": ["pack", "m2", "item", "hour", "metre"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"],"unit_of_sale": ["m2", "pack", "item", "linear_metre"]
           }
         }
 } as const

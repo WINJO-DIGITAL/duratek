@@ -136,4 +136,7 @@ insert into public.online_retailers (name, url, sort_order, published) values ('
 
 -- No stockists are seeded: the client has not supplied a list yet.
 
+-- Variants, collections and price lists from the rows above (same backfill as the migration).
+select public.backfill_foundation();
+
 commit;
