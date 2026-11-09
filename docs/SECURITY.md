@@ -85,3 +85,10 @@ Supabase dashboard, Authentication:
 - `record_finish_view` can be called only by the service role.
 - Uploaded documents are identified by their first bytes, not their name or declared type; SVG is never accepted.
 - The retention job needs `CRON_SECRET` and refuses without it.
+
+## Transport, cookies and uploads (final QA)
+
+- Every response carries `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, a referrer policy, a permissions policy that turns off camera, microphone, location and payment, HSTS, and a narrow content security policy (framing, base URL, form targets, plugins). The framework header is removed.
+- The Supabase auth cookies are HttpOnly, SameSite=Lax and, in production, Secure. The browser never reads them; every authenticated request goes through the server.
+- Uploads are identified by their bytes, never their name or declared type. Images (photographs, logos) must be a real PNG, JPEG, WebP or AVIF and nothing else: SVG, HTML and files with content appended are refused. Documents follow the same rule (`src/lib/documents.ts`, `src/lib/files.ts`). Stored names are generated.
+- `LOGIN_RATE_MAX` (default 10 per 15 minutes per address) exists so test servers can raise the login limit; leave it unset in production.

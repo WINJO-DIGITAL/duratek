@@ -32,20 +32,37 @@ export interface PackPlan {
   spareM2: number;
 }
 
-/** Packs needed to cover an area with a wastage allowance (cuts, pattern, spares). */
+/**
+ * A decimal typed by a person ("2.215") as a whole number of 10^-dp units.
+ * toPrecision strips the binary noise first (2.005 * 100 is 200.49999999999997),
+ * so a value that is exactly half rounds up as it reads.
+ */
+const scale = (x: number, dp: number) => Math.round(Number((x * 10 ** dp).toPrecision(15)));
+
+/**
+ * Packs needed to cover an area with a wastage allowance (cuts, pattern, spares).
+ *
+ * Done in whole numbers: area in hundredths of a m², wastage in hundredths of a
+ * percent, coverage in thousandths of a m² (the precision the database stores).
+ * Rounding coverage to hundredths, as an earlier version did, could order a
+ * pack too few. Returns null for anything that is not a sensible, finite input.
+ */
 export function planPacks(areaM2: number, wastagePct: number, packCoverageM2: number): PackPlan | null {
-  if (!(areaM2 > 0) || !(packCoverageM2 > 0) || !(wastagePct >= 0) || wastagePct > 50) return null;
-  const withWastage = to2(areaM2 * (1 + wastagePct / 100));
-  // Compare in hundredths so 4.42 / 2.21 is exactly 2, not 2.0000000001.
-  const packs = Math.ceil(Math.round(withWastage * 100) / Math.round(packCoverageM2 * 100) - 1e-9);
-  const supplied = to2(packs * packCoverageM2);
+  if (![areaM2, wastagePct, packCoverageM2].every(Number.isFinite)) return null;
+  const area = scale(areaM2, 2); // hundredths of m²
+  const waste = scale(wastagePct, 2); // hundredths of a percent
+  const cover = scale(packCoverageM2, 3); // thousandths of m²
+  if (area <= 0 || cover <= 0 || waste < 0 || waste > 5000) return null;
+  const withWastage = Math.floor((2 * area * (10_000 + waste) + 10_000) / 20_000); // hundredths, half up
+  const packs = Math.floor((withWastage * 10 + cover - 1) / cover); // ceiling
+  const supplied = Math.floor((packs * cover + 5) / 10); // hundredths, half up
   return {
-    areaM2: to2(areaM2),
+    areaM2: area / 100,
     wastagePct,
-    areaWithWastageM2: withWastage,
+    areaWithWastageM2: withWastage / 100,
     packs,
-    suppliedM2: supplied,
-    spareM2: to2(supplied - withWastage),
+    suppliedM2: supplied / 100,
+    spareM2: (supplied - withWastage) / 100,
   };
 }
 

@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { hardenAuthCookie } from "@/lib/supabase/cookie-options";
 
 /**
  * Keeps signed-in visitors' sessions fresh (tokens expire; server components
@@ -17,7 +18,7 @@ export async function proxy(request: NextRequest) {
       setAll: (all) => {
         for (const { name, value } of all) request.cookies.set(name, value);
         response = NextResponse.next({ request });
-        for (const { name, value, options } of all) response.cookies.set(name, value, options);
+        for (const { name, value, options } of all) response.cookies.set(name, value, hardenAuthCookie(options));
       },
     },
   });

@@ -6,7 +6,8 @@ import { redirect } from "next/navigation";
 import { TAGS } from "@/lib/catalogue";
 import { requireAdmin } from "@/lib/auth/admin";
 import type { AdminFormState } from "@/lib/admin/form-state";
-import { IMAGE_MAX_BYTES, IMAGE_TYPES, mergeSpecs, parseFinish, parseVariant, variantFromFinish } from "@/lib/admin/forms";
+import { IMAGE_EXTENSION, isWholeImage, sniffImage } from "@/lib/files";
+import { IMAGE_MAX_BYTES, mergeSpecs, parseFinish, parseVariant, variantFromFinish } from "@/lib/admin/forms";
 import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
 import { echo } from "@/lib/trade/quote-forms";
@@ -83,15 +84,18 @@ export async function addImage(form: FormData) {
   const height = Number(form.get("height")) || null;
   if (!(file instanceof File) || file.size === 0) back(finishId, "image-missing");
   const f = file as File;
-  const ext = IMAGE_TYPES[f.type];
-  if (!ext) back(finishId, "image-type");
   if (f.size > IMAGE_MAX_BYTES) back(finishId, "image-size");
+  // The type comes from the bytes, not from what the browser said, and the file must be only the image.
+  const bytes = new Uint8Array(await f.arrayBuffer());
+  const mime = sniffImage(bytes);
+  if (!mime || !isWholeImage(bytes, mime)) back(finishId, "image-type");
+  const ext = IMAGE_EXTENSION[mime!];
   if (!["swatch", "room", "closeup"].includes(kind)) back(finishId, "image-kind");
   if (!alt) back(finishId, "image-alt");
 
   const db = await userSupabase();
   const path = `${finishId}/${randomUUID()}.${ext}`;
-  const { error: upErr } = await db.storage.from("finish-images").upload(path, f, { contentType: f.type, upsert: false });
+  const { error: upErr } = await db.storage.from("finish-images").upload(path, f, { contentType: mime!, upsert: false });
   if (upErr) back(finishId, "image-failed");
   const { count } = await db.from("finish_images").select("id", { count: "exact", head: true }).eq("finish_id", finishId);
   const { error } = await db.from("finish_images").insert({

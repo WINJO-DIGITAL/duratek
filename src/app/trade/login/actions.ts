@@ -9,7 +9,8 @@ import { userSupabase } from "@/lib/supabase/server";
 
 /* Rate limit sign-in attempts per address (best effort, in memory on each
    server instance). Supabase Auth applies its own limits as well. */
-const MAX = 10;
+// Per address, counting every attempt. Test servers may raise it (LOGIN_RATE_MAX); production leaves it at 10.
+const MAX = Number(process.env.LOGIN_RATE_MAX) || 10;
 const WINDOW_MS = 15 * 60 * 1000;
 const attempts = new Map<string, number[]>();
 

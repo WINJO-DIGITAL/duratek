@@ -83,7 +83,7 @@ export async function geocodePostcode(postcode: string): Promise<GeocodeResult> 
   "use cache";
   cacheLife("weeks");
   try {
-    const res = await fetch(`https://api.postcodes.io/postcodes/${encodeURIComponent(postcode)}`, {
+    const res = await fetch(`${process.env.POSTCODES_API_URL ?? "https://api.postcodes.io"}/postcodes/${encodeURIComponent(postcode)}`, {
       headers: { accept: "application/json" },
       signal: AbortSignal.timeout(5000),
     });

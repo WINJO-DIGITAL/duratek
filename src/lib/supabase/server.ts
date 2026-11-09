@@ -2,6 +2,7 @@ import "server-only";
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { connection } from "next/server";
+import { hardenAuthCookie } from "./cookie-options";
 import type { Database } from "./database.types";
 
 /**
@@ -22,7 +23,7 @@ export async function userSupabase() {
       getAll: () => jar.getAll(),
       setAll: (all) => {
         try {
-          for (const { name, value, options } of all) jar.set(name, value, options);
+          for (const { name, value, options } of all) jar.set(name, value, hardenAuthCookie(options));
         } catch {
           // Called from a server component, which can't set cookies; the proxy refreshes them.
         }

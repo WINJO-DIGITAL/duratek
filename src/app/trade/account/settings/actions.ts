@@ -4,7 +4,8 @@ import { getAccount } from "@/lib/auth/session";
 import { requireApprovedTrade } from "@/lib/auth/trade";
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
-import { echo, LOGO_MAX_BYTES, LOGO_TYPES, parseBranding, parsePreferences, type FieldErrors } from "@/lib/trade/quote-forms";
+import { IMAGE_EXTENSION, isWholeImage, sniffImage } from "@/lib/files";
+import { echo, LOGO_MAX_BYTES, parseBranding, parsePreferences, type FieldErrors } from "@/lib/trade/quote-forms";
 import { userSupabase } from "@/lib/supabase/server";
 
 export type SettingsState = { status: "idle" } | { status: "saved" } | { status: "error"; errors: FieldErrors; message?: string; values?: Record<string, string> };
@@ -39,15 +40,15 @@ export async function uploadLogo(form: FormData) {
   const file = form.get("logo");
   if (!(file instanceof File) || file.size === 0) return back("logo-missing");
   if (file.size > LOGO_MAX_BYTES) return back("logo-size");
-  const type = LOGO_TYPES[file.type];
-  const head = new Uint8Array(await file.slice(0, 4).arrayBuffer());
-  const isPng = head[0] === 0x89 && head[1] === 0x50 && head[2] === 0x4e && head[3] === 0x47;
-  const isJpg = head[0] === 0xff && head[1] === 0xd8 && head[2] === 0xff;
-  if (!type || (type === "png" && !isPng) || (type === "jpg" && !isJpg)) return back("logo-type");
+  // The type comes from the bytes, not from what the browser said, and the file must be only the image.
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const mime = sniffImage(bytes);
+  if ((mime !== "image/png" && mime !== "image/jpeg") || !isWholeImage(bytes, mime)) return back("logo-type");
+  const type = IMAGE_EXTENSION[mime];
 
   const db = await userSupabase();
   const path = `${account.userId}/logo-${Date.now().toString(36)}.${type}`;
-  const { error: upErr } = await db.storage.from("trade-logos").upload(path, file, { contentType: file.type, upsert: false });
+  const { error: upErr } = await db.storage.from("trade-logos").upload(path, file, { contentType: mime, upsert: false });
   if (upErr) return back("logo-failed");
   const { data: was } = await db.from("trade_preferences").select("logo_path").maybeSingle();
   const { error } = await db.from("trade_preferences").upsert({ profile_id: account.userId, logo_path: path });

@@ -17,7 +17,7 @@ export const metadata: Metadata = {
 
 const BENEFITS = [
   { title: "Your prices", body: "Trade prices for every finish, shown only to you when you’re logged in." },
-  { title: "Documents", body: "Technical sheets, warranty documents and certificates, ready to download." },
+  { title: "Documents", body: "Technical sheets, certificates and fitting guides, ready to download." },
   { title: "Shortlists to share", body: "Pick finishes for a job and send your customer a clean link, without prices." },
   { title: "Customer view", body: "One tap hides every price, so you can show the range to a homeowner on site." },
 ] as const;
