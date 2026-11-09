@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
 import { FinishForm, type FinishValues } from "@/components/admin/finish-form";
 import { ImageUpload } from "@/components/admin/image-upload";
+import { VariantForm } from "@/components/admin/variant-form";
 import { PageTransition } from "@/components/layout/page-transition";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "@/components/ui/icons";
@@ -13,7 +14,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { resolveImageUrl } from "@/lib/catalogue/mappers";
 import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
-import { updateImage } from "../actions";
+import { setArchived, updateImage } from "../actions";
 
 export const metadata: Metadata = { title: "Edit finish", robots: { index: false } };
 
@@ -38,6 +39,8 @@ const NOTICE: Record<string, string> = {
   "image-kind": "Choose what kind of photograph it is.",
   "image-alt": "Describe the photograph for people using screen readers.",
   "image-failed": "The upload didn’t work. Please try again.",
+  restored: "Restored. It stays hidden until you publish it.",
+  "archive-failed": "Couldn’t archive. Please try again.",
 };
 
 const NEW_FINISH: FinishValues = {
@@ -73,7 +76,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
   const db = await userSupabase();
   const { data: f } = await db
     .from("finishes")
-    .select("id, name, slug, style, colour_family, description, sort_order, published, is_demo, specs, finish_images (id, url, kind, alt, width, height, sort_order), product_variants (sku, is_default)")
+    .select("id, name, slug, style, colour_family, description, sort_order, published, is_demo, archived_at, specs, finish_images (id, url, kind, alt, width, height, sort_order), product_variants (id, sku, name, unit_of_sale, pack_coverage_m2, units_per_pack, length_mm, width_mm, thickness_mm, vat_rate_bp, active, is_default, sort_order)")
     .eq("id", id)
     .maybeSingle();
   if (!f) notFound();
@@ -102,6 +105,29 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
       <div className="card p-5 sm:p-8">
         <FinishForm values={{ ...f, sku: f.product_variants?.find((v) => v.is_default)?.sku, specs: (f.specs ?? {}) as Record<string, unknown> }} />
       </div>
+
+      <section id="variants" aria-labelledby="variants-heading" className="mt-stack scroll-mt-24">
+        <h2 id="variants-heading" className="text-display-sm text-navy">Variants and pack coverage</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
+          How this finish is sold. Prices are set per variant under Prices. Pack coverage is what trade calculators and quotes use to round up to whole packs.
+        </p>
+        <ul className="mt-6 space-y-3">
+          {[...(f.product_variants ?? [])]
+            .sort((a, b) => Number(b.is_default) - Number(a.is_default) || a.sort_order - b.sort_order)
+            .map((variant) => (
+              <li key={variant.id} className="card p-5">
+                <p className="mb-4 text-[0.875rem] text-ink-muted">
+                  {variant.is_default ? "Default variant" : variant.active ? "Variant" : "Variant, not on sale"}
+                </p>
+                <VariantForm finishId={f.id} values={variant} />
+              </li>
+            ))}
+          <li className="card p-5">
+            <p className="mb-4 text-[0.9375rem] font-medium text-navy">Add a variant</p>
+            <VariantForm finishId={f.id} values={{}} />
+          </li>
+        </ul>
+      </section>
 
       <section id="images" aria-labelledby="images-heading" className="mt-stack scroll-mt-24">
         <h2 id="images-heading" className="text-display-sm text-navy">Photographs</h2>
@@ -146,6 +172,20 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
           </div>
         </div>
       </section>
-    </AdminShell>
+    
+      <section aria-labelledby="archive-heading" className="mt-stack border-t border-line pt-8">
+        <h2 id="archive-heading" className="text-display-sm text-navy">{f.archived_at ? "Archived" : "Archive this finish"}</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
+          {f.archived_at
+            ? "This finish is hidden everywhere on the site and in new quotes. Its history is kept."
+            : "Archiving hides the finish from the site, samples and new quotes. Nothing is deleted, so it can be restored."}
+        </p>
+        <form action={setArchived} className="mt-4">
+          <input type="hidden" name="id" value={f.id} />
+          <input type="hidden" name="archive" value={f.archived_at ? "no" : "yes"} />
+          <Button type="submit" variant="outline">{f.archived_at ? "Restore" : "Archive finish"}</Button>
+        </form>
+      </section>
+</AdminShell>
   );
 }

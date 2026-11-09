@@ -16,6 +16,13 @@ const RULES: Record<string, (raw: string) => unknown | undefined> = {
   quote_validity_days: (raw) => (/^\d{1,3}$/.test(raw.trim()) && Number(raw) >= 1 && Number(raw) <= 365 ? Number(raw) : undefined),
 };
 
+const intIn = (min: number, max: number) => (raw: string) => (/^\d{1,4}$/.test(raw.trim()) && Number(raw) >= min && Number(raw) <= max ? Number(raw) : undefined);
+RULES.retention_sample_requests_months = intIn(1, 120);
+RULES.retention_enquiries_months = intIn(1, 120);
+RULES.retention_rejected_accounts_months = intIn(1, 120);
+RULES.retention_email_log_days = intIn(7, 730);
+RULES.retention_privacy_requests_months = intIn(1, 120);
+
 export async function saveSetting(form: FormData) {
   await requireAdmin("manage_settings", "/admin/settings");
   const key = String(form.get("key") ?? "");

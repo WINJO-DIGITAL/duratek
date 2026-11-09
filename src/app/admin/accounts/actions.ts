@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
 import { PERMISSIONS, type AccountRole, type Permission } from "@/lib/auth/permissions";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { escapeHtml } from "@/lib/email";
+import { notify } from "@/lib/notify";
 import { isUuid } from "@/lib/ids";
 import { siteUrl } from "@/lib/site";
 import { adminSupabase } from "@/lib/supabase/admin";
@@ -44,7 +45,8 @@ export async function reviewAccount(form: FormData) {
   const { data, error } = await db.from("profiles").update(patch).eq("id", id).select("id");
   if (error || !data?.length) back(filter, "error");
 
-  if (decision === "approve") await sendApprovalEmail(id);
+  if (decision === "approve") await sendDecisionEmail(id, "approved");
+  if (decision === "reject") await sendDecisionEmail(id, "rejected");
   back(filter, { approve: "approved", reject: "rejected", suspend: "suspended", reinstate: "reinstated", retier: "saved" }[decision]);
 }
 
@@ -81,19 +83,34 @@ export async function setRole(form: FormData) {
   back(filter, "role");
 }
 
-/** Tells the applicant they can log in. A failed email is logged, not shown: the approval stands. */
-async function sendApprovalEmail(userId: string): Promise<void> {
+/** Tells the applicant the decision. A failed email is logged, not shown: the decision stands. The reason stays internal. */
+async function sendDecisionEmail(userId: string, decision: "approved" | "rejected"): Promise<void> {
   const service = adminSupabase();
   if (!service) return;
   const { data } = await service.auth.admin.getUserById(userId);
   const email = data.user?.email;
   if (!email) return;
-  const login = siteUrl("/trade/login");
   const name = String(data.user?.user_metadata?.contact_name ?? "").trim() || "there";
-  await sendEmail({
+  if (decision === "approved") {
+    const login = siteUrl("/trade/login");
+    await notify({
+      kind: "account_approved",
+      relatedTable: "profiles",
+      relatedId: userId,
+      to: email,
+      subject: "Your Duratek trade account is approved",
+      text: `Hello ${name},\n\nYour Duratek trade account has been approved. Log in to see your prices:\n\n${login}\n\nDuratek`,
+      html: `<p>Hello ${escapeHtml(name)},</p><p>Your Duratek trade account has been approved. <a href="${escapeHtml(login)}">Log in to see your prices</a>.</p><p>Duratek</p>`,
+    });
+    return;
+  }
+  await notify({
+    kind: "account_rejected",
+    relatedTable: "profiles",
+    relatedId: userId,
     to: email,
-    subject: "Your Duratek trade account is approved",
-    text: `Hello ${name},\n\nYour Duratek trade account has been approved. Log in to see your prices:\n\n${login}\n\nDuratek`,
-    html: `<p>Hello ${escapeHtml(name)},</p><p>Your Duratek trade account has been approved. <a href="${escapeHtml(login)}">Log in to see your prices</a>.</p><p>Duratek</p>`,
+    subject: "Your Duratek trade application",
+    text: `Hello ${name},\n\nThank you for applying for a Duratek trade account. We're not able to approve it at the moment. If you think we've missed something, please reply to this email or contact us and we'll look again.\n\nDuratek`,
+    html: `<p>Hello ${escapeHtml(name)},</p><p>Thank you for applying for a Duratek trade account. We're not able to approve it at the moment. If you think we've missed something, please reply to this email or contact us and we'll look again.</p><p>Duratek</p>`,
   });
 }

@@ -34,6 +34,14 @@ export async function getFinishes(): Promise<Finish[]> {
   if (error) throw new Error(`Failed to load finishes: ${error.message}`);
   const finishes = (data as FinishRow[]).map(toFinish);
 
+  // Finishes whose samples are out just now. Separate and forgiving: before the admin
+  // migration the column doesn't exist, and then every finish simply counts as available.
+  const { data: noSamples, error: sampleError } = await publicSupabase().from("finishes").select("id").eq("sample_available", false);
+  if (!sampleError) {
+    const out = new Set(noSamples.map((r) => r.id));
+    for (const f of finishes) if (out.has(f.id)) f.sampleAvailable = false;
+  }
+
   // Public prices come from the price resolver as a visitor: the RRP, or a
   // public promotion below it. Never a trade price (the resolver decides).
   const { data: prices, error: priceError } = await publicSupabase().rpc("catalogue_prices");

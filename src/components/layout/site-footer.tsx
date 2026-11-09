@@ -22,11 +22,13 @@ const MORE: FooterLink[] = [
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
   { href: "/saved", label: "Saved finishes" },
+  { href: "/contact", label: "Contact" },
   { href: "/trade/login", label: "Trade log in" },
 ];
 
 const LEGAL: FooterLink[] = [
   { href: "/privacy", label: "Privacy" },
+  { href: "/privacy/request", label: "Your data" },
   { href: "/cookies", label: "Cookies" },
 ];
 

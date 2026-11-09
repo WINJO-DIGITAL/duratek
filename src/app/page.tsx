@@ -44,6 +44,7 @@ export default async function HomePage() {
     name: f.name,
     detail: detailLine(f),
     measures: measureLine(f.specs),
+    sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
   }));
 
@@ -122,6 +123,7 @@ export default async function HomePage() {
                   name: room.finish.name,
                   detail: detailLine(room.finish),
                   measures: measureLine(room.finish.specs),
+                  sampleAvailable: room.finish.sampleAvailable,
                   room: roomFromAlt(room.image.alt),
                 }}
               />

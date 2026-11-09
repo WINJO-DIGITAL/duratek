@@ -27,6 +27,7 @@ export default async function ExplorePage() {
       format,
       detail: [colourFamilyLabel(f.colourFamily), format && FORMAT_LABELS[format]].filter(Boolean).join(" · "),
       measures: measureLine(f.specs),
+      sampleAvailable: f.sampleAvailable,
       grain: grainImage(f),
       // A floor-led room only: no bathrooms or playrooms in the explorer.
       room: imagesOfKind(f, "room").find((i) => !isSecondaryRoom(i)),

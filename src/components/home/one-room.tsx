@@ -9,7 +9,7 @@ export function OneRoom({
   finish,
 }: {
   image: CatalogueImage;
-  finish: { id: string; slug: string; name: string; detail: string; measures: string; room?: string };
+  finish: { id: string; slug: string; name: string; detail: string; measures: string; sampleAvailable?: boolean; room?: string };
 }) {
   return (
     <figure className="grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-14">
@@ -22,7 +22,7 @@ export function OneRoom({
         <p className="mt-3 text-ink-muted">{finish.detail}</p>
         {finish.measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{finish.measures}</p>}
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-2">
-          <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name }} />
+          <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }} />
           <ButtonLink href={`/range/${finish.slug}`} variant="quiet">
             View finish
           </ButtonLink>

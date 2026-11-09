@@ -12,6 +12,7 @@ import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
 import { PackEstimator } from "@/components/finish/pack-estimator";
 import { PriceBlock, PriceBlockPublic } from "@/components/trade/price-block";
 import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
+import { ViewBeacon } from "@/components/finish/view-beacon";
 import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
@@ -121,7 +122,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const keySpecs = specs.filter((r) => MEASURED.has(r.label));
   const format = plankFormat(finish.specs);
   const planks = scalePlanks(all, finish);
-  const sample = { id: finish.id, slug: finish.slug, name: finish.name };
+  const sample = { id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false };
   const related = relatedFinishes(all, finish);
 
   return (
@@ -321,6 +322,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
       </section>
 
       <StickySampleBar finish={sample} watch={SAMPLE_BUTTON_ID} />
+      <ViewBeacon slug={finish.slug} />
     </article>
   );
 }

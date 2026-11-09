@@ -56,15 +56,66 @@ const postcode = z
 // ---------------------------------------------------------------------------
 export const STOCKIST_TYPES = ["showroom", "retailer", "fitter"] as const;
 
-export const stockistSchema = z.object({
-  name: z.string().trim().min(1, "Enter the business name.").max(200, "That's too long."),
-  type: z.enum(STOCKIST_TYPES, "Choose a type."),
-  address: z.string().trim().min(1, "Enter the address.").max(400, "That's too long."),
-  postcode,
-  phone: optional(30).refine((v) => v === null || /^[0-9+()\s-]{7,30}$/.test(v), "Enter a valid phone number."),
-  website: httpsUrl("Enter a web address starting https://"),
-  published: z.boolean(),
-});
+const emailField = (message: string) =>
+  z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(254, "That's too long.")
+    .transform((v, ctx) => {
+      if (v === "") return null;
+      if (!z.email().safeParse(v).success) {
+        ctx.addIssue({ code: "custom", message });
+        return z.NEVER;
+      }
+      return v;
+    });
+
+const dateField = z
+  .string()
+  .trim()
+  .transform((v, ctx) => {
+    if (v === "") return null;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(v) || Number.isNaN(Date.parse(v))) {
+      ctx.addIssue({ code: "custom", message: "Enter a date." });
+      return z.NEVER;
+    }
+    return v;
+  });
+
+export const stockistSchema = z
+  .object({
+    name: z.string().trim().min(1, "Enter the business name.").max(200, "That's too long."),
+    type: z.enum(STOCKIST_TYPES, "Choose a type."),
+    address: z.string().trim().min(1, "Enter the address.").max(400, "That's too long."),
+    postcode,
+    phone: optional(30).refine((v) => v === null || /^[0-9+()\s-]{7,30}$/.test(v), "Enter a valid phone number."),
+    website: httpsUrl("Enter a web address starting https://"),
+    email: emailField("Enter a valid email address."),
+    opening_hours: optional(600),
+    description: optional(600),
+    published: z.boolean(),
+    /** The owner has confirmed these details with the business. Required before it can be published. */
+    verified: z.boolean(),
+    verification_note: optional(1000),
+    // Private to the owner
+    lead_email: emailField("Enter a valid email address."),
+    admin_note: optional(2000),
+    finish_ids: z.array(z.uuid()).max(200),
+    price_list_id: z.union([z.uuid(), z.literal("")]).transform((v) => v || null),
+    terms_note: optional(2000),
+    payment_terms: optional(300),
+    terms_valid_from: dateField,
+    terms_valid_to: dateField,
+  })
+  .superRefine((v, ctx) => {
+    if (v.published && !v.verified) {
+      ctx.addIssue({ code: "custom", path: ["published"], message: "Confirm the details with the business and tick Verified before publishing." });
+    }
+    if (v.terms_valid_from && v.terms_valid_to && v.terms_valid_to <= v.terms_valid_from) {
+      ctx.addIssue({ code: "custom", path: ["terms_valid_to"], message: "The end date must be after the start." });
+    }
+  });
 export type StockistInput = z.infer<typeof stockistSchema>;
 
 export function parseStockist(form: FormData): Parsed<StockistInput> {
@@ -76,7 +127,20 @@ export function parseStockist(form: FormData): Parsed<StockistInput> {
       postcode: str(form, "postcode"),
       phone: str(form, "phone"),
       website: str(form, "website"),
+      email: str(form, "email"),
+      opening_hours: str(form, "opening_hours"),
+      description: str(form, "description"),
       published: form.get("published") === "on",
+      verified: form.get("verified") === "on",
+      verification_note: str(form, "verification_note"),
+      lead_email: str(form, "lead_email"),
+      admin_note: str(form, "admin_note"),
+      finish_ids: form.getAll("finish_ids").filter((v): v is string => typeof v === "string"),
+      price_list_id: str(form, "price_list_id"),
+      terms_note: str(form, "terms_note"),
+      payment_terms: str(form, "payment_terms"),
+      terms_valid_from: str(form, "terms_valid_from"),
+      terms_valid_to: str(form, "terms_valid_to"),
     }),
   );
 }
@@ -201,4 +265,87 @@ export function variantFromFinish(input: FinishInput) {
     width_mm: input.plank_width_mm !== undefined ? Math.round(input.plank_width_mm) : null,
     thickness_mm: input.thickness_mm ?? null,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Sample dispatch
+// ---------------------------------------------------------------------------
+export const dispatchSchema = z.object({
+  carrier: optional(80),
+  tracking_ref: optional(120),
+  dispatch_note: optional(500),
+  notify_customer: z.boolean(),
+});
+export type DispatchInput = z.infer<typeof dispatchSchema>;
+
+export function parseDispatch(form: FormData): Parsed<DispatchInput> {
+  return collect(
+    dispatchSchema.safeParse({
+      carrier: str(form, "carrier"),
+      tracking_ref: str(form, "tracking_ref"),
+      dispatch_note: str(form, "dispatch_note"),
+      notify_customer: form.get("notify_customer") === "on",
+    }),
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Variants (a pack size or format of a finish)
+// ---------------------------------------------------------------------------
+export const UNITS_OF_SALE = ["m2", "pack", "item", "linear_metre"] as const;
+
+const decimal = (message: string, max: number) =>
+  z.string().transform((v, ctx) => {
+    const t = v.trim();
+    if (t === "") return null;
+    const n = Number(t);
+    if (!/^\d{1,5}(\.\d{1,3})?$/.test(t) || n <= 0 || n > max) {
+      ctx.addIssue({ code: "custom", message });
+      return z.NEVER;
+    }
+    return n;
+  });
+
+export const variantSchema = z
+  .object({
+    sku: z
+      .string()
+      .trim()
+      .toUpperCase()
+      .regex(/^[A-Z0-9][A-Z0-9-]{2,39}$/, "Use 3 to 40 letters, numbers or dashes."),
+    name: z.string().trim().min(1, "Enter a name, e.g. Standard pack.").max(120, "That's too long."),
+    unit_of_sale: z.enum(UNITS_OF_SALE, "Choose how it is sold."),
+    pack_coverage_m2: decimal("Enter the area a pack covers, e.g. 2.21.", 100),
+    units_per_pack: decimal("Enter a whole number.", 10000),
+    length_mm: decimal("Enter millimetres.", 10000),
+    width_mm: decimal("Enter millimetres.", 10000),
+    thickness_mm: decimal("Enter millimetres, e.g. 5.", 100),
+    vat_percent: decimal("Enter a percentage, e.g. 20.", 100).transform((v) => v ?? 20),
+    active: z.boolean(),
+  })
+  .superRefine((v, ctx) => {
+    if (v.unit_of_sale === "pack" && v.pack_coverage_m2 === null && v.units_per_pack === null) {
+      ctx.addIssue({ code: "custom", path: ["pack_coverage_m2"], message: "A pack needs the area it covers." });
+    }
+    if (v.units_per_pack !== null && !Number.isInteger(v.units_per_pack)) {
+      ctx.addIssue({ code: "custom", path: ["units_per_pack"], message: "Enter a whole number." });
+    }
+  });
+export type VariantInput = z.infer<typeof variantSchema>;
+
+export function parseVariant(form: FormData): Parsed<VariantInput> {
+  return collect(
+    variantSchema.safeParse({
+      sku: str(form, "sku"),
+      name: str(form, "name"),
+      unit_of_sale: str(form, "unit_of_sale"),
+      pack_coverage_m2: str(form, "pack_coverage_m2"),
+      units_per_pack: str(form, "units_per_pack"),
+      length_mm: str(form, "length_mm"),
+      width_mm: str(form, "width_mm"),
+      thickness_mm: str(form, "thickness_mm"),
+      vat_percent: str(form, "vat_percent"),
+      active: form.get("active") === "on",
+    }),
+  );
 }

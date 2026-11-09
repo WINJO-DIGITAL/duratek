@@ -30,7 +30,8 @@ const NOTICE: Record<string, string> = {
   title: "Give the document a title.",
   type: "Choose a document type.",
   size: "That file is over 4 MB. Please compress it, or upload it in the Supabase dashboard.",
-  pdf: "That file isn’t a PDF.",
+  pdf: "That file isn’t the right type for this kind of document.",
+  image: "Photography must be a PNG, JPEG or WebP image.",
   confirm: "Tick the box to confirm deleting.",
   failed: "That didn’t work. Please try again.",
 };
@@ -53,9 +54,9 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/docum
       <form action={uploadDocument} encType="multipart/form-data" className="card space-y-5 p-5 sm:p-6">
         <h2 className="text-display-sm text-navy">Upload a document</h2>
         <div>
-          <label htmlFor="doc-file" className="text-[0.9375rem] font-medium text-navy">PDF file</label>
-          <input id="doc-file" name="file" type="file" required accept="application/pdf" className="mt-2 block w-full text-[0.9375rem] text-navy file:mr-4 file:min-h-tap file:rounded-control file:border file:border-navy/40 file:bg-white file:px-4 file:text-navy" />
-          <p className="mt-1 text-[0.8125rem] text-ink-muted">Up to 4 MB.</p>
+          <label htmlFor="doc-file" className="text-[0.9375rem] font-medium text-navy">File</label>
+          <input id="doc-file" name="file" type="file" required accept="application/pdf,image/png,image/jpeg,image/webp,application/zip" className="mt-2 block w-full text-[0.9375rem] text-navy file:mr-4 file:min-h-tap file:rounded-control file:border file:border-navy/40 file:bg-white file:px-4 file:text-navy" />
+          <p className="mt-1 text-[0.8125rem] text-ink-muted">Up to 4 MB. Guides, warranties and certificates are PDF; photography is PNG, JPEG or WebP; brand assets can also be a ZIP. Public ones are open to everyone, trade-only ones need an approved account.</p>
         </div>
         <div className="grid gap-5 sm:grid-cols-3">
           <Field id="doc-title" name="title" label="Title" required maxLength={200} placeholder="Fitting guide" />

@@ -18,6 +18,7 @@ export interface ExplorerFinish extends FilterableFinish {
   /** "Natural oak · Standard plank" */
   detail: string;
   measures: string;
+  sampleAvailable?: boolean;
   grain?: CatalogueImage;
   room?: CatalogueImage;
   swatch?: CatalogueImage;
@@ -267,7 +268,7 @@ export function FinishExplorer({
               {current.measures && <p className="data mt-1 text-[0.8125rem] text-on-dark/75">{current.measures}</p>}
               <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-2">
                 <AddToSamplesButton
-                  finish={{ id: current.id, slug: current.slug, name: current.name }}
+                  finish={{ id: current.id, slug: current.slug, name: current.name, unavailable: current.sampleAvailable === false }}
                   quietMessage
                 />
                 <Link

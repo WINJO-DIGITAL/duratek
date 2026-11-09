@@ -17,7 +17,7 @@ export async function GET() {
   if (error) return new NextResponse("Couldn't export", { status: 500 });
   const name = new Map(finishes.map((f) => [f.id, f.name]));
   const csv = toCsv(
-    ["Received", "Status", "Sent", "Name", "Email", "Phone", "Address line 1", "Address line 2", "Town", "Postcode", "Samples", "Marketing opt-in"],
+    ["Received", "Status", "Sent", "Name", "Email", "Phone", "Address line 1", "Address line 2", "Town", "Postcode", "Samples", "Marketing opt-in", "Carrier", "Tracking", "Dispatch note"],
     (data ?? []).map((r) => [
       r.created_at,
       r.status,
@@ -31,6 +31,9 @@ export async function GET() {
       r.postcode,
       r.finish_ids.map((id) => name.get(id) ?? id),
       r.marketing_opt_in ? "yes" : "no",
+      r.carrier ?? "",
+      r.tracking_ref ?? "",
+      r.dispatch_note ?? "",
     ]),
   );
   const date = new Date().toISOString().slice(0, 10);

@@ -79,6 +79,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
       }
     >
       {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
+      <p className="-mt-2 mb-6">
+        <a href="/admin/prices/history" className="min-h-tap py-3 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">
+          Review price history
+        </a>
+      </p>
 
       <section aria-labelledby="base-heading">
         <h2 id="base-heading" className="text-display-sm text-navy">Base prices, per m²</h2>

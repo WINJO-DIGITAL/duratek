@@ -92,7 +92,7 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
               );
             }
             const grain = grainImage(f);
-            const sample = { id: f.id, slug: f.slug, name: f.name };
+            const sample = { id: f.id, slug: f.slug, name: f.name, unavailable: f.sampleAvailable === false };
             return (
               <li key={f.slug} className="relative flex flex-col">
                 <Link href={`/range/${f.slug}`} className="relative block aspect-[4/5] overflow-hidden rounded-card bg-line shadow-card">

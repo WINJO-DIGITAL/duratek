@@ -97,7 +97,12 @@ select is(public.get_shared_quote(current_setting('test.token')) -> 'trader' ->>
 select is(public.get_shared_quote(current_setting('test.token')) -> 'trader' ->> 'brand_colour', '#2B5D3A', '...and brand colour');
 select is(public.get_shared_quote(current_setting('test.token')) -> 'lines' -> 0 ->> 'room_name', 'Kitchen', '...and room names');
 select is(jsonb_array_length(public.get_shared_quote(current_setting('test.token')) -> 'lines'), 6, 'every line is there');
-select ok(public.get_shared_quote(current_setting('test.token'))::text !~ '(unit_cost|4911|contingency|smith@home)', 'no cost, contingency or customer email in the customer copy');
+-- Check keys and values, not digits in random ids (a uuid can contain "4911" by chance).
+select ok(
+  public.get_shared_quote(current_setting('test.token'))::text !~ '(unit_cost|contingency|smith@home)'
+  and not exists (select 1 from jsonb_array_elements(public.get_shared_quote(current_setting('test.token')) -> 'lines') l
+                  where exists (select 1 from jsonb_each(l) e where e.key ~ 'cost' or e.value::text = '4911')),
+  'no cost, contingency or customer email in the customer copy');
 select ok(public.get_shared_quote(current_setting('test.token')) -> 'lines' -> 0 ? 'unit_sell_pence', 'sell prices are there');
 reset role;
 

@@ -6,7 +6,7 @@ import { redirect } from "next/navigation";
 import { TAGS } from "@/lib/catalogue";
 import { requireAdmin } from "@/lib/auth/admin";
 import type { AdminFormState } from "@/lib/admin/form-state";
-import { IMAGE_MAX_BYTES, IMAGE_TYPES, mergeSpecs, parseFinish, variantFromFinish } from "@/lib/admin/forms";
+import { IMAGE_MAX_BYTES, IMAGE_TYPES, mergeSpecs, parseFinish, parseVariant, variantFromFinish } from "@/lib/admin/forms";
 import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
 import { echo } from "@/lib/trade/quote-forms";
@@ -137,4 +137,55 @@ export async function updateImage(form: FormData) {
     .eq("id", id);
   updateTag(TAGS.finishes);
   back(finishId, "image-saved");
+}
+
+// ---------------------------------------------------------------------------
+// Archive and variants
+// ---------------------------------------------------------------------------
+
+/** Archive hides a finish everywhere and keeps it for history; restoring leaves it hidden until published. */
+export async function setArchived(form: FormData) {
+  await requireAdmin("manage_products", "/admin/finishes");
+  const id = String(form.get("id") ?? "");
+  if (!isUuid(id)) redirect("/admin/finishes");
+  const archive = form.get("archive") === "yes";
+  const db = await userSupabase();
+  const { error } = await db.from("finishes").update({ archived_at: archive ? new Date().toISOString() : null, ...(archive ? { published: false } : {}) }).eq("id", id);
+  updateTag(TAGS.finishes);
+  redirect(error ? `/admin/finishes/${id}?notice=archive-failed` : archive ? "/admin/finishes?notice=archived" : `/admin/finishes/${id}?notice=restored`);
+}
+
+/** Add or edit a variant. The default variant's measurements are edited with the finish itself. */
+export async function saveVariant(_prev: AdminFormState, form: FormData): Promise<AdminFormState> {
+  await requireAdmin("manage_products", "/admin/finishes");
+  const finishId = String(form.get("finish_id") ?? "");
+  const id = String(form.get("id") ?? "");
+  if (!isUuid(finishId)) return { status: "error", errors: {}, message: "That finish wasn’t found." };
+  const parsed = parseVariant(form);
+  if (!parsed.ok) return { status: "error", errors: parsed.errors, message: "Please check the highlighted fields.", values: echo(form) };
+  const v = parsed.data;
+  const row = {
+    sku: v.sku,
+    name: v.name,
+    unit_of_sale: v.unit_of_sale,
+    pack_coverage_m2: v.pack_coverage_m2,
+    units_per_pack: v.units_per_pack === null ? null : Math.round(v.units_per_pack),
+    length_mm: v.length_mm === null ? null : Math.round(v.length_mm),
+    width_mm: v.width_mm === null ? null : Math.round(v.width_mm),
+    thickness_mm: v.thickness_mm,
+    vat_rate_bp: Math.round(v.vat_percent * 100),
+    active: v.active,
+  };
+  const db = await userSupabase();
+  const { error } = isUuid(id)
+    ? await db.from("product_variants").update(row).eq("id", id).eq("finish_id", finishId)
+    : await db.from("product_variants").insert({ ...row, finish_id: finishId, is_default: false });
+  if (error) {
+    if (error.code === "23505") return { status: "error", errors: { sku: "Another product already uses this stock code, or this name." }, values: echo(form) };
+    if (error.code === "23514") return { status: "error", errors: { pack_coverage_m2: "A pack needs the area it covers." }, values: echo(form) };
+    return { status: "error", errors: {}, message: "Couldn’t save. Please try again.", values: echo(form) };
+  }
+  updateTag(TAGS.finishes);
+  refresh();
+  return { status: "saved", message: `Saved ${v.name}.` };
 }

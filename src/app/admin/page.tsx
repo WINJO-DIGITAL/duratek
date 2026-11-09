@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { AdminShell } from "@/components/admin/admin-shell";
+import { Figure, Ranking } from "@/components/admin/figures";
 import { PageTransition } from "@/components/layout/page-transition";
 import { getFinishes } from "@/lib/catalogue";
 import { redirect } from "next/navigation";
@@ -22,6 +23,18 @@ export default function AdminOverviewPage() {
   );
 }
 
+interface Overview {
+  products: { total: number; active: number; hidden: number; archived: number };
+  variants: number;
+  accounts: { trade_approved: number; pending: number; stockist_approved: number };
+  stockists: { live: number; unverified: number; total: number };
+  samples: { to_send: number; total: number };
+  enquiries: { new: number; total: number };
+  privacy_open: number;
+  quotes_7d: { day: string; created: number }[];
+  recent_activity: { at: string; action: string; table: string }[];
+}
+
 interface Stats {
   accounts: { pending: number; approved: number; rejected: number; new_30d: number };
   samples: { new: number; sent: number; last_30d: number; marketing_opt_in_30d: number };
@@ -35,6 +48,8 @@ interface Stats {
 }
 
 const weekFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" });
+const activityFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+const ACTIVITY: Record<string, string> = { insert: "Added", update: "Changed", delete: "Removed", erase_person: "Personal data erased", retention_purge: "Retention purge", delete_account: "Account deleted" };
 
 async function Content() {
   const account = await getAccount();
@@ -46,7 +61,8 @@ async function Content() {
   }
   await requireAdmin("view_reports", "/admin");
   const db = await userSupabase();
-  const [{ data, error }, finishes] = await Promise.all([db.rpc("admin_dashboard_stats"), getFinishes()]);
+  const [{ data, error }, finishes, overviewRes] = await Promise.all([db.rpc("admin_dashboard_stats"), getFinishes(), db.rpc("admin_overview")]);
+  const o = overviewRes.error ? null : (overviewRes.data as unknown as Overview);
   const name = new Map(finishes.map((f) => [f.id, f.name]));
   if (error || !data) {
     return (
@@ -67,12 +83,47 @@ async function Content() {
     <AdminShell current="/admin" title="Overview" intro="What needs you, and what customers are asking for.">
       <section aria-labelledby="todo-heading">
         <h2 id="todo-heading" className="sr-only">Waiting for you</h2>
-        <ul className="grid gap-3 sm:grid-cols-3">
+        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Todo href="/admin/accounts" count={s.accounts.pending} one="trade application waiting" many="trade applications waiting" />
-          <Todo href="/admin/samples" count={s.samples.new} one="sample request to send" many="sample requests to send" />
+          <Todo href="/admin/samples" count={o?.samples.to_send ?? s.samples.new} one="sample request to send" many="sample requests to send" />
+          <Todo href="/admin/enquiries" count={o?.enquiries.new ?? 0} one="new enquiry" many="new enquiries" />
           <Todo href="/admin/stockists" count={s.stockists.total - s.stockists.published} one="stockist not published" many="stockists not published" />
+          {o && o.privacy_open > 0 && <Todo href="/admin/privacy" count={o.privacy_open} one="privacy request open" many="privacy requests open" />}
         </ul>
       </section>
+
+      {o && (
+        <section aria-labelledby="glance-heading" className="mt-stack">
+          <h2 id="glance-heading" className="text-display-sm text-navy">At a glance</h2>
+          <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
+            <Figure label="Products" value={o.products.total} note={`${o.products.active} on the site, ${o.products.hidden} hidden, ${o.products.archived} archived`} />
+            <Figure label="Variants on sale" value={o.variants} note="pack sizes and formats" />
+            <Figure label="Trade accounts" value={o.accounts.trade_approved} note={`${o.accounts.pending} waiting for approval`} />
+            <Figure label="Stockists live" value={o.stockists.live} note={`${o.stockists.unverified} not yet verified · ${o.accounts.stockist_approved} stockist accounts`} />
+            <Figure label="Sample requests" value={o.samples.total} note={`${o.samples.to_send} to send`} />
+            <Figure label="Enquiries" value={o.enquiries.total} note={`${o.enquiries.new} new`} />
+            <Figure
+              label="Quotes started, 7 days"
+              value={o.quotes_7d.reduce((n, d) => n + d.created, 0)}
+              note="Traders’ own quotes to their customers: not Duratek sales"
+            />
+          </dl>
+          {o.recent_activity.length > 0 && (
+            <div className="mt-8">
+              <h3 className="text-[1rem] font-medium text-navy">Recent activity</h3>
+              <ul className="mt-3 divide-y divide-line border-y border-line text-[0.9375rem]">
+                {o.recent_activity.map((a, i) => (
+                  <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2">
+                    <span className="text-navy">{ACTIVITY[a.action] ?? a.action} · <span className="text-ink-muted">{a.table.replaceAll("_", " ")}</span></span>
+                    <span className="data text-[0.8125rem] text-ink-muted">{activityFmt.format(new Date(a.at))}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[0.8125rem] text-ink-muted">The full record, with who and what changed, is in the audit log.</p>
+            </div>
+          )}
+        </section>
+      )}
 
       <section aria-labelledby="figures-heading" className="mt-stack">
         <h2 id="figures-heading" className="text-display-sm text-navy">Last 30 days</h2>
@@ -153,37 +204,3 @@ function Todo({ href, count, one, many }: { href: string; count: number; one: st
   );
 }
 
-function Figure({ label, value, note }: { label: string; value: number | string; note: string }) {
-  return (
-    <div className="border-t border-line pt-4">
-      <dt className="text-[0.875rem] text-ink-muted">{label}</dt>
-      <dd className="data mt-2 text-[2rem] font-light leading-none text-navy">{value}</dd>
-      <dd className="mt-2 text-[0.8125rem] text-ink-muted">{note}</dd>
-    </div>
-  );
-}
-
-function Ranking({ id, title, rows, empty }: { id: string; title: string; empty: string; rows: { label: string; value: number; share: number; text: string }[] }) {
-  return (
-    <section aria-labelledby={id}>
-      <h2 id={id} className="text-display-sm text-navy">{title}</h2>
-      {rows.length === 0 ? (
-        <p className="mt-4 text-ink-muted">{empty}</p>
-      ) : (
-        <ul className="mt-6 space-y-3">
-          {rows.slice(0, 11).map((r) => (
-            <li key={r.label}>
-              <div className="flex items-baseline justify-between gap-4 text-[0.9375rem]">
-                <span className="text-navy">{r.label}</span>
-                <span className="data text-[0.875rem] text-ink-muted">{r.text}</span>
-              </div>
-              <div className="mt-1 h-1.5 rounded-full bg-line">
-                <div className="h-full rounded-full bg-navy" style={{ width: `${Math.max(2, r.share * 100)}%` }} />
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </section>
-  );
-}

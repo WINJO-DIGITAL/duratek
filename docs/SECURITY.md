@@ -77,3 +77,11 @@ Supabase dashboard, Authentication:
 - Set the Site URL to the live domain, with redirect URLs for `https://<domain>/**`.
 - Paste the three templates from `supabase/templates/`.
 - Set up custom SMTP (for example Resend) so auth emails come from Duratek.
+
+## Administration, enquiries and privacy
+
+- Enquiries, consent records, privacy requests, the email log and private stockist detail are readable only by the matching administrator permission (RLS). The public cannot read any of them, and only the server (service role) creates enquiries and privacy requests, after validation, a honeypot and rate limits.
+- `export_person_data`, `erase_person_data`, `purge_expired_personal_data` and `delete_trade_account` are security definer functions that check the permission (or the caller's own account) inside the function. Administrators cannot be deleted through them.
+- `record_finish_view` can be called only by the service role.
+- Uploaded documents are identified by their first bytes, not their name or declared type; SVG is never accepted.
+- The retention job needs `CRON_SECRET` and refuses without it.

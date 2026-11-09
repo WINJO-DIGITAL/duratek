@@ -10,7 +10,7 @@ import { requireAdmin } from "@/lib/auth/admin";
 import { isUuid } from "@/lib/ids";
 import { formatPence, penceToInput } from "@/lib/money";
 import { userSupabase } from "@/lib/supabase/server";
-import { saveAccountPrices } from "./actions";
+import { deleteAccount, saveAccountPrices } from "./actions";
 
 export const metadata: Metadata = { title: "Account prices", robots: { index: false } };
 
@@ -28,6 +28,8 @@ const NOTICE: Record<string, string> = {
   saved: "Saved. The account sees these prices next time a page loads.",
   invalid: "One of the prices isn’t valid. Use pounds and pence, like 19.50. Nothing was saved.",
   error: "Couldn’t save. Please try again.",
+  "delete-confirm": "Tick the box to confirm deleting the account.",
+  "delete-failed": "The account couldn’t be deleted. Administrators can’t be deleted here.",
 };
 
 async function Content({ params, searchParams }: { params: PageProps<"/admin/accounts/[id]">["params"]; searchParams: PageProps<"/admin/accounts/[id]">["searchParams"] }) {
@@ -120,6 +122,21 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/acc
         </div>
         <Button type="submit" className="mt-6">Save account prices</Button>
       </form>
-    </AdminShell>
+    
+      <section aria-labelledby="delete-heading" className="mt-stack border-t border-line pt-8">
+        <h2 id="delete-heading" className="text-display-sm text-navy">Delete this account</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
+          For a request to be forgotten. It removes the account and everything the trader owns: customers, projects, quotes and settings. It can&rsquo;t be undone. Suspending the account is gentler.
+        </p>
+        <form action={deleteAccount} className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
+          <input type="hidden" name="profile_id" value={profile.id} />
+          <label className="flex min-h-tap items-center gap-2 text-[0.875rem] text-navy">
+            <input type="checkbox" name="confirm" value="yes" className="size-5 accent-green-ink" />
+            Delete this account for good
+          </label>
+          <Button type="submit" variant="outline">Delete account</Button>
+        </form>
+      </section>
+</AdminShell>
   );
 }

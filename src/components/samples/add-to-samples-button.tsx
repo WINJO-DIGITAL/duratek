@@ -50,6 +50,14 @@ export function AddToSamplesButton({
   const compact = size === "compact";
   const hideMessage = compact || quietMessage;
 
+  if (finish.unavailable && !added) {
+    return (
+      <p className={cn("inline-flex min-h-tap items-center text-ink-muted", compact ? "text-[0.875rem]" : "px-2 text-[0.9375rem]", className)}>
+        Samples out of stock just now
+      </p>
+    );
+  }
+
   return (
     <div className={cn("flex flex-col gap-2", className)}>
       <button

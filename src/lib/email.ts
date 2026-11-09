@@ -41,7 +41,4 @@ export async function sendEmail(message: {
   }
 }
 
-/** Escape text for inclusion in HTML email bodies. */
-export function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-}
+export { escapeHtml } from "./escape";

@@ -43,23 +43,35 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/stock
   await requireAdmin("manage_stockists", "/admin/stockists");
   const notice = NOTICE[String((await searchParams).notice ?? "")];
   const db = await userSupabase();
-  const [stockists, retailers] = await Promise.all([
+  const [stockists, retailers, priv, range, finishes, lists] = await Promise.all([
     db.from("stockists").select("*").order("published", { ascending: false }).order("name"),
     db.from("online_retailers").select("*").order("sort_order"),
+    db.from("stockist_private").select("*"),
+    db.from("stockist_products").select("stockist_id, finish_id"),
+    db.from("finishes").select("id, name").is("archived_at", null).order("sort_order"),
+    db.from("price_lists").select("id, name").in("kind", ["stockist", "trade"]).order("name"),
   ]);
+  const privBy = new Map((priv.data ?? []).map((r) => [r.stockist_id, r]));
+  const rangeBy = new Map<string, string[]>();
+  for (const r of range.data ?? []) rangeBy.set(r.stockist_id, [...(rangeBy.get(r.stockist_id) ?? []), r.finish_id]);
+  const finishList = finishes.data ?? [];
+  const priceLists = lists.data ?? [];
 
   return (
     <AdminShell
       current="/admin/stockists"
       title="Where to buy"
-      intro="Stockists appear in postcode search once published. Their location comes from the postcode when you save. Online retailers appear in their own block."
+      intro="A stockist appears in postcode search once it is verified and published. Their location comes from the postcode when you save. Online retailers appear in their own block."
     >
       {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
 
       <section aria-labelledby="add-heading" className="card p-5 sm:p-6">
         <h2 id="add-heading" className="text-display-sm text-navy">Add a stockist</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-navy/75">
+          Adding a stockist, for example Dave&rsquo;s Tiles, starts as a draft. Enter only details the business has confirmed, then tick Verified to publish. Nothing about a stockist is invented or shown until you do.
+        </p>
         <div className="mt-6">
-          <StockistForm values={{ published: true }} />
+          <StockistForm values={{}} finishes={finishList} priceLists={priceLists} />
         </div>
       </section>
 
@@ -81,12 +93,14 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/stock
                     </span>
                     <span className="flex items-center gap-3 text-[0.8125rem]">
                       {s.lat === null && <span className="text-error">No location</span>}
-                      <span className={s.published ? "text-green-ink" : "text-ink-muted"}>{s.published ? "Published" : "Hidden"}</span>
+                      <span className={s.published ? "text-green-ink" : "text-ink-muted"}>
+                        {s.published ? "Live" : s.verified_at ? "Verified, hidden" : "Draft, not verified"}
+                      </span>
                       <span aria-hidden="true" className="text-ink-muted group-open:rotate-45">+</span>
                     </span>
                   </summary>
                   <div className="mt-5">
-                    <StockistForm values={s} />
+                    <StockistForm values={{ ...s, private: privBy.get(s.id) ?? undefined, finishIds: rangeBy.get(s.id) ?? [] }} finishes={finishList} priceLists={priceLists} />
                     <DeleteForm id={s.id} label={s.name} action={deleteStockist} />
                   </div>
                 </details>

@@ -6,7 +6,7 @@ import { OrderSamplesButton } from "@/components/samples/order-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowUpRight, Phone } from "@/components/ui/icons";
 import { PostcodeSearch } from "@/components/where-to-buy/postcode-search";
-import { getOnlineRetailers } from "@/lib/catalogue";
+import { getFinishes, getOnlineRetailers } from "@/lib/catalogue";
 import { normalisePostcode } from "@/lib/postcode";
 import {
   formatMiles,
@@ -68,7 +68,8 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
     return <Notice title="That doesn't look like a UK postcode.">Check it and try again, for example SW1A 1AA.</Notice>;
   }
 
-  const [geo, stockists] = await Promise.all([geocodePostcode(postcode), getStockists()]);
+  const [geo, stockists, finishes] = await Promise.all([geocodePostcode(postcode), getStockists(), getFinishes()]);
+  const finishNames = new Map(finishes.map((f) => [f.id, f.name]));
   if (!geo.ok) {
     return geo.reason === "not-found" ? (
       <Notice title={`We couldn't find ${postcode}.`}>Check the postcode and try again.</Notice>
@@ -89,9 +90,12 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
             </h2>
             <ul className="mt-6 border-t border-line">
               {results.map((s) => (
-                <StockistRow key={s.id} stockist={s} miles={s.miles} />
+                <StockistRow key={s.id} stockist={s} miles={s.miles} finishNames={finishNames} />
               ))}
             </ul>
+            <p className="mt-6 max-w-prose text-[0.8125rem] text-ink-muted">
+              Stockists are independent businesses and set their own prices and stock. The recommended retail price on this site is a guide only.
+            </p>
           </>
         ) : (
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -108,6 +112,9 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
               <OrderSamplesButton />
               <ButtonLink href="#online" variant="quiet" arrow={false}>
                 Buy online
+              </ButtonLink>
+              <ButtonLink href="/contact" variant="quiet" arrow={false}>
+                Send us an enquiry
               </ButtonLink>
             </div>
           </div>
@@ -128,7 +135,8 @@ function Notice({ title, children }: { title: string; children: React.ReactNode 
   );
 }
 
-function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number }) {
+function StockistRow({ stockist: s, miles, finishNames }: { stockist: Stockist; miles: number; finishNames: Map<string, string> }) {
+  const range = s.finishIds.map((id) => finishNames.get(id)).filter((n): n is string => Boolean(n));
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${s.address}, ${s.postcode}`)}`;
   return (
     <li className="grid gap-4 border-b border-line py-6 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-10">
@@ -138,6 +146,19 @@ function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number
         <address className="mt-2 text-[0.9375rem] not-italic leading-relaxed text-ink-muted">
           {s.address}, {s.postcode}
         </address>
+        {s.description && <p className="mt-2 max-w-prose text-[0.9375rem] text-navy/75">{s.description}</p>}
+        {s.openingHours && (
+          <p className="mt-2 whitespace-pre-line text-[0.875rem] text-ink-muted">
+            <span className="font-medium text-navy">Opening: </span>
+            {s.openingHours}
+          </p>
+        )}
+        {range.length > 0 && (
+          <p className="mt-2 max-w-prose text-[0.875rem] text-ink-muted">
+            <span className="font-medium text-navy">Range carried: </span>
+            {range.join(", ")}. Stock changes, so please contact {s.name} to check availability.
+          </p>
+        )}
       </div>
       <div className="flex flex-col gap-1 sm:items-end">
         <p className="text-[0.9375rem] font-medium text-navy tabular-nums">{formatMiles(miles)}</p>
@@ -162,6 +183,19 @@ function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           )}
+          {s.email && (
+            <a href={`mailto:${s.email}`} className="inline-flex min-h-tap items-center px-3 text-[0.9375rem] text-navy hover:text-green-ink">
+              Email
+              <span className="sr-only"> {s.name}</span>
+            </a>
+          )}
+          <a
+            href={`/contact?stockist=${s.id}`}
+            className="inline-flex min-h-tap items-center px-3 text-[0.9375rem] font-medium text-navy underline decoration-green underline-offset-4"
+          >
+            Ask this stockist
+            <span className="sr-only"> ({s.name})</span>
+          </a>
           <a
             href={directions}
             target="_blank"

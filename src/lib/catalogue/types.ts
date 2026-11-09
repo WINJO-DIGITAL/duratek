@@ -38,6 +38,8 @@ export interface Finish {
   /** A public promotion's price per m² (VAT inclusive), when one is running and below the RRP. */
   offerPence?: number;
   images: CatalogueImage[];
+  /** False when free samples of this finish can't be sent just now. Absent means available. */
+  sampleAvailable?: boolean;
   /** Measured lightness of the swatch, 0 dark .. 1 light; undefined if unmeasured. */
   tone?: number;
 }

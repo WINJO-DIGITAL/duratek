@@ -3,7 +3,8 @@
 import { createHash } from "node:crypto";
 import { createClient } from "@supabase/supabase-js";
 import { headers } from "next/headers";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { escapeHtml } from "@/lib/email";
+import { notify } from "@/lib/notify";
 import { siteUrl } from "@/lib/site";
 import { adminSupabase } from "@/lib/supabase/admin";
 import {
@@ -135,7 +136,8 @@ export async function applyForTrade(_prev: TradeApplicationState, form: FormData
 
 async function sendApplicationEmails(app: TradeApplication): Promise<void> {
   const type = TRADE_TYPES.find((t) => t.value === app.trade_type)?.label ?? app.trade_type;
-  const applicant = sendEmail({
+  const applicant = notify({
+    kind: "application_received",
     to: app.email,
     subject: "Your Duratek trade application",
     text: `Hello ${app.contact_name},\n\nThank you for applying for a Duratek trade account for ${app.company_name}. Please confirm your email address with the separate link we've sent, then we'll check your details and email you when your account is approved.\n\nDuratek`,
@@ -143,14 +145,15 @@ async function sendApplicationEmails(app: TradeApplication): Promise<void> {
   });
   const ownerTo = process.env.OWNER_NOTIFY_EMAIL;
   const owner = ownerTo
-    ? sendEmail({
+    ? notify({
+        kind: "application_owner",
         to: ownerTo,
         replyTo: app.email,
         subject: `New trade application: ${app.company_name}`,
         text: `New trade application (pending approval)\n\nCompany: ${app.company_name}\nName: ${app.contact_name}\nEmail: ${app.email}\nPhone: ${app.phone}\nTrade: ${type}\nPostcode: ${app.postcode}\nCompany number: ${app.company_number || "-"}\nVAT number: ${app.vat_number || "-"}\n\nReview it at ${siteUrl("/admin/accounts")}`,
         html: `<p><strong>New trade application</strong> (pending approval)</p><p>Company: ${escapeHtml(app.company_name)}<br>Name: ${escapeHtml(app.contact_name)}<br>Email: ${escapeHtml(app.email)}<br>Phone: ${escapeHtml(app.phone)}<br>Trade: ${escapeHtml(type)}</p>`,
       })
-    : Promise.resolve(false);
+    : Promise.resolve("not_configured" as const);
   // The application is saved either way; a failed email is logged, not shown.
   await Promise.all([applicant, owner]);
 }

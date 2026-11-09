@@ -1,5 +1,6 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
+import { isMissingSchema } from "@/lib/catalogue/errors";
 import { publicSupabase } from "@/lib/supabase/public";
 import type { LatLng } from "./distance";
 
@@ -17,6 +18,12 @@ export interface Stockist {
   lng: number | null;
   phone: string | null;
   website: string | null;
+  /** Shown publicly only if the owner chose to publish an address. */
+  email: string | null;
+  openingHours: string | null;
+  description: string | null;
+  /** Finishes this stockist says it carries. Not live stock: always "check with the stockist". */
+  finishIds: string[];
 }
 
 export const STOCKIST_TYPE_LABELS: Record<StockistType, string> = {
@@ -34,11 +41,35 @@ export async function getStockists(): Promise<Stockist[]> {
   cacheTag(STOCKISTS_TAG);
   const { data, error } = await publicSupabase()
     .from("stockists")
+    .select("id, name, type, address, postcode, lat, lng, phone, website, email, opening_hours, description, stockist_products (finish_id)")
+    .eq("published", true)
+    .order("name");
+  if (!error) {
+    return data.map((s) => ({
+      id: s.id,
+      name: s.name,
+      type: s.type,
+      address: s.address,
+      postcode: s.postcode,
+      lat: s.lat,
+      lng: s.lng,
+      phone: s.phone,
+      website: s.website,
+      email: s.email,
+      openingHours: s.opening_hours,
+      description: s.description,
+      finishIds: s.stockist_products.map((p) => p.finish_id),
+    }));
+  }
+  // Deploy safety net: before the admin migration runs, these columns and the range table don't exist yet.
+  if (!isMissingSchema(error)) throw new Error(`Failed to load stockists: ${error.message}`);
+  const legacy = await publicSupabase()
+    .from("stockists")
     .select("id, name, type, address, postcode, lat, lng, phone, website")
     .eq("published", true)
     .order("name");
-  if (error) throw new Error(`Failed to load stockists: ${error.message}`);
-  return data;
+  if (legacy.error) throw new Error(`Failed to load stockists: ${legacy.error.message}`);
+  return legacy.data.map((s) => ({ ...s, email: null, openingHours: null, description: null, finishIds: [] }));
 }
 
 export type GeocodeResult = { ok: true; point: LatLng } | { ok: false; reason: "not-found" | "unavailable" };

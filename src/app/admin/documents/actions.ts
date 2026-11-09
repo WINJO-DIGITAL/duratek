@@ -3,13 +3,13 @@
 import { randomUUID } from "node:crypto";
 import { redirect } from "next/navigation";
 import { requireAdmin } from "@/lib/auth/admin";
-import { DOCUMENT_MAX_BYTES, DOCUMENT_TYPES, documentPath, type DocumentType } from "@/lib/documents";
+import { ALLOWED_MIME, DOCUMENT_MAX_BYTES, DOCUMENT_MIME, DOCUMENT_TYPES, documentPath, sniffMime, type DocumentType } from "@/lib/documents";
 import { isUuid } from "@/lib/ids";
 import { userSupabase } from "@/lib/supabase/server";
 
 const back = (notice: string) => redirect(`/admin/documents?notice=${notice}`);
 
-/** Uploads a PDF to the private documents bucket. Downloads go through short-lived signed links. */
+/** Uploads a file to the private documents bucket. Downloads go through short-lived signed links. */
 export async function uploadDocument(form: FormData) {
   await requireAdmin("manage_documents", "/admin/documents");
   const file = form.get("file");
@@ -23,18 +23,20 @@ export async function uploadDocument(form: FormData) {
   if (!title) back("title");
   if (!DOCUMENT_TYPES.some((d) => d.value === type)) back("type");
   if (f.size > DOCUMENT_MAX_BYTES) back("size");
-  // Check the file really is a PDF, not just named like one.
-  const head = new Uint8Array(await f.slice(0, 5).arrayBuffer());
-  if (f.type !== "application/pdf" || String.fromCharCode(...head) !== "%PDF-") back("pdf");
+  // The file's real type comes from its first bytes, and must be one this kind of document may be.
+  const mime = sniffMime(new Uint8Array(await f.slice(0, 12).arrayBuffer()));
+  if (!mime || !ALLOWED_MIME[type].includes(mime)) back(type === "marketing_photo" ? "image" : "pdf");
 
   const db = await userSupabase();
-  const path = documentPath(type, f.name, randomUUID());
-  const { error: upErr } = await db.storage.from("documents").upload(path, f, { contentType: "application/pdf", upsert: false });
+  const path = documentPath(type, f.name, randomUUID(), DOCUMENT_MIME[mime!]);
+  const { error: upErr } = await db.storage.from("documents").upload(path, f, { contentType: mime!, upsert: false });
   if (upErr) back("failed");
   const { error } = await db.from("documents").insert({
     title,
     type,
     storage_path: path,
+    content_type: mime!,
+    size_bytes: f.size,
     trade_only: tradeOnly,
     finish_id: isUuid(finishId) ? finishId : null,
   });

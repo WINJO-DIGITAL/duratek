@@ -1,5 +1,6 @@
 "use server";
 
+import { getAccount } from "@/lib/auth/session";
 import { requireApprovedTrade } from "@/lib/auth/trade";
 import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
@@ -67,4 +68,20 @@ export async function removeLogo() {
     await db.from("trade_preferences").upsert({ profile_id: account.userId, logo_path: null });
   }
   redirect("/trade/account/settings?notice=logo-removed#branding");
+}
+
+/**
+ * Deletes the signed-in trader's own account and everything it owns:
+ * customers, projects, quotes and settings. Needs the word DELETE typed.
+ * The database refuses for administrators and for anyone else's account.
+ */
+export async function deleteMyAccount(form: FormData) {
+  const account = await getAccount();
+  if (!account) redirect("/trade/login");
+  if (String(form.get("confirm") ?? "").trim() !== "DELETE") redirect("/trade/account/settings?notice=delete-confirm#your-data");
+  const db = await userSupabase();
+  const { error } = await db.rpc("delete_trade_account", { p_profile: account.userId });
+  if (error) redirect("/trade/account/settings?notice=delete-failed#your-data");
+  await db.auth.signOut().catch(() => {});
+  redirect("/trade?notice=account-deleted");
 }

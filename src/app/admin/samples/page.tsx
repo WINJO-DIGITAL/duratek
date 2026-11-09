@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { getFinishes } from "@/lib/catalogue";
 import { requireAdmin } from "@/lib/auth/admin";
 import { cn } from "@/lib/cn";
+import { emailConfigured } from "@/lib/email";
 import { userSupabase } from "@/lib/supabase/server";
-import { setSampleStatus } from "./actions";
+import { setSampleAvailability, updateSample } from "./actions";
 
 export const metadata: Metadata = { title: "Sample requests", robots: { index: false } };
 
@@ -25,30 +26,50 @@ export default function AdminSamplesPage({ searchParams }: PageProps<"/admin/sam
 const FILTERS = [
   { value: "new", label: "To send" },
   { value: "sent", label: "Sent" },
+  { value: "cancelled", label: "Cancelled" },
   { value: "all", label: "All" },
 ] as const;
 
+const NOTICE: Record<string, string> = {
+  sent: "Marked sent.",
+  "sent-emailed": "Marked sent, and the customer has been emailed.",
+  "sent-no-email": "Marked sent. No email provider is set up, so the customer was not emailed.",
+  "sent-email-failed": "Marked sent, but the email to the customer failed. It is in the email log.",
+  saved: "Saved.",
+  availability: "Sample availability updated.",
+  invalid: "Check the dispatch details and try again.",
+  error: "Couldn't save. Please try again.",
+};
+
+const STATUS_LABEL: Record<string, string> = { new: "To send", processing: "Packing", sent: "Sent", cancelled: "Cancelled" };
 const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
 
 async function Content({ searchParams }: { searchParams: PageProps<"/admin/samples">["searchParams"] }) {
   await requireAdmin("manage_samples", "/admin/samples");
-  const raw = String((await searchParams).filter ?? "new");
+  const sp = await searchParams;
+  const raw = String(sp.filter ?? "new");
   const filter = FILTERS.some((f) => f.value === raw) ? raw : "new";
+  const notice = NOTICE[String(sp.notice ?? "")];
   const db = await userSupabase();
   let q = db.from("sample_requests").select("*").order("created_at", { ascending: filter === "new" }).limit(500);
-  if (filter !== "all") q = q.eq("status", filter as "new" | "sent");
-  const [{ data }, finishes] = await Promise.all([q, getFinishes()]);
+  if (filter === "new") q = q.in("status", ["new", "processing"]);
+  else if (filter !== "all") q = q.eq("status", filter as "sent" | "cancelled");
+  const [{ data }, finishes, avail] = await Promise.all([q, getFinishes(), db.from("finishes").select("id, name, sample_available, published").is("archived_at", null).order("sort_order")]);
   const name = new Map(finishes.map((f) => [f.id, f.name]));
+  const outOfStock = new Set((avail.data ?? []).filter((f) => !f.sample_available).map((f) => f.id));
   const rows = data ?? [];
+  const canEmail = emailConfigured();
 
   return (
     <AdminShell
       current="/admin/samples"
       title="Sample requests"
-      intro="Oldest first, so nobody waits. Mark each request sent once it’s in the post. Personal details are visible only to you."
+      intro="Oldest first, so nobody waits. Free samples are never charged for. Personal details are visible only to you, and are anonymised after the retention period in Settings."
     >
+      {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
+
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <nav aria-label="Filter" className="flex gap-2">
+        <nav aria-label="Filter" className="flex flex-wrap gap-2">
           {FILTERS.map((f) => (
             <Link
               key={f.value}
@@ -76,7 +97,9 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/sampl
             <li key={r.id} className="card p-5 sm:p-6">
               <div className="flex flex-wrap items-start justify-between gap-x-8 gap-y-4">
                 <div className="min-w-0">
-                  <p className="text-[1.0625rem] text-navy">{r.name}</p>
+                  <p className="text-[1.0625rem] text-navy">
+                    {r.name} <span className="ml-2 rounded-control border border-line px-2 py-0.5 text-[0.75rem] text-ink-muted">{STATUS_LABEL[r.status] ?? r.status}</span>
+                  </p>
                   <address className="mt-1 text-[0.9375rem] not-italic text-ink-muted">
                     {[r.address_line1, r.address_line2, r.town, r.postcode].filter(Boolean).join(", ")}
                   </address>
@@ -89,27 +112,89 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/sampl
                     {r.finish_ids.map((id) => (
                       <li key={id} className="rounded-control border border-line bg-white px-2.5 py-1 text-[0.875rem] text-navy">
                         {name.get(id) ?? "Finish no longer published"}
+                        {outOfStock.has(id) && <span className="ml-1 text-error">(out of stock)</span>}
                       </li>
                     ))}
                   </ul>
+                  {r.status === "sent" && (
+                    <p className="mt-3 text-[0.875rem] text-ink-muted">
+                      {[r.carrier, r.tracking_ref && `Tracking ${r.tracking_ref}`, r.dispatch_note].filter(Boolean).join(" · ") || "No dispatch details recorded"}
+                      {r.customer_notified_at ? " · customer emailed" : ""}
+                    </p>
+                  )}
                 </div>
                 <div className="text-right">
                   <p className="data text-[0.8125rem] text-ink-muted">{dateFmt.format(new Date(r.created_at))}</p>
                   {r.sent_at && <p className="mt-1 text-[0.8125rem] text-green-ink">Sent {dateFmt.format(new Date(r.sent_at))}</p>}
-                  <form action={setSampleStatus} className="mt-3">
-                    <input type="hidden" name="id" value={r.id} />
-                    <input type="hidden" name="filter" value={filter} />
-                    <input type="hidden" name="status" value={r.status === "new" ? "sent" : "new"} />
-                    <Button type="submit" variant={r.status === "new" ? "primary" : "quiet"}>
-                      {r.status === "new" ? "Mark sent" : "Mark not sent"}
-                    </Button>
-                  </form>
                 </div>
               </div>
+
+              {(r.status === "new" || r.status === "processing") && (
+                <form action={updateSample} className="mt-5 grid gap-3 border-t border-line pt-4 sm:grid-cols-[1fr_1fr_2fr]">
+                  <input type="hidden" name="id" value={r.id} />
+                  <input type="hidden" name="filter" value={filter} />
+                  <label className="text-[0.8125rem] text-ink-muted">
+                    Carrier
+                    <input name="carrier" maxLength={80} placeholder="Royal Mail" className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy" />
+                  </label>
+                  <label className="text-[0.8125rem] text-ink-muted">
+                    Tracking reference
+                    <input name="tracking_ref" maxLength={120} className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy" />
+                  </label>
+                  <label className="text-[0.8125rem] text-ink-muted">
+                    Note for the customer or yourself
+                    <input name="dispatch_note" maxLength={500} className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy" />
+                  </label>
+                  <label className="flex min-h-tap items-center gap-2 text-[0.875rem] text-navy sm:col-span-3">
+                    <input type="checkbox" name="notify_customer" defaultChecked={canEmail} className="size-5 accent-green-ink" />
+                    Email the customer that their samples are on the way
+                    {!canEmail && <span className="text-ink-muted">(no email provider is set up, so nothing would be sent)</span>}
+                  </label>
+                  <div className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:col-span-3">
+                    <Button type="submit" name="intent" value="sent">Mark sent</Button>
+                    {r.status === "new" && (
+                      <Button type="submit" name="intent" value="processing" variant="outline">Start packing</Button>
+                    )}
+                    <Button type="submit" name="intent" value="cancelled" variant="quiet">Cancel request</Button>
+                  </div>
+                </form>
+              )}
+              {(r.status === "sent" || r.status === "cancelled") && (
+                <form action={updateSample} className="mt-4 border-t border-line pt-3">
+                  <input type="hidden" name="id" value={r.id} />
+                  <input type="hidden" name="filter" value={filter} />
+                  <Button type="submit" name="intent" value="reopen" variant="quiet">
+                    {r.status === "sent" ? "Mark not sent" : "Put back in the queue"}
+                  </Button>
+                </form>
+              )}
             </li>
           ))}
         </ul>
       )}
+
+      <section id="availability" aria-labelledby="avail-heading" className="mt-stack scroll-mt-24">
+        <h2 id="avail-heading" className="text-display-sm text-navy">Sample availability</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-navy/75">
+          Mark a finish out of stock when you have no samples to send. It stops being offered as a free sample, on the site and when a request is submitted.
+        </p>
+        <ul className="mt-6 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {(avail.data ?? []).map((f) => (
+            <li key={f.id} className="card flex items-center justify-between gap-3 p-4">
+              <span className="text-navy">
+                {f.name}
+                <span className={cn("block text-[0.8125rem]", f.sample_available ? "text-green-ink" : "text-error")}>{f.sample_available ? "Samples available" : "Out of stock"}</span>
+              </span>
+              <form action={setSampleAvailability}>
+                <input type="hidden" name="finish_id" value={f.id} />
+                <input type="hidden" name="filter" value={filter} />
+                <input type="hidden" name="available" value={f.sample_available ? "no" : "yes"} />
+                <Button type="submit" variant="quiet">{f.sample_available ? "Mark out of stock" : "Mark available"}</Button>
+              </form>
+            </li>
+          ))}
+        </ul>
+      </section>
     </AdminShell>
   );
 }

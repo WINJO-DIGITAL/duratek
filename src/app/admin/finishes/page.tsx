@@ -27,10 +27,12 @@ async function Content() {
   const db = await userSupabase();
   const { data } = await db
     .from("finishes")
-    .select("id, name, slug, published, is_demo, rrp_per_m2_pence, specs, sort_order, finish_images (url, kind, sort_order)")
+    .select("id, name, slug, published, is_demo, archived_at, rrp_per_m2_pence, specs, sort_order, finish_images (url, kind, sort_order)")
     .order("sort_order")
     .order("name");
-  const rows = data ?? [];
+  const all = data ?? [];
+  const rows = all.filter((f) => !f.archived_at);
+  const archived = all.filter((f) => f.archived_at);
 
   return (
     <AdminShell
@@ -38,7 +40,7 @@ async function Content() {
       title="Finishes"
       intro={
         <p>
-          The range as customers see it. Unpublish a finish to take it off the site without losing it. Finishes marked demo came from the Kwik
+          The range as customers see it. Unpublish a finish to take it off the site, or archive it to retire it; nothing is deleted. Finishes marked demo came from the Kwik
           Floors collection for the preview.
         </p>
       }
@@ -70,6 +72,23 @@ async function Content() {
           );
         })}
       </ul>
+
+      {archived.length > 0 && (
+        <section aria-labelledby="archived-heading" className="mt-stack">
+          <h2 id="archived-heading" className="text-display-sm text-navy">Archived</h2>
+          <p className="mt-2 text-[0.9375rem] text-ink-muted">Hidden everywhere, kept for history. Open one to restore it.</p>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {archived.map((f) => (
+              <li key={f.id}>
+                <Link href={`/admin/finishes/${f.id}`} className="card flex items-center justify-between gap-4 p-4 text-navy transition-colors hover:border-navy/40">
+                  <span className="truncate">{f.name}</span>
+                  <span className="text-[0.8125rem] text-ink-muted">Archived</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </AdminShell>
   );
 }

@@ -3,6 +3,8 @@ export interface SampleItem {
   id: string;
   slug: string;
   name: string;
+  /** Free samples of this finish can't be sent just now. Display only: the server checks again. */
+  unavailable?: boolean;
 }
 
 export type AddResult = "added" | "already" | "full";

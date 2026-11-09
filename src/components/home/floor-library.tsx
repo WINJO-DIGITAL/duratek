@@ -14,6 +14,7 @@ export interface LibraryBoard {
   name: string;
   detail: string;
   measures: string;
+  sampleAvailable?: boolean;
   swatch?: CatalogueImage;
 }
 
@@ -140,7 +141,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
           {current.measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{current.measures}</p>}
         </div>
         <div className="flex flex-wrap items-start gap-x-8 gap-y-2">
-          <AddToSamplesButton key={current.id} finish={{ id: current.id, slug: current.slug, name: current.name }} />
+          <AddToSamplesButton key={current.id} finish={{ id: current.id, slug: current.slug, name: current.name, unavailable: current.sampleAvailable === false }} />
           <ButtonLink href={`/range/${current.slug}`} variant="quiet">
             View finish
           </ButtonLink>

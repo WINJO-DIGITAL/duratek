@@ -3,7 +3,8 @@
 import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { getFinishes } from "@/lib/catalogue";
-import { escapeHtml, sendEmail } from "@/lib/email";
+import { escapeHtml } from "@/lib/email";
+import { notify } from "@/lib/notify";
 import { readSampleForm, sampleRequestSchema, SAMPLE_FIELDS, type SampleRequestState } from "@/lib/samples/request";
 import { samplesEnabled } from "@/lib/samples/settings";
 import { adminSupabase } from "@/lib/supabase/admin";
@@ -79,6 +80,18 @@ export async function requestSamples(_prev: SampleRequestState, form: FormData):
   }
   const names = chosen.map((f) => f!.name);
 
+  // Samples that are out of stock just now. Checked here, from the database, not from what the browser sent.
+  // (Forgiving before the admin migration: without the column every finish counts as available.)
+  const { data: out, error: outError } = await db.from("finishes").select("name").in("id", req.finish_ids).eq("sample_available", false);
+  if (!outError && out && out.length > 0) {
+    return {
+      status: "error",
+      message: `Samples of ${out.map((f) => f.name).join(" and ")} aren't available just now. Please choose another finish.`,
+      errors: { finish_ids: "Update your samples." },
+      values,
+    };
+  }
+
   // Rate limits.
   const h = await headers();
   const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || h.get("x-real-ip") || "unknown";
@@ -105,7 +118,42 @@ export async function requestSamples(_prev: SampleRequestState, form: FormData):
   }
   if ((siteWide.count ?? 0) >= SITE_WIDE_PER_HOUR) return busy(values);
 
-  const { error } = await db.from("sample_requests").insert({
+  // The same person asking again for the same finishes, or one address collecting many sets: refused kindly.
+  const monthAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const [again, sameAddress] = await Promise.all([
+    db
+      .from("sample_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("email", req.email)
+      .overlaps("finish_ids", req.finish_ids)
+      .in("status", ["new", "processing", "sent"])
+      .gte("created_at", monthAgo),
+    db
+      .from("sample_requests")
+      .select("id", { count: "exact", head: true })
+      .eq("postcode", req.postcode)
+      .ilike("address_line1", req.address_line1.replace(/[%_]/g, ""))
+      .in("status", ["new", "processing", "sent"])
+      .gte("created_at", monthAgo),
+  ]);
+  if (!again.error && (again.count ?? 0) > 0) {
+    return {
+      status: "error",
+      message: "You've already asked for one of these samples in the last month. It's on our list, so there's no need to ask again.",
+      errors: {},
+      values,
+    };
+  }
+  if (!sameAddress.error && (sameAddress.count ?? 0) >= 2) {
+    return {
+      status: "error",
+      message: "We've already received sample requests for this address recently. Please contact us if you need more.",
+      errors: {},
+      values,
+    };
+  }
+
+  const { data: saved, error } = await db.from("sample_requests").insert({
     name: req.name,
     email: req.email,
     phone: req.phone,
@@ -115,25 +163,41 @@ export async function requestSamples(_prev: SampleRequestState, form: FormData):
     postcode: req.postcode,
     finish_ids: req.finish_ids,
     marketing_opt_in: req.marketing_opt_in,
-  });
-  if (error) {
+  }).select("id").single();
+  if (error || !saved) {
     console.error("Sample request insert failed", error);
     return { status: "error", message: "Something went wrong on our side. Please try again.", errors: {}, values };
   }
 
-  await sendSampleEmails(req, names);
+  // Consent is recorded in the words the person saw, only when they ticked the box.
+  if (req.marketing_opt_in) {
+    await db.from("consent_records").insert({
+      email: req.email,
+      purpose: "marketing",
+      granted: true,
+      wording: "Send me occasional news from Duratek. You can unsubscribe at any time.",
+      source: "sample_request",
+      source_id: saved.id,
+    });
+  }
+
+  await sendSampleEmails(req, names, saved.id);
   return { status: "sent", firstName: req.name.split(/\s+/)[0], email: req.email, finishes: names };
 }
 
 async function sendSampleEmails(
   req: ReturnType<typeof sampleRequestSchema.parse>,
   names: string[],
+  requestId: string,
 ): Promise<void> {
   const address = [req.address_line1, req.address_line2, req.town, req.postcode].filter(Boolean).join(", ");
   const list = names.map((n) => `- ${n}`).join("\n");
   const htmlList = `<ul>${names.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`;
 
-  const customer = sendEmail({
+  const customer = notify({
+    kind: "sample_confirmation",
+    relatedTable: "sample_requests",
+    relatedId: requestId,
     to: req.email,
     subject: "Your Duratek sample request",
     text: `Hello ${req.name},\n\nThank you for requesting Duratek samples. We've received your request for:\n\n${list}\n\nThey'll be sent to: ${address}\n\nDuratek`,
@@ -142,14 +206,17 @@ async function sendSampleEmails(
 
   const ownerTo = process.env.OWNER_NOTIFY_EMAIL;
   const owner = ownerTo
-    ? sendEmail({
+    ? notify({
+        kind: "sample_owner",
+        relatedTable: "sample_requests",
+        relatedId: requestId,
         to: ownerTo,
         replyTo: req.email,
         subject: `New sample request: ${names.join(", ")}`,
         text: `New sample request\n\nName: ${req.name}\nEmail: ${req.email}\nPhone: ${req.phone ?? "-"}\nAddress: ${address}\nMarketing opt-in: ${req.marketing_opt_in ? "yes" : "no"}\n\nSamples:\n${list}`,
         html: `<p><strong>New sample request</strong></p><p>Name: ${escapeHtml(req.name)}<br>Email: ${escapeHtml(req.email)}<br>Phone: ${escapeHtml(req.phone ?? "-")}<br>Address: ${escapeHtml(address)}<br>Marketing opt-in: ${req.marketing_opt_in ? "yes" : "no"}</p><p>Samples:</p>${htmlList}`,
       })
-    : Promise.resolve(false);
+    : Promise.resolve("not_configured" as const);
 
   // The request is saved either way; a failed email is logged, not shown.
   await Promise.all([customer, owner]);

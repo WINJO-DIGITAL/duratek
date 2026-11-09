@@ -78,10 +78,15 @@ await p.getByRole("button", { name: "Add stockist" }).click();
 await p.getByText("Enter a valid UK postcode.").waitFor({ timeout: 10000 });
 check("stockist rejects a bad postcode and keeps typed values", (await p.inputValue("#s-new-name")) === "Kendal Flooring Centre");
 await p.fill("#s-new-postcode", "LA9 4DT"); await p.fill("#s-new-website", "kendalflooring.example.co.uk");
+await p.check("#s-new-name ~ * input[name=published], input[name=published] >> nth=0");
+await p.getByRole("button", { name: "Add stockist" }).click();
+await p.getByText(/Confirm the details with the business and tick Verified/).waitFor({ timeout: 15000 });
+check("an unverified stockist cannot be published", sql("select count(*) from stockists where name='Kendal Flooring Centre'") === "0");
+await p.check("input[name=verified] >> nth=0");
 await p.getByRole("button", { name: "Add stockist" }).click();
 await p.getByText(/Saved Kendal Flooring Centre/).waitFor({ timeout: 15000 });
-const st = sql("select postcode || '|' || website || '|' || published || '|' || coalesce(lat::text,'null') from stockists where name='Kendal Flooring Centre'");
-check("stockist saved with normalised postcode and https website", st.startsWith("LA9 4DT|https://kendalflooring.example.co.uk/|true"), st);
+const st = sql("select postcode || '|' || website || '|' || published || '|' || coalesce(lat::text,'null') || '|' || (verified_at is not null) from stockists where name='Kendal Flooring Centre'");
+check("stockist saved with normalised postcode and https website, verified", st.startsWith("LA9 4DT|https://kendalflooring.example.co.uk/|true") && st.endsWith("|true"), st);
 // Retailer
 await p.fill("#r-new-name", "Test Retailer"); await p.fill("#r-new-url", "http://insecure.example.com");
 await p.getByRole("button", { name: "Add retailer" }).click();

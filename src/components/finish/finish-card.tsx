@@ -66,7 +66,7 @@ export function FinishCard({
       </div>
       {/* Above the stretched link, in the photo's corner. */}
       <SaveButton
-        finish={{ id: finish.id, slug: finish.slug, name: finish.name }}
+        finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }}
         variant="overlay"
         className="absolute right-3 top-3 z-10"
       />
@@ -96,7 +96,7 @@ export function FinishCard({
         {/* Above the stretched link so it stays independently clickable. */}
         <div className="relative z-10 mt-auto pt-3">
           <div className="border-t border-line pt-1">
-            <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name }} size="compact" />
+            <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }} size="compact" />
           </div>
         </div>
       </div>

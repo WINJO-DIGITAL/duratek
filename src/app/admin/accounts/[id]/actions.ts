@@ -67,3 +67,14 @@ export async function saveAccountPrices(form: FormData) {
   }
   back("saved");
 }
+
+/** Deletes a trade account and everything it owns. The database refuses for administrators. Needs the settings permission. */
+export async function deleteAccount(form: FormData) {
+  await requireAdmin("manage_settings", "/admin/accounts");
+  const id = String(form.get("profile_id") ?? "");
+  if (!isUuid(id)) redirect("/admin/accounts");
+  if (form.get("confirm") !== "yes") redirect(`/admin/accounts/${id}?notice=delete-confirm`);
+  const db = await userSupabase();
+  const { error } = await db.rpc("delete_trade_account", { p_profile: id });
+  redirect(error ? `/admin/accounts/${id}?notice=delete-failed` : "/admin/accounts?notice=deleted");
+}

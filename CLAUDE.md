@@ -58,8 +58,8 @@ Audience: no homeowner/trade switch block (retired in the approved redesign, Nov
 - `/q/[token]`: a trader's quote, as their customer sees it (the trader's sell prices only; never cost or margin; printable)
 - `/documents/[id]`: document download through a 60 second signed link
 - `/s/[token]`: public shared shortlist (never shows prices)
-- `/admin`: owner overview; `/admin/accounts` (and `/[id]` account prices), `/admin/prices`, `/admin/finishes`, `/admin/samples`, `/admin/stockists`, `/admin/documents`
-- `/contact`, `/privacy`, `/cookies`, `/terms`
+- `/admin`: owner overview; `/admin/analytics`, `/admin/accounts` (and `/[id]` account prices), `/admin/prices` (and `/history`), `/admin/finishes`, `/admin/samples`, `/admin/stockists`, `/admin/enquiries`, `/admin/documents`, `/admin/settings`, `/admin/privacy`, `/admin/audit`
+- `/contact` (enquiry form: general, about a finish, or for a live stockist), `/privacy`, `/privacy/request`, `/cookies`, `/terms`
 
 ## Home page
 
@@ -138,8 +138,9 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 - `prices`: finish_id, tier_id, price_per_m2_pence (integer), updated_at
 - `price_overrides`: finish_id, profile_id, price_per_m2_pence
 - `documents`: id, title, type (tech sheet | warranty | certificate | fitting guide | brochure), finish_id nullable, storage_path, trade_only
-- `sample_requests`: id, name, email, phone, address_line1, address_line2, town, postcode, finish_ids, marketing_opt_in, status (new | sent), created_at
-- `stockists`: id, name, type (showroom | retailer | fitter), address, postcode, lat, lng, phone, website, published
+- `sample_requests`: id, name, email, phone, address_line1, address_line2, town, postcode, finish_ids, marketing_opt_in, status (new | processing | sent | cancelled), carrier, tracking_ref, dispatch_note, created_at. `finishes.sample_available` and `archived_at`
+- `enquiries`, `consent_records`, `privacy_requests`, `notification_log` (the real result of every email), `finish_views` (a daily count, nothing about the visitor). Reports distinguish enquiries, quotes and sales; actual sales are not tracked
+- `stockists`: id, name, type (showroom | retailer | fitter), address, postcode, lat, lng, phone, website, email, opening_hours, description, published, verified_at (required before published). Private to the owner in `stockist_private` (lead email, notes, commercial terms, price list); `stockist_products` is the range carried, never live stock
 - `online_retailers`: id, name, url, logo_path, sort_order, published
 - `shortlists`: id, profile_id, name, token, finish_ids, created_at
 - `inspiration`: id, title, mood, image_path, finish_ids, sort_order, published

@@ -45,13 +45,16 @@ export function allows(
 /** The admin screens, each behind its permission, in tab order. */
 export const ADMIN_AREAS = [
   { href: "/admin", label: "Overview", permission: "view_reports" },
+  { href: "/admin/analytics", label: "Analytics", permission: "view_reports" },
   { href: "/admin/accounts", label: "Trade accounts", permission: "manage_accounts" },
   { href: "/admin/prices", label: "Prices", permission: "manage_pricing" },
   { href: "/admin/finishes", label: "Finishes", permission: "manage_products" },
   { href: "/admin/samples", label: "Samples", permission: "manage_samples" },
   { href: "/admin/stockists", label: "Where to buy", permission: "manage_stockists" },
+  { href: "/admin/enquiries", label: "Enquiries", permission: "manage_stockists" },
   { href: "/admin/documents", label: "Documents", permission: "manage_documents" },
   { href: "/admin/settings", label: "Settings", permission: "manage_settings" },
+  { href: "/admin/privacy", label: "Privacy", permission: "manage_settings" },
   { href: "/admin/audit", label: "Audit log", permission: "view_audit" },
 ] as const satisfies readonly { href: string; label: string; permission: Permission }[];
 

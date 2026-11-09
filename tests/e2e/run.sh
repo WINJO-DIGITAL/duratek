@@ -9,7 +9,7 @@ cd "$(dirname "$0")/../.."
 grep -q "127.0.0.1:54321" .env.local || { echo "Refusing: .env.local is not the local stack."; exit 1; }
 export SRK=$(grep SUPABASE_SERVICE_ROLE_KEY .env.local | cut -d= -f2) ANON=$(grep NEXT_PUBLIC_SUPABASE_ANON_KEY .env.local | cut -d= -f2)
 # Online forms open only when email is configured; placeholders let them open. Sends fail quietly.
-export RESEND_API_KEY=re_local_placeholder EMAIL_FROM="Duratek <test@example.com>" OWNER_NOTIFY_EMAIL=owner@example.com
+export CRON_SECRET=e2e-cron-secret-not-real RESEND_API_KEY=re_local_placeholder EMAIL_FROM="Duratek <test@example.com>" OWNER_NOTIFY_EMAIL=owner@example.com
 
 npm run build >/tmp/duratek-e2e-build.log 2>&1 || { echo "build failed: see /tmp/duratek-e2e-build.log"; exit 1; }
 
@@ -31,5 +31,6 @@ fresh; run trade; server; run admin   # admin reads the trade suite's quote
 fresh; run auth
 fresh; run security
 fresh; run portal
+fresh; run ops
 fuser -k 3000/tcp >/dev/null 2>&1
 exit $status

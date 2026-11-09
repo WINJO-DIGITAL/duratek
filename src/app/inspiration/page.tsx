@@ -45,7 +45,7 @@ function Story({ item, finishes, large }: { item: InspirationItem; finishes: Map
                 {f.name}
               </Link>
             </p>
-            <AddToSamplesButton finish={{ id: f.id, slug: f.slug, name: f.name }} size="compact" />
+            <AddToSamplesButton finish={{ id: f.id, slug: f.slug, name: f.name, unavailable: f.sampleAvailable === false }} size="compact" />
           </div>
         ))}
       </figcaption>

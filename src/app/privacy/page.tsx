@@ -50,6 +50,22 @@ export default function PrivacyPage() {
         password is stored in a scrambled (hashed) form by our account provider; nobody can read it, including us.
       </p>
 
+      <h2>When you send an enquiry</h2>
+      <p>
+        If you write to us or ask a stockist a question, we ask for your name, email address and message, and, if you
+        choose, your phone number and postcode. We use them to reply. We only pass your message to a stockist if you
+        tick the box that says we may, and we keep a record of that choice and the words you agreed to. Stockists are
+        independent businesses that handle what you send them under their own privacy notices. We don&rsquo;t say
+        whether a stockist has a product in stock; please check with them.
+      </p>
+
+      <h2>When you view a finish</h2>
+      <p>
+        We count how many times each finish page is viewed, as a daily total. We don&rsquo;t record who viewed it,
+        your address or anything from your device, and we don&rsquo;t count visits from browsers that send Do Not
+        Track or Global Privacy Control.
+      </p>
+
       <h2>When you search by postcode</h2>
       <p>
         To find stockists near you, the postcode you enter is sent to{" "}
@@ -80,15 +96,21 @@ export default function PrivacyPage() {
       <p>They act on our instructions only. We don&rsquo;t sell your data or share it for advertising.</p>
 
       <h2>How long we keep it</h2>
-      <p>
-        We keep sample requests and trade account details only for as long as we need them for the purposes above,
-        and delete them when they&rsquo;re no longer needed.
-      </p>
+      {/* Keep in step with the retention settings in admin (Settings), and the defaults in the migration. */}
+      <ul>
+        <li>Sample requests and enquiries: 24 months, then your name, contact and address details are removed.</li>
+        <li>Rejected trade applications: 12 months after the decision, then deleted.</li>
+        <li>Emails we have sent, as a log: 90 days.</li>
+        <li>Records of what you agreed to: kept as evidence, with your email address removed if you ask us to delete your data.</li>
+        <li>Trade accounts: until you or we close them. You can delete your account yourself from Settings.</li>
+      </ul>
 
       <h2>Your rights</h2>
       <p>
         Under UK data protection law you can ask for a copy of your data, ask us to correct or delete it, object to how
-        we use it, and withdraw consent to marketing at any time. If you&rsquo;re unhappy with how we&rsquo;ve handled
+        we use it, and withdraw consent to marketing at any time. You can ask at{" "}
+        <Link href="/privacy/request">our privacy request page</Link>, and we&rsquo;ll reply within one month after checking it&rsquo;s you.
+        If you&rsquo;re unhappy with how we&rsquo;ve handled
         your data, you can complain to the{" "}
         <a href="https://ico.org.uk/make-a-complaint/" rel="noopener">
           Information Commissioner&rsquo;s Office

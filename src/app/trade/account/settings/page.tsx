@@ -7,7 +7,7 @@ import { CustomerModeBlocked, TradeShell, TradeSkeleton } from "@/components/tra
 import { Button } from "@/components/ui/button";
 import { requireApprovedTrade } from "@/lib/auth/trade";
 import { getFullPreferences, logoUrl } from "@/lib/trade/preferences";
-import { removeLogo, uploadLogo } from "./actions";
+import { deleteMyAccount, removeLogo, uploadLogo } from "./actions";
 
 export const metadata: Metadata = { title: "Trade settings", robots: { index: false } };
 
@@ -28,6 +28,8 @@ const NOTICE: Record<string, string> = {
   "logo-size": "That file is over 1 MB. Please use a smaller version.",
   "logo-type": "Use a PNG or JPEG image.",
   "logo-failed": "The upload didn’t work. Please try again.",
+  "delete-confirm": "Type DELETE in capitals to confirm.",
+  "delete-failed": "Your account couldn’t be deleted. Please try again or contact us.",
 };
 
 async function Content({ searchParams }: { searchParams: PageProps<"/trade/account/settings">["searchParams"] }) {
@@ -86,6 +88,27 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
           </aside>
         </div>
       </section>
-    </TradeShell>
+    
+      <section id="your-data" aria-labelledby="data-heading" className="mt-stack scroll-mt-24 border-t border-line pt-10">
+        <h2 id="data-heading" className="text-display-sm text-navy">Your information</h2>
+        <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
+          Download everything we hold on your account, or delete it. Only you can see your customers, projects and quotes, and deleting removes them.
+        </p>
+        <p className="mt-4">
+          <a href="/trade/account/settings/export" className="min-h-tap py-3 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">
+            Download my information (JSON)
+          </a>
+        </p>
+        <form action={deleteMyAccount} className="card mt-6 max-w-xl space-y-3 p-5">
+          <p className="font-medium text-navy">Delete my account</p>
+          <p className="text-[0.875rem] text-ink-muted">
+            This removes your account, customers, projects, quotes, shortlists and settings for good. Quote links you sent will stop working. It can&rsquo;t be undone.
+          </p>
+          <label htmlFor="delete-confirm" className="block text-[0.875rem] text-navy">Type DELETE to confirm</label>
+          <input id="delete-confirm" name="confirm" autoComplete="off" className="min-h-tap w-full rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy" />
+          <Button type="submit" variant="outline">Delete my account</Button>
+        </form>
+      </section>
+</TradeShell>
   );
 }
