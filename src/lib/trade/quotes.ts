@@ -1,5 +1,5 @@
 import "server-only";
-import { traderTotals, type QuoteLineKind, type QuoteUnit, type TraderTotals } from "@/lib/pricing";
+import { jobTotals, type JobTotals, type QuoteLineKind, type QuoteUnit } from "@/lib/pricing";
 import { userSupabase } from "@/lib/supabase/server";
 import { isUuid } from "@/lib/ids";
 
@@ -18,6 +18,7 @@ export interface QuoteLine {
   unitSellPence: number;
   areaM2: number | null;
   wastagePct: number | null;
+  roomName: string | null;
 }
 
 export interface Quote {
@@ -37,12 +38,15 @@ export interface Quote {
   respondedAt: string | null;
   createdAt: string;
   updatedAt: string;
+  customerId: string | null;
+  projectId: string | null;
+  contingencyBp: number;
   lines: QuoteLine[];
-  totals: TraderTotals;
+  totals: JobTotals;
 }
 
 const SELECT =
-  "id, reference, status, customer_name, customer_email, customer_phone, site_address, site_postcode, notes, valid_until, vat_rate_bp, share_token, sent_at, responded_at, created_at, updated_at, quote_lines (id, kind, finish_id, description, quantity, unit, unit_cost_pence, unit_sell_pence, area_m2, wastage_pct, sort_order, created_at)";
+  "id, reference, status, customer_name, customer_email, customer_phone, site_address, site_postcode, notes, valid_until, vat_rate_bp, share_token, sent_at, responded_at, created_at, updated_at, customer_id, project_id, contingency_bp, quote_lines (id, kind, finish_id, description, quantity, unit, unit_cost_pence, unit_sell_pence, area_m2, wastage_pct, room_name, sort_order, created_at)";
 
 type Row = {
   id: string;
@@ -61,6 +65,9 @@ type Row = {
   responded_at: string | null;
   created_at: string;
   updated_at: string;
+  customer_id: string | null;
+  project_id: string | null;
+  contingency_bp: number;
   quote_lines: {
     id: string;
     kind: QuoteLineKind;
@@ -72,6 +79,7 @@ type Row = {
     unit_sell_pence: number;
     area_m2: number | null;
     wastage_pct: number | null;
+    room_name: string | null;
     sort_order: number;
     created_at: string;
   }[];
@@ -91,6 +99,7 @@ function toQuote(r: Row): Quote {
       unitSellPence: l.unit_sell_pence,
       areaM2: l.area_m2 === null ? null : Number(l.area_m2),
       wastagePct: l.wastage_pct === null ? null : Number(l.wastage_pct),
+      roomName: l.room_name,
     }));
   return {
     id: r.id,
@@ -109,8 +118,11 @@ function toQuote(r: Row): Quote {
     respondedAt: r.responded_at,
     createdAt: r.created_at,
     updatedAt: r.updated_at,
+    customerId: r.customer_id,
+    projectId: r.project_id,
+    contingencyBp: r.contingency_bp,
     lines,
-    totals: traderTotals(lines, r.vat_rate_bp),
+    totals: jobTotals(lines, r.vat_rate_bp, r.contingency_bp),
   };
 }
 

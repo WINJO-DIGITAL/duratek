@@ -1,10 +1,11 @@
 "use client";
 
 import { useActionState } from "react";
-import { savePreferences, type SettingsState } from "@/app/trade/account/settings/actions";
+import { saveBranding, savePreferences, type SettingsState } from "@/app/trade/account/settings/actions";
 import { Button } from "@/components/ui/button";
 import { Field } from "@/components/ui/field";
-import type { Preferences } from "@/lib/trade/quote-forms";
+import { penceToInput } from "@/lib/money";
+import type { Branding, Preferences } from "@/lib/trade/quote-forms";
 
 export function SettingsForm({ prefs }: { prefs: Preferences }) {
   const [state, action, pending] = useActionState(savePreferences, { status: "idle" } as SettingsState);
@@ -30,6 +31,15 @@ export function SettingsForm({ prefs }: { prefs: Preferences }) {
           defaultValue={v("default_wastage", String(prefs.default_wastage_pct))}
           error={errors.default_wastage}
           required
+        />
+        <Field
+          name="labour_per_m2"
+          label="Labour rate"
+          hint="£ per m², ex VAT"
+          inputMode="decimal"
+          defaultValue={v("labour_per_m2", penceToInput(prefs.labour_per_m2_pence))}
+          error={errors.labour_per_m2}
+          placeholder="Optional"
         />
       </div>
       <label className="flex min-h-tap items-center gap-3 text-[0.9375rem] text-navy">
@@ -58,6 +68,44 @@ export function SettingsForm({ prefs }: { prefs: Preferences }) {
         </Button>
         <p aria-live="polite" className="text-[0.9375rem] text-navy">
           {state.status === "saved" && "Saved."}
+          {state.status === "error" && state.message && <span className="text-error">{state.message}</span>}
+        </p>
+      </div>
+    </form>
+  );
+}
+
+/** Branding for the trader's quotes: name, contact details, website, address and colour. */
+export function BrandingForm({ branding }: { branding: Branding }) {
+  const [state, action, pending] = useActionState(saveBranding, { status: "idle" } as SettingsState);
+  const errors = state.status === "error" ? state.errors : {};
+  const v = (k: keyof Branding) => (state.status === "error" && state.values?.[k] !== undefined ? state.values[k] : (branding[k] ?? ""));
+  return (
+    <form action={action} className="space-y-5">
+      <Field name="display_name" label="Business name on quotes" hint="Blank: your company name" defaultValue={v("display_name")} error={errors.display_name} maxLength={120} />
+      <div className="grid gap-5 sm:grid-cols-2">
+        <Field name="contact_email" label="Email" type="email" defaultValue={v("contact_email")} error={errors.contact_email} />
+        <Field name="contact_phone" label="Phone" type="tel" defaultValue={v("contact_phone")} error={errors.contact_phone} />
+      </div>
+      <div className="grid gap-5 sm:grid-cols-[1fr_10rem]">
+        <Field name="website" label="Website" hint="Optional" defaultValue={v("website")} error={errors.website} placeholder="yourbusiness.co.uk" />
+        <div>
+          <label htmlFor="field-brand_colour" className="text-[0.9375rem] font-medium text-navy">Brand colour</label>
+          <input
+            id="field-brand_colour"
+            name="brand_colour"
+            type="color"
+            defaultValue={v("brand_colour") || "#18364c"}
+            className="mt-2 block h-14 w-full cursor-pointer rounded-control border border-navy/25 bg-white p-1"
+          />
+          {errors.brand_colour && <p className="mt-2 text-[0.875rem] text-error">{errors.brand_colour}</p>}
+        </div>
+      </div>
+      <Field name="address" label="Business address" hint="Optional" defaultValue={v("address")} error={errors.address} maxLength={400} />
+      <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+        <Button type="submit" disabled={pending}>{pending ? "Saving" : "Save branding"}</Button>
+        <p aria-live="polite" className="text-[0.9375rem] text-navy">
+          {state.status === "saved" && "Saved. New quotes and PDFs use it straight away."}
           {state.status === "error" && state.message && <span className="text-error">{state.message}</span>}
         </p>
       </div>

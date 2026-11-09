@@ -36,9 +36,10 @@ await ctx.clearCookies();
 
 // Approved fitter.
 await login(page, "fitter@e2e.local");
-await page.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await page.goto(`${BASE}/trade/account/catalogue`);
+await page.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 let html = await page.content();
-check("approved fitter sees their prices", html.includes("Your prices") && html.includes("£22.22"));
+check("approved fitter sees their prices", html.includes("Your price, ex VAT") && html.includes("£22.22"));
 
 // Settings
 await page.goto(`${BASE}/trade/account/settings`);
@@ -105,29 +106,27 @@ await page.click("text=Add line");
 await page.getByText("Enter the price, like 6.99.").waitFor({ timeout: 10000 });
 check("other line rejects a bad price", true);
 
-// Customer view hides cost and margin on the quote
-await page.click("main button:has-text('Customer view')");
-const cvOn = await page.getByText("Customer view is on.").waitFor({ timeout: 10000 }).then(() => true, () => false);
-check("Customer view turns on", cvOn);
+// Customer mode: the quote (cost, profit) is not rendered at all; the catalogue and calculator carry no trade price
+await page.getByRole("button", { name: "Customer mode" }).first().click();
+const cvOn = await page.getByText("This is hidden in customer mode.").waitFor({ timeout: 10000 }).then(() => true, () => false);
+check("Customer mode turns on", cvOn);
 html = await page.content();
-check("Customer view on: quote hides cost and profit", !html.includes("£491.10") && !html.includes("£436.40") && !html.includes("Your profit"));
-check("Customer view on: customer total still shown", html.includes("£1,113.00"));
-await page.goto(`${BASE}/trade/account`);
-await page.getByText("The range").first().waitFor({ timeout: 10000 });
+check("Customer mode on: the quote page shows no cost, profit or customer total", !html.includes("£491.10") && !html.includes("£436.40") && !html.includes("£1,113.00") && !html.includes("Your profit"));
+await page.goto(`${BASE}/trade/account/catalogue`);
+await page.getByRole("heading", { name: "The Duratek range" }).waitFor({ timeout: 10000 });
 html = await page.content();
-check("Customer view on: price list hides trade price", !html.includes("£22.22"));
+check("Customer mode on: catalogue hides trade price", !html.includes("£22.22") && !html.includes("2222"));
 await page.goto(`${BASE}/trade/account/calculator`);
 await page.getByRole("heading", { name: "You need" }).waitFor({ timeout: 10000 });
 html = await page.content();
-check("Customer view on: calculator page carries no trade price", !html.includes("2222") && !html.includes("tradePence"));
-await page.click("main button:has-text('Exit Customer view')");
-await page.getByText("Showing a customer?").waitFor({ timeout: 10000 });
+check("Customer mode on: calculator page carries no trade price", !html.includes("2222") && !html.includes("tradePence"));
+await page.getByRole("button", { name: "Trade mode" }).first().click();
+await page.waitForLoadState("networkidle");
 
 // Share
 await page.goto(quoteUrl);
 await page.getByText("Mark as sent").waitFor({ timeout: 10000 });
 // draft link should not work
-const token = (await page.content()).match(/\/q\/([A-Za-z0-9_-]{20,})/)?.[1];
 await page.click("text=Mark as sent");
 await page.waitForURL(/notice=sent/, { waitUntil: "commit" }); await page.locator("input[readonly]").waitFor();
 const link = await page.inputValue("input[readonly]");

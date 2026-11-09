@@ -30,5 +30,6 @@ run() {
 fresh; run trade; server; run admin   # admin reads the trade suite's quote
 fresh; run auth
 fresh; run security
+fresh; run portal
 fuser -k 3000/tcp >/dev/null 2>&1
 exit $status

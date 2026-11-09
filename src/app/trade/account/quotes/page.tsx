@@ -4,11 +4,12 @@ import { Suspense } from "react";
 import { PageTransition } from "@/components/layout/page-transition";
 import { QuoteHeaderForm } from "@/components/trade/quote-forms";
 import { QuoteStatusChip } from "@/components/trade/quote-status";
-import { TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
+import { CustomerModeBlocked, TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
 import { requireApprovedTrade } from "@/lib/auth/trade";
 import { formatPence } from "@/lib/money";
 import { formatBp } from "@/lib/pricing";
 import { getPreferences } from "@/lib/trade/preferences";
+import { listCustomers } from "@/lib/trade/portal";
 import { listQuotes } from "@/lib/trade/quotes";
 
 export const metadata: Metadata = { title: "Quotes", robots: { index: false } };
@@ -27,7 +28,14 @@ const dateFmt = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short
 
 async function Content({ searchParams }: { searchParams: PageProps<"/trade/account/quotes">["searchParams"] }) {
   const { account, customerView } = await requireApprovedTrade("/trade/account/quotes");
-  const [quotes, prefs, params] = await Promise.all([listQuotes(), getPreferences(), searchParams]);
+  if (customerView) {
+    return (
+      <TradeShell account={account} customerView current="/trade/account/quotes" back="/trade/account/quotes" title="Quotes">
+        <CustomerModeBlocked back="/trade/account/quotes" />
+      </TradeShell>
+    );
+  }
+  const [quotes, prefs, customers, params] = await Promise.all([listQuotes(), getPreferences(), listCustomers(), searchParams]);
   const deleted = params.notice === "deleted";
 
   return (
@@ -70,7 +78,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
                       <span>
                         <span className="data block text-navy">{formatPence(q.totals.totalPence)}</span>
                         {!customerView && q.lines.length > 0 && (
-                          <span className="data block text-[0.8125rem] text-ink-muted">margin {formatBp(q.totals.marginBp)}</span>
+                          <span className="data block text-[0.8125rem] text-ink-muted">gross margin {formatBp(q.totals.grossMarginBp)}</span>
                         )}
                       </span>
                       <QuoteStatusChip status={q.status} />
@@ -85,7 +93,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
         <section aria-labelledby="new-heading" className="card p-5 sm:p-6">
           <h2 id="new-heading" className="text-display-sm text-navy">New quote</h2>
           <div className="mt-6">
-            <QuoteHeaderForm values={{ vatRateBp: prefs.vat_registered ? 2000 : 0 }} />
+            <QuoteHeaderForm customers={customers} values={{ vatRateBp: prefs.vat_registered ? 2000 : 0 }} />
           </div>
         </section>
       </div>

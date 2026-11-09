@@ -1,6 +1,6 @@
 import { chromium } from "./browser.mjs";
 import { execSync } from "node:child_process";
-const BASE = "http://localhost:3000", MAIL = "http://127.0.0.1:54324", S = (process.env.OUT ?? (await import("node:os")).tmpdir());
+const BASE = "http://localhost:3000", MAIL = "http://127.0.0.1:54324";
 const sql = (q) => execSync(`psql postgresql://postgres:postgres@127.0.0.1:54322/postgres -tAc "${q.replace(/"/g, '\\"')}"`).toString().trim();
 const results = []; const check = (n, ok, d = "") => { results.push(ok); console.log(`${ok ? "PASS" : "FAIL"}  ${n}${d ? "  — " + d : ""}`); };
 const text = async (p) => (await p.locator("main").innerText()).replace(/\s+/g, " ");
@@ -81,7 +81,7 @@ await op.waitForURL(/notice=approved/, { waitUntil: "commit" });
 check("owner approves with a tier", sql("select status from profiles p join auth.users u on u.id=p.id where u.email='apply@e2e.local'") === "approved");
 
 const fctx = await mk(); const fp = await login(fctx, "fitter@e2e.local");
-await fp.goto(`${BASE}/trade/account`); await fp.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await fp.goto(`${BASE}/trade/account/catalogue`); await fp.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 check("fitter sees trade prices before suspension", (await text(fp)).includes("£22.22"));
 await op.goto(`${BASE}/admin/accounts?filter=approved`); await op.getByText("Lakeland Floors").first().waitFor({ timeout: 10000 });
 const fcard = op.locator("li", { hasText: "Lakeland Floors" }).first();
@@ -104,7 +104,7 @@ check("the suspension is in the audit log", sql("select count(*) from audit_log 
 await op.goto(`${BASE}/admin/accounts?filter=suspended`); await op.getByText("Lakeland Floors").first().waitFor();
 await op.locator("li", { hasText: "Lakeland Floors" }).first().getByRole("button", { name: "Reinstate" }).click();
 await op.waitForURL(/notice=reinstated/, { waitUntil: "commit" });
-await fp.goto(`${BASE}/trade/account`); await fp.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await fp.goto(`${BASE}/trade/account/catalogue`); await fp.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 check("reinstated: prices are back", (await text(fp)).includes("£22.22"));
 
 // ---------------------------------------------------------------- roles and permissions
@@ -169,7 +169,7 @@ await pp.fill(`input[name="base:${tierA}:${kv}"]`, "22.50");
 await pp.getByRole("button", { name: "Save prices" }).click(); await pp.getByText(/Saved 1 change/).waitFor({ timeout: 10000 });
 check("base price saved through the grid", sql(`select amount_pence from price_list_items where price_list_id='${tierA}' and variant_id='${kv}' and min_quantity=1 and valid_from is null`) === "2250");
 check("legacy copy follows", sql(`select price_per_m2_pence from prices where tier_id=(select id from price_tiers where name like 'Demo tier A%') and finish_id=(select finish_id from product_variants where id='${kv}')`) === "2250");
-await fp.goto(`${BASE}/trade/account`); await fp.getByText("Your prices").first().waitFor();
+await fp.goto(`${BASE}/trade/account/catalogue`); await fp.getByText("Your price, ex VAT").first().waitFor();
 check("fitter sees the new price, not the future one", (await text(fp)).includes("£22.50") && !(await text(fp)).includes("£25.00"));
 
 // A quote over the volume break uses the break price, decided on the server.
@@ -193,7 +193,7 @@ check("owner reads it, with names", (await text(op)).includes("other@e2e.local")
 
 // ---------------------------------------------------------------- password reset and sessions
 const otherSession = await mk(); const os = await login(otherSession, "apply@e2e.local", "Original-Pass-1");
-await os.goto(`${BASE}/trade/account`); await os.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await os.goto(`${BASE}/trade/account/catalogue`); await os.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 check("a second device is signed in", true);
 const rp = await (await mk()).newPage();
 await rp.goto(`${BASE}/trade/forgot-password`); await rp.fill("#field-email", "nobody-here@e2e.local"); await rp.click("main button[type=submit]");

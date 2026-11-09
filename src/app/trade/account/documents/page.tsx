@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageTransition } from "@/components/layout/page-transition";
-import { TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
+import { CustomerModeBlocked, TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
 import { getFinishes } from "@/lib/catalogue";
 import { requireApprovedTrade } from "@/lib/auth/trade";
 import { DOCUMENT_TYPES } from "@/lib/documents";
@@ -21,6 +21,13 @@ export default function DocumentsPage() {
 
 async function Content() {
   const { account, customerView } = await requireApprovedTrade("/trade/account/documents");
+  if (customerView) {
+    return (
+      <TradeShell account={account} customerView current="/trade/account/documents" back="/trade/account/documents" title="Documents">
+        <CustomerModeBlocked back="/trade/account/documents" />
+      </TradeShell>
+    );
+  }
   const db = await userSupabase();
   const [docs, finishes] = await Promise.all([
     db.from("documents").select("id, title, type, finish_id, trade_only").order("title"),

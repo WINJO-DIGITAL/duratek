@@ -160,10 +160,10 @@ check("account price rejects a typo and saves nothing", sql(`select count(*) fro
 await p.locator(`input[name="override:${kid}"]`).waitFor({ timeout: 10000 });
 await p.fill(`input[name="override:${kid}"]`, "19.50");
 await p.getByRole("button", { name: "Save account prices" }).click(); await p.waitForURL(/notice=saved/, { timeout: 10000, waitUntil: "commit" });
-await fp.goto(`${BASE}/trade/account`); await fp.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await fp.goto(`${BASE}/trade/account/catalogue`); await fp.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 check("the fitter sees their account price", (await text(fp)).includes("£19.50"));
 const otherCtx = await mk(); const op = await login(otherCtx, "other@e2e.local");
-await op.goto(`${BASE}/trade/account`); await op.getByText("Your prices").first().waitFor({ timeout: 10000 });
+await op.goto(`${BASE}/trade/account/catalogue`); await op.getByText("Your price, ex VAT").first().waitFor({ timeout: 10000 });
 check("another trader on the same tier does not", !(await text(op)).includes("£19.50") && (await text(op)).includes("£22.22"));
 sql(`delete from price_overrides where profile_id='${fitterId}'`);
 

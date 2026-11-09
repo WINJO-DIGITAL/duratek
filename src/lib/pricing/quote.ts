@@ -1,7 +1,7 @@
 import { marginBp, vatOn } from "./margin";
 
 export type QuoteUnit = "pack" | "m2" | "item" | "hour" | "metre";
-export type QuoteLineKind = "flooring" | "accessory" | "labour" | "other";
+export type QuoteLineKind = "flooring" | "underlay" | "trim" | "adhesive" | "accessory" | "labour" | "delivery" | "expense" | "other";
 
 export interface CostedLine {
   quantity: number;
@@ -20,9 +20,28 @@ export const UNIT_LABELS: Record<QuoteUnit, { one: string; many: string }> = {
 
 export const KIND_LABELS: Record<QuoteLineKind, string> = {
   flooring: "Flooring",
+  underlay: "Underlay",
+  trim: "Trims",
+  adhesive: "Adhesives",
   accessory: "Accessories",
   labour: "Labour",
+  delivery: "Delivery",
+  expense: "Other expenses",
   other: "Other",
+};
+
+/** How a line counts in a job costing. */
+export type CostGroup = "materials" | "labour" | "additional";
+export const KIND_GROUP: Record<QuoteLineKind, CostGroup> = {
+  flooring: "materials",
+  underlay: "materials",
+  trim: "materials",
+  adhesive: "materials",
+  accessory: "materials",
+  labour: "labour",
+  delivery: "additional",
+  expense: "additional",
+  other: "additional",
 };
 
 export function formatQuantity(quantity: number, unit: QuoteUnit): string {
@@ -65,4 +84,66 @@ export function traderTotals(lines: CostedLine[], vatRateBp: number): TraderTota
   const c = customerTotals(lines, vatRateBp);
   const cost = lines.reduce((s, l) => s + lineCost(l), 0);
   return { ...c, costPence: cost, profitPence: c.subtotalPence - cost, marginBp: marginBp(cost, c.subtotalPence) };
+}
+
+export interface JobLine extends CostedLine {
+  kind: QuoteLineKind;
+  unitCostPence: number;
+}
+
+export interface JobTotals {
+  materialCostPence: number;
+  labourCostPence: number;
+  /** Delivery, expenses and anything else. */
+  additionalCostPence: number;
+  /** Internal allowance for the unexpected: a share of the costs above. Never shown to the customer. */
+  contingencyPence: number;
+  /** Everything the job costs the trader, before VAT, including contingency. */
+  totalJobCostPence: number;
+  /** What the customer pays before VAT. */
+  sellPence: number;
+  vatPence: number;
+  /** What the customer pays, with VAT. */
+  totalPence: number;
+  /** Selling price before VAT, less total job cost. Gross, not net: overheads and tax are not deducted. */
+  grossProfitPence: number;
+  /** Gross profit as a share of the selling price (basis points). */
+  grossMarginBp: number | null;
+  /** Gross profit as a share of the job cost (basis points). */
+  markupBp: number | null;
+}
+
+/** A full job costing from quote lines. Rounding: each line once, contingency once, VAT once. */
+export function jobTotals(lines: JobLine[], vatRateBp: number, contingencyBp = 0): JobTotals {
+  const cost = (g: CostGroup) => lines.filter((l) => KIND_GROUP[l.kind] === g).reduce((s, l) => s + lineCost(l), 0);
+  const materials = cost("materials");
+  const labour = cost("labour");
+  const additional = cost("additional");
+  const contingency = Math.round(((materials + labour + additional) * contingencyBp) / 10000 + Number.EPSILON);
+  const totalCost = materials + labour + additional + contingency;
+  const c = customerTotals(lines, vatRateBp);
+  const profit = c.subtotalPence - totalCost;
+  return {
+    materialCostPence: materials,
+    labourCostPence: labour,
+    additionalCostPence: additional,
+    contingencyPence: contingency,
+    totalJobCostPence: totalCost,
+    sellPence: c.subtotalPence,
+    vatPence: c.vatPence,
+    totalPence: c.totalPence,
+    grossProfitPence: profit,
+    grossMarginBp: marginBp(totalCost, c.subtotalPence),
+    markupBp: totalCost > 0 ? Math.round((profit * 10000) / totalCost + Number.EPSILON) : null,
+  };
+}
+
+/** Per-unit profit on a product: buying and selling price, both before VAT. */
+export function unitProfit(buyNetPence: number, sellNetPence: number) {
+  const grossProfitPence = sellNetPence - buyNetPence;
+  return {
+    grossProfitPence,
+    grossMarginBp: sellNetPence > 0 ? Math.round((grossProfitPence * 10000) / sellNetPence + Number.EPSILON) : null,
+    markupBp: buyNetPence > 0 ? Math.round((grossProfitPence * 10000) / buyNetPence + Number.EPSILON) : null,
+  };
 }

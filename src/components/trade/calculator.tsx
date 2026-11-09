@@ -4,14 +4,13 @@ import { useId, useMemo, useState } from "react";
 import { formatPence, inputToPence } from "@/lib/money";
 import {
   formatBp,
-  marginBp,
-  markupBp,
   packsPrice,
   percentToBp,
   planPacks,
   sellFromMargin,
   sellFromMarkup,
   totalArea,
+  unitProfit,
   vatOn,
   WASTAGE_OPTIONS,
   type Room,
@@ -35,6 +34,21 @@ const num = (s: string) => {
   return Number.isFinite(n) ? n : Number.NaN;
 };
 
+interface Extra {
+  kind: "underlay" | "trim" | "adhesive" | "accessory";
+  desc: string;
+  qty: string;
+  cost: string;
+  price: string;
+}
+
+const EXTRA_KINDS = [
+  { value: "underlay", label: "Underlay" },
+  { value: "trim", label: "Trim" },
+  { value: "adhesive", label: "Adhesive" },
+  { value: "accessory", label: "Accessory" },
+] as const;
+
 export function Calculator({
   finishes,
   showTrade,
@@ -55,6 +69,20 @@ export function Calculator({
   const [mode, setMode] = useState<"markup" | "margin">("markup");
   const [rate, setRate] = useState(String(defaultMarkupBp / 100));
   const [costOverride, setCostOverride] = useState("");
+  const [extras, setExtras] = useState<Extra[]>([]);
+  const extraTotals = extras.reduce(
+    (t, x) => {
+      const q = num(x.qty);
+      const c = inputToPence(x.cost);
+      const p = inputToPence(x.price);
+      if (!(q > 0)) return t;
+      return {
+        cost: t.cost + (typeof c === "number" ? Math.round(q * c) : 0),
+        price: t.price + (typeof p === "number" ? Math.round(q * p) : 0),
+      };
+    },
+    { cost: 0, price: 0 },
+  );
 
   const finish = finishes.find((f) => f.id === finishId);
   const parsedRooms: Room[] = rooms.map((r) => ({ lengthM: num(r.length), widthM: num(r.width) }));
@@ -70,19 +98,24 @@ export function Calculator({
     if (bp == null) return { costPerM2, error: mode === "margin" ? "Margin is 0 to 99.99%." : "Markup is 0 to 1000%." } as const;
     const sellPerM2 = mode === "markup" ? sellFromMarkup(costPerM2, bp) : sellFromMargin(costPerM2, bp);
     if (sellPerM2 == null) return { costPerM2, error: "Margin must be under 100%." } as const;
-    const cost = packsPrice(plan.packs, finish.coverageM2, costPerM2);
-    const sell = packsPrice(plan.packs, finish.coverageM2, sellPerM2);
+    const flooringCost = packsPrice(plan.packs, finish.coverageM2, costPerM2);
+    const flooringSell = packsPrice(plan.packs, finish.coverageM2, sellPerM2);
+    const cost = flooringCost + extraTotals.cost;
+    const sell = flooringSell + extraTotals.price;
+    const profit = unitProfit(cost, sell);
     return {
       costPerM2,
       sellPerM2,
+      flooringCost,
+      flooringSell,
       cost,
       sell,
-      profit: sell - cost,
-      margin: marginBp(cost, sell),
-      markup: markupBp(cost, sell),
+      profit: profit.grossProfitPence,
+      margin: profit.grossMarginBp,
+      markup: profit.markupBp,
       vat: vatRegistered ? vatOn(sell, 2000) : 0,
     } as const;
-  }, [showTrade, finish, plan, costOverride, rate, mode, vatRegistered]);
+  }, [showTrade, finish, plan, costOverride, rate, mode, vatRegistered, extraTotals.cost, extraTotals.price]);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_24rem] lg:items-start">
@@ -134,6 +167,52 @@ export function Calculator({
           </select>
         </div>
 
+        <fieldset className="border-t border-line pt-8">
+          <legend className={labelClass}>Underlay, trims, adhesives and accessories</legend>
+          <p className="mt-1 text-[0.8125rem] text-ink-muted">Duratek has underlay built in; add extra underlay only if the job needs it. Prices are each, before VAT.</p>
+          {extras.length > 0 && (
+            <ul className="mt-3 space-y-3">
+              {extras.map((x, i) => {
+                const set = (patch: Partial<Extra>) => setExtras(extras.map((y, j) => (j === i ? { ...y, ...patch } : y)));
+                return (
+                  <li key={i} className="grid grid-cols-2 gap-2 rounded-control border border-line p-3 sm:grid-cols-[8rem_1fr_5rem_6rem_6rem_auto] sm:items-end">
+                    <div>
+                      <label htmlFor={`${uid}-xk${i}`} className="text-[0.75rem] text-ink-muted">Type</label>
+                      <select id={`${uid}-xk${i}`} value={x.kind} onChange={(e) => set({ kind: e.target.value as Extra["kind"] })} className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-2 text-[0.9375rem] text-navy">
+                        {EXTRA_KINDS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
+                      </select>
+                    </div>
+                    <div className="col-span-2 sm:col-span-1">
+                      <label htmlFor={`${uid}-xd${i}`} className="text-[0.75rem] text-ink-muted">Description</label>
+                      <input id={`${uid}-xd${i}`} value={x.desc} onChange={(e) => set({ desc: e.target.value })} placeholder="Door bar" className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-2 text-[0.9375rem] text-navy" />
+                    </div>
+                    <div>
+                      <label htmlFor={`${uid}-xq${i}`} className="text-[0.75rem] text-ink-muted">Quantity</label>
+                      <input id={`${uid}-xq${i}`} inputMode="decimal" value={x.qty} onChange={(e) => set({ qty: e.target.value })} className="data mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-2 text-[0.9375rem] text-navy" />
+                    </div>
+                    {showTrade && (
+                      <div>
+                        <label htmlFor={`${uid}-xc${i}`} className="text-[0.75rem] text-ink-muted">Your cost</label>
+                        <input id={`${uid}-xc${i}`} inputMode="decimal" value={x.cost} onChange={(e) => set({ cost: e.target.value })} placeholder="£" className="data mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-2 text-[0.9375rem] text-navy" />
+                      </div>
+                    )}
+                    <div>
+                      <label htmlFor={`${uid}-xp${i}`} className="text-[0.75rem] text-ink-muted">Price</label>
+                      <input id={`${uid}-xp${i}`} inputMode="decimal" value={x.price} onChange={(e) => set({ price: e.target.value })} placeholder="£" className="data mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-2 text-[0.9375rem] text-navy" />
+                    </div>
+                    <button type="button" onClick={() => setExtras(extras.filter((_, j) => j !== i))} className="min-h-tap text-[0.875rem] text-ink-muted underline underline-offset-4 hover:text-error">
+                      Remove
+                    </button>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+          <button type="button" onClick={() => setExtras([...extras, { kind: "trim", desc: "", qty: "1", cost: "", price: "" }])} className="mt-3 min-h-tap text-[0.9375rem] text-navy underline decoration-green underline-offset-4">
+            Add underlay, a trim, adhesive or an accessory
+          </button>
+        </fieldset>
+
         {showTrade && (
           <fieldset className="border-t border-line pt-8">
             <legend className="sr-only">Pricing</legend>
@@ -180,13 +259,33 @@ export function Calculator({
             {trade && "error" in trade && <p className="mt-4 text-[0.875rem] text-error">{trade.error}</p>}
             {trade && !("error" in trade) && (
               <dl className="mt-6 rounded-control border border-line bg-white/60 px-4 py-2">
-                <Out label="Your cost" value={formatPence(trade.cost)} />
-                <Out label={`Sell (${formatPence(trade.sellPerM2)} per m²)`} value={formatPence(trade.sell)} />
-                {trade.vat > 0 && <Out label="Customer pays, with VAT" value={formatPence(trade.sell + trade.vat)} />}
-                <Out label="Your profit" value={formatPence(trade.profit)} strong />
-                <Out label="Margin · markup" value={`${formatBp(trade.margin)} · ${formatBp(trade.markup)}`} />
+                <Out label="Flooring, your cost" value={formatPence(trade.flooringCost)} />
+                {extraTotals.cost > 0 && <Out label="Extras, your cost" value={formatPence(extraTotals.cost)} />}
+                <Out label="Material cost" value={formatPence(trade.cost)} strong />
+                <Out label={`Flooring sell (${formatPence(trade.sellPerM2)}/m²)`} value={formatPence(trade.flooringSell)} />
+                {extraTotals.price > 0 && <Out label="Extras sell" value={formatPence(extraTotals.price)} />}
+                <Out label="Selling price, ex VAT" value={formatPence(trade.sell)} strong />
+                {trade.vat > 0 && <Out label="Customer pays, inc VAT" value={formatPence(trade.sell + trade.vat)} />}
+                <Out label="Gross profit" value={formatPence(trade.profit)} strong />
+                <Out label="Gross margin (profit ÷ sell)" value={formatBp(trade.margin)} />
+                <Out label="Markup (profit ÷ cost)" value={formatBp(trade.markup)} />
               </dl>
             )}
+            {!showTrade && extraTotals.price > 0 && (
+              <dl className="mt-4">
+                <Out label="Underlay, trims and accessories" value={formatPence(extraTotals.price)} />
+              </dl>
+            )}
+            <div className="mt-5 border-t border-line pt-4">
+              <h3 className="text-[0.875rem] font-medium text-navy">How this is worked out</h3>
+              <ul className="mt-2 space-y-1 text-[0.8125rem] text-ink-muted">
+                <li>Area is length × width for each room, added up and rounded to 0.01 m².</li>
+                <li>{plan.wastagePct}% is added for cuts and spares.</li>
+                <li>{finish.name} comes in packs of {finish.coverageM2} m²; packs are always rounded up, never down.</li>
+                <li>Prices are per pack (the per-m² price × pack coverage, to the penny), before VAT{vatRegistered ? "; VAT at 20%" : ""}.</li>
+                {showTrade && <li>Gross profit is before your labour, overheads and tax. Quotes re-price packs on the server, including any volume price.</li>}
+              </ul>
+            </div>
           </>
         ) : (
           <p className="mt-4 text-[0.9375rem] text-ink-muted">Enter a room’s length and width to see how many packs you need.</p>

@@ -85,6 +85,26 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"customers": {
+                  Row: {
+                    "address": string,"created_at": string,"email": string | null,"id": string,"name": string,"notes": string,"phone": string | null,"postcode": string | null,"profile_id": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address"?: string,"created_at"?: string,"email"?: string | null,"id"?: string,"name": string,"notes"?: string,"phone"?: string | null,"postcode"?: string | null,"profile_id"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "address"?: string,"created_at"?: string,"email"?: string | null,"id"?: string,"name"?: string,"notes"?: string,"phone"?: string | null,"postcode"?: string | null,"profile_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "customers_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"documents": {
                   Row: {
                     "created_at": string,"finish_id": string | null,"id": string,"storage_path": string,"title": string,"trade_only": boolean,"type": Database["public"]['Enums']["document_type"]
@@ -369,14 +389,14 @@ isOneToOne: false
                   ]
                 },"project_items": {
                   Row: {
-                    "area_m2": number | null,"created_at": string,"finish_id": string | null,"id": string,"note": string,"project_id": string,"room_name": string | null,"sort_order": number,"variant_id": string | null
+                    "area_m2": number | null,"created_at": string,"finish_id": string | null,"id": string,"length_m": number | null,"note": string,"project_id": string,"room_name": string | null,"sort_order": number,"variant_id": string | null,"wastage_pct": number | null,"width_m": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"note"?: string,"project_id": string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null
+                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"length_m"?: number | null,"note"?: string,"project_id": string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null,"wastage_pct"?: number | null,"width_m"?: number | null
                   }
                   Update: {
-                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"note"?: string,"project_id"?: string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null
+                    "area_m2"?: number | null,"created_at"?: string,"finish_id"?: string | null,"id"?: string,"length_m"?: number | null,"note"?: string,"project_id"?: string,"room_name"?: string | null,"sort_order"?: number,"variant_id"?: string | null,"wastage_pct"?: number | null,"width_m"?: number | null
                   }
                   Relationships: [
                     {
@@ -407,17 +427,23 @@ isOneToOne: false
                   ]
                 },"projects": {
                   Row: {
-                    "archived": boolean,"created_at": string,"customer_name": string | null,"id": string,"name": string,"notes": string,"profile_id": string,"site_postcode": string | null,"updated_at": string
+                    "archived": boolean,"created_at": string,"customer_id": string | null,"customer_name": string | null,"id": string,"name": string,"notes": string,"profile_id": string,"site_postcode": string | null,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "archived"?: boolean,"created_at"?: string,"customer_name"?: string | null,"id"?: string,"name": string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
+                    "archived"?: boolean,"created_at"?: string,"customer_id"?: string | null,"customer_name"?: string | null,"id"?: string,"name": string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "archived"?: boolean,"created_at"?: string,"customer_name"?: string | null,"id"?: string,"name"?: string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
+                    "archived"?: boolean,"created_at"?: string,"customer_id"?: string | null,"customer_name"?: string | null,"id"?: string,"name"?: string,"notes"?: string,"profile_id"?: string,"site_postcode"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
+      foreignKeyName: "projects_customer_id_fkey"
+      columns: ["customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "projects_profile_id_fkey"
       columns: ["profile_id"]
 isOneToOne: false
@@ -427,14 +453,14 @@ isOneToOne: false
                   ]
                 },"quote_lines": {
                   Row: {
-                    "area_m2": number | null,"created_at": string,"description": string,"finish_id": string | null,"id": string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"sort_order": number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence": number,"unit_sell_pence": number,"wastage_pct": number | null
+                    "area_m2": number | null,"created_at": string,"description": string,"finish_id": string | null,"id": string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"room_name": string | null,"sort_order": number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence": number,"unit_sell_pence": number,"wastage_pct": number | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "area_m2"?: number | null,"created_at"?: string,"description": string,"finish_id"?: string | null,"id"?: string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"sort_order"?: number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence": number,"wastage_pct"?: number | null
+                    "area_m2"?: number | null,"created_at"?: string,"description": string,"finish_id"?: string | null,"id"?: string,"kind": Database["public"]['Enums']["quote_line_kind"],"quantity": number,"quote_id": string,"room_name"?: string | null,"sort_order"?: number,"unit": Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence": number,"wastage_pct"?: number | null
                   }
                   Update: {
-                    "area_m2"?: number | null,"created_at"?: string,"description"?: string,"finish_id"?: string | null,"id"?: string,"kind"?: Database["public"]['Enums']["quote_line_kind"],"quantity"?: number,"quote_id"?: string,"sort_order"?: number,"unit"?: Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence"?: number,"wastage_pct"?: number | null
+                    "area_m2"?: number | null,"created_at"?: string,"description"?: string,"finish_id"?: string | null,"id"?: string,"kind"?: Database["public"]['Enums']["quote_line_kind"],"quantity"?: number,"quote_id"?: string,"room_name"?: string | null,"sort_order"?: number,"unit"?: Database["public"]['Enums']["quote_unit"],"unit_cost_pence"?: number,"unit_sell_pence"?: number,"wastage_pct"?: number | null
                   }
                   Relationships: [
                     {
@@ -459,17 +485,23 @@ isOneToOne: false
                   ]
                 },"quotes": {
                   Row: {
-                    "created_at": string,"customer_email": string | null,"customer_name": string,"customer_phone": string | null,"id": string,"notes": string,"profile_id": string,"project_id": string | null,"reference": string,"responded_at": string | null,"sent_at": string | null,"share_token": string,"site_address": string,"site_postcode": string | null,"status": Database["public"]['Enums']["quote_status"],"updated_at": string,"valid_until": string | null,"vat_rate_bp": number
+                    "contingency_bp": number,"created_at": string,"customer_email": string | null,"customer_id": string | null,"customer_name": string,"customer_phone": string | null,"id": string,"notes": string,"profile_id": string,"project_id": string | null,"reference": string,"responded_at": string | null,"sent_at": string | null,"share_token": string,"site_address": string,"site_postcode": string | null,"status": Database["public"]['Enums']["quote_status"],"updated_at": string,"valid_until": string | null,"vat_rate_bp": number
                   }
                   ComputedFields: never
                   Insert: {
-                    "created_at"?: string,"customer_email"?: string | null,"customer_name": string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                    "contingency_bp"?: number,"created_at"?: string,"customer_email"?: string | null,"customer_id"?: string | null,"customer_name": string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
                   }
                   Update: {
-                    "created_at"?: string,"customer_email"?: string | null,"customer_name"?: string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
+                    "contingency_bp"?: number,"created_at"?: string,"customer_email"?: string | null,"customer_id"?: string | null,"customer_name"?: string,"customer_phone"?: string | null,"id"?: string,"notes"?: string,"profile_id"?: string,"project_id"?: string | null,"reference"?: string,"responded_at"?: string | null,"sent_at"?: string | null,"share_token"?: string,"site_address"?: string,"site_postcode"?: string | null,"status"?: Database["public"]['Enums']["quote_status"],"updated_at"?: string,"valid_until"?: string | null,"vat_rate_bp"?: number
                   }
                   Relationships: [
                     {
+      foreignKeyName: "quotes_customer_id_fkey"
+      columns: ["customer_id"]
+isOneToOne: false
+      referencedRelation: "customers"
+      referencedColumns: ["id"]
+    },{
       foreignKeyName: "quotes_profile_id_fkey"
       columns: ["profile_id"]
 isOneToOne: false
@@ -611,14 +643,14 @@ isOneToOne: true
                   ]
                 },"trade_preferences": {
                   Row: {
-                    "default_markup_bp": number,"default_wastage_pct": number,"profile_id": string,"quote_footer": string,"updated_at": string,"vat_registered": boolean
+                    "address": string | null,"brand_colour": string | null,"contact_email": string | null,"contact_phone": string | null,"default_markup_bp": number,"default_wastage_pct": number,"display_name": string | null,"labour_per_m2_pence": number | null,"logo_path": string | null,"profile_id": string,"quote_footer": string,"updated_at": string,"vat_registered": boolean,"website": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "default_markup_bp"?: number,"default_wastage_pct"?: number,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean
+                    "address"?: string | null,"brand_colour"?: string | null,"contact_email"?: string | null,"contact_phone"?: string | null,"default_markup_bp"?: number,"default_wastage_pct"?: number,"display_name"?: string | null,"labour_per_m2_pence"?: number | null,"logo_path"?: string | null,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean,"website"?: string | null
                   }
                   Update: {
-                    "default_markup_bp"?: number,"default_wastage_pct"?: number,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean
+                    "address"?: string | null,"brand_colour"?: string | null,"contact_email"?: string | null,"contact_phone"?: string | null,"default_markup_bp"?: number,"default_wastage_pct"?: number,"display_name"?: string | null,"labour_per_m2_pence"?: number | null,"logo_path"?: string | null,"profile_id"?: string,"quote_footer"?: string,"updated_at"?: string,"vat_registered"?: boolean,"website"?: string | null
                   }
                   Relationships: [
                     {
@@ -703,7 +735,7 @@ isOneToOne: true
                            }
           }
           Enums: {
-            "account_role": "super_admin"|"admin"|"trade"|"stockist","admin_permission": "manage_accounts"|"manage_pricing"|"manage_products"|"manage_stockists"|"manage_samples"|"manage_documents"|"manage_settings"|"view_reports"|"view_audit","document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","price_list_kind": "rrp"|"trade"|"stockist"|"account"|"promotion","product_type": "flooring"|"accessory","profile_status": "pending"|"approved"|"rejected"|"suspended","promotion_audience": "public"|"trade"|"stockist"|"all","quote_line_kind": "flooring"|"accessory"|"labour"|"other","quote_status": "draft"|"sent"|"accepted"|"declined","quote_unit": "pack"|"m2"|"item"|"hour"|"metre","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier","unit_of_sale": "m2"|"pack"|"item"|"linear_metre"
+            "account_role": "super_admin"|"admin"|"trade"|"stockist","admin_permission": "manage_accounts"|"manage_pricing"|"manage_products"|"manage_stockists"|"manage_samples"|"manage_documents"|"manage_settings"|"view_reports"|"view_audit","document_type": "tech_sheet"|"warranty"|"certificate"|"fitting_guide"|"brochure","finish_style": "plank"|"herringbone","image_kind": "swatch"|"room"|"closeup","price_list_kind": "rrp"|"trade"|"stockist"|"account"|"promotion","product_type": "flooring"|"accessory","profile_status": "pending"|"approved"|"rejected"|"suspended","promotion_audience": "public"|"trade"|"stockist"|"all","quote_line_kind": "flooring"|"accessory"|"labour"|"other"|"underlay"|"trim"|"adhesive"|"delivery"|"expense","quote_status": "draft"|"sent"|"accepted"|"declined","quote_unit": "pack"|"m2"|"item"|"hour"|"metre","sample_status": "new"|"sent","stockist_type": "showroom"|"retailer"|"fitter","trade_type": "fitter"|"retailer"|"contractor"|"specifier","unit_of_sale": "m2"|"pack"|"item"|"linear_metre"
           }
           CompositeTypes: {
             [_ in never]: never
@@ -823,7 +855,7 @@ export const Constants = {
           }
         },"public": {
           Enums: {
-            "account_role": ["super_admin", "admin", "trade", "stockist"],"admin_permission": ["manage_accounts", "manage_pricing", "manage_products", "manage_stockists", "manage_samples", "manage_documents", "manage_settings", "view_reports", "view_audit"],"document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"price_list_kind": ["rrp", "trade", "stockist", "account", "promotion"],"product_type": ["flooring", "accessory"],"profile_status": ["pending", "approved", "rejected", "suspended"],"promotion_audience": ["public", "trade", "stockist", "all"],"quote_line_kind": ["flooring", "accessory", "labour", "other"],"quote_status": ["draft", "sent", "accepted", "declined"],"quote_unit": ["pack", "m2", "item", "hour", "metre"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"],"unit_of_sale": ["m2", "pack", "item", "linear_metre"]
+            "account_role": ["super_admin", "admin", "trade", "stockist"],"admin_permission": ["manage_accounts", "manage_pricing", "manage_products", "manage_stockists", "manage_samples", "manage_documents", "manage_settings", "view_reports", "view_audit"],"document_type": ["tech_sheet", "warranty", "certificate", "fitting_guide", "brochure"],"finish_style": ["plank", "herringbone"],"image_kind": ["swatch", "room", "closeup"],"price_list_kind": ["rrp", "trade", "stockist", "account", "promotion"],"product_type": ["flooring", "accessory"],"profile_status": ["pending", "approved", "rejected", "suspended"],"promotion_audience": ["public", "trade", "stockist", "all"],"quote_line_kind": ["flooring", "accessory", "labour", "other", "underlay", "trim", "adhesive", "delivery", "expense"],"quote_status": ["draft", "sent", "accepted", "declined"],"quote_unit": ["pack", "m2", "item", "hour", "metre"],"sample_status": ["new", "sent"],"stockist_type": ["showroom", "retailer", "fitter"],"trade_type": ["fitter", "retailer", "contractor", "specifier"],"unit_of_sale": ["m2", "pack", "item", "linear_metre"]
           }
         }
 } as const

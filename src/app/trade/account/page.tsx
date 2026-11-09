@@ -7,10 +7,13 @@ import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { byTone, getFinishes, grainImage } from "@/lib/catalogue";
-import { canSeeTradePrices, getAccount, inCustomerView } from "@/lib/auth/session";
+import { getAccount, inCustomerView } from "@/lib/auth/session";
 import { formatPence } from "@/lib/money";
-import { getTradePrices } from "@/lib/trade/prices";
-import { TradeShell } from "@/components/trade/trade-shell";
+import { QuoteStatusChip } from "@/components/trade/quote-status";
+import { CustomerModeBlocked, TradeShell } from "@/components/trade/trade-shell";
+import { userSupabase } from "@/lib/supabase/server";
+import { listProjects, listSavedFinishIds } from "@/lib/trade/portal";
+import { listQuotes } from "@/lib/trade/quotes";
 import { logOut, logOutEverywhere } from "./actions";
 
 export const metadata: Metadata = {
@@ -101,62 +104,149 @@ async function AccountContent({ searchParams }: { searchParams: PageProps<"/trad
   }
 
   const customerView = await inCustomerView();
-  const showTrade = await canSeeTradePrices(account);
-  const [finishes, prices] = await Promise.all([
-    getFinishes().then(byTone),
-    showTrade ? getTradePrices(account) : Promise.resolve(new Map()),
-  ]);
-
+  if (customerView) {
+    return (
+      <TradeShell account={account} customerView current="/trade/account" back="/trade/account" title="Dashboard">
+        <CustomerModeBlocked back="/trade/account" />
+      </TradeShell>
+    );
+  }
   return (
     <TradeShell
       account={account}
-      customerView={customerView}
+      customerView={false}
       current="/trade/account"
       back="/trade/account"
-      title={showTrade ? "Your prices" : "The range"}
-      intro={<p>Prices are per m². RRP is the public recommended price{showTrade ? "; yours is the price set for this account" : ""}.</p>}
+      title={`Hello${account.contactName ? `, ${account.contactName.split(/\s+/)[0]}` : ""}.`}
+      intro={<p>Everything for your jobs in one place: price a room, quote it, and show your customer the range.</p>}
     >
       {notice}
-      <section aria-label="Price list">
-        <div className="card">
-          <table className="w-full border-collapse text-left">
-            <caption className="sr-only">Finishes with their RRP{showTrade ? " and your price" : ""}, per square metre</caption>
-            <thead>
-              <tr className="border-b border-line text-[0.8125rem] text-ink-muted">
-                <th scope="col" className="px-4 py-3 font-medium sm:px-6">Finish</th>
-                <th scope="col" className="px-2 py-3 text-right font-medium sm:px-3">RRP</th>
-                {showTrade && <th scope="col" className="px-4 py-3 text-right font-medium sm:px-6">Your price</th>}
-              </tr>
-            </thead>
-            <tbody>
-              {finishes.map((f) => {
-                const swatch = grainImage(f);
-                const mine = prices.get(f.id);
-                return (
-                  <tr key={f.id} className="border-b border-line last:border-b-0">
-                    <th scope="row" className="px-4 py-2 font-normal sm:px-6 sm:py-3">
-                      <Link href={`/range/${f.slug}`} className="flex min-h-tap items-center gap-3 text-[0.9375rem] leading-tight text-navy hover:text-green-ink">
-                        <span className="relative hidden size-9 shrink-0 overflow-hidden rounded-control bg-line sm:block">
-                          {swatch && <Image src={swatch.src} alt="" fill sizes="36px" quality={70} className="object-cover" />}
-                        </span>
-                        {f.name}
-                      </Link>
-                    </th>
-                    <td className="data px-2 py-2 text-right text-[0.875rem] text-navy sm:px-3 sm:py-3 sm:text-[0.9375rem]">
-                      {f.rrpPence !== undefined ? formatPence(f.rrpPence) : "—"}
-                    </td>
-                    {showTrade && (
-                      <td className="data px-4 py-2 text-right text-[0.875rem] font-medium text-navy sm:px-6 sm:py-3 sm:text-[0.9375rem]">
-                        {mine ? formatPence(mine.pence) : "—"}
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+      <Dashboard account={account} />
+    </TradeShell>
+  );
+}
+
+async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<typeof getAccount>>> }) {
+  const db = await userSupabase();
+  const [finishes, quotes, projects, saved, docs, tier] = await Promise.all([
+    getFinishes().then(byTone),
+    listQuotes(),
+    listProjects(),
+    listSavedFinishIds(),
+    db.from("documents").select("id", { count: "exact", head: true }),
+    account.tierId ? db.from("price_tiers").select("name").eq("id", account.tierId).maybeSingle() : Promise.resolve({ data: null }),
+  ]);
+  const savedFinishes = saved.map((id) => finishes.find((f) => f.id === id)).filter((f) => f !== undefined).slice(0, 6);
+  const open = quotes.filter((q) => q.status === "sent");
+  const won = quotes.filter((q) => q.status === "accepted");
+
+  return (
+    <div className="space-y-12">
+      <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+        {[
+          { href: "/trade/account/projects#new", label: "New project", note: "Measure rooms" },
+          { href: "/trade/account/quotes", label: "New quote", note: "Price a job" },
+          { href: "/trade/present", label: "Present", note: "Show the range" },
+          { href: "/trade/account/calculator", label: "Calculator", note: "Packs and profit" },
+        ].map((a) => (
+          <li key={a.href}>
+            <Link href={a.href} className="card flex min-h-24 flex-col justify-center p-4 transition-colors hover:border-navy/40">
+              <span className="text-[1.0625rem] font-medium text-navy">{a.label}</span>
+              <span className="text-[0.8125rem] text-ink-muted">{a.note}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+
+      <div className="grid gap-10 lg:grid-cols-2">
+        <section aria-labelledby="quotes-heading">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="quotes-heading" className="text-display-sm text-navy">Recent quotes</h2>
+            <Link href="/trade/account/quotes" className="text-[0.9375rem] text-navy underline underline-offset-4">All quotes</Link>
+          </div>
+          <p className="mt-1 text-[0.875rem] text-ink-muted">{open.length} waiting for an answer · {won.length} accepted</p>
+          {quotes.length === 0 ? <p className="mt-4 text-ink-muted">No quotes yet.</p> : (
+            <ul className="mt-4 space-y-2">
+              {quotes.slice(0, 5).map((q) => (
+                <li key={q.id}>
+                  <Link href={`/trade/account/quotes/${q.id}`} className="card flex items-center justify-between gap-4 p-4 hover:border-navy/40">
+                    <span className="min-w-0"><span className="data block text-[0.8125rem] text-ink-muted">{q.reference}</span><span className="block truncate text-navy">{q.customerName}</span></span>
+                    <span className="flex items-center gap-3"><span className="data text-navy">{formatPence(q.totals.totalPence)}</span><QuoteStatusChip status={q.status} /></span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+        <section aria-labelledby="projects-heading">
+          <div className="flex items-baseline justify-between gap-4">
+            <h2 id="projects-heading" className="text-display-sm text-navy">Projects</h2>
+            <Link href="/trade/account/projects" className="text-[0.9375rem] text-navy underline underline-offset-4">All projects</Link>
+          </div>
+          {projects.length === 0 ? <p className="mt-4 text-ink-muted">No projects yet. Start one when you measure up.</p> : (
+            <ul className="mt-4 space-y-2">
+              {projects.slice(0, 5).map((p) => (
+                <li key={p.id}>
+                  <Link href={`/trade/account/projects/${p.id}`} className="card flex items-center justify-between gap-4 p-4 hover:border-navy/40">
+                    <span className="min-w-0"><span className="block truncate text-navy">{p.name}</span><span className="block text-[0.8125rem] text-ink-muted">{p.customerName ?? "No customer"}</span></span>
+                    <span className="data text-[0.875rem] text-navy">{p.rooms.length} {p.rooms.length === 1 ? "room" : "rooms"}</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
+      </div>
+
+      <section aria-labelledby="saved-heading">
+        <div className="flex items-baseline justify-between gap-4">
+          <h2 id="saved-heading" className="text-display-sm text-navy">Saved finishes</h2>
+          <Link href="/trade/account/catalogue" className="text-[0.9375rem] text-navy underline underline-offset-4">Catalogue and your prices</Link>
+        </div>
+        {savedFinishes.length === 0 ? (
+          <p className="mt-4 text-ink-muted">Save finishes from the catalogue to keep them here.</p>
+        ) : (
+          <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+            {savedFinishes.map((f) => {
+              const img = grainImage(f);
+              return (
+                <li key={f.id}>
+                  <Link href={`/trade/present/${f.slug}`} className="group block">
+                    <span className="frame relative block aspect-square bg-line">{img && <Image src={img.src} alt="" fill sizes="160px" quality={70} className="object-cover" />}</span>
+                    <span className="mt-2 block text-[0.9375rem] text-navy">{f.name}</span>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+
+      <section aria-labelledby="account-heading" className="grid gap-6 lg:grid-cols-2">
+        <div className="card p-5 sm:p-6">
+          <h2 id="account-heading" className="text-display-sm text-navy">Your account</h2>
+          <dl className="mt-4 text-[0.9375rem]">
+            {[
+              ["Status", "Approved trade account"],
+              ["Business", account.companyName || "—"],
+              ["Contact", account.contactName || "—"],
+              ["Email", account.email],
+              ["Price list", tier.data?.name ?? "Standard trade"],
+            ].map(([k, v]) => (
+              <div key={k} className="flex justify-between gap-4 border-b border-line py-2 last:border-b-0">
+                <dt className="text-ink-muted">{k}</dt>
+                <dd className="text-right text-navy">{v}</dd>
+              </div>
+            ))}
+          </dl>
+          <Link href="/trade/account/settings" className="mt-4 inline-block py-2 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">Settings and branding</Link>
+        </div>
+        <div className="card p-5 sm:p-6">
+          <h2 className="text-display-sm text-navy">Technical documents</h2>
+          <p className="mt-2 text-[0.9375rem] text-ink-muted">{docs.count ? `${docs.count} technical sheets, fitting guides and certificates.` : "Technical sheets, fitting guides and certificates appear here as Duratek adds them."}</p>
+          <Link href="/trade/account/documents" className="mt-4 inline-block py-2 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">Documents</Link>
         </div>
       </section>
-    </TradeShell>
+    </div>
   );
 }

@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { PageTransition } from "@/components/layout/page-transition";
 import { CopyLink } from "@/components/trade/copy-link";
 import { ShortlistForm } from "@/components/trade/shortlist-form";
-import { TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
+import { CustomerModeBlocked, TradeShell, TradeSkeleton } from "@/components/trade/trade-shell";
 import { byTone, getFinishes, grainImage } from "@/lib/catalogue";
 import { measureLine } from "@/lib/catalogue/format";
 import { requireApprovedTrade } from "@/lib/auth/trade";
@@ -25,6 +25,13 @@ export default function ShortlistsPage({ searchParams }: PageProps<"/trade/accou
 
 async function Content({ searchParams }: { searchParams: PageProps<"/trade/account/shortlists">["searchParams"] }) {
   const { account, customerView } = await requireApprovedTrade("/trade/account/shortlists");
+  if (customerView) {
+    return (
+      <TradeShell account={account} customerView current="/trade/account/shortlists" back="/trade/account/shortlists" title="Shortlists">
+        <CustomerModeBlocked back="/trade/account/shortlists" />
+      </TradeShell>
+    );
+  }
   const db = await userSupabase();
   const [finishes, lists, sp] = await Promise.all([
     getFinishes().then(byTone),

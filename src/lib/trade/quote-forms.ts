@@ -83,6 +83,19 @@ export const quoteHeaderSchema = z.object({
     .refine((v) => v === "" || (/^\d{4}-\d{2}-\d{2}$/.test(v) && !Number.isNaN(Date.parse(v))), "Enter a date.")
     .transform((v) => v || null),
   vat_rate_bp: z.enum(["0", "2000"], "Choose a VAT rate.").transform(Number),
+  contingency_bp: z.string().transform((v, ctx) => {
+    const bp = percentToBp(v || "0", { min: 0, max: 50 });
+    if (bp == null) {
+      ctx.addIssue({ code: "custom", message: "Contingency is 0 to 50%." });
+      return z.NEVER;
+    }
+    return bp;
+  }),
+  customer_id: z
+    .string()
+    .trim()
+    .transform((v) => v || null)
+    .refine((v) => v === null || z.uuid().safeParse(v).success, "Choose a customer."),
 });
 export type QuoteHeader = z.infer<typeof quoteHeaderSchema>;
 
@@ -97,6 +110,8 @@ export function parseQuoteHeader(form: FormData): Parsed<QuoteHeader> {
       notes: str(form, "notes"),
       valid_until: str(form, "valid_until"),
       vat_rate_bp: str(form, "vat_rate_bp") || "2000",
+      contingency_bp: str(form, "contingency"),
+      customer_id: str(form, "customer_id"),
     }),
   );
 }
@@ -124,7 +139,7 @@ export function parseFlooringLine(form: FormData): Parsed<FlooringLine> {
   );
 }
 
-export const OTHER_LINE_KINDS = ["accessory", "labour", "other"] as const;
+export const OTHER_LINE_KINDS = ["underlay", "trim", "adhesive", "accessory", "labour", "delivery", "expense", "other"] as const;
 export const LINE_UNITS = ["item", "m2", "metre", "hour", "pack"] as const;
 
 export const otherLineSchema = z.object({
@@ -158,6 +173,18 @@ export interface Preferences {
   default_wastage_pct: number;
   vat_registered: boolean;
   quote_footer: string;
+  /** Default labour rate per m², before VAT; null if not set. */
+  labour_per_m2_pence: number | null;
+}
+
+/** The trader's branding on quotes. */
+export interface Branding {
+  display_name: string | null;
+  contact_email: string | null;
+  contact_phone: string | null;
+  website: string | null;
+  address: string | null;
+  brand_colour: string | null;
 }
 
 export const DEFAULT_PREFERENCES: Preferences = {
@@ -165,6 +192,7 @@ export const DEFAULT_PREFERENCES: Preferences = {
   default_wastage_pct: 10,
   vat_registered: true,
   quote_footer: "",
+  labour_per_m2_pence: null,
 };
 
 export function parsePreferences(form: FormData): Parsed<Preferences> {
@@ -175,6 +203,8 @@ export function parsePreferences(form: FormData): Parsed<Preferences> {
   if (!/^\d{1,2}(\.\d)?$/.test(str(form, "default_wastage").trim()) || wastage > 50) errors.default_wastage = "Wastage is 0 to 50%.";
   const footer = str(form, "quote_footer").trim();
   if (footer.length > 2000) errors.quote_footer = "That's too long.";
+  const labour = inputToPence(str(form, "labour_per_m2"));
+  if (labour === undefined) errors.labour_per_m2 = "Enter a rate, like 15.00, or leave blank.";
   if (Object.keys(errors).length) return { ok: false, errors };
   return {
     ok: true,
@@ -183,9 +213,51 @@ export function parsePreferences(form: FormData): Parsed<Preferences> {
       default_wastage_pct: wastage,
       vat_registered: form.get("vat_registered") === "on",
       quote_footer: footer,
+      labour_per_m2_pence: labour as number | null,
     },
   };
 }
+
+const brandingSchema = z.object({
+  display_name: optionalText(120),
+  contact_email: z
+    .string()
+    .trim()
+    .toLowerCase()
+    .max(254, "That's too long.")
+    .refine((v) => v === "" || z.email().safeParse(v).success, "Enter a valid email address.")
+    .transform((v) => v || null),
+  contact_phone: optionalText(30).refine((v) => v === null || /^[0-9+()\s-]{7,30}$/.test(v), "Enter a valid phone number."),
+  website: z
+    .string()
+    .trim()
+    .max(300, "That's too long.")
+    .transform((v) => (v === "" ? null : /^https?:\/\//i.test(v) ? v.replace(/^http:/i, "https:") : `https://${v}`))
+    .refine((v) => v === null || /^https:\/\/[^\s/]+\.[^\s]+$/.test(v), "Enter your website address."),
+  address: optionalText(400),
+  brand_colour: z
+    .string()
+    .trim()
+    .transform((v) => v || null)
+    .refine((v) => v === null || /^#[0-9a-fA-F]{6}$/.test(v), "Choose a colour."),
+});
+
+export function parseBranding(form: FormData): Parsed<Branding> {
+  return collect(
+    brandingSchema.safeParse({
+      display_name: str(form, "display_name"),
+      contact_email: str(form, "contact_email"),
+      contact_phone: str(form, "contact_phone"),
+      website: str(form, "website"),
+      address: str(form, "address"),
+      brand_colour: str(form, "brand_colour"),
+    }),
+  );
+}
+
+/** Logos: PNG or JPEG up to 1 MB (the storage bucket enforces the same). */
+export const LOGO_MAX_BYTES = 1024 * 1024;
+export const LOGO_TYPES: Record<string, "png" | "jpg"> = { "image/png": "png", "image/jpeg": "jpg" };
 
 /** The text a form sent, so a form with errors can be shown again as typed (React resets fields after an action). */
 export function echo(form: FormData): Record<string, string> {

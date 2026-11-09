@@ -6,6 +6,8 @@ import { PrintButton } from "@/components/trade/print-button";
 import { Button } from "@/components/ui/button";
 import { formatPence } from "@/lib/money";
 import { customerTotals, formatBp, formatQuantity, lineSell } from "@/lib/pricing";
+import { groupByRoom } from "@/lib/trade/customer-quote";
+import { logoUrl } from "@/lib/trade/preferences";
 import { getSharedQuote } from "@/lib/trade/shared-quote";
 import { respondToQuote } from "./actions";
 
@@ -41,6 +43,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
     quote.vat_rate_bp,
   );
   const notice = NOTICE[String(sp.notice ?? "")];
+  const logo = logoUrl(quote.trader.logo_path);
   const expired = quote.valid_until ? new Date(`${quote.valid_until}T23:59:59`) < new Date() : false;
 
   return (
@@ -51,13 +54,24 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
         </p>
       )}
 
-      <article className="card p-6 sm:p-10">
+      <article className="card overflow-hidden">
+        <div className="h-1.5" style={{ background: quote.trader.brand_colour ?? "var(--color-navy)" }} />
+        <div className="p-6 sm:p-10">
         <header className="flex flex-wrap items-start justify-between gap-6 border-b border-line pb-6">
           <div>
-            <p className="font-display text-display-sm text-navy">{quote.trader.company_name || "Your fitter"}</p>
+            {logo ? (
+              // eslint-disable-next-line @next/next/no-img-element -- the trader's own logo, any size, from their public folder
+              <img src={logo} alt={`${quote.trader.company_name} logo`} className="h-14 w-auto max-w-[180px] object-contain object-left" />
+            ) : (
+              <p className="font-display text-display-sm text-navy">{quote.trader.company_name || "Your fitter"}</p>
+            )}
+            {logo && <p className="mt-2 text-navy">{quote.trader.company_name}</p>}
             <p className="mt-1 text-[0.9375rem] text-ink-muted">
-              {[quote.trader.contact_name, quote.trader.phone].filter(Boolean).join(" · ")}
+              {[quote.trader.contact_name, quote.trader.phone, quote.trader.email].filter(Boolean).join(" · ")}
             </p>
+            {(quote.trader.address || quote.trader.website) && (
+              <p className="mt-1 text-[0.875rem] text-ink-muted">{[quote.trader.address, quote.trader.website?.replace(/^https:\/\//, "")].filter(Boolean).join(" · ")}</p>
+            )}
           </div>
           <div className="sm:text-right">
             <h1>
@@ -94,8 +108,16 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
               <th scope="col" className="py-3 pl-3 text-right font-medium">Amount</th>
             </tr>
           </thead>
-          <tbody>
-            {quote.lines.map((l, i) => (
+          {groupByRoom(quote.lines).map((g, gi, all) => (
+          <tbody key={g.room ?? `general-${gi}`}>
+            {(g.room || all.length > 1) && (
+              <tr className="border-b border-line">
+                <th colSpan={4} scope="rowgroup" className="pb-2 pt-5 text-left text-[0.8125rem] font-semibold uppercase tracking-[0.12em]" style={{ color: quote.trader.brand_colour ?? "var(--color-green-ink)" }}>
+                  {g.room ?? "General"}
+                </th>
+              </tr>
+            )}
+            {g.lines.map((l, i) => (
               <tr key={i} className="border-b border-line align-top">
                 <th scope="row" className="py-3 pr-3 text-[0.9375rem] font-normal text-navy">
                   {l.description}
@@ -109,6 +131,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
               </tr>
             ))}
           </tbody>
+          ))}
         </table>
 
         <dl className="ml-auto mt-6 max-w-xs">
@@ -126,6 +149,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
         <p className="mt-6 text-[0.8125rem] text-ink-muted">
           Flooring: <Wordmark className="inline h-[0.9em] w-auto align-[-0.1em]" />. This quotation is from {quote.trader.company_name || "your fitter"}.
         </p>
+        </div>
       </article>
 
       <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4" data-print-hide>
@@ -146,6 +170,9 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
         {quote.status === "sent" && expired && <p className="text-[0.9375rem] text-ink-muted">This quote has expired. Please contact {quote.trader.company_name || "your fitter"}.</p>}
         {quote.status === "accepted" && <p className="text-[0.9375rem] text-navy">You accepted this quote.</p>}
         {quote.status === "declined" && <p className="text-[0.9375rem] text-navy">You declined this quote.</p>}
+        <a href={`/q/${token}/pdf`} className="min-h-tap py-3 text-[0.9375rem] font-medium text-navy underline decoration-green underline-offset-4">
+          Download PDF
+        </a>
         <PrintButton />
       </div>
     </div>

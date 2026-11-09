@@ -53,7 +53,8 @@ Audience: no homeowner/trade switch block (retired in the approved redesign, Nov
 - `/technology`: the spec story in depth (Scratch Shield, 0.55mm, layers, Unilin)
 - `/trade`: trade landing page (benefits, apply, login)
 - `/trade/apply`, `/trade/login`
-- `/trade/account`: prices; `/trade/account/quotes` (and `/[id]`), `/calculator`, `/shortlists`, `/documents`, `/settings` (approved only)
+- `/trade/account`: dashboard; `/trade/account/catalogue` (prices), `/quotes` (and `/[id]`, `/[id]/pdf`), `/projects` (and `/[id]`), `/customers` (and `/[id]`), `/calculator`, `/shortlists`, `/documents`, `/settings` (approved only); `/trade/present` and `/trade/present/[slug]` (customer presentation)
+- `/q/[token]/pdf`: the customer's PDF of a sent quote
 - `/q/[token]`: a trader's quote, as their customer sees it (the trader's sell prices only; never cost or margin; printable)
 - `/documents/[id]`: document download through a 60 second signed link
 - `/s/[token]`: public shared shortlist (never shows prices)
@@ -146,7 +147,7 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 - `quotes`: id, profile_id, reference (Q-0001 per trader), customer details, site, status (draft | sent | accepted | declined), vat_rate_bp, notes, valid_until, share_token, sent_at, responded_at
 - `quote_lines`: quote_id, kind (flooring | accessory | labour | other), finish_id, description, quantity, unit, unit_cost_pence (private), unit_sell_pence, area_m2, wastage_pct
 - A trader's quotes, costs and margins are private to that trader: the owner sees only aggregate demand (`admin_dashboard_stats()`). Customers read a quote only through `get_shared_quote(token)`, which returns sell prices.
-- `saved_products`, `projects`, `project_items`; `audit_log` (append-only); `system_settings`
+- `customers` (a trader's own), `projects` (with `customer_id`), `project_items` (rooms: length, width, wastage), `saved_products`; `audit_log` (append-only); `system_settings`
 - Trade applications are captured as `profiles` with status = pending, plus their `businesses` and `trade_applications` rows. Full reference: `docs/DATABASE.md`.
 
 Money is stored as integer pence.

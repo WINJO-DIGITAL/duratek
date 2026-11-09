@@ -54,7 +54,9 @@ describe("quote lines", () => {
 describe("preferences", () => {
   it("parses preferences", () => {
     const r = parsePreferences(fd({ default_markup: "35", default_wastage: "7", vat_registered: "on", quote_footer: " Thanks " }));
-    expect(r.ok && r.data).toEqual({ default_markup_bp: 3500, default_wastage_pct: 7, vat_registered: true, quote_footer: "Thanks" });
+    expect(r.ok && r.data).toEqual({ default_markup_bp: 3500, default_wastage_pct: 7, vat_registered: true, quote_footer: "Thanks", labour_per_m2_pence: null });
+    const withRate = parsePreferences(fd({ default_markup: "35", default_wastage: "7", labour_per_m2: "15.50" }));
+    expect(withRate.ok && withRate.data.labour_per_m2_pence).toBe(1550);
   });
 
   it("rejects out-of-range values", () => {

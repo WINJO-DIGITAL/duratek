@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
+import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { canSeeTradePrices, getAccount } from "@/lib/auth/session";
+import { formatPence } from "@/lib/money";
+import { getTradePrices } from "@/lib/trade/prices";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishImage } from "@/components/finish/finish-image";
 import { PageTransition } from "@/components/layout/page-transition";
@@ -60,6 +64,14 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
   }
 
   const { different, shared } = compareRows(chosen);
+  // An approved trader in trade mode also sees their own price, read on the
+  // server; anyone else (or customer mode) is never sent it.
+  const account = await getAccount();
+  if (await canSeeTradePrices(account)) {
+    const prices = await getTradePrices(account!);
+    const values = chosen.map((f) => (prices.get(f.id) ? `${formatPence(prices.get(f.id)!.pence)} ex VAT` : "Not set"));
+    different.unshift({ label: "Your trade price per m²", values, same: false, measured: true });
+  }
   // Suggestions for empty slots: closest to the first finish, not already chosen.
   const suggestions = relatedFinishes(all, chosen[0], all.length).filter((f) => !slugs.includes(f.slug));
   const columns = COMPARE_LIMIT;
@@ -116,6 +128,7 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
         <RowGroup title="What’s different" rows={different} columns={columns} highlight />
       )}
       <RowGroup title={chosen.length > 1 ? "The same on every one" : "Specification"} rows={shared} columns={columns} />
+      <WarrantyDisclaimer className="mt-6" />
     </div>
   );
 }

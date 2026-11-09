@@ -1,4 +1,5 @@
 import { colourFamilyLabel } from "@/lib/config";
+import { SUITABILITY_SHORT } from "./benefits";
 import { formatPence } from "@/lib/money";
 import { FORMAT_LABELS, plankFormat } from "./format";
 import { specRows } from "./mappers";
@@ -26,6 +27,7 @@ export function compareRows(finishes: Finish[]): { different: CompareRow[]; shar
     if (f.rrpPence !== undefined) rows.set("RRP per m²", formatPence(f.rrpPence));
     if (format) rows.set("Plank format", FORMAT_LABELS[format]);
     for (const r of specRows(f.specs)) if (r.label !== "Format") rows.set(r.label, r.value);
+    rows.set("Suitability", SUITABILITY_SHORT);
     return rows;
   });
   const labels: string[] = [];

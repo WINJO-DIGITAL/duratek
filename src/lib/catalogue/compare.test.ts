@@ -24,7 +24,7 @@ describe("compareRows", () => {
     expect(different.map((r) => r.label)).toEqual(["Plank format", "Plank size", "Thickness"]);
     expect(different[1].values).toEqual(["181 × 1219 mm", "228 × 1492 mm"]);
     expect(different[1].measured).toBe(true);
-    expect(shared.map((r) => r.label)).toEqual(["Colour", "Wear layer", "Core"]);
+    expect(shared.map((r) => r.label)).toEqual(["Colour", "Wear layer", "Core", "Suitability"]);
   });
 
   it("compares the public RRP when there is one", () => {

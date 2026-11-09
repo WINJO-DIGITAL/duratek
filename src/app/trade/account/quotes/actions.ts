@@ -10,17 +10,19 @@ import { formatPence } from "@/lib/money";
 import { createLimiter } from "@/lib/rate-limit";
 import { siteUrl } from "@/lib/site";
 import { userSupabase } from "@/lib/supabase/server";
-import { buildFlooringLine } from "@/lib/trade/flooring-line";
 import { getPreferences } from "@/lib/trade/preferences";
-import { planPacks } from "@/lib/pricing";
-import { getPriceForQuantity } from "@/lib/trade/prices";
+import { priceFlooring } from "@/lib/trade/flooring-server";
 import { echo, parseFlooringLine, parseOtherLine, parseQuoteHeader, type FieldErrors } from "@/lib/trade/quote-forms";
+import { getCustomer } from "@/lib/trade/portal";
 import { getQuote } from "@/lib/trade/quotes";
 
 export type QuoteFormState =
   | { status: "idle" }
   | { status: "saved"; message?: string }
   | { status: "error"; errors: FieldErrors; message?: string; values?: Record<string, string> };
+
+/** The room a line belongs to, from the form; blank is none. */
+const roomOf = (form: FormData) => String(form.get("room_name") ?? "").trim().slice(0, 120) || null;
 
 const failed = (message: string, errors: FieldErrors = {}, form?: FormData): QuoteFormState => ({
   status: "error",
@@ -42,6 +44,7 @@ const dayAgo = () => new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 // ---------------------------------------------------------------------------
 export async function createQuote(_prev: QuoteFormState, form: FormData): Promise<QuoteFormState> {
   const { account } = await requireApprovedTrade("/trade/account/quotes");
+  await fillFromCustomer(form);
   const parsed = parseQuoteHeader(form);
   if (!parsed.ok) return failed("Please check the highlighted fields.", parsed.errors, form);
 
@@ -56,6 +59,23 @@ export async function createQuote(_prev: QuoteFormState, form: FormData): Promis
     .single();
   if (error || !data) return failed("Couldn’t create the quote. Please try again.", {}, form);
   redirect(quotePath(data.id));
+}
+
+/** Choosing a customer record fills in whatever the form left blank (read as the trader: their own customers only). */
+async function fillFromCustomer(form: FormData) {
+  const id = String(form.get("customer_id") ?? "");
+  if (!isUuid(id)) return;
+  const c = await getCustomer(id);
+  if (!c) {
+    form.set("customer_id", "");
+    return;
+  }
+  const blank = (k: string) => !String(form.get(k) ?? "").trim();
+  if (blank("customer_name")) form.set("customer_name", c.name);
+  if (blank("customer_email") && c.email) form.set("customer_email", c.email);
+  if (blank("customer_phone") && c.phone) form.set("customer_phone", c.phone);
+  if (blank("site_address") && c.address) form.set("site_address", c.address);
+  if (blank("site_postcode") && c.postcode) form.set("site_postcode", c.postcode);
 }
 
 export async function updateQuote(_prev: QuoteFormState, form: FormData): Promise<QuoteFormState> {
@@ -91,23 +111,12 @@ export async function addFlooringLine(_prev: QuoteFormState, form: FormData): Pr
   const [finishes, prefs] = await Promise.all([getFinishes(), getPreferences()]);
   const finish = finishes.find((f) => f.id === parsed.data.finish_id);
   if (!finish) return failed("Choose a finish from the range.", { finish_id: "Choose a finish." }, form);
-  const coverage = finish.specs.pack_coverage_m2;
-  const plan = coverage ? planPacks(parsed.data.area_m2, parsed.data.wastage_pct, coverage) : null;
-
-  // Cost is the trader's own price for this many packs, decided on the server
-  // by the price resolver (account, tier, volume breaks, promotions).
-  // The variant is looked up fresh, not from the cached catalogue.
-  const db0 = await userSupabase();
-  const { data: variant } = await db0.from("product_variants").select("id").eq("finish_id", finish.id).eq("is_default", true).eq("active", true).maybeSingle();
-  const price = plan && variant ? await getPriceForQuantity(variant.id, plan.packs) : null;
-  const built = buildFlooringLine({
-    finishName: finish.name,
-    packCoverageM2: coverage,
-    cost: price && (price.unit === "m2" || price.unit === "pack") ? { pence: price.netPence, unit: price.unit } : undefined,
-    sellPerM2Pence: parsed.data.sell_per_m2_pence,
-    defaultMarkupBp: prefs.default_markup_bp,
+  const built = await priceFlooring({
+    finish,
     areaM2: parsed.data.area_m2,
     wastagePct: parsed.data.wastage_pct,
+    sellPerM2Pence: parsed.data.sell_per_m2_pence,
+    defaultMarkupBp: prefs.default_markup_bp,
   });
   if (!built.ok) {
     if (built.error === "no-price")
@@ -120,7 +129,7 @@ export async function addFlooringLine(_prev: QuoteFormState, form: FormData): Pr
   const db = await userSupabase();
   const { error } = await db
     .from("quote_lines")
-    .insert({ quote_id: quote.id, finish_id: finish.id, sort_order: await nextSortOrder(quote.id), ...built.row });
+    .insert({ quote_id: quote.id, finish_id: finish.id, room_name: roomOf(form), sort_order: await nextSortOrder(quote.id), ...built.row });
   if (error) return failed("Couldn’t add the line. Please try again.", {}, form);
   refresh();
   return { status: "saved", message: `Added ${built.plan.packs} ${built.plan.packs === 1 ? "pack" : "packs"} of ${finish.name}.` };
@@ -133,7 +142,7 @@ export async function addOtherLine(_prev: QuoteFormState, form: FormData): Promi
   const parsed = parseOtherLine(form);
   if (!parsed.ok) return failed("Please check the highlighted fields.", parsed.errors, form);
   const db = await userSupabase();
-  const { error } = await db.from("quote_lines").insert({ quote_id: quoteId, sort_order: await nextSortOrder(quoteId), ...parsed.data });
+  const { error } = await db.from("quote_lines").insert({ quote_id: quoteId, room_name: roomOf(form), sort_order: await nextSortOrder(quoteId), ...parsed.data });
   if (error) return failed("Couldn’t add the line. Please try again.", {}, form);
   refresh();
   return { status: "saved", message: `Added ${parsed.data.description}.` };
