@@ -10,6 +10,11 @@ describe("plank formats", () => {
     expect(plankFormat(long)).toBe("extra-long");
     expect(plankFormat({})).toBeUndefined();
   });
+  it("never files a herringbone board under a plank format, however long it is", () => {
+    const herringbone = { plank_width_mm: 122, plank_length_mm: 610, thickness_mm: 6.5, format: "Herringbone" };
+    expect(plankFormat(herringbone)).toBeUndefined();
+    expect(formatOptions([{ specs: herringbone }])).toEqual([]);
+  });
 
   it("formats sizes and the measurement line", () => {
     expect(plankSize(standard)).toBe("181 × 1219 mm");

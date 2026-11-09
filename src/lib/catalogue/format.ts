@@ -15,6 +15,9 @@ export const FORMAT_LABELS: Record<PlankFormat, string> = {
 };
 
 export function plankFormat(specs: FinishSpecs): PlankFormat | undefined {
+  // Herringbone boards are short and wide, so they would read as "standard plank".
+  // They are not a plank format: they have their own style and no format group.
+  if (specs.format && /herringbone/i.test(specs.format)) return undefined;
   if (!specs.plank_length_mm) return undefined;
   return specs.plank_length_mm > EXTRA_LONG_FROM_MM ? "extra-long" : "standard";
 }

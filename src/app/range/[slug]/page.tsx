@@ -47,7 +47,12 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
 /** Every plank format in the range, to scale; this finish's is filled with its grain. */
 function scalePlanks(all: Finish[], finish: Finish): ScalePlank[] {
   const current = plankFormat(finish.specs);
-  return formatOptions(all).flatMap(({ format, label }) => {
+  const own: ScalePlank[] =
+    !current && finish.specs.plank_width_mm && finish.specs.plank_length_mm
+      ? // A herringbone board is not a plank format: draw this board itself, filled with its grain.
+        [{ key: "this", label: finish.specs.format ?? "This board", width_mm: finish.specs.plank_width_mm, length_mm: finish.specs.plank_length_mm, current: true, image: grainImage(finish) }]
+      : [];
+  return [...own, ...formatOptions(all).flatMap(({ format, label }) => {
     const specs = format === current ? finish.specs : all.find((f) => plankFormat(f.specs) === format)?.specs;
     if (!specs?.plank_width_mm || !specs.plank_length_mm) return [];
     return [
@@ -60,7 +65,7 @@ function scalePlanks(all: Finish[], finish: Finish): ScalePlank[] {
         image: format === current ? grainImage(finish) : undefined,
       },
     ];
-  });
+  })];
 }
 
 const SAMPLE_BUTTON_ID = "finish-sample";

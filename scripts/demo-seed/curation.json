@@ -1,8 +1,9 @@
 {
-  "$comment": "Hand curation of the Kwik Floors Duratek collection for the client preview. Image indexes refer to each product's images array in products.json. Kinds: room | closeup | swatch. 'room' labels feed the alt text. Colour families are a judgement from the photography, not client data; confirm with the client. Size diagrams are deliberately excluded. Descriptions are written for the preview from the swatches and plank formats (no performance claims); replace with the client's copy when supplied.",
+  "$comment": "Hand curation of the Kwik Floors Duratek collection for the client preview. Image indexes refer to each product's images array in products.json. Kinds: room | closeup | swatch. 'room' labels feed the alt text. Colour families are a judgement from the photography, not client data; confirm with the client. Size diagrams are deliberately excluded. Descriptions are written for the preview from the swatches and plank formats (no performance claims); replace with the client's copy when supplied. Herringbone finishes come from the herringbone collection (source.herringbone_collection) and set style 'herringbone'. Bathroom photographs and size diagrams are excluded for herringbone, per the imagery rules.",
   "source": {
     "collection": "https://www.kwikfloors.co.uk/collections/duratekplank/products.json?limit=250",
-    "retailer_url": "https://www.kwikfloors.co.uk/collections/duratek"
+    "retailer_url": "https://www.kwikfloors.co.uk/collections/duratek",
+    "herringbone_collection": "https://www.kwikfloors.co.uk/collections/duratek-herringbone/products.json"
   },
   "colour_families": [
     {
@@ -351,6 +352,55 @@
         }
       ],
       "description": "Smoky grey-brown with pale grain and darker knots. It works as well with a modern kitchen as it does with exposed beams and a log burner."
+    },
+    {
+      "handle": "honey-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "style": "herringbone",
+      "colour_family": "warm",
+      "images": [
+        {
+          "i": 0,
+          "kind": "room",
+          "room": "interior"
+        },
+        {
+          "i": 2,
+          "kind": "room",
+          "room": "kitchen"
+        },
+        {
+          "i": 1,
+          "kind": "room",
+          "room": "room"
+        },
+        {
+          "i": 4,
+          "kind": "swatch"
+        }
+      ],
+      "description": "Honey oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+    },
+    {
+      "handle": "heritage-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "style": "herringbone",
+      "colour_family": "natural",
+      "images": [
+        {
+          "i": 1,
+          "kind": "room",
+          "room": "hallway"
+        },
+        {
+          "i": 2,
+          "kind": "room",
+          "room": "kitchen"
+        },
+        {
+          "i": 4,
+          "kind": "swatch"
+        }
+      ],
+      "description": "Heritage oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
     }
   ],
   "inspiration": [
