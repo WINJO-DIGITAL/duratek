@@ -1,5 +1,6 @@
 import { timingSafeEqual } from "node:crypto";
 import { NextResponse, type NextRequest } from "next/server";
+import { isPreviewDeployment } from "@/lib/runtime-env";
 import { adminSupabase } from "@/lib/supabase/admin";
 
 const safeEqual = (a: string, b: string) => {
@@ -14,6 +15,8 @@ const safeEqual = (a: string, b: string) => {
  * Without CRON_SECRET, or without the service key, it refuses rather than pretend.
  */
 export async function GET(request: NextRequest) {
+  // A preview build shares the live database: it must never delete or anonymise real people's data.
+  if (isPreviewDeployment()) return NextResponse.json({ ok: false, skipped: "preview deployment" }, { status: 409 });
   const secret = process.env.CRON_SECRET;
   if (!secret) return NextResponse.json({ error: "CRON_SECRET is not set" }, { status: 503 });
   const given = (request.headers.get("authorization") ?? "").replace(/^Bearer\s+/i, "");

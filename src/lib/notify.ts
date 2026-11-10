@@ -1,10 +1,11 @@
 import "server-only";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { emailConfigured, sendEmail } from "@/lib/email";
+import { outboundEmailSuppressed } from "@/lib/runtime-env";
 import { adminSupabase } from "@/lib/supabase/admin";
 import type { Database } from "@/lib/supabase/database.types";
 
-export type NotifyStatus = "sent" | "failed" | "not_configured";
+export type NotifyStatus = "sent" | "failed" | "not_configured" | "suppressed";
 
 export interface Notification {
   /** What this email is, e.g. "sample_dispatched". Shown in the admin email log. */
@@ -27,7 +28,9 @@ export interface Notification {
  */
 export async function notify(message: Notification, db?: SupabaseClient<Database>): Promise<NotifyStatus> {
   let status: NotifyStatus = "not_configured";
-  if (emailConfigured()) {
+  if (outboundEmailSuppressed()) {
+    status = "suppressed";
+  } else if (emailConfigured()) {
     status = (await sendEmail({ to: message.to, subject: message.subject, text: message.text, html: message.html, replyTo: message.replyTo })) ? "sent" : "failed";
   }
   const logger = adminSupabase() ?? db;

@@ -199,7 +199,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
                     <td className="px-4 py-3 text-navy">{l.kind.replaceAll("_", " ")}</td>
                     <td className="break-all px-4 py-3 text-navy">{l.recipient}</td>
                     <td className="px-4 py-3 text-ink-muted">{l.subject}</td>
-                    <td className={l.status === "sent" ? "px-4 py-3 text-green-ink" : l.status === "failed" ? "px-4 py-3 text-error" : "px-4 py-3 text-ink-muted"}>{l.status === "not_configured" ? "Not configured" : l.status === "sent" ? "Sent" : "Failed"}</td>
+                    <td className={l.status === "sent" ? "px-4 py-3 text-green-ink" : l.status === "failed" ? "px-4 py-3 text-error" : "px-4 py-3 text-ink-muted"}>{l.status === "not_configured" ? "Not configured" : l.status === "suppressed" ? "Not sent (preview build)" : l.status === "sent" ? "Sent" : "Failed"}</td>
                   </tr>
                 ))}
               </tbody>

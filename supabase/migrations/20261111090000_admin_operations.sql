@@ -219,7 +219,7 @@ create table public.notification_log (
   kind text not null check (length(kind) between 1 and 60),
   recipient text not null,
   subject text not null,
-  status text not null check (status in ('sent', 'failed', 'not_configured')),
+  status text not null check (status in ('sent', 'failed', 'not_configured', 'suppressed')),
   related_table text,
   related_id uuid
 );
