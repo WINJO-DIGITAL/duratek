@@ -160,6 +160,20 @@ export const TagIcon = (p: IconProps) => (
     <circle cx="8" cy="8.5" r="1.2" />
   </Icon>
 );
+/** A quotation: a sheet with lines and a total. */
+export const QuoteIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M5.5 3.5h13v17h-13z" />
+    <path d="M8.5 8h7M8.5 11.5h7M8.5 16.5h3M14 16.5h1.5" />
+  </Icon>
+);
+/** A calculator: a body, a display and keys. */
+export const CalculatorIcon = (p: IconProps) => (
+  <Icon {...p}>
+    <path d="M6 3.5h12v17H6z" />
+    <path d="M8.5 6.5h7v3h-7zM9 13h.01M12 13h.01M15 13h.01M9 16.5h.01M12 16.5h.01M15 16.5h.01" />
+  </Icon>
+);
 export const DocumentIcon = (p: IconProps) => (
   <Icon {...p}>
     <path d="M6 3.5h8l4 4V20.5H6z" />

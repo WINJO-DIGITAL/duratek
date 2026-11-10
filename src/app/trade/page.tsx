@@ -3,7 +3,7 @@ import { SectionIntro } from "@/components/content/section-intro";
 import { FinishImage } from "@/components/finish/finish-image";
 import { PageTransition } from "@/components/layout/page-transition";
 import { ButtonLink } from "@/components/ui/button";
-import { DocumentIcon, EyeIcon, ShareIcon, TagIcon } from "@/components/ui/icons";
+import { CalculatorIcon, DocumentIcon, EyeIcon, QuoteIcon, ShareIcon, TagIcon } from "@/components/ui/icons";
 import { getFinishes } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
@@ -12,18 +12,20 @@ import { tradeApplicationsEnabled } from "@/lib/trade/settings";
 export const metadata: Metadata = {
   title: "Trade accounts",
   description:
-    "Duratek trade accounts for fitters, retailers, contractors and specifiers: your own prices, documents and shareable shortlists.",
+    "Duratek trade accounts for fitters, retailers, contractors and specifiers: your own prices, quotes for your customers, documents and shareable shortlists.",
 };
 
 const BENEFITS = [
   { title: "Your prices", body: "Trade prices for every finish, shown only to you when you’re logged in." },
+  { title: "Quotes for your customers", body: "Measure the rooms, add fitting and extras, and send a quote under your own name and logo." },
+  { title: "Packs and profit", body: "Work out the packs a job needs, always rounded up, and what it makes you at your price." },
   { title: "Documents", body: "Technical sheets, certificates and fitting guides, ready to download." },
   { title: "Shortlists to share", body: "Pick finishes for a job and send your customer a clean link, without prices." },
   { title: "Customer view", body: "One tap hides every price, so you can show the range to a homeowner on site." },
 ] as const;
 
 /** One icon per benefit, in BENEFITS order. */
-const BENEFIT_ICONS = [TagIcon, DocumentIcon, ShareIcon, EyeIcon];
+const BENEFIT_ICONS = [TagIcon, QuoteIcon, CalculatorIcon, DocumentIcon, ShareIcon, EyeIcon];
 
 const STEPS = [
   { title: "Apply", body: "A short form: your company, your trade and how to reach you." },
@@ -76,7 +78,7 @@ export default async function TradePage() {
             <h2 id="benefits-heading" className="reveal text-display-md text-navy">
               What your account is for
             </h2>
-            <ul className="mt-stack grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-4">
+            <ul className="mt-stack grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
               {BENEFITS.map((b, i) => {
                 const IconC = BENEFIT_ICONS[i] ?? TagIcon;
                 return (

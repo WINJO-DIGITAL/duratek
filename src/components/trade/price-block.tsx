@@ -31,27 +31,39 @@ const LOGIN_PROMPT = (
   </p>
 );
 
+/**
+ * The public price leads the panel, the way a shop shows it: one large figure
+ * with what it is beside it. With an offer running, the offer leads and the RRP
+ * sits beside it, struck through.
+ */
 function PublicRows({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: number }) {
+  const lead = offerPence ?? rrpPence;
+  if (lead === undefined) return null;
   return (
-    <>
-      {offerPence !== undefined && (
-        <Row label="Offer price">
-          <Money pence={offerPence} strong />
-        </Row>
+    <div className="border-b border-line pb-4">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+        <dt className="order-2 text-[0.875rem] text-ink-muted">{offerPence !== undefined ? "Offer price, inc VAT" : "RRP, inc VAT"}</dt>
+        <dd className="order-1 text-navy">
+          <span className="data text-[1.75rem] leading-none tracking-tight">{formatPence(lead)}</span>{" "}
+          <span className="text-[0.9375rem] text-ink-muted">per m²</span>
+        </dd>
+      </div>
+      {offerPence !== undefined && rrpPence !== undefined && (
+        <div className="mt-1 flex gap-1.5 text-[0.875rem] text-ink-muted">
+          <dt>RRP</dt>
+          <dd>
+            <span className="data line-through">{formatPence(rrpPence)}</span> per m², inc VAT
+          </dd>
+        </div>
       )}
-      {rrpPence !== undefined && (
-        <Row label="RRP, inc VAT">
-          <Money pence={rrpPence} />
-        </Row>
-      )}
-    </>
+    </div>
   );
 }
 
 /** What everyone sees, and what loads first: the RRP (and any public offer), set by the business. */
 export function PriceBlockPublic({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: number }) {
   return (
-    <div className="mt-8 border-t border-line">
+    <div className="mt-5">
       {(rrpPence !== undefined || offerPence !== undefined) && (
         <dl>
           <PublicRows rrpPence={rrpPence} offerPence={offerPence} />
@@ -77,7 +89,7 @@ export async function PriceBlock({ finishId, slug, rrpPence, offerPence }: { fin
   const trade = showTrade ? (await getTradePrices(account)).get(finishId) : undefined;
 
   return (
-    <div className="mt-8 border-t border-line">
+    <div className="mt-5">
       <dl>
         <PublicRows rrpPence={rrpPence} offerPence={offerPence} />
         {showTrade && (

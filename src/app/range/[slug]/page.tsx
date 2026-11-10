@@ -159,7 +159,8 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
       />
       {/* The plank first, beside a sticky information panel */}
       <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-7">
+        {/* The plank stays in view while the panel beside it scrolls. */}
+        <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)] lg:col-span-7 lg:self-start">
           {grain ? (
             <GrainZoom
               image={grain}
@@ -186,6 +187,11 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               {format && <> · {FORMAT_LABELS[format]}</>}
             </p>
 
+            {/* RRP is public; the trade price is read at request time, only for an approved account. */}
+            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
+              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} offerPence={finish.offerPence} />
+            </Suspense>
+
             <div className="mt-6">
               <ColourSwatches
                 current={finish.slug}
@@ -193,16 +199,8 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               />
             </div>
 
-            {/* RRP is public; the trade price is read at request time, only for an approved account. */}
-            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
-              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} offerPence={finish.offerPence} />
-            </Suspense>
-
-            <SpecList rows={keySpecs} className="mt-2 border-t border-line" />
-            {finish.specs.pack_coverage_m2 && <PackEstimator coverageM2={finish.specs.pack_coverage_m2} rrpPence={finish.offerPence ?? finish.rrpPence} />}
-
             {/* The sample offer and actions, together in one soft panel. */}
-            <div className="card mt-8 p-5 sm:p-6">
+            <div className="card mt-6 p-5 sm:p-6">
               <p className="flex items-center gap-2.5 text-[0.9375rem] text-navy">
                 <Swatches size={20} className="shrink-0 text-oak" />
                 Up to three free samples, posted to you.
@@ -225,6 +223,9 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 </Link>
               </p>
             </div>
+
+            <SpecList rows={keySpecs} className="mt-8 border-t border-line" />
+            {finish.specs.pack_coverage_m2 && <PackEstimator coverageM2={finish.specs.pack_coverage_m2} rrpPence={finish.offerPence ?? finish.rrpPence} />}
           </div>
         </div>
       </div>
