@@ -60,6 +60,13 @@ export const EDITORIAL = {
     "Honnister_Slate_Grey_lounge.png",
     "Cartmel_Oak_Lounge.png",
   ],
+  /** Page heroes: one photograph per page, chosen so it is not already on that page. */
+  pages: {
+    range: "Ambleside_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
+    inspiration: "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
+    samples: "Keswick_Oak_9.jpg",
+    "where-to-buy": "Cartmel_Oak_Kithcen_jpg.png",
+  },
   /** The footer opens with one tall room scene: portrait photographs where the floor leads. */
   footer: [
     "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",

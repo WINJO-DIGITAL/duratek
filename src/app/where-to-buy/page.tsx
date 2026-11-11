@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
 import { OrderSamplesButton } from "@/components/samples/order-samples-button";
@@ -7,6 +8,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { ArrowUpRight, Phone } from "@/components/ui/icons";
 import { PostcodeSearch } from "@/components/where-to-buy/postcode-search";
 import { getFinishes, getOnlineRetailers } from "@/lib/catalogue";
+import { pageHero } from "@/lib/catalogue/heroes";
 import { normalisePostcode } from "@/lib/postcode";
 import {
   formatMiles,
@@ -25,17 +27,28 @@ export const metadata: Metadata = {
 const MAX_MILES = 60;
 const MAX_RESULTS = 10;
 
-export default function WhereToBuyPage({ searchParams }: PageProps<"/where-to-buy">) {
+export default async function WhereToBuyPage({ searchParams }: PageProps<"/where-to-buy">) {
+  const hero = pageHero(await getFinishes(), "where-to-buy");
   return (
     <PageTransition>
       <>
-        <header className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-2 lg:items-end">
-          <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek Near You.">
-            <p>See it at a local stockist, or buy it online.</p>
-          </SectionIntro>
-          <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
-            <SearchWithValue searchParams={searchParams} />
-          </Suspense>
+        <header className="container-page pb-section-sm pt-12 sm:pt-16">
+          {hero ? (
+            <PageHero image={hero.image} focus="object-[50%_58%]">
+              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find Duratek Near You.">
+                <p>See it at a local stockist, or buy it online.</p>
+              </SectionIntro>
+            </PageHero>
+          ) : (
+            <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek Near You.">
+              <p>See it at a local stockist, or buy it online.</p>
+            </SectionIntro>
+          )}
+          <div className={hero ? "mt-8" : "mt-10"}>
+            <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
+              <SearchWithValue searchParams={searchParams} />
+            </Suspense>
+          </div>
         </header>
 
         {/* Results and the retailers arrive together, behind a placeholder that

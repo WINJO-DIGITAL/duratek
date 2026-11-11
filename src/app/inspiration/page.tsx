@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishImage } from "@/components/finish/finish-image";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
@@ -8,6 +9,7 @@ import { getFinishes, getInspiration } from "@/lib/catalogue";
 import type { Finish, InspirationItem } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { distinct } from "@/lib/catalogue/filter";
+import { pageHero } from "@/lib/catalogue/heroes";
 
 export const metadata: Metadata = {
   title: "Inspiration",
@@ -57,14 +59,23 @@ export default async function InspirationPage() {
   const [items, finishes] = await Promise.all([getInspiration(), getFinishes()]);
   const byId = new Map(finishes.map((f) => [f.id, f]));
   const moods = distinct(items.map((i) => i.mood));
+  const hero = pageHero(finishes, "inspiration");
 
   return (
     <PageTransition>
       <>
         <header className="container-page pb-10 pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" title="Inspiration">
-            <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
-          </SectionIntro>
+          {hero ? (
+            <PageHero image={hero.image} focus="object-[50%_70%]" className="mb-10">
+              <SectionIntro as="h1" size="lg" tone="dark" title="Inspiration">
+                <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
+              </SectionIntro>
+            </PageHero>
+          ) : (
+            <SectionIntro as="h1" size="lg" title="Inspiration">
+              <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
+            </SectionIntro>
+          )}
           <nav aria-label="Moods" className="mt-8 flex flex-wrap gap-2">
             {moods.map((m) => (
               <a

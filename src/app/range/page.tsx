@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { ScratchShieldBadge } from "@/components/content/warranty";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
@@ -8,6 +9,7 @@ import { SamplePromo } from "@/components/samples/sample-promo";
 import { ButtonLink } from "@/components/ui/button";
 import { PageTransition } from "@/components/layout/page-transition";
 import { byTone, getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { pageHero } from "@/lib/catalogue/heroes";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import { colourFamilyLabel } from "@/lib/config";
 import { countWord } from "@/lib/number-words";
@@ -50,17 +52,33 @@ export default async function RangePage() {
     if (sw && !colourSwatches[f.colourFamily]) colourSwatches[f.colourFamily] = sw.src;
   }
 
+  const hero = pageHero(finishes, "range");
   return (
     <PageTransition>
       <div className="container-page pb-section pt-8 sm:pt-12">
-        {/* A short header, so the finishes themselves start on the first screen. */}
-        <div className="flex flex-wrap items-end justify-between gap-x-10 gap-y-4">
-          <SectionIntro as="h1" size="lg" eyebrow="The range" title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}>
-            <p>
-              Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.
-              Choose up to three free samples.
-            </p>
-          </SectionIntro>
+        {/* The opening photograph carries the title; the finishes start just below. */}
+        {hero && (
+          <PageHero image={hero.image} focus="object-[50%_62%]">
+            <SectionIntro
+              as="h1"
+              size="lg"
+              tone="dark"
+              eyebrow="The range"
+              title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}
+            >
+              <p>Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
+            </SectionIntro>
+          </PageHero>
+        )}
+        <div className={hero ? "mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-4" : "flex flex-wrap items-end justify-between gap-x-10 gap-y-4"}>
+          {!hero && (
+            <SectionIntro as="h1" size="lg" eyebrow="The range" title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}>
+              <p>
+                Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.
+                Choose up to three free samples.
+              </p>
+            </SectionIntro>
+          )}
           <div className="flex items-center gap-8">
             <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
               Explore Them Full Screen
