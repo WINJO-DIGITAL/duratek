@@ -341,11 +341,70 @@
      "room": "kitchen"
     },
     {
+     "i": 3,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
      "i": 4,
      "kind": "swatch"
     }
    ],
    "description": "Heritage oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  },
+  {
+   "handle": "biscuit-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "natural",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "interior"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "living space"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "bedroom"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Biscuit oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  },
+  {
+   "handle": "truffle-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "reading nook"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "interior"
+    },
+    {
+     "i": 3,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Truffle oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
   }
  ],
  "inspiration": [
