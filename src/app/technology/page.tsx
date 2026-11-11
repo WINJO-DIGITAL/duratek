@@ -9,7 +9,6 @@ import { byTone, getFinishes, grainImage, imagesOfKind } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
 import { GENERAL_CONTACT } from "@/lib/contact";
-import { ClickIcon, DropIcon, LayersIcon, ShieldIcon, UnderlayIcon } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
   title: "Technology",
@@ -41,8 +40,6 @@ const CHAPTERS: { title: string; body: string; note?: string }[] = [
   },
 ];
 
-/** One icon per chapter, in CHAPTERS order. */
-const CHAPTER_ICONS = [ShieldIcon, LayersIcon, DropIcon, UnderlayIcon, ClickIcon];
 
 export default async function TechnologyPage() {
   const finishes = byTone(await getFinishes());
@@ -90,23 +87,17 @@ export default async function TechnologyPage() {
               <h2 id="detail-heading" className="eyebrow font-sans">
                 Layer by Layer
               </h2>
-              <ul className="mt-6 space-y-3 sm:space-y-4">
-                {CHAPTERS.map((c, i) => {
-                  const IconC = CHAPTER_ICONS[i] ?? LayersIcon;
-                  return (
-                    <li key={c.title} className="card reveal p-6 sm:p-8">
-                      <div className="flex items-start justify-between gap-6">
-                        <div className="flex items-center gap-3">
-                          <IconC size={24} className="shrink-0 text-oak" />
-                          <h3 className="text-display-sm text-navy">{c.title}</h3>
-                        </div>
-                        {i === 0 && <ScratchShieldBadge className="w-16! shrink-0 sm:w-20!" />}
-                      </div>
+              <ul className="mt-6">
+                {CHAPTERS.map((c, i) => (
+                  <li key={c.title} className="reveal grid gap-4 border-t border-line py-7 sm:grid-cols-[1fr_auto] sm:gap-8">
+                    <div>
+                      <h3 className="font-display text-display-sm text-navy">{c.title}</h3>
                       <p className="mt-3 max-w-prose text-ink-muted">{c.body}</p>
-                      {c.note && <p className="mt-4 font-medium text-navy">{c.note}</p>}
-                    </li>
-                  );
-                })}
+                      {c.note && <p className="mt-3 font-medium text-navy">{c.note}</p>}
+                    </div>
+                    {i === 0 && <ScratchShieldBadge className="w-16! sm:w-20!" />}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

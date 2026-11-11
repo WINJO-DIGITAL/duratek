@@ -27,21 +27,17 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
         {rooms.map((r) => (
           <li key={r.image.src} className="w-[74vw] shrink-0 snap-start sm:w-[42vw] lg:w-[30vw]">
             <Link href={`/range/${r.slug}`} className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-line shadow-card">
+              <div className="relative aspect-[4/5] overflow-hidden rounded-card bg-line">
                 <FinishImage
                   image={r.image}
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 42vw, 74vw"
-                  className="object-[50%_70%] transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
+                  className="object-[50%_70%] transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.02] motion-reduce:transition-none"
                 />
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 to-transparent"
-                />
-                <p className="absolute inset-x-0 bottom-0 p-5 text-on-dark">
-                  <span className="block font-display text-[1.625rem] leading-[1.02] tracking-[-0.035em] sm:text-[1.875rem]">{r.name}</span>
-                  {r.room && <span className="mt-1 block text-[0.8125rem] text-on-dark/80">{r.room}</span>}
-                </p>
               </div>
+              <p className="mt-4 font-display text-[1.375rem] leading-tight tracking-[-0.02em] text-navy group-hover:underline group-hover:underline-offset-4">
+                {r.name}
+              </p>
+              {r.room && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{r.room}</p>}
             </Link>
           </li>
         ))}

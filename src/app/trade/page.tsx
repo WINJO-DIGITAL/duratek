@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { SectionIntro } from "@/components/content/section-intro";
-import { FinishImage } from "@/components/finish/finish-image";
 import { PageTransition } from "@/components/layout/page-transition";
+import { PageHero } from "@/components/content/page-hero";
 import { ButtonLink } from "@/components/ui/button";
-import { CalculatorIcon, DocumentIcon, EyeIcon, QuoteIcon, ShareIcon, TagIcon } from "@/components/ui/icons";
 import { getFinishes } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
@@ -24,9 +23,6 @@ const BENEFITS = [
   { title: "Customer view", body: "One tap hides every price, so you can show the range to a homeowner on site." },
 ] as const;
 
-/** One icon per benefit, in BENEFITS order. */
-const BENEFIT_ICONS = [TagIcon, QuoteIcon, CalculatorIcon, DocumentIcon, ShareIcon, EyeIcon];
-
 const STEPS = [
   { title: "Apply", body: "A short form: your company, your trade and how to reach you." },
   { title: "We check your details", body: "Every application is read by a person. We’ll email you when you’re approved." },
@@ -43,53 +39,47 @@ export default async function TradePage() {
   return (
     <PageTransition>
       <>
-        <section className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-12 lg:items-end lg:gap-14">
-          <div className="lg:col-span-6">
-            <SectionIntro as="h1" size="lg" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
-              <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
-            </SectionIntro>
+        {photo ? (
+          <section className="container-page pt-12 sm:pt-16">
+            <PageHero image={photo.image} focus="object-[50%_70%]">
+              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
+                <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
+              </SectionIntro>
+            </PageHero>
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
               {enabled ? (
                 <ButtonLink href="/trade/apply" size="lg">
                   Apply for a Trade Account
                 </ButtonLink>
               ) : (
-                <p className="notice px-4 py-3 text-[0.9375rem] text-navy">
-                  Online trade applications open soon.
-                </p>
+                <p className="notice px-4 py-3 text-[0.9375rem] text-navy">Online trade applications open soon.</p>
               )}
               <ButtonLink href="/trade/login" variant="quiet" arrow={false}>
-                Log in
+                Log In
               </ButtonLink>
             </div>
-          </div>
-          {photo && (
-            <figure className="lg:col-span-5 lg:col-start-8">
-              <div className="reveal-img frame relative aspect-[4/5] bg-line shadow-card">
-                <FinishImage image={photo.image} sizes="(min-width: 1024px) 38vw, 100vw" className="object-[50%_70%]" />
-              </div>
-              <figcaption className="mt-3 text-[0.8125rem] text-ink-muted">{photo.finish.name}</figcaption>
-            </figure>
-          )}
-        </section>
+          </section>
+        ) : (
+          <section className="container-page pb-section-sm pt-12 sm:pt-16">
+            <SectionIntro as="h1" size="lg" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
+              <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
+            </SectionIntro>
+          </section>
+        )}
 
-        <section aria-labelledby="benefits-heading" className="bg-cream py-section">
-          <div className="container-page">
-            <h2 id="benefits-heading" className="reveal text-display-md text-navy">
-              What Your Account Is for
+        <section aria-labelledby="benefits-heading" className="py-section">
+          <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <h2 id="benefits-heading" className="title-rule text-display-md text-navy lg:col-span-4 lg:self-start">
+              What Your Account Is For
             </h2>
-            <ul className="mt-stack grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
-              {BENEFITS.map((b, i) => {
-                const IconC = BENEFIT_ICONS[i] ?? TagIcon;
-                return (
-                  <li key={b.title} className="card reveal p-6">
-                    <IconC size={26} className="text-oak" />
-                    <p className="mt-6 font-display text-display-sm text-navy">{b.title}</p>
-                    <p className="mt-2 text-[0.9375rem] text-ink-muted">{b.body}</p>
-                  </li>
-                );
-              })}
-            </ul>
+            <dl className="lg:col-span-8">
+              {BENEFITS.map((b) => (
+                <div key={b.title} className="grid gap-2 border-t border-line py-6 sm:grid-cols-[14rem_1fr] sm:gap-8">
+                  <dt className="font-display text-[1.25rem] tracking-[-0.02em] text-navy">{b.title}</dt>
+                  <dd className="text-ink-muted">{b.body}</dd>
+                </div>
+              ))}
+            </dl>
           </div>
         </section>
 

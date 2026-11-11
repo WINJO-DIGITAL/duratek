@@ -106,7 +106,6 @@ export default async function HomePage() {
           <div className="container-page">
             <div className="flex flex-wrap items-end justify-between gap-6">
               <SectionIntro
-                rule
                 title={
                   <span id="library-heading">
                     {countWord(finishes.length)} finishes, light to dark.
@@ -161,7 +160,6 @@ export default async function HomePage() {
             <div className="grid gap-10 rounded-card bg-cream px-5 py-10 sm:px-10 sm:py-14 lg:grid-cols-12 lg:gap-14 lg:px-16 lg:py-20">
               <div className="lg:col-span-5">
                 <SectionIntro
-                  rule
                   title={<span id="samples-heading">Three free samples, posted to you.</span>}
                 >
                   <p>Put them down in the room they’re for, and look at them in daylight and in the evening.</p>

@@ -9,7 +9,6 @@ import { cn } from "@/lib/cn";
  */
 export function SectionIntro({
   eyebrow,
-  rule = false,
   title,
   children,
   tone = "light",
@@ -18,8 +17,6 @@ export function SectionIntro({
   className,
 }: {
   eyebrow?: string;
-  /** A short green rule above the heading, in place of a label: for sections whose heading already names them. */
-  rule?: boolean;
   title: ReactNode;
   children?: ReactNode;
   tone?: "light" | "dark";
@@ -31,8 +28,7 @@ export function SectionIntro({
   return (
     <div className={cn("reveal max-w-prose", className)}>
       {eyebrow && <p className={cn("eyebrow", tone === "dark" && "text-green-on-navy")}>{eyebrow}</p>}
-      {rule && !eyebrow && <span aria-hidden="true" className={cn("block h-[2px] w-11", tone === "dark" ? "bg-green-on-navy" : "bg-green-ink")} />}
-      <H className={cn(sizeClass, "title-rule", (eyebrow || rule) && "mt-label", tone === "dark" ? "text-on-dark" : "text-navy")}>{title}</H>
+      <H className={cn(sizeClass, "title-rule", eyebrow && "mt-label", tone === "dark" ? "text-on-dark" : "text-navy")}>{title}</H>
       {children && (
         <div
           className={cn(

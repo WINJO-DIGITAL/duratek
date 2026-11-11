@@ -47,7 +47,7 @@ export function SampleSlots({
             <li key={`empty-${i}`}>
               <Link
                 href="#floor-library"
-                className="group relative flex aspect-square flex-col items-center justify-center gap-2 overflow-hidden rounded-card border border-dashed border-oak/50 bg-white text-navy transition-colors duration-300 hover:border-navy"
+                className="group relative flex aspect-square flex-col items-center justify-center gap-2 overflow-hidden rounded-card border border-line bg-white text-navy transition-colors duration-300 hover:border-navy"
               >
                 {previews.length > 0 && (
                   <>
