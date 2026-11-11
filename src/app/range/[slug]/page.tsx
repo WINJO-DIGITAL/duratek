@@ -188,12 +188,12 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               {colourFamilyLabel(finish.colourFamily)}
               {format && <> · {FORMAT_LABELS[format]}</>}
             </p>
-            {lead.lead && <p className="mt-5 max-w-[34ch] font-display text-[1.375rem] font-light leading-snug tracking-[-0.02em] text-navy">{lead.lead}</p>}
-
-            {/* RRP is public; the trade price is read at request time, only for an approved account. */}
+            {/* RRP is public and leads the panel; the trade price is read at request time, only for an approved account. */}
             <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
               <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} offerPence={finish.offerPence} />
             </Suspense>
+
+            {lead.lead && <p className="mt-6 max-w-[34ch] font-display text-[1.375rem] font-light leading-snug tracking-[-0.02em] text-navy">{lead.lead}</p>}
 
             <div className="mt-6">
               <ColourSwatches

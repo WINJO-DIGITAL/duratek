@@ -86,13 +86,20 @@ export function FinishCard({
         </p>
         {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
         {showPrice && finish.rrpPence !== undefined && (
-          <p className="mt-2 text-[0.8125rem] text-ink-muted">
-            {finish.offerPence !== undefined && (
+          <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2 text-navy">
+            {finish.offerPence !== undefined ? (
               <>
-                Offer <span className="data text-[0.875rem] font-medium text-green-ink">{formatPence(finish.offerPence)}</span>{" · "}
+                <span className="data text-[1.125rem] font-medium">{formatPence(finish.offerPence)}</span>
+                <span className="data text-[0.875rem] text-ink-muted line-through">{formatPence(finish.rrpPence)}</span>
+                <span className="text-[0.8125rem] text-ink-muted">per m²</span>
+              </>
+            ) : (
+              <>
+                <span className="text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted">RRP</span>
+                <span className="data text-[1.125rem] font-medium">{formatPence(finish.rrpPence)}</span>
+                <span className="text-[0.8125rem] text-ink-muted">per m²</span>
               </>
             )}
-            RRP <span className="data text-[0.875rem] text-navy">{formatPence(finish.rrpPence)}</span> per m²
           </p>
         )}
 

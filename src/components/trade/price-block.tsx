@@ -44,10 +44,12 @@ function PublicRows({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: 
   return (
     <>
       <div className={`flex flex-wrap items-baseline gap-x-3 gap-y-1 ${hasBoth ? "" : "border-b border-line pb-4"}`}>
-        <dt className="order-2 text-[0.875rem] text-ink-muted">{offerPence !== undefined ? "Offer price, inc VAT" : "RRP, inc VAT"}</dt>
+        <dt className="order-2 text-[0.875rem] font-medium uppercase tracking-[0.12em] text-ink-muted">
+          {offerPence !== undefined ? "Offer price, inc VAT" : "RRP, inc VAT"}
+        </dt>
         <dd className="order-1 text-navy">
-          <span className="data text-[1.75rem] leading-none tracking-tight">{formatPence(lead)}</span>{" "}
-          <span className="text-[0.9375rem] text-ink-muted">per m²</span>
+          <span className="data text-[2.5rem] font-medium leading-none tracking-tight">{formatPence(lead)}</span>{" "}
+          <span className="text-[1rem] text-ink-muted">per m²</span>
         </dd>
       </div>
       {hasBoth && (
