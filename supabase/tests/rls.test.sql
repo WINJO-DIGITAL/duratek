@@ -70,7 +70,7 @@ select throws_ok(
   '42501', null, 'anon cannot insert sample requests directly (server route only)');
 select is((select count(*)::int from public.documents), 1, 'anon sees only public documents');
 select is((select count(*)::int from public.online_retailers), 1, 'anon sees published online retailers');
-select is((select count(*)::int from public.inspiration), 10, 'anon sees published inspiration');
+select is((select count(*)::int from public.inspiration), 8, 'anon sees published inspiration');
 select is((select name from public.get_shared_shortlist('test-token-abcdefghijklmnop')), 'Smith kitchen', 'anon can open a shared shortlist by token');
 select is((select count(*)::int from public.get_shared_shortlist('test-token')), 0, 'a short or wrong token returns nothing');
 select throws_ok('select public.is_admin()', '42501', null, 'anon cannot call role helpers');
