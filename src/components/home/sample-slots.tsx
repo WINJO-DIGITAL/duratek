@@ -77,9 +77,7 @@ export function SampleSlots({
         {count > 0 ? (
           <ButtonLink href="/samples">Request Your Samples</ButtonLink>
         ) : (
-          <ButtonLink href="/range" variant="outline">
-            Choose from the Range
-          </ButtonLink>
+          <p className="text-[0.9375rem] text-ink-muted">Tap “Add to samples” on any finish to fill these.</p>
         )}
       </div>
     </div>
