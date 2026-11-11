@@ -14,7 +14,7 @@ export function FloorHero({ slides }: { slides: HeroSlide[] }) {
     >
       {/* Neutral scrims, so the floor keeps its own colour: a light one under
           the header, a deeper one behind the copy in the lower left only. */}
-      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/35 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-black/50 to-transparent" />
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 via-black/25 via-45% to-transparent to-70% lg:bg-[radial-gradient(ellipse_70%_60%_at_0%_100%,rgb(0_0_0/0.6),transparent)]"
