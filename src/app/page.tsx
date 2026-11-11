@@ -114,7 +114,7 @@ export default async function HomePage() {
                 }
               />
               <ButtonLink href="/explore" variant="quiet" className="reveal">
-                Explore them full screen
+                Explore Them Full Screen
               </ButtonLink>
             </div>
             <div className="mt-stack">
@@ -186,7 +186,7 @@ export default async function HomePage() {
             <div className="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 px-1">
               <p className="text-navy">Fitting or specifying?</p>
               <ButtonLink href="/trade" variant="quiet">
-                Open a trade account
+                Open a Trade Account
               </ButtonLink>
             </div>
           </div>

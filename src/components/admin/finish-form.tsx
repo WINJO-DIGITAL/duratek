@@ -53,7 +53,7 @@ export function FinishForm({ values }: { values: FinishValues }) {
           defaultValue={v("style", values.style)}
           error={e.style}
           options={[
-            { value: "plank", label: "Straight plank" },
+            { value: "plank", label: "Straight Plank" },
             { value: "herringbone", label: "Herringbone" },
           ]}
         />

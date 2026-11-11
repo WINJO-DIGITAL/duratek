@@ -2,12 +2,12 @@ export type DocumentType = "tech_sheet" | "warranty" | "certificate" | "fitting_
 
 export const DOCUMENT_TYPES: { value: DocumentType; label: string }[] = [
   { value: "brochure", label: "Brochure" },
-  { value: "tech_sheet", label: "Technical sheet" },
-  { value: "fitting_guide", label: "Installation guide" },
+  { value: "tech_sheet", label: "Technical Sheet" },
+  { value: "fitting_guide", label: "Installation Guide" },
   { value: "warranty", label: "Warranty" },
-  { value: "certificate", label: "Test certificate" },
-  { value: "marketing_photo", label: "Marketing photography" },
-  { value: "brand_asset", label: "Brand asset" },
+  { value: "certificate", label: "Test Certificate" },
+  { value: "marketing_photo", label: "Marketing Photography" },
+  { value: "brand_asset", label: "Brand Asset" },
 ];
 
 export const documentTypeLabel = (t: DocumentType) => DOCUMENT_TYPES.find((d) => d.value === t)?.label ?? t;

@@ -15,7 +15,7 @@ export default function CookiesPage() {
         sites. That&rsquo;s why there&rsquo;s no cookie banner.
       </p>
 
-      <h2>What we keep on your device</h2>
+      <h2>What We Keep on Your Device</h2>
       <p>To remember the choices you make, the site keeps two small items in your browser&rsquo;s own storage:</p>
       <ul>
         <li>
@@ -30,7 +30,7 @@ export default function CookiesPage() {
         data removes them.
       </p>
 
-      <h2>More about your data</h2>
+      <h2>More About Your Data</h2>
       <p>
         Our <Link href="/privacy">privacy notice</Link> explains what we collect when you order samples or apply for a
         trade account.

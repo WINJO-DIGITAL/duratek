@@ -12,10 +12,10 @@ import { NavSwatch } from "./nav-swatch";
 import { SampleCount } from "./sample-count";
 
 const SECONDARY = [
-  { href: "/saved", label: "Saved finishes" },
+  { href: "/saved", label: "Saved Finishes" },
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
-  { href: TRADE_NAV.href, label: "Trade accounts" },
+  { href: TRADE_NAV.href, label: "Trade Accounts" },
 ];
 
 const CLOSE_FALLBACK = 350; // ms; a little longer than the CSS close fade (200ms)

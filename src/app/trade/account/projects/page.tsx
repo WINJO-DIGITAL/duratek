@@ -33,7 +33,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
       {sp.notice === "archived" && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">Project archived.</p>}
       <div className="grid gap-10 lg:grid-cols-[1fr_26rem] lg:items-start">
         <section aria-labelledby="list-heading">
-          <h2 id="list-heading" className="text-display-sm text-navy">Your projects</h2>
+          <h2 id="list-heading" className="text-display-sm text-navy">Your Projects</h2>
           {projects.length === 0 ? (
             <p className="mt-4 text-ink-muted">No projects yet. Create one with a customer, then add their rooms.</p>
           ) : (
@@ -56,7 +56,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
           )}
         </section>
         <section id="new" aria-labelledby="new-heading" className="card scroll-mt-24 p-5 sm:p-6">
-          <h2 id="new-heading" className="text-display-sm text-navy">New project</h2>
+          <h2 id="new-heading" className="text-display-sm text-navy">New Project</h2>
           {customers.length === 0 && (
             <p className="mt-2 text-[0.875rem] text-ink-muted">
               <Link href="/trade/account/customers" className="underline underline-offset-4">Add a customer</Link> first, or start without one.

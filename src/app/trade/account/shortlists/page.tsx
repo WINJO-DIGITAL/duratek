@@ -52,7 +52,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
       {sp.notice === "deleted" && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">Shortlist deleted.</p>}
       <div className="grid gap-10 lg:grid-cols-[1fr_30rem] lg:items-start">
         <section aria-labelledby="lists-heading">
-          <h2 id="lists-heading" className="text-display-sm text-navy">Your shortlists</h2>
+          <h2 id="lists-heading" className="text-display-sm text-navy">Your Shortlists</h2>
           {(lists.data ?? []).length === 0 ? (
             <p className="mt-4 text-ink-muted">None yet.</p>
           ) : (
@@ -82,7 +82,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
           )}
         </section>
         <section aria-labelledby="new-list-heading" className="card p-5 sm:p-6">
-          <h2 id="new-list-heading" className="text-display-sm text-navy">New shortlist</h2>
+          <h2 id="new-list-heading" className="text-display-sm text-navy">New Shortlist</h2>
           <div className="mt-6">
             <ShortlistForm
               options={finishes.map((f) => ({ id: f.id, name: f.name, detail: measureLine(f.specs), swatch: grainImage(f)?.src }))}

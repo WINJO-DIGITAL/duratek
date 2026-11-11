@@ -143,7 +143,7 @@ export function FlooringLineForm({
         error={e.finish_id}
         required
         defaultValue={v("finish_id")}
-        options={[{ value: "", label: "Choose a finish" }, ...finishes.map((f) => ({ value: f.id, label: f.label }))]}
+        options={[{ value: "", label: "Choose a Finish" }, ...finishes.map((f) => ({ value: f.id, label: f.label }))]}
       />
       <div className="grid gap-5 sm:grid-cols-3">
         <Field name="area_m2" label="Floor area" hint="m²" inputMode="decimal" defaultValue={v("area_m2")} error={e.area_m2} required autoComplete="off" />
@@ -181,7 +181,7 @@ export function OtherLineForm({ quoteId, showCost, rooms = [], labourRatePence }
             { value: "accessory", label: "Accessory" },
             { value: "labour", label: "Labour" },
             { value: "delivery", label: "Delivery" },
-            { value: "expense", label: "Other expense" },
+            { value: "expense", label: "Other Expense" },
             { value: "other", label: "Other" },
           ]}
         />

@@ -200,6 +200,15 @@
   color: var(--color-green-ink);
 }
 
+/* A short green rule under a title: the one accent line that sets section and page titles apart. */
+@utility title-rule {
+  background-image: linear-gradient(var(--color-green-ink), var(--color-green-ink));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 2.75rem 2px;
+  padding-bottom: 0.45em;
+}
+
 /* A soft card: white on ivory or cream, warm hairline, rounded, gentle shadow. */
 @utility card {
   background: var(--color-white);

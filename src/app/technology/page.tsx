@@ -60,7 +60,7 @@ export default async function TechnologyPage() {
     <PageTransition>
       <>
         <header className="container-page pb-section-sm pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" eyebrow="Technology" title="What’s inside a Duratek plank">
+          <SectionIntro as="h1" size="lg" eyebrow="Technology" title="What’s Inside a Duratek Plank">
             <p>
               Five layers, from the clear finish you walk on down to the underlay that sits on your subfloor. Here’s what
               each one does.
@@ -88,7 +88,7 @@ export default async function TechnologyPage() {
             )}
             <div className="lg:col-span-6 lg:col-start-7">
               <h2 id="detail-heading" className="eyebrow font-sans">
-                Layer by layer
+                Layer by Layer
               </h2>
               <ul className="mt-6 space-y-3 sm:space-y-4">
                 {CHAPTERS.map((c, i) => {
@@ -124,7 +124,7 @@ export default async function TechnologyPage() {
         {GENERAL_CONTACT.email && (
           <section className="py-section">
             <div className="container-page grid gap-10 lg:grid-cols-2 lg:items-end">
-              <SectionIntro title="Technical sheets and certificates">
+              <SectionIntro title="Technical Sheets and Certificates">
                 <p>
                   Ask for the technical sheet, the warranty terms and any independent test certificates for the finish
                   you’re considering, and always follow its installation and care guidance.

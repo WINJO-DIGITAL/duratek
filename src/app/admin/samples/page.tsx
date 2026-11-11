@@ -24,7 +24,7 @@ export default function AdminSamplesPage({ searchParams }: PageProps<"/admin/sam
 }
 
 const FILTERS = [
-  { value: "new", label: "To send" },
+  { value: "new", label: "To Send" },
   { value: "sent", label: "Sent" },
   { value: "cancelled", label: "Cancelled" },
   { value: "all", label: "All" },
@@ -151,11 +151,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/sampl
                     {!canEmail && <span className="text-ink-muted">(no email provider is set up, so nothing would be sent)</span>}
                   </label>
                   <div className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:col-span-3">
-                    <Button type="submit" name="intent" value="sent">Mark sent</Button>
+                    <Button type="submit" name="intent" value="sent">Mark Sent</Button>
                     {r.status === "new" && (
-                      <Button type="submit" name="intent" value="processing" variant="outline">Start packing</Button>
+                      <Button type="submit" name="intent" value="processing" variant="outline">Start Packing</Button>
                     )}
-                    <Button type="submit" name="intent" value="cancelled" variant="quiet">Cancel request</Button>
+                    <Button type="submit" name="intent" value="cancelled" variant="quiet">Cancel Request</Button>
                   </div>
                 </form>
               )}
@@ -174,7 +174,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/sampl
       )}
 
       <section id="availability" aria-labelledby="avail-heading" className="mt-stack scroll-mt-24">
-        <h2 id="avail-heading" className="text-display-sm text-navy">Sample availability</h2>
+        <h2 id="avail-heading" className="text-display-sm text-navy">Sample Availability</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-navy/75">
           Mark a finish out of stock when you have no samples to send. It stops being offered as a free sample, on the site and when a request is submitted.
         </p>

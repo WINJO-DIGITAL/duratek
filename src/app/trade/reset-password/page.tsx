@@ -13,7 +13,7 @@ export default function ResetPasswordPage() {
     <PageTransition>
       <div className="container-page grid gap-12 pb-section pt-12 sm:pt-16 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-4">
-          <SectionIntro as="h1" size="lg" title="Choose a new password." className="mt-6">
+          <SectionIntro as="h1" size="lg" title="Choose a New Password." className="mt-6">
             <p>You’ll be signed out everywhere else.</p>
           </SectionIntro>
         </div>

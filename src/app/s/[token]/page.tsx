@@ -53,7 +53,7 @@ async function Content({ params }: { params: PageProps<"/s/[token]">["params"] }
         </ul>
       )}
       <div className="mt-stack flex flex-wrap items-center gap-x-6 gap-y-3" data-print-hide>
-        <ButtonLink href="/samples">Order free samples</ButtonLink>
+        <ButtonLink href="/samples">Order Free Samples</ButtonLink>
         <PrintButton label="Print" />
       </div>
     </div>

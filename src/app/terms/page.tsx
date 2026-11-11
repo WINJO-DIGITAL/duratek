@@ -16,14 +16,14 @@ export default function TermsPage() {
         please do not use the site.
       </p>
 
-      <h2>About the website</h2>
+      <h2>About the Website</h2>
       <p>
         The website gives information about Duratek waterproof SPC click flooring: the finishes, their specifications,
         where to find a stockist, and how to request free samples. It is for information only. Nothing on the site is an
         offer to sell, and the site does not take orders or payment.
       </p>
 
-      <h2>Accuracy of information</h2>
+      <h2>Accuracy of Information</h2>
       <p>
         We take care to keep product information accurate and up to date. Colours and grain are shown as photographed on
         screen, and screens vary, so a sample is the best guide to a finish. Specifications may change; the data sheet
@@ -38,7 +38,7 @@ export default function TermsPage() {
         trade accounts, under the trade terms agreed when the account is approved.
       </p>
 
-      <h2>Free samples</h2>
+      <h2>Free Samples</h2>
       <p>
         Samples are free. You may request up to three per request, and they are sent while stocks last. We may decline a
         request or ask for more detail, for example to confirm an address. A finish that is out of stock as a sample
@@ -53,39 +53,39 @@ export default function TermsPage() {
       </p>
       <WarrantyDisclaimer />
 
-      <h2>Trade quotations</h2>
+      <h2>Trade Quotations</h2>
       <p>
         Quotes that trade customers create with the trade tools are the trader&rsquo;s own quotes to their customers.
         Duratek is not a party to them and does not sell through them. The trader is responsible for the prices, terms
         and advice in any quote they send.
       </p>
 
-      <h2>Content and intellectual property</h2>
+      <h2>Content and Intellectual Property</h2>
       <p>
         The text, photographs, graphics and logos on this site belong to Duratek or are used with permission. You may view
         and print pages for your own use. Please do not copy them for commercial use without written permission.
       </p>
 
-      <h2>Links to other sites</h2>
+      <h2>Links to Other Sites</h2>
       <p>
         The site links to other websites, including online retailers. We do not control those sites and are not
         responsible for their content or their terms.
       </p>
 
-      <h2>Limits of responsibility</h2>
+      <h2>Limits of Responsibility</h2>
       <p>
         We do not exclude liability that cannot be excluded by law, such as liability for death or personal injury caused
         by our negligence, or for fraud. Subject to that, we are not liable for loss arising from reliance on information on
         this site, or from the actions of third parties, including stockists and online retailers.
       </p>
 
-      <h2>Your personal data</h2>
+      <h2>Your Personal Data</h2>
       <p>
         How we handle personal data is set out in our <Link href="/privacy">privacy notice</Link>. Cookies are described on
         our <Link href="/cookies">cookies page</Link>.
       </p>
 
-      <h2>Changes and governing law</h2>
+      <h2>Changes and Governing Law</h2>
       <p>
         We may change these terms or the site at any time. The version on this page applies from the date shown above.
         These terms are governed by the law of England and Wales, and the courts of England and Wales have jurisdiction.

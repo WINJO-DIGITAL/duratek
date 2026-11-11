@@ -16,7 +16,7 @@ export default function ContactPage({ searchParams }: PageProps<"/contact">) {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="Contact" title="Ask us anything.">
+        <SectionIntro as="h1" size="lg" eyebrow="Contact" title="Ask Us Anything.">
           <p>Questions about a finish, a stockist or a trade account. We reply by email.</p>
         </SectionIntro>
         <div className="mt-stack grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">

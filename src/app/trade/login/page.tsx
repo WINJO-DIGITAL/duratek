@@ -10,7 +10,7 @@ import { getAccount } from "@/lib/auth/session";
 import { safeNext } from "@/lib/auth/login";
 
 export const metadata: Metadata = {
-  title: "Trade log in",
+  title: "Trade Log In",
   description: "Log in to your Duratek trade account to see your prices.",
   robots: { index: false },
 };
@@ -23,7 +23,7 @@ export default function TradeLoginPage({ searchParams }: PageProps<"/trade/login
           <Link href="/trade" className="nav-link gap-2">
             <ArrowLeft size={16} /> Trade accounts
           </Link>
-          <SectionIntro as="h1" size="lg" title="Trade log in." className="mt-6">
+          <SectionIntro as="h1" size="lg" title="Trade Log In." className="mt-6">
             <p>See your own prices and documents.</p>
           </SectionIntro>
         </div>

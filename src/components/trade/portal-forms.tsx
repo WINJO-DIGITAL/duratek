@@ -130,7 +130,7 @@ export function RoomForm({
           label="Finish"
           defaultValue={v("finish_id", values.finishId)}
           error={e.finish_id}
-          options={[{ value: "", label: "Choose later" }, ...finishes.map((f) => ({ value: f.id, label: f.label }))]}
+          options={[{ value: "", label: "Choose Later" }, ...finishes.map((f) => ({ value: f.id, label: f.label }))]}
         />
       </div>
       <div className="grid grid-cols-3 gap-3">

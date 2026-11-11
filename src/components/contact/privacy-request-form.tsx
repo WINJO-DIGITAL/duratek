@@ -11,7 +11,7 @@ export function PrivacyRequestForm() {
   if (state.status === "sent") {
     return (
       <div role="status" className="card p-6 sm:p-8">
-        <h2 className="text-display-sm text-navy">We&rsquo;ve got your request.</h2>
+        <h2 className="text-display-sm text-navy">We&rsquo;ve Got Your Request.</h2>
         <p className="mt-3 max-w-[60ch] text-navy/75">
           We&rsquo;ll check that it&rsquo;s you, then reply to {state.email} within one month. We won&rsquo;t share or delete anything until we have.
         </p>

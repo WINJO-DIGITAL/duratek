@@ -30,12 +30,12 @@ export function SavedList({ entries }: { entries: SavedEntry[] }) {
   if (saved.length === 0) {
     return (
       <div className="mt-12 border-t border-line pt-10">
-        <h2 className="text-display-sm text-navy">Nothing saved yet.</h2>
+        <h2 className="text-display-sm text-navy">Nothing Saved Yet.</h2>
         <p className="mt-3 max-w-md text-ink-muted">
           Use the bookmark on any finish to keep it here, on this device. Then compare up to three side by side.
         </p>
         <ButtonLink href="/range" className="mt-6">
-          Browse the range
+          Browse the Range
         </ButtonLink>
       </div>
     );

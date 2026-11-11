@@ -30,7 +30,7 @@ const BENEFIT_ICONS = [TagIcon, QuoteIcon, CalculatorIcon, DocumentIcon, ShareIc
 const STEPS = [
   { title: "Apply", body: "A short form: your company, your trade and how to reach you." },
   { title: "We check your details", body: "Every application is read by a person. We’ll email you when you’re approved." },
-  { title: "Log in", body: "Use the email and password you applied with to see your prices and documents." },
+  { title: "Log In", body: "Use the email and password you applied with to see your prices and documents." },
 ] as const;
 
 export default async function TradePage() {
@@ -45,13 +45,13 @@ export default async function TradePage() {
       <>
         <section className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-12 lg:items-end lg:gap-14">
           <div className="lg:col-span-6">
-            <SectionIntro as="h1" size="lg" eyebrow="Trade accounts" title="For fitters, retailers, contractors and specifiers.">
+            <SectionIntro as="h1" size="lg" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
               <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
             </SectionIntro>
             <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
               {enabled ? (
                 <ButtonLink href="/trade/apply" size="lg">
-                  Apply for a trade account
+                  Apply for a Trade Account
                 </ButtonLink>
               ) : (
                 <p className="notice px-4 py-3 text-[0.9375rem] text-navy">
@@ -76,7 +76,7 @@ export default async function TradePage() {
         <section aria-labelledby="benefits-heading" className="bg-cream py-section">
           <div className="container-page">
             <h2 id="benefits-heading" className="reveal text-display-md text-navy">
-              What your account is for
+              What Your Account Is for
             </h2>
             <ul className="mt-stack grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
               {BENEFITS.map((b, i) => {
@@ -96,7 +96,7 @@ export default async function TradePage() {
         <section aria-labelledby="steps-heading" className="py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
             <h2 id="steps-heading" className="reveal text-display-md text-navy lg:col-span-4">
-              How it works
+              How It Works
             </h2>
             <ol className="lg:col-span-8">
               {STEPS.map((s) => (
@@ -113,7 +113,7 @@ export default async function TradePage() {
           {enabled && (
             <div className="container-page mt-12 flex flex-wrap items-center justify-between gap-6 border-t border-line pt-8">
               <p className="text-lede text-navy">It takes about two minutes.</p>
-              <ButtonLink href="/trade/apply">Apply for a trade account</ButtonLink>
+              <ButtonLink href="/trade/apply">Apply for a Trade Account</ButtonLink>
             </div>
           )}
         </section>

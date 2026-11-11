@@ -158,7 +158,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/q/[token]
             <form action={respondToQuote}>
               <input type="hidden" name="token" value={token} />
               <input type="hidden" name="decision" value="accepted" />
-              <Button type="submit" arrow>Accept this quote</Button>
+              <Button type="submit" arrow>Accept This Quote</Button>
             </form>
             <form action={respondToQuote}>
               <input type="hidden" name="token" value={token} />

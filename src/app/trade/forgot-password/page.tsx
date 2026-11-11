@@ -13,9 +13,9 @@ export default function ForgotPasswordPage() {
       <div className="container-page grid gap-12 pb-section pt-12 sm:pt-16 lg:grid-cols-12 lg:gap-14">
         <div className="lg:col-span-4">
           <Link href="/trade/login" className="nav-link gap-2">
-            <ArrowLeft size={16} /> Trade log in
+            <ArrowLeft size={16} /> Trade Log In
           </Link>
-          <SectionIntro as="h1" size="lg" title="Forgotten your password?" className="mt-6">
+          <SectionIntro as="h1" size="lg" title="Forgotten Your Password?" className="mt-6">
             <p>We’ll email you a link to choose a new one.</p>
           </SectionIntro>
         </div>

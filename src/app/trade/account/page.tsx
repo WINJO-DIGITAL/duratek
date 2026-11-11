@@ -56,12 +56,12 @@ async function AccountContent({ searchParams }: { searchParams: PageProps<"/trad
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
         {account.isAdmin && (
           <ButtonLink href="/admin" variant="quiet">
-            Owner admin
+            Owner Admin
           </ButtonLink>
         )}
         <form action={logOut}>
           <Button type="submit" variant="outline">
-            Log out
+            Log Out
           </Button>
         </form>
         <form action={logOutEverywhere}>
@@ -144,8 +144,8 @@ async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<
     <div className="space-y-12">
       <ul className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {[
-          { href: "/trade/account/projects#new", label: "New project", note: "Measure rooms" },
-          { href: "/trade/account/quotes", label: "New quote", note: "Price a job" },
+          { href: "/trade/account/projects#new", label: "New Project", note: "Measure rooms" },
+          { href: "/trade/account/quotes", label: "New Quote", note: "Price a job" },
           { href: "/trade/present", label: "Present", note: "Show the range" },
           { href: "/trade/account/calculator", label: "Calculator", note: "Packs and profit" },
         ].map((a) => (
@@ -161,7 +161,7 @@ async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<
       <div className="grid gap-10 lg:grid-cols-2">
         <section aria-labelledby="quotes-heading">
           <div className="flex items-baseline justify-between gap-4">
-            <h2 id="quotes-heading" className="text-display-sm text-navy">Recent quotes</h2>
+            <h2 id="quotes-heading" className="text-display-sm text-navy">Recent Quotes</h2>
             <Link href="/trade/account/quotes" className="text-[0.9375rem] text-navy underline underline-offset-4">All quotes</Link>
           </div>
           <p className="mt-1 text-[0.875rem] text-ink-muted">{open.length} waiting for an answer · {won.length} accepted</p>
@@ -200,7 +200,7 @@ async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<
 
       <section aria-labelledby="saved-heading">
         <div className="flex items-baseline justify-between gap-4">
-          <h2 id="saved-heading" className="text-display-sm text-navy">Saved finishes</h2>
+          <h2 id="saved-heading" className="text-display-sm text-navy">Saved Finishes</h2>
           <Link href="/trade/account/catalogue" className="text-[0.9375rem] text-navy underline underline-offset-4">Catalogue and your prices</Link>
         </div>
         {savedFinishes.length === 0 ? (
@@ -224,7 +224,7 @@ async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<
 
       <section aria-labelledby="account-heading" className="grid gap-6 lg:grid-cols-2">
         <div className="card p-5 sm:p-6">
-          <h2 id="account-heading" className="text-display-sm text-navy">Your account</h2>
+          <h2 id="account-heading" className="text-display-sm text-navy">Your Account</h2>
           <dl className="mt-4 text-[0.9375rem]">
             {[
               ["Status", "Approved trade account"],
@@ -242,7 +242,7 @@ async function Dashboard({ account }: { account: NonNullable<Awaited<ReturnType<
           <Link href="/trade/account/settings" className="mt-4 inline-block py-2 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">Settings and branding</Link>
         </div>
         <div className="card p-5 sm:p-6">
-          <h2 className="text-display-sm text-navy">Technical documents</h2>
+          <h2 className="text-display-sm text-navy">Technical Documents</h2>
           <p className="mt-2 text-[0.9375rem] text-ink-muted">{docs.count ? `${docs.count} technical sheets, fitting guides and certificates.` : "Technical sheets, fitting guides and certificates appear here as Duratek adds them."}</p>
           <Link href="/trade/account/documents" className="mt-4 inline-block py-2 text-[0.9375rem] text-navy underline decoration-green underline-offset-4">Documents</Link>
         </div>

@@ -45,7 +45,7 @@ async function Content() {
         </p>
       }
     >
-      <ButtonLink href="/admin/finishes/new">Add a finish</ButtonLink>
+      <ButtonLink href="/admin/finishes/new">Add a Finish</ButtonLink>
       <ul className="mt-8 grid gap-3 sm:grid-cols-2">
         {rows.map((f) => {
           const swatch = [...(f.finish_images ?? [])].sort((a, b) => a.sort_order - b.sort_order).find((i) => i.kind === "swatch") ?? f.finish_images?.[0];

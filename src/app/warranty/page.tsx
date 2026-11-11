@@ -41,7 +41,7 @@ export default async function WarrantyPage() {
             <div className="grid gap-px border border-line bg-line md:grid-cols-2">
               <div className="bg-off-white p-6 sm:p-10">
                 <p className="eyebrow">Residential</p>
-                <h2 className="reveal mt-3 text-display-md text-navy">Lifetime warranty</h2>
+                <h2 className="reveal mt-3 text-display-md text-navy">Lifetime Warranty</h2>
                 <p className="mt-4 text-lede text-ink-muted">
                   For homes. Residential lifetime is defined as{" "}
                   <strong className="font-medium text-navy">25 years</strong>.
@@ -49,7 +49,7 @@ export default async function WarrantyPage() {
               </div>
               <div className="bg-off-white p-6 sm:p-10">
                 <p className="eyebrow">Commercial</p>
-                <h2 className="reveal mt-3 text-display-md text-navy">10 year warranty</h2>
+                <h2 className="reveal mt-3 text-display-md text-navy">10 Year Warranty</h2>
                 <p className="mt-4 text-lede text-ink-muted">
                   For <strong className="font-medium text-navy">light and medium traffic</strong> commercial areas.
                   Not applicable to heavy traffic areas.
@@ -67,7 +67,7 @@ export default async function WarrantyPage() {
               </div>
             )}
             <div className="lg:col-span-5 lg:col-start-8">
-              <SectionIntro title="Before you fit">
+              <SectionIntro title="Before You Fit">
                 <p>
                   Follow the installation and care guidance for your finish, including subfloor preparation. If you’d
                   like the full warranty terms or the technical sheet first, ask and we’ll send them.

@@ -107,7 +107,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
       </div>
 
       <section id="variants" aria-labelledby="variants-heading" className="mt-stack scroll-mt-24">
-        <h2 id="variants-heading" className="text-display-sm text-navy">Variants and pack coverage</h2>
+        <h2 id="variants-heading" className="text-display-sm text-navy">Variants and Pack Coverage</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
           How this finish is sold. Prices are set per variant under Prices. Pack coverage is what trade calculators and quotes use to round up to whole packs.
         </p>
@@ -166,7 +166,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/fin
           ))}
         </ul>
         <div className="card mt-6 p-5 sm:p-6">
-          <h3 className="text-[1.0625rem] text-navy">Add a photograph</h3>
+          <h3 className="text-[1.0625rem] text-navy">Add a Photograph</h3>
           <div className="mt-4">
             <ImageUpload finishId={f.id} />
           </div>

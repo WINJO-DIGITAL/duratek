@@ -16,24 +16,24 @@ type FooterLink = { href: string; label: string };
 
 /** The five places people actually go, set large. */
 const PRIMARY: FooterLink[] = [
-  { href: "/range", label: "The range" },
+  { href: "/range", label: "The Range" },
   { href: "/inspiration", label: "Inspiration" },
-  { href: "/samples", label: "Free samples" },
-  { href: "/where-to-buy", label: "Where to buy" },
-  { href: "/trade", label: "Trade accounts" },
+  { href: "/samples", label: "Free Samples" },
+  { href: "/where-to-buy", label: "Where to Buy" },
+  { href: "/trade", label: "Trade Accounts" },
 ];
 
 const MORE: FooterLink[] = [
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
-  { href: "/saved", label: "Saved finishes" },
+  { href: "/saved", label: "Saved Finishes" },
   { href: "/contact", label: "Contact" },
-  { href: "/trade/login", label: "Trade log in" },
+  { href: "/trade/login", label: "Trade Log In" },
 ];
 
 const LEGAL: FooterLink[] = [
   { href: "/privacy", label: "Privacy" },
-  { href: "/privacy/request", label: "Your data" },
+  { href: "/privacy/request", label: "Your Data" },
   { href: "/cookies", label: "Cookies" },
   { href: "/terms", label: "Terms" },
 ];
@@ -158,7 +158,7 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
               </LinkLine>
             )}
             <div>
-              <h2 className="eyebrow font-sans text-green-on-navy">Shop by colour</h2>
+              <h2 className="eyebrow font-sans text-green-on-navy">Shop by Colour</h2>
               <ul className="mt-3 grid grid-cols-2 gap-x-6 sm:grid-cols-4 lg:grid-cols-2 xl:grid-cols-4">
                 {nav.colourFamilies.map((c) => {
                   const swatch = swatchFor(c);

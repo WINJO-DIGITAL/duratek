@@ -22,7 +22,7 @@ export default function AuditPage({ searchParams }: PageProps<"/admin/audit">) {
 
 const AREAS = [
   { value: "all", label: "Everything", tables: [] as string[] },
-  { value: "accounts", label: "Accounts and roles", tables: ["profiles", "admin_permissions", "businesses"] },
+  { value: "accounts", label: "Accounts and Roles", tables: ["profiles", "admin_permissions", "businesses"] },
   { value: "pricing", label: "Pricing", tables: ["price_lists", "price_list_items", "price_tiers"] },
   { value: "products", label: "Products", tables: ["finishes", "product_variants", "collections", "finish_images"] },
   { value: "other", label: "Other", tables: ["documents", "stockists", "online_retailers", "system_settings", "sample_requests"] },

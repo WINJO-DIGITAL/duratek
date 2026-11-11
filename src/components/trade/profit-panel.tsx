@@ -32,7 +32,7 @@ export function ProfitPanel({
 
   return (
     <div className="card p-5 sm:p-6">
-      <h2 className="text-[1.125rem] text-navy">Your profit on this finish</h2>
+      <h2 className="text-[1.125rem] text-navy">Your Profit on This Finish</h2>
       <dl className="mt-4">
         {rrpGrossPerM2 !== undefined && (
           <Row label="RRP per m²" value={`${formatPence(rrpGrossPerM2)} inc VAT`} sub={rrpNet !== undefined ? `${formatPence(rrpNet)} ex VAT` : undefined} />

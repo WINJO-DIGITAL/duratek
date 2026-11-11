@@ -104,7 +104,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/pri
           </label>
         </div>
         <div className="sm:col-span-2 lg:col-span-4">
-          <Button type="submit" variant="outline">Save list</Button>
+          <Button type="submit" variant="outline">Save List</Button>
         </div>
       </form>
 
@@ -153,13 +153,13 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/pri
       </section>
 
       <section aria-labelledby="add-heading" className="card mt-stack p-5 sm:p-6">
-        <h2 id="add-heading" className="text-display-sm text-navy">Add a price</h2>
+        <h2 id="add-heading" className="text-display-sm text-navy">Add a Price</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
           For a volume break, enter the quantity it starts at (in m² for a per-m² price). For a future price, set when it starts: the current price carries on until then.
         </p>
         <form action={addItem} className="mt-6 space-y-5">
           <input type="hidden" name="list_id" value={list.id} />
-          <SelectField id="i-variant" name="variant_id" label="Product" defaultValue="" required options={[{ value: "", label: "Choose a product" }, ...(variants ?? []).map((v) => ({ value: v.id, label: variantName.get(v.id) ?? v.sku }))]} />
+          <SelectField id="i-variant" name="variant_id" label="Product" defaultValue="" required options={[{ value: "", label: "Choose a Product" }, ...(variants ?? []).map((v) => ({ value: v.id, label: variantName.get(v.id) ?? v.sku }))]} />
           <div className="grid gap-5 sm:grid-cols-3">
             <Field id="i-amount" name="amount" label="Price" hint={vat} inputMode="decimal" required placeholder="£" />
             <SelectField id="i-unit" name="price_unit" label="Per" defaultValue="m2" options={PRICE_UNITS} />
@@ -169,7 +169,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/pri
             <Field id="i-from" name="valid_from" label="Starts" hint="Optional" type="date" />
             <Field id="i-to" name="valid_to" label="Ends (not included)" hint="Optional" type="date" />
           </div>
-          <Button type="submit">Add price</Button>
+          <Button type="submit">Add Price</Button>
         </form>
       </section>
     </AdminShell>

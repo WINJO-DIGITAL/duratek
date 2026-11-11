@@ -116,7 +116,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/enqui
                     <input name="admin_note" defaultValue={r.admin_note ?? ""} maxLength={2000} className="mt-1 min-h-tap w-full rounded-control border border-navy/25 bg-white px-3 text-[0.9375rem] text-navy" />
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {r.status !== "contacted" && <Button type="submit" name="status" value="contacted" variant="outline">Mark contacted</Button>}
+                    {r.status !== "contacted" && <Button type="submit" name="status" value="contacted" variant="outline">Mark Contacted</Button>}
                     {r.status !== "closed" && <Button type="submit" name="status" value="closed" variant="outline">Close</Button>}
                     {r.status !== "spam" && <Button type="submit" name="status" value="spam" variant="quiet">Spam</Button>}
                     {r.status !== "new" && <Button type="submit" name="status" value="new" variant="quiet">Reopen</Button>}

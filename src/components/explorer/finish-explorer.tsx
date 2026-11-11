@@ -117,7 +117,7 @@ export function FinishExplorer({
       <section aria-label="Finish explorer" className={frame}>
         {filterBar}
         <div className="on-dark flex flex-1 flex-col items-start justify-center gap-4 container-page">
-          <h1 className="text-display-md font-light text-on-dark">No finishes match those filters.</h1>
+          <h1 className="text-display-md font-light text-on-dark">No Finishes Match Those Filters.</h1>
           <button
             type="button"
             onClick={() => setFilters({ style: null, format: null, colour: null, q: "" })}

@@ -21,14 +21,14 @@ export default function AdminSettingsPage({ searchParams }: PageProps<"/admin/se
 
 const LABELS: Record<string, { label: string; display: (v: unknown) => string; editable: boolean; hint: string }> = {
   currency: { label: "Currency", display: (v) => String(v), editable: false, hint: "GBP only for now." },
-  default_vat_rate_bp: { label: "Standard VAT rate", display: (v) => `${Number(v) / 100}`, editable: true, hint: "Percent. Applies to new products; each product keeps its own rate." },
-  sample_limit: { label: "Free samples per request", display: (v) => String(v), editable: true, hint: "1 to 10." },
-  retention_sample_requests_months: { label: "Keep sample requests for", display: (v) => String(v), editable: true, hint: "Months, then the customer's details are anonymised. The count stays for reporting." },
-  retention_enquiries_months: { label: "Keep enquiries for", display: (v) => String(v), editable: true, hint: "Months, then anonymised." },
-  retention_rejected_accounts_months: { label: "Keep rejected applications for", display: (v) => String(v), editable: true, hint: "Months after the decision, then the account is deleted." },
-  retention_email_log_days: { label: "Keep the email log for", display: (v) => String(v), editable: true, hint: "Days." },
-  retention_privacy_requests_months: { label: "Keep closed privacy requests for", display: (v) => String(v), editable: true, hint: "Months, then anonymised." },
-  quote_validity_days: { label: "Quote validity", display: (v) => String(v), editable: true, hint: "Days, suggested to traders." },
+  default_vat_rate_bp: { label: "Standard VAT Rate", display: (v) => `${Number(v) / 100}`, editable: true, hint: "Percent. Applies to new products; each product keeps its own rate." },
+  sample_limit: { label: "Free Samples per Request", display: (v) => String(v), editable: true, hint: "1 to 10." },
+  retention_sample_requests_months: { label: "Keep Sample Requests for", display: (v) => String(v), editable: true, hint: "Months, then the customer's details are anonymised. The count stays for reporting." },
+  retention_enquiries_months: { label: "Keep Enquiries for", display: (v) => String(v), editable: true, hint: "Months, then anonymised." },
+  retention_rejected_accounts_months: { label: "Keep Rejected Applications for", display: (v) => String(v), editable: true, hint: "Months after the decision, then the account is deleted." },
+  retention_email_log_days: { label: "Keep the Email Log for", display: (v) => String(v), editable: true, hint: "Days." },
+  retention_privacy_requests_months: { label: "Keep Closed Privacy Requests for", display: (v) => String(v), editable: true, hint: "Months, then anonymised." },
+  quote_validity_days: { label: "Quote Validity", display: (v) => String(v), editable: true, hint: "Days, suggested to traders." },
 };
 
 const NOTICE: Record<string, string> = { saved: "Saved.", invalid: "That value isn’t allowed.", failed: "Couldn’t save. Please try again." };

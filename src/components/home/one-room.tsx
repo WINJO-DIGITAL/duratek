@@ -24,7 +24,7 @@ export function OneRoom({
         <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-2">
           <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }} />
           <ButtonLink href={`/range/${finish.slug}`} variant="quiet">
-            View finish
+            View Finish
           </ButtonLink>
         </div>
       </figcaption>

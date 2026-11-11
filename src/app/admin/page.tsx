@@ -82,7 +82,7 @@ async function Content() {
   return (
     <AdminShell current="/admin" title="Overview" intro="What needs you, and what customers are asking for.">
       <section aria-labelledby="todo-heading">
-        <h2 id="todo-heading" className="sr-only">Waiting for you</h2>
+        <h2 id="todo-heading" className="sr-only">Waiting for You</h2>
         <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           <Todo href="/admin/accounts" count={s.accounts.pending} one="trade application waiting" many="trade applications waiting" />
           <Todo href="/admin/samples" count={o?.samples.to_send ?? s.samples.new} one="sample request to send" many="sample requests to send" />
@@ -94,7 +94,7 @@ async function Content() {
 
       {o && (
         <section aria-labelledby="glance-heading" className="mt-stack">
-          <h2 id="glance-heading" className="text-display-sm text-navy">At a glance</h2>
+          <h2 id="glance-heading" className="text-display-sm text-navy">At a Glance</h2>
           <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
             <Figure label="Products" value={o.products.total} note={`${o.products.active} on the site, ${o.products.hidden} hidden, ${o.products.archived} archived`} />
             <Figure label="Variants on sale" value={o.variants} note="pack sizes and formats" />
@@ -110,7 +110,7 @@ async function Content() {
           </dl>
           {o.recent_activity.length > 0 && (
             <div className="mt-8">
-              <h3 className="text-[1rem] font-medium text-navy">Recent activity</h3>
+              <h3 className="text-[1rem] font-medium text-navy">Recent Activity</h3>
               <ul className="mt-3 divide-y divide-line border-y border-line text-[0.9375rem]">
                 {o.recent_activity.map((a, i) => (
                   <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4 py-2">
@@ -126,7 +126,7 @@ async function Content() {
       )}
 
       <section aria-labelledby="figures-heading" className="mt-stack">
-        <h2 id="figures-heading" className="text-display-sm text-navy">Last 30 days</h2>
+        <h2 id="figures-heading" className="text-display-sm text-navy">Last 30 Days</h2>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
           <Figure label="Sample requests" value={s.samples.last_30d} note={`${s.samples.marketing_opt_in_30d} opted in to marketing`} />
           <Figure label="New trade applications" value={s.accounts.new_30d} note={`${s.accounts.approved} approved accounts in all`} />
@@ -136,7 +136,7 @@ async function Content() {
       </section>
 
       <section aria-labelledby="weeks-heading" className="mt-stack">
-        <h2 id="weeks-heading" className="text-display-sm text-navy">Sample requests by week</h2>
+        <h2 id="weeks-heading" className="text-display-sm text-navy">Sample Requests by Week</h2>
         <ol className="mt-6 flex h-44 items-end gap-2 border-b border-line sm:gap-4" aria-label="Sample requests per week, last 12 weeks">
           {weeks.map((w, i) => (
             <li key={w.week} className="flex h-full min-w-0 flex-1 flex-col items-center justify-end">

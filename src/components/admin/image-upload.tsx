@@ -46,9 +46,9 @@ export function ImageUpload({ finishId }: { finishId: string }) {
           label="Kind"
           defaultValue="room"
           options={[
-            { value: "room", label: "Room scene" },
+            { value: "room", label: "Room Scene" },
             { value: "closeup", label: "Close-up" },
-            { value: "swatch", label: "Plank swatch" },
+            { value: "swatch", label: "Plank Swatch" },
           ]}
         />
         <Field id="image-alt" name="alt" label="Description for screen readers" required maxLength={300} placeholder="Keswick Oak flooring in a bright kitchen" />

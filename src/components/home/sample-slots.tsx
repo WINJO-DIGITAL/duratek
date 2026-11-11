@@ -75,10 +75,10 @@ export function SampleSlots({
           samples chosen
         </p>
         {count > 0 ? (
-          <ButtonLink href="/samples">Request your samples</ButtonLink>
+          <ButtonLink href="/samples">Request Your Samples</ButtonLink>
         ) : (
           <ButtonLink href="/range" variant="outline">
-            Choose from the range
+            Choose from the Range
           </ButtonLink>
         )}
       </div>

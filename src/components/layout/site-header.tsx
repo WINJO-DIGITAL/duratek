@@ -26,7 +26,7 @@ const OVERLAY_ROUTES = new Set(["/"]);
 
 const LEFT_NAV = [
   { href: "/inspiration", label: "Inspiration" },
-  { href: "/where-to-buy", label: "Where to buy" },
+  { href: "/where-to-buy", label: "Where to Buy" },
 ];
 
 export function SiteHeader({ nav }: { nav: NavData }) {

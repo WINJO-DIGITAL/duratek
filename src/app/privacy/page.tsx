@@ -21,7 +21,7 @@ export default function PrivacyPage() {
         We collect only what we need to do what you ask.
       </p>
 
-      <h2>Who we are</h2>
+      <h2>Who We Are</h2>
       <p>
         The website is run by {controller}
         {COMPANY.registeredOffice ? `, ${COMPANY.registeredOffice}` : ""}
@@ -35,7 +35,7 @@ export default function PrivacyPage() {
         )}
       </p>
 
-      <h2>When you order free samples</h2>
+      <h2>When You Order Free Samples</h2>
       <p>
         We ask for your name, email address, postal address and, if you choose, a phone number, along with the
         finishes you chose. We use them to post your samples, email you a confirmation and, if the courier needs it,
@@ -43,14 +43,14 @@ export default function PrivacyPage() {
         tick it, and you can unsubscribe at any time.
       </p>
 
-      <h2>When you apply for a trade account</h2>
+      <h2>When You Apply for a Trade Account</h2>
       <p>
         We ask for your company name, your name, email address, phone number and type of trade, and you choose a
         password. We use these to check your application, run your trade account and contact you about it. Your
         password is stored in a scrambled (hashed) form by our account provider; nobody can read it, including us.
       </p>
 
-      <h2>When you send an enquiry</h2>
+      <h2>When You Send an Enquiry</h2>
       <p>
         If you write to us or ask a stockist a question, we ask for your name, email address and message, and, if you
         choose, your phone number and postcode. We use them to reply. We only pass your message to a stockist if you
@@ -59,14 +59,14 @@ export default function PrivacyPage() {
         whether a stockist has a product in stock; please check with them.
       </p>
 
-      <h2>When you view a finish</h2>
+      <h2>When You View a Finish</h2>
       <p>
         We count how many times each finish page is viewed, as a daily total. We don&rsquo;t record who viewed it,
         your address or anything from your device, and we don&rsquo;t count visits from browsers that send Do Not
         Track or Global Privacy Control.
       </p>
 
-      <h2>When you search by postcode</h2>
+      <h2>When You Search by Postcode</h2>
       <p>
         To find stockists near you, the postcode you enter is sent to{" "}
         <a href="https://postcodes.io" rel="noopener">
@@ -75,13 +75,13 @@ export default function PrivacyPage() {
         , a free UK postcode service, to look up its location. We don&rsquo;t store your search.
       </p>
 
-      <h2>On your device</h2>
+      <h2>On Your Device</h2>
       <p>
         Your sample choices and saved finishes are kept in your browser&rsquo;s storage on your own device. They
         aren&rsquo;t sent to us until you request samples. See <Link href="/cookies">Cookies</Link> for details.
       </p>
 
-      <h2>Who handles your data for us</h2>
+      <h2>Who Handles Your Data for Us</h2>
       <ul>
         <li>
           <strong>Supabase</strong> stores sample requests and trade accounts.
@@ -95,7 +95,7 @@ export default function PrivacyPage() {
       </ul>
       <p>They act on our instructions only. We don&rsquo;t sell your data or share it for advertising.</p>
 
-      <h2>How long we keep it</h2>
+      <h2>How Long We Keep It</h2>
       {/* Keep in step with the retention settings in admin (Settings), and the defaults in the migration. */}
       <ul>
         <li>Sample requests and enquiries: 24 months, then your name, contact and address details are removed.</li>
@@ -105,7 +105,7 @@ export default function PrivacyPage() {
         <li>Trade accounts: until you or we close them. You can delete your account yourself from Settings.</li>
       </ul>
 
-      <h2>Your rights</h2>
+      <h2>Your Rights</h2>
       <p>
         Under UK data protection law you can ask for a copy of your data, ask us to correct or delete it, object to how
         we use it, and withdraw consent to marketing at any time. You can ask at{" "}

@@ -31,7 +31,7 @@ export default function ComparePage({ searchParams }: PageProps<"/compare">) {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="Compare" title="Side by side.">
+        <SectionIntro as="h1" size="lg" eyebrow="Compare" title="Side by Side.">
           <p>Up to {COMPARE_LIMIT} finishes. The link keeps your choice, so you can send it to someone.</p>
         </SectionIntro>
         <Suspense fallback={<CompareSkeleton />}>
@@ -56,7 +56,7 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
   if (chosen.length === 0) {
     return (
       <div className="mt-12">
-        <h2 className="text-display-sm text-navy">Choose a finish to start.</h2>
+        <h2 className="text-display-sm text-navy">Choose a Finish to Start.</h2>
         <p className="mt-2 text-ink-muted">Then add up to two more.</p>
         <Picker options={all} chosen={[]} className="mt-6" />
       </div>
@@ -70,7 +70,7 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
   if (await canSeeTradePrices(account)) {
     const prices = await getTradePrices(account!);
     const values = chosen.map((f) => (prices.get(f.id) ? `${formatPence(prices.get(f.id)!.pence)} ex VAT` : "Not set"));
-    different.unshift({ label: "Your trade price per m²", values, same: false, measured: true });
+    different.unshift({ label: "Your Trade Price per m²", values, same: false, measured: true });
   }
   // Suggestions for empty slots: closest to the first finish, not already chosen.
   const suggestions = relatedFinishes(all, chosen[0], all.length).filter((f) => !slugs.includes(f.slug));

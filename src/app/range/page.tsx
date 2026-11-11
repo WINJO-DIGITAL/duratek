@@ -63,7 +63,7 @@ export default async function RangePage() {
           </SectionIntro>
           <div className="flex items-center gap-8">
             <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
-              Explore them full screen
+              Explore Them Full Screen
             </ButtonLink>
             <ScratchShieldBadge className="hidden w-24! lg:block" />
           </div>

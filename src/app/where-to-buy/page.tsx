@@ -30,7 +30,7 @@ export default function WhereToBuyPage({ searchParams }: PageProps<"/where-to-bu
     <PageTransition>
       <>
         <header className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-2 lg:items-end">
-          <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek near you.">
+          <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek Near You.">
             <p>See it at a local stockist, or buy it online.</p>
           </SectionIntro>
           <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
@@ -111,10 +111,10 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
               <OrderSamplesButton />
               <ButtonLink href="#online" variant="quiet" arrow={false}>
-                Buy online
+                Buy Online
               </ButtonLink>
               <ButtonLink href="/contact" variant="quiet" arrow={false}>
-                Send us an enquiry
+                Send Us an Enquiry
               </ButtonLink>
             </div>
           </div>

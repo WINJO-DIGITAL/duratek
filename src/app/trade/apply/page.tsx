@@ -20,7 +20,7 @@ export default function TradeApplyPage() {
           <Link href="/trade" className="nav-link gap-2">
             <ArrowLeft size={16} /> Trade accounts
           </Link>
-          <SectionIntro as="h1" size="lg" title="Apply for a trade account." className="mt-6">
+          <SectionIntro as="h1" size="lg" title="Apply for a Trade Account." className="mt-6">
             <p>We read every application and email you when your account is approved.</p>
           </SectionIntro>
         </div>

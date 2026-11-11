@@ -86,7 +86,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
       </p>
 
       <section aria-labelledby="base-heading">
-        <h2 id="base-heading" className="text-display-sm text-navy">Base prices, per m²</h2>
+        <h2 id="base-heading" className="text-display-sm text-navy">Base Prices, per m²</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
           Today’s price from 1 m². Volume breaks, future prices and per-pack or per-item prices live in each list below. Leave a field blank for no price.
         </p>
@@ -96,7 +96,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
       </section>
 
       <section aria-labelledby="lists-heading" className="mt-stack">
-        <h2 id="lists-heading" className="text-display-sm text-navy">Price lists</h2>
+        <h2 id="lists-heading" className="text-display-sm text-navy">Price Lists</h2>
         <div className="card relative mt-6 overflow-x-auto">
           <table className="w-full min-w-[36rem] border-collapse text-left">
             <thead>
@@ -136,7 +136,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
 
       <div className="mt-stack grid gap-8 lg:grid-cols-2">
         <section aria-labelledby="new-list-heading" className="card p-5 sm:p-6">
-          <h2 id="new-list-heading" className="text-display-sm text-navy">New list or promotion</h2>
+          <h2 id="new-list-heading" className="text-display-sm text-navy">New List or Promotion</h2>
           <form action={createList} className="mt-6 space-y-5">
             <Field id="list-name" name="name" label="Name" required maxLength={120} placeholder="Spring offer" />
             <div className="grid gap-5 sm:grid-cols-2">
@@ -147,8 +147,8 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
                 defaultValue="promotion"
                 options={[
                   { value: "promotion", label: "Promotion" },
-                  { value: "stockist", label: "Stockist prices" },
-                  { value: "trade", label: "Extra trade list" },
+                  { value: "stockist", label: "Stockist Prices" },
+                  { value: "trade", label: "Extra Trade List" },
                 ]}
               />
               <SelectField
@@ -157,9 +157,9 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
                 label="Promotion for"
                 defaultValue="public"
                 options={[
-                  { value: "public", label: "Everyone (inc VAT)" },
-                  { value: "trade", label: "Trade accounts (ex VAT)" },
-                  { value: "stockist", label: "Stockists (ex VAT)" },
+                  { value: "public", label: "Everyone (Inc VAT)" },
+                  { value: "trade", label: "Trade Accounts (Ex VAT)" },
+                  { value: "stockist", label: "Stockists (Ex VAT)" },
                 ]}
               />
             </div>
@@ -171,13 +171,13 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/price
           </form>
         </section>
         <section aria-labelledby="tier-heading" className="card p-5 sm:p-6">
-          <h2 id="tier-heading" className="text-display-sm text-navy">New price tier</h2>
+          <h2 id="tier-heading" className="text-display-sm text-navy">New Price Tier</h2>
           <p className="mt-2 text-[0.9375rem] text-ink-muted">A tier is a trade price list for a group of accounts, like “Fitters”. Assign accounts under Trade accounts.</p>
           <form action={addTier} className="mt-6 flex flex-wrap items-end gap-3">
             <div className="min-w-56 flex-1">
               <Field id="tier-name" name="name" label="Tier name" required maxLength={80} />
             </div>
-            <Button type="submit" variant="outline">Add tier</Button>
+            <Button type="submit" variant="outline">Add Tier</Button>
           </form>
         </section>
       </div>

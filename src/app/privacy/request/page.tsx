@@ -12,7 +12,7 @@ export default function PrivacyRequestPage() {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="Privacy" title="Your information, your choice.">
+        <SectionIntro as="h1" size="lg" eyebrow="Privacy" title="Your Information, Your Choice.">
           <p>Ask to see what we hold about you, correct it, delete it or stop marketing. We&rsquo;ll reply within one month.</p>
         </SectionIntro>
         <div className="mt-stack max-w-xl">

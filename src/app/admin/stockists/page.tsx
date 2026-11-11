@@ -66,7 +66,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/stock
       {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
 
       <section aria-labelledby="add-heading" className="card p-5 sm:p-6">
-        <h2 id="add-heading" className="text-display-sm text-navy">Add a stockist</h2>
+        <h2 id="add-heading" className="text-display-sm text-navy">Add a Stockist</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-navy/75">
           Adding a stockist, for example Dave&rsquo;s Tiles, starts as a draft. Enter only details the business has confirmed, then tick Verified to publish. Nothing about a stockist is invented or shown until you do.
         </p>
@@ -111,7 +111,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/stock
       </section>
 
       <section aria-labelledby="retailers-heading" className="mt-stack">
-        <h2 id="retailers-heading" className="text-display-sm text-navy">Online retailers</h2>
+        <h2 id="retailers-heading" className="text-display-sm text-navy">Online Retailers</h2>
         <ul className="mt-6 space-y-3">
           {(retailers.data ?? []).map((r) => (
             <li key={r.id} className="card p-5">

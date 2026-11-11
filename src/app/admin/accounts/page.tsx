@@ -176,7 +176,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/accou
                           <div className="flex flex-wrap gap-x-4 gap-y-2">
                             {p.status === "pending" && <Button type="submit" name="decision" value="approve">Approve</Button>}
                             {p.status === "pending" && <Button type="submit" name="decision" value="reject" variant="quiet">Reject</Button>}
-                            {p.status === "approved" && <Button type="submit" name="decision" value="retier" variant="outline">Save tier</Button>}
+                            {p.status === "approved" && <Button type="submit" name="decision" value="retier" variant="outline">Save Tier</Button>}
                             {p.status === "approved" && <Button type="submit" name="decision" value="suspend" variant="quiet">Suspend</Button>}
                             {(p.status === "suspended" || p.status === "rejected") && (
                               <Button type="submit" name="decision" value="reinstate" variant="outline">{p.status === "suspended" ? "Reinstate" : "Approve after all"}</Button>
@@ -208,7 +208,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/accou
                                 ))}
                               </ul>
                             </fieldset>
-                            <Button type="submit" variant="outline">Save role</Button>
+                            <Button type="submit" variant="outline">Save Role</Button>
                           </form>
                         </details>
                       )}

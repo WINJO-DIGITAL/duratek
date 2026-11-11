@@ -86,7 +86,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
         <header className="flex items-start justify-between gap-4 border-b border-line px-5 pb-4 pt-5 sm:px-8 lg:pt-8">
           <div>
             <h2 id="tray-title" className="text-display-sm text-navy">
-              Your samples
+              Your Samples
             </h2>
             <p className="mt-1 text-[0.9375rem] text-ink-muted">
               <span className="tabular-nums text-navy">
@@ -171,7 +171,7 @@ export function SampleTray({ catalogue }: { catalogue: CatalogueEntry[] }) {
             </ButtonLink>
           ) : (
             <ButtonLink href="/range" className="w-full">
-              Browse the range
+              Browse the Range
             </ButtonLink>
           )}
           <div className="flex flex-wrap items-center justify-between gap-x-6">

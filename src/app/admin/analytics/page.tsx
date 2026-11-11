@@ -84,7 +84,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/analy
       </nav>
 
       <section aria-labelledby="kinds-heading" className="mt-stack">
-        <h2 id="kinds-heading" className="text-display-sm text-navy">What each number means</h2>
+        <h2 id="kinds-heading" className="text-display-sm text-navy">What Each Number Means</h2>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
           <Figure label="Finish page views" value={totalViews} note="Page loads, not people" />
           <Figure label="Sample requests" value={total(a.samples_by_status)} note={`${n(a.samples_by_status, "sent")} sent, ${n(a.samples_by_status, "cancelled")} cancelled`} />
@@ -101,7 +101,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/analy
       </div>
 
       <section aria-labelledby="accounts-heading" className="mt-stack">
-        <h2 id="accounts-heading" className="text-display-sm text-navy">Trade account growth</h2>
+        <h2 id="accounts-heading" className="text-display-sm text-navy">Trade Account Growth</h2>
         <p className="mt-2 text-[0.9375rem] text-ink-muted">{a.accounts_active_30d} approved {a.accounts_active_30d === 1 ? "account has" : "accounts have"} signed in during the last 30 days.</p>
         {a.accounts_by_month.length === 0 ? (
           <p className="mt-4 text-ink-muted">No applications in this period.</p>
@@ -139,7 +139,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/analy
       </p>
 
       <section aria-labelledby="quotes-heading" className="mt-stack">
-        <h2 id="quotes-heading" className="text-display-sm text-navy">Quotation activity</h2>
+        <h2 id="quotes-heading" className="text-display-sm text-navy">Quotation Activity</h2>
         <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-4">
           <Figure label="Started" value={total(a.quotes_by_status)} note="All traders, this period" />
           <Figure label="Sent to customers" value={n(a.quotes_by_status, "sent") + n(a.quotes_by_status, "accepted") + n(a.quotes_by_status, "declined")} note="Includes answered quotes" />

@@ -3,15 +3,15 @@ export type AccountRole = "super_admin" | "admin" | "trade" | "stockist";
 export type AccountStatus = "pending" | "approved" | "rejected" | "suspended";
 
 export const PERMISSIONS = [
-  { value: "manage_accounts", label: "Trade accounts", help: "Review applications, approve, suspend, tiers and account prices" },
+  { value: "manage_accounts", label: "Trade Accounts", help: "Review applications, approve, suspend, tiers and account prices" },
   { value: "manage_pricing", label: "Pricing", help: "Price lists, RRPs, tiers, promotions, volume and future prices" },
   { value: "manage_products", label: "Products", help: "Finishes, variants, collections, photographs, inspiration" },
-  { value: "manage_stockists", label: "Where to buy", help: "Stockists and online retailers" },
+  { value: "manage_stockists", label: "Where to Buy", help: "Stockists and online retailers" },
   { value: "manage_samples", label: "Samples", help: "Sample requests (customers' personal details)" },
   { value: "manage_documents", label: "Documents", help: "Technical sheets, warranties, certificates" },
   { value: "manage_settings", label: "Settings", help: "System settings such as the VAT rate" },
   { value: "view_reports", label: "Overview", help: "Demand figures on the overview" },
-  { value: "view_audit", label: "Audit log", help: "Who changed what, and when" },
+  { value: "view_audit", label: "Audit Log", help: "Who changed what, and when" },
 ] as const;
 
 export type Permission = (typeof PERMISSIONS)[number]["value"];
@@ -46,16 +46,16 @@ export function allows(
 export const ADMIN_AREAS = [
   { href: "/admin", label: "Overview", permission: "view_reports" },
   { href: "/admin/analytics", label: "Analytics", permission: "view_reports" },
-  { href: "/admin/accounts", label: "Trade accounts", permission: "manage_accounts" },
+  { href: "/admin/accounts", label: "Trade Accounts", permission: "manage_accounts" },
   { href: "/admin/prices", label: "Prices", permission: "manage_pricing" },
   { href: "/admin/finishes", label: "Finishes", permission: "manage_products" },
   { href: "/admin/samples", label: "Samples", permission: "manage_samples" },
-  { href: "/admin/stockists", label: "Where to buy", permission: "manage_stockists" },
+  { href: "/admin/stockists", label: "Where to Buy", permission: "manage_stockists" },
   { href: "/admin/enquiries", label: "Enquiries", permission: "manage_stockists" },
   { href: "/admin/documents", label: "Documents", permission: "manage_documents" },
   { href: "/admin/settings", label: "Settings", permission: "manage_settings" },
   { href: "/admin/privacy", label: "Privacy", permission: "manage_settings" },
-  { href: "/admin/audit", label: "Audit log", permission: "view_audit" },
+  { href: "/admin/audit", label: "Audit Log", permission: "view_audit" },
 ] as const satisfies readonly { href: string; label: string; permission: Permission }[];
 
 export type AdminArea = (typeof ADMIN_AREAS)[number]["href"];

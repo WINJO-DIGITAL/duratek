@@ -210,7 +210,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                   <AddToSamplesButton finish={sample} />
                 </div>
                 <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
-                  Where to buy
+                  Where to Buy
                 </ButtonLink>
                 <SaveButton finish={sample} />
               </div>
@@ -253,7 +253,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
             <div className="lg:col-span-4">
               <h2 id="scale-heading" className="text-display-md text-navy">
-                To scale
+                To Scale
               </h2>
               <p className="mt-4 text-ink-muted">
                 {planks.length > 1
@@ -311,7 +311,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
         <div className="container-page">
           <div className="flex flex-wrap items-end justify-between gap-4 border-t border-line pt-section-sm">
             <h2 id="related-heading" className="text-display-md text-navy">
-              You might also like
+              You Might Also Like
             </h2>
             <Link
               href="/range"

@@ -84,7 +84,7 @@ export function TradeShell({
           <ModeSwitch customerView={customerView} back={back} />
           {!customerView && account.isAdmin && (
             <ButtonLink href="/admin" variant="quiet" arrow={false}>
-              Owner admin
+              Owner Admin
             </ButtonLink>
           )}
           {!customerView && (

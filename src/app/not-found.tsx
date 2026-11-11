@@ -6,12 +6,12 @@ export default function NotFound() {
     <PageTransition>
       <div className="container-page py-section">
         <p className="eyebrow">Page not found</p>
-        <h1 className="mt-4 max-w-[18ch] text-display-lg text-navy">We couldn&apos;t find that page.</h1>
+        <h1 className="mt-4 max-w-[18ch] text-display-lg text-navy">We Couldn&apos;t Find That Page.</h1>
         <p className="mt-5 max-w-prose text-lede text-ink-muted">
           It may have moved, or the finish may no longer be in the range.
         </p>
         <ButtonLink href="/range" className="mt-10">
-          Explore the range
+          Explore the Range
         </ButtonLink>
       </div>
     </PageTransition>

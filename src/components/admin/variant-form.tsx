@@ -45,9 +45,9 @@ export function VariantForm({ finishId, values }: { finishId: string; values: Va
           error={e.unit_of_sale}
           options={[
             { value: "pack", label: "Pack" },
-            { value: "m2", label: "Square metre" },
+            { value: "m2", label: "Square Metre" },
             { value: "item", label: "Item" },
-            { value: "linear_metre", label: "Linear metre" },
+            { value: "linear_metre", label: "Linear Metre" },
           ]}
         />
       </div>

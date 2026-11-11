@@ -186,7 +186,7 @@ export function RangeBrowser({
         <RangeGrid items={visible} view={view} />
       ) : (
         <div className="card mt-10 p-8 sm:p-12">
-          <h2 className="text-display-sm text-navy">No finishes match those filters.</h2>
+          <h2 className="text-display-sm text-navy">No Finishes Match Those Filters.</h2>
           <p className="mt-3 text-ink-muted">Try another colour, or clear the filters to see the full range.</p>
         </div>
       )}

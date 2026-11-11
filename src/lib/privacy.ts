@@ -1,11 +1,11 @@
 import { z } from "zod";
 
 export const PRIVACY_KINDS = [
-  { value: "access", label: "See the information you hold about me" },
-  { value: "erase", label: "Delete my information" },
-  { value: "withdraw_marketing", label: "Stop sending me marketing" },
-  { value: "correct", label: "Correct my information" },
-  { value: "other", label: "Something else" },
+  { value: "access", label: "See the Information You Hold About Me" },
+  { value: "erase", label: "Delete My Information" },
+  { value: "withdraw_marketing", label: "Stop Sending Me Marketing" },
+  { value: "correct", label: "Correct My Information" },
+  { value: "other", label: "Something Else" },
 ] as const;
 
 export const privacyRequestSchema = z.object({

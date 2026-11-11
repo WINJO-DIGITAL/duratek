@@ -120,11 +120,11 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/acc
             </tbody>
           </table>
         </div>
-        <Button type="submit" className="mt-6">Save account prices</Button>
+        <Button type="submit" className="mt-6">Save Account Prices</Button>
       </form>
     
       <section aria-labelledby="delete-heading" className="mt-stack border-t border-line pt-8">
-        <h2 id="delete-heading" className="text-display-sm text-navy">Delete this account</h2>
+        <h2 id="delete-heading" className="text-display-sm text-navy">Delete This Account</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
           For a request to be forgotten. It removes the account and everything the trader owns: customers, projects, quotes and settings. It can&rsquo;t be undone. Suspending the account is gentler.
         </p>
@@ -134,7 +134,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/admin/acc
             <input type="checkbox" name="confirm" value="yes" className="size-5 accent-green-ink" />
             Delete this account for good
           </label>
-          <Button type="submit" variant="outline">Delete account</Button>
+          <Button type="submit" variant="outline">Delete Account</Button>
         </form>
       </section>
 </AdminShell>

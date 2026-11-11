@@ -172,7 +172,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
         <div className="flex flex-wrap items-start gap-x-8 gap-y-2">
           <AddToSamplesButton key={current.id} finish={{ id: current.id, slug: current.slug, name: current.name, unavailable: current.sampleAvailable === false }} />
           <ButtonLink href={`/range/${current.slug}`} variant="quiet">
-            View finish
+            View Finish
           </ButtonLink>
         </div>
       </div>

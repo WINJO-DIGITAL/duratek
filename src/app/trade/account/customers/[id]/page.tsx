@@ -45,7 +45,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/trade/acc
           <section aria-labelledby="projects-heading">
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 id="projects-heading" className="text-display-sm text-navy">Projects</h2>
-              <ButtonLink href={`/trade/account/projects?customer=${customer.id}#new`} variant="outline">New project</ButtonLink>
+              <ButtonLink href={`/trade/account/projects?customer=${customer.id}#new`} variant="outline">New Project</ButtonLink>
             </div>
             {theirProjects.length === 0 ? <p className="mt-4 text-ink-muted">None yet.</p> : (
               <ul className="mt-4 space-y-2">

@@ -154,18 +154,18 @@ async function Content({ params, searchParams }: { params: PageProps<"/trade/acc
 
       <div className="mt-stack grid gap-8 lg:grid-cols-2">
         <section aria-labelledby="add-room-heading" className="card p-5 sm:p-6">
-          <h2 id="add-room-heading" className="text-display-sm text-navy">Add a room</h2>
+          <h2 id="add-room-heading" className="text-display-sm text-navy">Add a Room</h2>
           <div className="mt-6"><RoomForm projectId={project.id} values={{}} finishes={finishOptions} defaultWastage={prefs.default_wastage_pct} /></div>
         </section>
         <section aria-labelledby="details-heading" className="card p-5 sm:p-6">
-          <h2 id="details-heading" className="text-display-sm text-navy">Project details</h2>
+          <h2 id="details-heading" className="text-display-sm text-navy">Project Details</h2>
           <div className="mt-6"><ProjectForm values={project} customers={customers} /></div>
         </section>
       </div>
 
       {rows.length > 0 && (
         <section aria-labelledby="edit-rooms-heading" className="mt-stack">
-          <h2 id="edit-rooms-heading" className="text-display-sm text-navy">Edit rooms</h2>
+          <h2 id="edit-rooms-heading" className="text-display-sm text-navy">Edit Rooms</h2>
           <ul className="mt-6 grid gap-4 lg:grid-cols-2">
             {project.rooms.map((r) => (
               <li key={r.id}>
@@ -180,7 +180,7 @@ async function Content({ params, searchParams }: { params: PageProps<"/trade/acc
       )}
 
       <section aria-labelledby="quotes-heading" className="mt-stack">
-        <h2 id="quotes-heading" className="text-display-sm text-navy">Quotes for this project</h2>
+        <h2 id="quotes-heading" className="text-display-sm text-navy">Quotes for This Project</h2>
         {theirQuotes.length === 0 ? <p className="mt-4 text-ink-muted">None yet.</p> : (
           <ul className="mt-4 space-y-2">
             {theirQuotes.map((q) => (

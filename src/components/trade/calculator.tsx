@@ -244,7 +244,7 @@ export function Calculator({
       </div>
 
       <aside aria-live="polite" className="card p-5 sm:p-6 lg:sticky lg:top-[calc(var(--spacing-header)+2rem)]">
-        <h2 className="text-display-sm text-navy">You need</h2>
+        <h2 className="text-display-sm text-navy">You Need</h2>
         {plan && finish ? (
           <>
             <p className="mt-4 font-display text-[2.5rem] font-light leading-none text-navy">
@@ -277,7 +277,7 @@ export function Calculator({
               </dl>
             )}
             <div className="mt-5 border-t border-line pt-4">
-              <h3 className="text-[0.875rem] font-medium text-navy">How this is worked out</h3>
+              <h3 className="text-[0.875rem] font-medium text-navy">How This Is Worked Out</h3>
               <ul className="mt-2 space-y-1 text-[0.8125rem] text-ink-muted">
                 <li>Area is length × width for each room, added up and rounded to 0.01 m².</li>
                 <li>{plan.wastagePct}% is added for cuts and spares.</li>

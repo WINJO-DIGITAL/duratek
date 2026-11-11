@@ -28,7 +28,7 @@ export function TradeApplicationForm() {
           {state.email}. We then check every application by hand and email you when your account is approved.
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-          <ButtonLink href="/range">Browse the range</ButtonLink>
+          <ButtonLink href="/range">Browse the Range</ButtonLink>
         </div>
       </section>
     );

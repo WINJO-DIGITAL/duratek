@@ -83,8 +83,8 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
                     <input name="outcome_note" defaultValue={r.outcome_note ?? ""} maxLength={1000} className={input} />
                   </label>
                   <div className="flex flex-wrap gap-2">
-                    {r.status === "new" && <Button type="submit" name="status" value="verifying" variant="outline">Checking identity</Button>}
-                    <Button type="submit" name="status" value="done">Mark done</Button>
+                    {r.status === "new" && <Button type="submit" name="status" value="verifying" variant="outline">Checking Identity</Button>}
+                    <Button type="submit" name="status" value="done">Mark Done</Button>
                     <Button type="submit" name="status" value="refused" variant="quiet">Refuse</Button>
                   </div>
                 </form>
@@ -104,7 +104,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
               <select name="kind" className={input}>{PRIVACY_KINDS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}</select>
             </label>
             <label className="block text-[0.8125rem] text-ink-muted">Details<input name="details" maxLength={2000} className={input} /></label>
-            <Button type="submit">Log request</Button>
+            <Button type="submit">Log Request</Button>
           </form>
         </details>
         {closed.length > 0 && (
@@ -115,7 +115,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
       </section>
 
       <section aria-labelledby="person-heading" className="mt-stack">
-        <h2 id="person-heading" className="text-display-sm text-navy">Find or erase a person</h2>
+        <h2 id="person-heading" className="text-display-sm text-navy">Find or Erase a Person</h2>
         <div className="mt-6 grid gap-6 lg:grid-cols-2">
           <form action="/admin/privacy/export" method="get" className="card space-y-3 p-5">
             <p className="font-medium text-navy">Export their data</p>
@@ -137,7 +137,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
       </section>
 
       <section aria-labelledby="retention-heading" className="mt-stack">
-        <h2 id="retention-heading" className="text-display-sm text-navy">How long data is kept</h2>
+        <h2 id="retention-heading" className="text-display-sm text-navy">How Long Data Is Kept</h2>
         <ul className="mt-4 max-w-2xl divide-y divide-line border-y border-line text-[0.9375rem]">
           {[
             ["Sample requests", `${periods.retention_sample_requests_months ?? "24"} months, then anonymised`],
@@ -152,11 +152,11 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
         <p className="mt-3 max-w-[65ch] text-[0.8125rem] text-ink-muted">
           Change the periods in Settings. A daily job applies them when the site has CRON_SECRET and the service key set; you can also run it now. Confirm these periods with your adviser: they are proposals, not legal advice.
         </p>
-        <form action={runRetention} className="mt-4"><Button type="submit" variant="outline">Run retention now</Button></form>
+        <form action={runRetention} className="mt-4"><Button type="submit" variant="outline">Run Retention Now</Button></form>
       </section>
 
       <section aria-labelledby="consent-heading" className="mt-stack">
-        <h2 id="consent-heading" className="text-display-sm text-navy">What people agreed to</h2>
+        <h2 id="consent-heading" className="text-display-sm text-navy">What People Agreed to</h2>
         {(consent.data ?? []).length === 0 ? (
           <p className="mt-4 text-ink-muted">No consent recorded yet. A record is made when someone ticks the marketing box on a sample request, or agrees to share an enquiry with a stockist.</p>
         ) : (
@@ -180,7 +180,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/priva
       </section>
 
       <section aria-labelledby="log-heading" className="mt-stack">
-        <h2 id="log-heading" className="text-display-sm text-navy">Email log</h2>
+        <h2 id="log-heading" className="text-display-sm text-navy">Email Log</h2>
         <p className="mt-2 max-w-[65ch] text-[0.9375rem] text-ink-muted">
           Every email the site tried to send. “Sent” means the email provider accepted it, not that it was read. “Not configured” means no email provider is set up, so nothing left the site.
           {emailConfigured() ? " An email provider is set up." : " No email provider is set up right now."}

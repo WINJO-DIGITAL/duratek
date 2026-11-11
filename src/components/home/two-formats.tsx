@@ -16,7 +16,7 @@ export function TwoFormats({ formats }: { formats: FormatSummary[] }) {
   return (
     <div className="grid gap-12 lg:grid-cols-12 lg:gap-14">
       <div className="lg:col-span-4">
-        <SectionIntro rule title="Two plank sizes, drawn to scale.">
+        <SectionIntro rule title="Two Plank Sizes, Drawn to Scale.">
           <p>
             The extra-long plank is longer and wider, so a large room reads with fewer joins. Both share the same wear
             layer, core and click system.

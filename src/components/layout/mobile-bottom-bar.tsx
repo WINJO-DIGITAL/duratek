@@ -16,7 +16,7 @@ function TabLink({ href, ...props }: ComponentProps<typeof Link> & { href: strin
 const ITEMS: { href: string; label: string; icon: ComponentType<{ size?: number }> }[] = [
   { href: "/range", label: "Range", icon: Planks },
   { href: "/samples", label: "Samples", icon: Swatches },
-  { href: "/where-to-buy", label: "Where to buy", icon: Pin },
+  { href: "/where-to-buy", label: "Where to Buy", icon: Pin },
   { href: "/trade", label: "Trade", icon: Briefcase },
 ];
 

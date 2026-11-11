@@ -10,9 +10,9 @@ import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 
 const FACTS: { value: string; label: string; icon: ComponentType<{ size?: number; className?: string }>; data?: boolean }[] = [
-  { value: "0.55mm", label: "Protective wear layer", icon: LayersIcon, data: true },
+  { value: "0.55mm", label: "Protective Wear Layer", icon: LayersIcon, data: true },
   { value: "Scratch Shield", label: "Scratch-resistant surface finish", icon: ShieldIcon },
-  { value: "Waterproof", label: "Rigid SPC core", icon: DropIcon },
+  { value: "Waterproof", label: "Rigid SPC Core", icon: DropIcon },
   { value: "Unilin", label: "Click-lock, floating installation", icon: ClickIcon },
 ];
 
@@ -60,7 +60,7 @@ export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage;
               <WarrantyDisclaimer tone="dark" className="mt-3 max-w-3xl text-[0.75rem]" />
             </div>
             <ButtonLink href="/technology" variant="quiet-on-dark">
-              Inside a Duratek plank
+              Inside a Duratek Plank
             </ButtonLink>
           </div>
         </div>

@@ -55,7 +55,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
           )}
         </section>
         <section aria-labelledby="new-heading" className="card p-5 sm:p-6">
-          <h2 id="new-heading" className="text-display-sm text-navy">New customer</h2>
+          <h2 id="new-heading" className="text-display-sm text-navy">New Customer</h2>
           <div className="mt-6"><CustomerForm values={{}} /></div>
         </section>
       </div>

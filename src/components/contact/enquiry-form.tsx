@@ -18,7 +18,7 @@ export function EnquiryForm({
   if (state.status === "sent") {
     return (
       <div role="status" className="card p-6 sm:p-8">
-        <h2 className="text-display-sm text-navy">Thank you. We&rsquo;ve got your message.</h2>
+        <h2 className="text-display-sm text-navy">Thank You. We&rsquo;ve Got Your Message.</h2>
         <p className="mt-3 max-w-[60ch] text-navy/75">
           {state.stockistName
             ? state.forwarded

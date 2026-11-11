@@ -148,7 +148,7 @@ async function Content({
 
         {/* Job costing */}
         <aside aria-labelledby="costing-heading" className="card p-5 xl:sticky xl:top-[calc(var(--spacing-header)+2rem)]">
-          <h2 id="costing-heading" className="text-[1.125rem] text-navy">Job costing</h2>
+          <h2 id="costing-heading" className="text-[1.125rem] text-navy">Job Costing</h2>
           <dl className="mt-3">
             <Total label="Materials" pence={t.materialCostPence} />
             <Total label="Labour" pence={t.labourCostPence} />
@@ -181,14 +181,14 @@ async function Content({
       {/* Add lines */}
       <div className="mt-stack grid gap-8 lg:grid-cols-2">
         <section aria-labelledby="flooring-heading" className="card p-5 sm:p-6">
-          <h2 id="flooring-heading" className="text-display-sm text-navy">Add flooring</h2>
+          <h2 id="flooring-heading" className="text-display-sm text-navy">Add Flooring</h2>
           <p className="mt-2 text-[0.9375rem] text-ink-muted">Enter the measured area. Packs are rounded up with your wastage allowance and priced at your trade price for that quantity.</p>
           <div className="mt-6">
             <FlooringLineForm quoteId={quote.id} finishes={finishOptions} defaultWastage={prefs.default_wastage_pct} sellHint={`Blank: +${formatBp(prefs.default_markup_bp)}`} rooms={rooms} />
           </div>
         </section>
         <section aria-labelledby="other-heading" className="card p-5 sm:p-6">
-          <h2 id="other-heading" className="text-display-sm text-navy">Add materials, labour and costs</h2>
+          <h2 id="other-heading" className="text-display-sm text-navy">Add Materials, Labour and Costs</h2>
           <p className="mt-2 text-[0.9375rem] text-ink-muted">Underlay, trims, adhesives, accessories, labour, delivery and any other expense, at your own cost and price.</p>
           <div className="mt-6">
             <OtherLineForm quoteId={quote.id} showCost rooms={rooms} labourRatePence={prefs.labour_per_m2_pence} />
@@ -198,7 +198,7 @@ async function Content({
 
       {/* Share */}
       <section aria-labelledby="share-heading" className="mt-stack">
-        <h2 id="share-heading" className="text-display-sm text-navy">Send it to your customer</h2>
+        <h2 id="share-heading" className="text-display-sm text-navy">Send It to Your Customer</h2>
         <p className="mt-2 max-w-[60ch] text-[0.9375rem] text-ink-muted">
           Your customer sees your business, your prices and the total: never your costs, contingency or profit. The PDF works at any stage; the link works once the quote is sent.
         </p>
@@ -207,7 +207,7 @@ async function Content({
             <form action={setQuoteStatus}>
               <input type="hidden" name="quote_id" value={quote.id} />
               <input type="hidden" name="status" value="sent" />
-              <Button type="submit" disabled={quote.lines.length === 0} arrow>Mark as sent</Button>
+              <Button type="submit" disabled={quote.lines.length === 0} arrow>Mark as Sent</Button>
             </form>
             <a href={`${self}/pdf`} className="min-h-tap py-3 text-[0.9375rem] text-navy underline underline-offset-4">Download PDF</a>
           </div>
@@ -243,7 +243,7 @@ async function Content({
 
       {/* Details */}
       <section aria-labelledby="details-heading" className="card mt-stack p-5 sm:p-6">
-        <h2 id="details-heading" className="text-display-sm text-navy">Customer, validity and notes</h2>
+        <h2 id="details-heading" className="text-display-sm text-navy">Customer, Validity and Notes</h2>
         <div className="mt-6">
           <QuoteHeaderForm
             customers={customers}
@@ -270,7 +270,7 @@ async function Content({
           <input type="checkbox" name="confirm" value="yes" className="size-5 accent-green-ink" />
           Delete this quote for good
         </label>
-        <Button type="submit" variant="quiet">Delete quote</Button>
+        <Button type="submit" variant="quiet">Delete Quote</Button>
       </form>
     </TradeShell>
   );

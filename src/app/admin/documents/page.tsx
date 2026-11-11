@@ -52,7 +52,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/docum
       {notice && <p role="status" className="notice mb-6 max-w-xl px-4 py-3 text-[0.9375rem] text-navy">{notice}</p>}
 
       <form action={uploadDocument} encType="multipart/form-data" className="card space-y-5 p-5 sm:p-6">
-        <h2 className="text-display-sm text-navy">Upload a document</h2>
+        <h2 className="text-display-sm text-navy">Upload a Document</h2>
         <div>
           <label htmlFor="doc-file" className="text-[0.9375rem] font-medium text-navy">File</label>
           <input id="doc-file" name="file" type="file" required accept="application/pdf,image/png,image/jpeg,image/webp,application/zip" className="mt-2 block w-full text-[0.9375rem] text-navy file:mr-4 file:min-h-tap file:rounded-control file:border file:border-navy/40 file:bg-white file:px-4 file:text-navy" />
@@ -61,7 +61,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/admin/docum
         <div className="grid gap-5 sm:grid-cols-3">
           <Field id="doc-title" name="title" label="Title" required maxLength={200} placeholder="Fitting guide" />
           <SelectField id="doc-type" name="type" label="Type" options={DOCUMENT_TYPES} defaultValue="tech_sheet" />
-          <SelectField id="doc-finish" name="finish_id" label="For" defaultValue="" options={[{ value: "", label: "All finishes" }, ...finishes.map((f) => ({ value: f.id, label: f.name }))]} />
+          <SelectField id="doc-finish" name="finish_id" label="For" defaultValue="" options={[{ value: "", label: "All Finishes" }, ...finishes.map((f) => ({ value: f.id, label: f.name }))]} />
         </div>
         <label className="flex min-h-tap items-center gap-3 text-[0.9375rem] text-navy">
           <input type="checkbox" name="trade_only" defaultChecked className="size-5 accent-green-ink" />

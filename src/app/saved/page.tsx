@@ -22,7 +22,7 @@ export default async function SavedPage() {
   return (
     <PageTransition>
       <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="Saved" title="Your saved finishes.">
+        <SectionIntro as="h1" size="lg" eyebrow="Saved" title="Your Saved Finishes.">
           <p>Kept on this device. Compare up to three, then order free samples of the ones you like.</p>
         </SectionIntro>
         <SavedList entries={entries} />

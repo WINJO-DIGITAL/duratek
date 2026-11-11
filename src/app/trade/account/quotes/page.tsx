@@ -56,7 +56,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
 
       <div className="grid gap-10 lg:grid-cols-[1fr_26rem] lg:items-start">
         <section aria-labelledby="list-heading">
-          <h2 id="list-heading" className="text-display-sm text-navy">Your quotes</h2>
+          <h2 id="list-heading" className="text-display-sm text-navy">Your Quotes</h2>
           {quotes.length === 0 ? (
             <p className="mt-4 text-ink-muted">No quotes yet. Start one with your customer’s name.</p>
           ) : (
@@ -91,7 +91,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
         </section>
 
         <section aria-labelledby="new-heading" className="card p-5 sm:p-6">
-          <h2 id="new-heading" className="text-display-sm text-navy">New quote</h2>
+          <h2 id="new-heading" className="text-display-sm text-navy">New Quote</h2>
           <div className="mt-6">
             <QuoteHeaderForm customers={customers} values={{ vatRateBp: prefs.vat_registered ? 2000 : 0 }} />
           </div>

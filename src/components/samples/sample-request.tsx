@@ -40,7 +40,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
       <section aria-labelledby="tray-heading" className="lg:sticky lg:top-28 lg:self-start">
         <div className="flex items-baseline justify-between gap-4 border-b border-line pb-4">
           <h2 id="tray-heading" className="text-display-sm text-navy">
-            Your samples
+            Your Samples
           </h2>
           <p className="text-[0.9375rem] text-ink-muted tabular-nums" aria-live="polite">
             {chosen.length} of {limit} chosen
@@ -102,7 +102,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
         {!enabled ? (
           <div className="notice px-5 py-5 sm:px-6">
             <h2 id="details-heading" className="font-medium text-navy">
-              Online sample requests open soon.
+              Online Sample Requests Open Soon.
             </h2>
             <p className="mt-2 text-[0.9375rem] text-ink-muted">
               Your choices are saved on this device, so they&rsquo;ll be here when requests open. In the meantime you
@@ -116,19 +116,19 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
         ) : chosen.length === 0 ? (
           <div>
             <h2 id="details-heading" className="text-display-sm text-navy">
-              Start with a finish.
+              Start with a Finish.
             </h2>
             <p className="mt-3 max-w-md text-ink-muted">
               Add up to {limit} finishes from the range, then come back here to tell us where to send them.
             </p>
             <ButtonLink href="/range" className="mt-6">
-              Browse the range
+              Browse the Range
             </ButtonLink>
           </div>
         ) : (
           <form action={action} noValidate className="space-y-5">
             <h2 id="details-heading" className="text-display-sm text-navy">
-              Where should we send them?
+              Where Should We Send Them?
             </h2>
             {state.status === "error" && state.message && (
               <p role="alert" className="notice border-error/50 px-4 py-3 text-[0.9375rem] text-navy">
@@ -260,9 +260,9 @@ function Sent({ state }: { state: Extract<SampleRequestState, { status: "sent" }
       )}
       <p className="mt-6 text-ink-muted">We&rsquo;ll email a confirmation to {state.email}.</p>
       <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-        <ButtonLink href="/where-to-buy">Find where to buy</ButtonLink>
+        <ButtonLink href="/where-to-buy">Find Where to Buy</ButtonLink>
         <ButtonLink href="/range" variant="quiet" arrow={false}>
-          Keep browsing
+          Keep Browsing
         </ButtonLink>
       </div>
     </section>

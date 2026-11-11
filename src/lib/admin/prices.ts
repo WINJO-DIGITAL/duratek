@@ -82,10 +82,10 @@ export function parseBasePriceForm(entries: Iterable<[string, unknown]>) {
 }
 
 export const PRICE_UNITS = [
-  { value: "m2", label: "per m²" },
-  { value: "pack", label: "per pack" },
-  { value: "item", label: "per item" },
-  { value: "linear_metre", label: "per metre" },
+  { value: "m2", label: "Per m²" },
+  { value: "pack", label: "Per Pack" },
+  { value: "item", label: "Per Item" },
+  { value: "linear_metre", label: "Per Metre" },
 ] as const;
 export type PriceUnit = (typeof PRICE_UNITS)[number]["value"];
 

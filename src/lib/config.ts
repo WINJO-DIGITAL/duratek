@@ -4,7 +4,7 @@ export const SAMPLE_LIMIT = 3;
 export const PRIMARY_NAV = [
   { href: "/range", label: "Range" },
   { href: "/inspiration", label: "Inspiration" },
-  { href: "/where-to-buy", label: "Where to buy" },
+  { href: "/where-to-buy", label: "Where to Buy" },
   { href: "/samples", label: "Samples" },
 ] as const;
 
