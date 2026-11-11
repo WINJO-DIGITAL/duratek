@@ -64,10 +64,12 @@ export default async function HomePage() {
     rrp: f.rrpPence !== undefined ? formatPence(f.rrpPence) : undefined,
     sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
-    // The photograph under the strip: a real room where the floor runs through the frame (hallway, living room),
-    // never a kitchen; else the grain close-up; else the swatch.
+    // The photograph under the strip: a real room, floor-led first (hallway, living room), any room
+    // that isn't a kitchen next, then a kitchen; the grain close-up or swatch only if no room photo exists.
     room:
       f.images.find((i) => i.kind === "room" && FLOOR_LED_ROOM.test(i.alt) && !SKIP_ROOM.test(i.alt)) ??
+      f.images.find((i) => i.kind === "room" && !SKIP_ROOM.test(i.alt)) ??
+      f.images.find((i) => i.kind === "room") ??
       f.images.find((i) => i.kind === "closeup") ??
       f.images.find((i) => i.kind === "swatch"),
   }));
