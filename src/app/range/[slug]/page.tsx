@@ -173,8 +173,8 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 sizes="(min-width: 1024px) 54vw, 100vw"
                 className="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
               />
-              {/* A seal in the photo's bottom-left corner. Outside the zoom button, so it stays put when the grain is zoomed. */}
-              <ScratchShieldBadge className="pointer-events-none absolute bottom-4 left-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
+              {/* A seal in the photo's bottom-right corner, clear of the "Look closer" hint at bottom-left. Outside the zoom button, so it stays put when the grain is zoomed. */}
+              <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
             </div>
           ) : (
             <div className="aspect-[4/5] rounded-card bg-line sm:aspect-[6/5]" />
