@@ -368,6 +368,11 @@
      "room": "living space"
     },
     {
+     "i": 2,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
      "i": 3,
      "kind": "room",
      "room": "bedroom"
