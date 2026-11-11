@@ -30,6 +30,7 @@ const LEGAL: FooterLink[] = [
   { href: "/privacy", label: "Privacy" },
   { href: "/privacy/request", label: "Your data" },
   { href: "/cookies", label: "Cookies" },
+  { href: "/terms", label: "Terms" },
 ];
 
 /** A quiet labelled line of links that wraps. */

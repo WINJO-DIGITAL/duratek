@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 
 const BASE = "http://localhost:3000";
 const axe = readFileSync(new URL("../../node_modules/axe-core/axe.min.js", import.meta.url), "utf8");
-const PAGES = ["/", "/range", "/range/keswick-oak", "/explore", "/inspiration", "/where-to-buy", "/samples", "/contact", "/technology", "/warranty", "/trade", "/trade/login", "/trade/apply", "/trade/forgot-password", "/privacy", "/privacy/request", "/cookies", "/saved", "/compare?f=keswick-oak,fellside-oak"];
+const PAGES = ["/", "/range", "/range/keswick-oak", "/explore", "/inspiration", "/where-to-buy", "/samples", "/contact", "/technology", "/warranty", "/trade", "/trade/login", "/trade/apply", "/trade/forgot-password", "/privacy", "/privacy/request", "/cookies", "/terms", "/saved", "/compare?f=keswick-oak,fellside-oak"];
 const browser = await chromium.launch();
 const seen = new Map();
 let scanned = 0;

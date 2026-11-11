@@ -61,7 +61,7 @@ check("2.4 no image on a finish page lacks an alt attribute", bad.alt.length ===
 check("2.5 'scratch-proof' is never claimed (the brand says scratch-resistant)", bad.copy.length === 0, bad.copy.join(", "));
 check("2.6 the warranty disclaimer is shown wherever a finish page mentions warranty", bad.disclaimer.length === 0, bad.disclaimer.join(", "));
 const copyBad = [];
-for (const path of ["/", "/range", "/explore", "/inspiration", "/technology", "/warranty", "/where-to-buy", "/samples", "/trade", "/contact", "/privacy", "/cookies"]) {
+for (const path of ["/", "/range", "/explore", "/inspiration", "/technology", "/warranty", "/where-to-buy", "/samples", "/trade", "/contact", "/privacy", "/cookies", "/terms"]) {
   await p.goto(BASE + path); await sleep(700);
   const t = await p.locator("body").innerText(); const m = (await p.locator("main").innerText()).replace(/\s+/g, " ");
   if (/(?<!does not mean )(?<!not )scratch[- ]?proof|lorem ipsum|\bTODO\b|coming soon/i.test(t)) copyBad.push(`${path}: banned phrase`);
