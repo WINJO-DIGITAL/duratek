@@ -136,9 +136,9 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
       </div>
 
       <div className="container-page grid gap-6 pb-8 pt-28 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:items-end lg:pb-16">
+        <div className="flex flex-col items-start gap-8">
         {children}
 
-        <div className="flex items-end gap-6 self-end lg:justify-self-end">
         <div className="flex items-center gap-1">
           {/* Hovering or focusing the finish holds it; the pause button is its own control. */}
           <Link
@@ -221,9 +221,9 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
             </button>
           )}
         </div>
-        {/* Scratch Shield, the headline surface feature: wide screens, to the right of the finish. */}
-        <ScratchShieldBadge className="hidden w-28! drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] lg:block xl:w-32!" />
         </div>
+        {/* Scratch Shield, the headline surface feature: wide screens, bottom right. */}
+        <ScratchShieldBadge className="hidden w-28! self-end drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] lg:block xl:w-32!" />
       </div>
     </div>
   );
