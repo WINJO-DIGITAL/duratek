@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { FinishImage } from "@/components/finish/finish-image";
 import { ButtonLink } from "@/components/ui/button";
 import { ClickIcon, DropIcon, LayersIcon, ShieldIcon } from "@/components/ui/icons";
 import type { CatalogueImage } from "@/lib/catalogue/types";
@@ -18,7 +19,7 @@ const FACTS: { value: string; label: string; icon: ComponentType<{ size?: number
  * The page's one navy moment, as a rounded panel inset in the page: the
  * layer diagram, the four facts as soft cards, and the warranty.
  */
-export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
+export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage; closeUp?: { image: CatalogueImage; name: string } }) {
   return (
     <section aria-labelledby="layers-heading" className="py-section-sm">
       <div className="container-page">
@@ -28,7 +29,16 @@ export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
             <LayerBreakdown woodImage={woodImage} />
           </div>
 
-          <ul className="mt-14 grid grid-cols-2 gap-3 sm:gap-4 lg:mt-20 lg:grid-cols-4">
+          {closeUp && (
+            <figure className="mt-14 lg:mt-20">
+              <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-white/10 sm:aspect-[16/7]">
+                <FinishImage image={closeUp.image} sizes="(min-width: 1024px) 80vw, 100vw" quality={80} />
+              </div>
+              <figcaption className="data mt-3 text-[0.8125rem] text-on-dark/70">{closeUp.name}, up close</figcaption>
+            </figure>
+          )}
+
+          <ul className={cn("grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4", closeUp ? "mt-6 lg:mt-8" : "mt-14 lg:mt-20")}>
             {FACTS.map(({ value, label, icon: IconC, data }) => (
               <li key={value} className="flex flex-col rounded-card border border-white/10 bg-white/[0.05] p-4 sm:p-6">
                 <IconC size={26} className="text-green-on-navy" />

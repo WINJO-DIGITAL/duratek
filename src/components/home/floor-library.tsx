@@ -16,6 +16,8 @@ export interface LibraryBoard {
   measures: string;
   sampleAvailable?: boolean;
   swatch?: CatalogueImage;
+  /** The finish in a room: shown under the strip when its board is open. */
+  room?: CatalogueImage;
 }
 
 /**
@@ -27,6 +29,12 @@ export interface LibraryBoard {
  */
 export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
   const [active, setActive] = useState(0);
+  // Room photographs load only for boards the visitor has opened.
+  const [visited, setVisited] = useState<number[]>([0]);
+  const select = (i: number) => {
+    setActive(i);
+    setVisited((v) => (v.includes(i) ? v : [...v, i]));
+  };
   const [scrubbing, setScrubbing] = useState(false);
   const press = useRef<{ x: number; y: number; id: number; intent: "scrub" | "scroll" | null } | null>(null);
   // A scrub ends with a click on whichever board the finger left; ignore it.
@@ -36,7 +44,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
 
   const pick = (e: PointerEvent<HTMLDivElement>) => {
     const r = e.currentTarget.getBoundingClientRect();
-    setActive(boardAt(e.clientX, r.left, r.width, boards.length));
+    select(boardAt(e.clientX, r.left, r.width, boards.length));
   };
 
   return (
@@ -82,7 +90,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
           if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return;
           e.preventDefault();
           const next = Math.max(0, Math.min(boards.length - 1, active + (e.key === "ArrowRight" ? 1 : -1)));
-          setActive(next);
+          select(next);
           (e.currentTarget.children[next] as HTMLElement | undefined)?.focus();
         }}
       >
@@ -94,14 +102,14 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
               type="button"
               aria-pressed={on}
               aria-label={b.name}
-              onPointerEnter={(e) => e.pointerType === "mouse" && !press.current && setActive(i)}
-              onFocus={() => setActive(i)}
+              onPointerEnter={(e) => e.pointerType === "mouse" && !press.current && select(i)}
+              onFocus={() => select(i)}
               onClick={() => {
                 if (swallowClick.current) {
                   swallowClick.current = false;
                   return;
                 }
-                setActive(i);
+                select(i);
               }}
               style={{ "--grow": on ? 7 : 1 } as CSSProperties}
               className={cn(
@@ -126,6 +134,27 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
           );
         })}
       </div>
+
+      {boards.some((b) => b.room) && (
+        <div className="frame relative mt-3 aspect-[4/3] bg-line shadow-card sm:aspect-[16/7]">
+          {visited.map((i) => {
+            const room = boards[i]?.room;
+            if (!room) return null;
+            return (
+              <div
+                key={boards[i].id}
+                aria-hidden={i !== active}
+                className={cn(
+                  "absolute inset-0 transition-opacity duration-[900ms] ease-calm motion-reduce:transition-none",
+                  i === active ? "opacity-100" : "opacity-0",
+                )}
+              >
+                <FinishImage image={room} sizes="(min-width: 1024px) 80vw, 100vw" className="object-[50%_70%]" />
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       <p className="mt-3 px-1 text-[0.8125rem] text-ink-muted">
         <span className="[@media(hover:hover)]:hidden">Swipe or tap to compare finishes</span>

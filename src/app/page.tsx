@@ -4,6 +4,7 @@ import { FiveLayers } from "@/components/home/five-layers";
 import { FloorHero } from "@/components/home/floor-hero";
 import { FloorLibrary, type LibraryBoard } from "@/components/home/floor-library";
 import { OneRoom } from "@/components/home/one-room";
+import { RoomStrip, type StripRoom } from "@/components/home/room-strip";
 import { SampleSlots } from "@/components/home/sample-slots";
 import { TwoFormats, type FormatSummary } from "@/components/home/two-formats";
 import { PageTransition } from "@/components/layout/page-transition";
@@ -38,6 +39,16 @@ export default async function HomePage() {
   const heroes = heroPicks.length ? heroPicks : rooms.slice(0, 1);
   const room = pickByFileName(rooms, EDITORIAL.room, new Set(heroes.map((h) => h.image.src)));
 
+  // More rooms: one floor-led scene per finish, skipping finishes already shown above.
+  const shown = new Set([...heroes.map((h) => h.finish.id), ...(room ? [room.finish.id] : [])]);
+  const stripRooms: StripRoom[] = [];
+  for (const r of rooms) {
+    if (stripRooms.length === 6) break;
+    if (shown.has(r.finish.id)) continue;
+    shown.add(r.finish.id);
+    stripRooms.push({ image: r.image, slug: r.finish.slug, name: r.finish.name, room: roomFromAlt(r.image.alt) });
+  }
+
   const boards: LibraryBoard[] = finishes.map((f) => ({
     id: f.id,
     slug: f.slug,
@@ -46,6 +57,7 @@ export default async function HomePage() {
     measures: measureLine(f.specs),
     sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
+    room: rooms.find((r) => r.finish.id === f.id)?.image,
   }));
 
   // Each format drawn with a mid-tone finish of its own, so the grain reads on white.
@@ -63,6 +75,15 @@ export default async function HomePage() {
       },
     ];
   });
+
+  // Three varied floors (light, mid, dark) shown faintly in the empty tray slots.
+  const slotPreviews = [0, Math.floor(finishes.length / 2), finishes.length - 1]
+    .map((i) => finishes[i] && grainImage(finishes[i]))
+    .filter((img): img is NonNullable<typeof img> => Boolean(img));
+
+  // The surface up close: a grain close-up from the catalogue, for the layers panel.
+  const closeUpPick = imagePool(finishes, "closeup")[0];
+  const closeUp = closeUpPick && { image: closeUpPick.image, name: closeUpPick.finish.name };
 
   const swatches = Object.fromEntries(finishes.map((f) => [f.id, grainImage(f)]));
   // A mid-range swatch for the decorative layer in the diagram.
@@ -128,10 +149,11 @@ export default async function HomePage() {
                 }}
               />
             </div>
+            <RoomStrip rooms={stripRooms} />
           </section>
         )}
 
-        <FiveLayers woodImage={layerWood} />
+        <FiveLayers woodImage={layerWood} closeUp={closeUp} />
 
         {/* Three free samples: the tray made visible, in its own panel. Then the one quiet trade band. */}
         <section id="samples" aria-labelledby="samples-heading" className="py-section-sm">
@@ -158,7 +180,7 @@ export default async function HomePage() {
                 </ul>
               </div>
               <div className="lg:col-span-7 lg:self-center">
-                <SampleSlots swatches={swatches} />
+                <SampleSlots swatches={swatches} previews={slotPreviews} />
               </div>
             </div>
             <div className="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 px-1">

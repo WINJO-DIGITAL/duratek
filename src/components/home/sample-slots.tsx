@@ -10,7 +10,14 @@ import { useSamples } from "@/lib/samples/use-samples";
  * The sample tray made visible: one slot per free sample, filling as
  * finishes are added anywhere on the site.
  */
-export function SampleSlots({ swatches }: { swatches: Record<string, CatalogueImage | undefined> }) {
+export function SampleSlots({
+  swatches,
+  previews = [],
+}: {
+  swatches: Record<string, CatalogueImage | undefined>;
+  /** Floors shown faintly in empty slots, so the tray is never a blank box. */
+  previews?: CatalogueImage[];
+}) {
   const { items, limit, count, remove } = useSamples();
   const slots = Array.from({ length: limit }, (_, i) => items[i]);
 
@@ -40,10 +47,20 @@ export function SampleSlots({ swatches }: { swatches: Record<string, CatalogueIm
             <li key={`empty-${i}`}>
               <Link
                 href="#floor-library"
-                className="flex aspect-square flex-col items-center justify-center gap-2 rounded-card border border-dashed border-oak/40 bg-white/60 text-ink-muted transition-colors duration-300 hover:border-navy hover:bg-white hover:text-navy"
+                className="group relative flex aspect-square flex-col items-center justify-center gap-2 overflow-hidden rounded-card border border-dashed border-oak/50 bg-white text-navy transition-colors duration-300 hover:border-navy"
               >
-                <span aria-hidden="true" className="text-2xl font-light leading-none">+</span>
-                <span className="px-2 text-center text-[0.8125rem]">Choose a finish</span>
+                {previews.length > 0 && (
+                  <>
+                    <FinishImage
+                      image={{ ...previews[i % previews.length], alt: "" }}
+                      sizes="(min-width: 1024px) 20vw, 30vw"
+                      className="opacity-50 transition-opacity duration-500 group-hover:opacity-70 motion-reduce:transition-none"
+                    />
+                    <span aria-hidden="true" className="absolute inset-0 bg-white/55" />
+                  </>
+                )}
+                <span aria-hidden="true" className="relative text-2xl font-light leading-none">+</span>
+                <span className="relative px-2 text-center text-[0.8125rem]">Choose a finish</span>
               </Link>
             </li>
           ),
