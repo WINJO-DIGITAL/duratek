@@ -14,18 +14,24 @@ export function PageHero({
   image,
   children,
   focus = "object-[50%_60%]",
+  compact = false,
   className,
 }: {
   image?: CatalogueImage;
   children: React.ReactNode;
   /** Focal point of the crop, as an object-position class: for portrait or wide photographs. */
   focus?: string;
+  /** Pages with a form or search straight under the photograph: shorter, so the form shows on the first screen. */
+  compact?: boolean;
   className?: string;
 }) {
   return (
     <section
       className={cn(
-        "on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] flex-col justify-end overflow-hidden bg-navy lg:min-h-[88svh]",
+        "on-dark relative isolate -mt-[var(--spacing-header)] flex flex-col justify-end overflow-hidden bg-navy",
+        compact
+          ? "min-h-[min(62svh,560px)] lg:min-h-[min(70svh,640px)]"
+          : "min-h-[calc(100svh-var(--spacing-bottom-bar))] lg:min-h-[88svh]",
         className,
       )}
     >
@@ -36,7 +42,7 @@ export function PageHero({
       )}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/40 to-transparent" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 via-black/30 via-50% to-transparent to-80%" />
-      <div className="container-page relative pb-10 pt-40 sm:pb-14 lg:pb-16">{children}</div>
+      <div className={cn("container-page relative pb-10 sm:pb-14 lg:pb-16", compact ? "pt-28 sm:pt-32" : "pt-40")}>{children}</div>
     </section>
   );
 }

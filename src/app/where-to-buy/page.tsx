@@ -32,7 +32,7 @@ export default async function WhereToBuyPage({ searchParams }: PageProps<"/where
   return (
     <PageTransition>
       <>
-        <PageHero image={hero?.image} focus="object-[50%_58%]">
+        <PageHero compact image={hero?.image} focus="object-[50%_58%]">
           <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find duratek Near You.">
             <p>See it at a local stockist, or buy it online.</p>
           </SectionIntro>

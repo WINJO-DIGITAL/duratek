@@ -33,7 +33,7 @@ export default async function SamplesPage() {
   return (
     <PageTransition>
       <>
-        <PageHero image={hero?.image} focus="object-[50%_45%]">
+        <PageHero compact image={hero?.image} focus="object-[50%_45%]">
           <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
             <p>See the colour in your own light and feel the surface before you choose.</p>
           </SectionIntro>
