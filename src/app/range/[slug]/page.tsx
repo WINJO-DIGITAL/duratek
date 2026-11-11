@@ -18,6 +18,7 @@ import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Swatches } from "@/components/ui/icons";
 import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
+import { isSecondaryRoom } from "@/lib/catalogue/curation";
 import { splitLead } from "@/lib/catalogue/text";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import { relatedFinishes } from "@/lib/catalogue/related";
@@ -167,7 +168,11 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <div className="relative">
               {/* One gallery: the grain first, then the finish in the room. */}
               <FinishGallery
-                images={[grain, ...gallery].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 6)}
+                // The finish in the room first, then the grain close-up, then any other close-ups.
+                images={[...imagesOfKind(finish, "room").filter((i) => !isSecondaryRoom(i)), grain, ...gallery.filter((i) => i.kind === "closeup")]
+                  .filter((i): i is NonNullable<typeof i> => Boolean(i))
+                  .filter((i, idx, all) => all.findIndex((x) => x.src === i.src) === idx)
+                  .slice(0, 6)}
                 name={finish.name}
                 aspect="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
                 sizes="(min-width: 1024px) 54vw, 100vw"
