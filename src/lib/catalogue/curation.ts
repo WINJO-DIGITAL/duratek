@@ -60,6 +60,12 @@ export const EDITORIAL = {
     "Honnister_Slate_Grey_lounge.png",
     "Cartmel_Oak_Lounge.png",
   ],
+  /** The footer opens with one tall room scene: portrait photographs where the floor leads. */
+  footer: [
+    "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
+    "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen.png",
+    "Honnister_Slate_Grey_kitchen.png",
+  ],
   room: [
     "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
     "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
