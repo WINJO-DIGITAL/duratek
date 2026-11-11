@@ -3,7 +3,9 @@ import { Suspense } from "react";
 import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
+import { HelpChoose } from "@/components/finish/help-choose";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
+import { distinct } from "@/lib/catalogue/filter";
 import { SamplePromo } from "@/components/samples/sample-promo";
 import { ButtonLink } from "@/components/ui/button";
 import { PageTransition } from "@/components/layout/page-transition";
@@ -29,6 +31,7 @@ export default async function RangePage() {
       name: f.name,
       style: f.style,
       colourFamily: f.colourFamily,
+      rrpPence: f.rrpPence,
       format,
       keywords: [colourFamilyLabel(f.colourFamily), format && FORMAT_LABELS[format]].filter(Boolean).join(" "),
       card: (
@@ -72,6 +75,7 @@ export default async function RangePage() {
           <ButtonLink href="/explore" variant="quiet" arrow>
             Explore Them Full Screen
           </ButtonLink>
+          <HelpChoose styles={distinct(finishes.map((f) => f.style))} colours={distinct(finishes.map((f) => f.colourFamily))} formats={distinct(finishes.map((f) => plankFormat(f.specs)).filter((x): x is NonNullable<typeof x> => x !== undefined))} />
         </div>
         <div className="mt-8 sm:mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}

@@ -10,6 +10,8 @@ import {
   isFiltered,
   matches,
   NO_FILTERS,
+  PRICE_BANDS,
+  priceBandOf,
   readFilters,
   type FilterableFinish,
   type RangeFilters,
@@ -59,6 +61,8 @@ export function RangeBrowser({
 
   const styles = distinct(items.map((i) => i.style));
   const colours = distinct(items.map((i) => i.colourFamily));
+  // Only the price bands that at least one finish falls in.
+  const bands = PRICE_BANDS.filter((b) => items.some((i) => priceBandOf(i.rrpPence) === b.id));
   const visible = items.filter((i) => matches(i, filters));
   const active = isFiltered(filters);
   const [view, setView] = useState<GridView>("large");
@@ -132,6 +136,17 @@ export function RangeBrowser({
                 </span>
               </Chip>
             ))}
+            {bands.length > 1 && <Divider />}
+            {bands.length > 1 &&
+              bands.map((b) => (
+                <Chip
+                  key={b.id}
+                  pressed={filters.price === b.id}
+                  onClick={() => update({ price: filters.price === b.id ? null : b.id })}
+                >
+                  {b.label}
+                </Chip>
+              ))}
           </div>
           <div role="group" aria-label="Grid size" className="hidden shrink-0 items-center gap-1 lg:flex">
             {(["large", "small"] as const).map((v) => (

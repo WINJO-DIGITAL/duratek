@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtersToQuery, isFiltered, matches, NO_FILTERS, readFilters } from "./filter";
+import { filtersToQuery, isFiltered, matches, NO_FILTERS, priceBandOf, readFilters } from "./filter";
 
 const keswick = { id: "1", name: "Keswick Oak", style: "plank", colourFamily: "natural", format: "standard" };
 const honister = { id: "2", name: "Honister Slate Grey", style: "plank", colourFamily: "grey", format: "standard" };
@@ -11,13 +11,14 @@ describe("range filters", () => {
       style: "plank",
       format: "extra-long",
       colour: "grey",
+      price: null,
       q: "oak",
     });
     expect(readFilters(new URLSearchParams(""))).toEqual(NO_FILTERS);
   });
 
   it("round-trips through the query string", () => {
-    const f = { style: null, format: "standard", colour: "warm", q: "oak" };
+    const f = { style: null, format: "standard", colour: "warm", price: "under-30" as const, q: "oak" };
     expect(readFilters(new URLSearchParams(filtersToQuery(f)))).toEqual(f);
     expect(filtersToQuery(NO_FILTERS)).toBe("");
     expect(isFiltered(NO_FILTERS)).toBe(false);
@@ -43,5 +44,22 @@ describe("range filters", () => {
     expect(matches(long, { ...f, q: "extra long" })).toBe(true);
     expect(matches(long, { ...f, q: "extra-long natural" })).toBe(true);
     expect(matches(long, { ...f, q: "grey" })).toBe(false);
+  });
+
+  it("filters by price band on the RRP per m²", () => {
+    const cheap = { ...keswick, rrpPence: 2500 };
+    const mid = { ...fellside, rrpPence: 3715 };
+    const unpriced = { ...honister };
+    expect(priceBandOf(2500)).toBe("under-30");
+    expect(priceBandOf(3715)).toBe("30-to-40");
+    expect(priceBandOf(4500)).toBe("over-40");
+    expect(priceBandOf(undefined)).toBeUndefined();
+    expect(matches(cheap, { ...NO_FILTERS, price: "under-30" })).toBe(true);
+    expect(matches(mid, { ...NO_FILTERS, price: "under-30" })).toBe(false);
+    expect(matches(unpriced, { ...NO_FILTERS, price: "under-30" })).toBe(false);
+    expect(matches(unpriced, NO_FILTERS)).toBe(true);
+    expect(readFilters(new URLSearchParams("price=30-to-40")).price).toBe("30-to-40");
+    expect(readFilters(new URLSearchParams("price=nonsense")).price).toBeNull();
+    expect(isFiltered({ ...NO_FILTERS, price: "over-40" })).toBe(true);
   });
 });
