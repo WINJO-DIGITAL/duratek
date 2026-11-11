@@ -7,7 +7,8 @@ import type { Finish } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel } from "@/lib/config";
 import { formatPence } from "@/lib/money";
-import { FinishImage } from "./finish-image";
+import { isSecondaryRoom } from "@/lib/catalogue/curation";
+import { PhotoSlides } from "./photo-slides";
 
 /**
  * A finish, labelled like a piece in a gallery: the plank first, the name in
@@ -34,10 +35,11 @@ export function FinishCard({
   showPrice?: boolean;
   className?: string;
 }) {
-  const room = finish.images.find((i) => i.kind === "room");
   const grain = grainImage(finish);
-  const primary = media === "texture" ? (grain ?? leadImage(finish)) : (room ?? leadImage(finish));
-  const reveal = media === "texture" && room && room !== primary ? room : undefined;
+  const primary = media === "texture" ? (grain ?? leadImage(finish)) : (finish.images.find((i) => i.kind === "room") ?? leadImage(finish));
+  // The strip: the lead photograph, then the other floor-led scenes and close-ups, swipeable.
+  const others = finish.images.filter((i) => (i.kind === "room" || i.kind === "closeup") && !isSecondaryRoom(i) && i !== primary);
+  const photos = [primary, ...others].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 5);
   const format = plankFormat(finish.specs);
   const measures = measureLine(finish.specs);
 
@@ -48,25 +50,21 @@ export function FinishCard({
         className,
       )}
     >
-      <div className={cn("relative overflow-hidden bg-line", aspect)}>
-        {primary && (
-          <FinishImage
-            image={primary}
+      <div className={cn("relative", aspect)}>
+        {photos.length > 0 && (
+          <PhotoSlides
+            slides={photos}
+            name={finish.name}
+            href={`/range/${finish.slug}`}
             sizes={sizes}
             priority={priority}
-            className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
+            aspect="h-full w-full"
           />
         )}
-        {reveal && (
-          // Room scene fades in over the grain on devices that can hover.
-          <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-700 ease-calm [@media(hover:hover)]:block [@media(hover:hover)]:group-hover:opacity-100">
-            <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
-          </div>
-        )}
-        {/* The name, set like a gallery caption on the photograph. The link stretches over the whole card. */}
+        {/* The name, set like a gallery caption on the photograph. Only the name is a link to the finish here, so the photograph can be swiped. */}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pb-3.5 pt-16 sm:px-5 sm:pb-4">
           <H className="font-display text-[1.5rem] font-normal leading-[1.02] tracking-[-0.035em] text-white sm:text-[1.75rem]">
-            <Link href={`/range/${finish.slug}`} className="pointer-events-auto after:absolute after:inset-0 after:content-['']">
+            <Link href={`/range/${finish.slug}`} className="pointer-events-auto underline-offset-4 hover:underline">
               {finish.name}
             </Link>
           </H>
