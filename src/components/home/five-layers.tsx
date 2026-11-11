@@ -60,7 +60,7 @@ export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage;
               <WarrantyDisclaimer tone="dark" className="mt-3 max-w-3xl text-[0.75rem]" />
             </div>
             <ButtonLink href="/technology" variant="quiet-on-dark">
-              Inside a Duratek Plank
+              Inside a duratek Plank
             </ButtonLink>
           </div>
         </div>

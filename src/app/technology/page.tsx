@@ -60,7 +60,7 @@ export default async function TechnologyPage() {
     <PageTransition>
       <>
         <header className="container-page pb-section-sm pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" eyebrow="Technology" title="What’s Inside a Duratek Plank">
+          <SectionIntro as="h1" size="lg" eyebrow="Technology" title="What’s Inside a duratek Plank">
             <p>
               Five layers, from the clear finish you walk on down to the underlay that sits on your subfloor. Here’s what
               each one does.

@@ -49,7 +49,7 @@ async function Content({ searchParams }: { searchParams: PageProps<"/trade/accou
       customerView={customerView}
       current="/trade/account/catalogue"
       back="/trade/account/catalogue"
-      title={showTrade ? "Catalogue and your prices" : "The Duratek range"}
+      title={showTrade ? "Catalogue and your prices" : "The duratek range"}
       intro={
         showTrade ? (
           <p>Your buying price on every finish, before VAT, and what you make at your markup of {formatBp(prefs?.default_markup_bp ?? 3000)}. Open a finish to present it or work out your margin.</p>

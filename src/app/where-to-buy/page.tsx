@@ -35,12 +35,12 @@ export default async function WhereToBuyPage({ searchParams }: PageProps<"/where
         <header className="container-page pb-section-sm pt-12 sm:pt-16">
           {hero ? (
             <PageHero image={hero.image} focus="object-[50%_58%]">
-              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find Duratek Near You.">
+              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find duratek Near You.">
                 <p>See it at a local stockist, or buy it online.</p>
               </SectionIntro>
             </PageHero>
           ) : (
-            <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek Near You.">
+            <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find duratek Near You.">
               <p>See it at a local stockist, or buy it online.</p>
             </SectionIntro>
           )}
@@ -230,7 +230,7 @@ async function OnlineRetailers() {
   return (
     <section id="online" aria-labelledby="online-heading" className="scroll-mt-24 bg-cream py-section-sm">
       <div className="container-page grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-        <SectionIntro eyebrow="Buy online" title={<span id="online-heading">Order Duratek online.</span>}>
+        <SectionIntro eyebrow="Buy online" title={<span id="online-heading">Order duratek online.</span>}>
           <p>Buy Duratek from our online retailers.</p>
         </SectionIntro>
         <ul className="border-t border-line">

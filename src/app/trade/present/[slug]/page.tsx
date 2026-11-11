@@ -110,7 +110,7 @@ async function Content({ params }: { params: PageProps<"/trade/present/[slug]">[
       </div>
 
       <section aria-labelledby="benefits-heading" className="mt-stack">
-        <h2 id="benefits-heading" className="text-display-sm text-navy">Why Duratek</h2>
+        <h2 id="benefits-heading" className="text-display-sm text-navy">Why duratek</h2>
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {PRODUCT_BENEFITS.map((b) => (
             <li key={b.title} className="card p-5">
