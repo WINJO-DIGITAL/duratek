@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FinishImage } from "@/components/finish/finish-image";
+import { ScratchShieldBadge } from "@/components/content/warranty";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 
 export interface StripRoom {
@@ -33,6 +34,8 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
                   sizes="(min-width: 1024px) 30vw, (min-width: 640px) 42vw, 74vw"
                   className="object-[50%_70%] transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.02] motion-reduce:transition-none"
                 />
+                {/* The seal in the bottom-right corner, as on the finish page. */}
+                <ScratchShieldBadge className="pointer-events-none absolute bottom-3 right-3 w-16! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-20!" />
               </div>
               <p className="mt-4 font-display text-[1.375rem] leading-tight tracking-[-0.02em] text-navy group-hover:underline group-hover:underline-offset-4">
                 {r.name}
