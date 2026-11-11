@@ -5,7 +5,7 @@ import { useId, useState, type CSSProperties } from "react";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 
-const LAYERS = [
+export const LAYERS = [
   { name: "Protective top finish", detail: "Scratch Shield. Helps resist scuffs and scratches." },
   { name: "0.55mm wear layer", detail: "Clear, and protects the design from wear." },
   { name: "Decorative layer", detail: "The printed oak pattern you see." },
@@ -13,7 +13,7 @@ const LAYERS = [
   { name: "Integrated underlay", detail: "Comfort underfoot, and less noise." },
 ] as const;
 
-const SLAB_STYLES: CSSProperties[] = [
+export const SLAB_STYLES: CSSProperties[] = [
   {
     background: "linear-gradient(135deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.12) 55%, rgb(255 255 255 / 0.4))",
     border: "1px solid rgb(255 255 255 / 0.85)",

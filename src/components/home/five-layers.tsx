@@ -1,5 +1,5 @@
 import type { ComponentType } from "react";
-import { LayerBreakdown } from "@/components/content/layer-breakdown";
+import { LayerStory } from "@/components/content/layer-story";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { ScratchShieldBadge } from "@/components/content/warranty";
@@ -27,7 +27,7 @@ export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage;
         <div className="on-dark rounded-card bg-navy px-5 py-section-sm sm:px-10 lg:px-16">
           <SectionIntro rule title={<span id="layers-heading">Five layers, one floor.</span>} tone="dark" />
           <div className="mt-stack">
-            <LayerBreakdown woodImage={woodImage} />
+            <LayerStory woodImage={woodImage} />
           </div>
 
           {closeUp && (
