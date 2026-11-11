@@ -53,7 +53,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
         role="group"
         aria-label="Finishes, light to dark"
         // pan-y: vertical movement stays the page's scroll; sideways is ours.
-        className="frame flex h-[clamp(13rem,38svh,24rem)] touch-pan-y select-none gap-[2px] shadow-card sm:h-[30rem] lg:h-[36rem]"
+        className="-mx-[var(--spacing-gutter)] flex h-[clamp(13rem,38svh,24rem)] touch-pan-y select-none gap-[2px] sm:h-[30rem] lg:h-[36rem]"
         onPointerDown={(e) => {
           // A new press: any click left over from a previous scrub no longer applies.
           swallowClick.current = false;
@@ -120,23 +120,13 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
               )}
             >
               {b.swatch && <FinishImage image={{ ...b.swatch, alt: "" }} sizes="(min-width: 1024px) 45vw, 50vw" />}
-              {/* The open board names itself: on phones the card below can be out of view. */}
-              <span
-                aria-hidden="true"
-                className={cn(
-                  "pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/55 to-transparent px-3 pb-3 pt-10 text-left font-display text-[0.9375rem] leading-tight text-white transition-opacity duration-500 lg:hidden",
-                  on ? "opacity-100" : "opacity-0",
-                )}
-              >
-                {b.name}
-              </span>
             </button>
           );
         })}
       </div>
 
       {boards.some((b) => b.room) && (
-        <div className="frame relative mt-3 aspect-[4/3] bg-line shadow-card sm:aspect-[16/7]">
+        <div className="relative -mx-[var(--spacing-gutter)] mt-[2px] aspect-[4/3] bg-line sm:aspect-[16/7]">
           {visited.map((i) => {
             const room = boards[i]?.room;
             if (!room) return null;
@@ -149,7 +139,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
                   i === active ? "opacity-100" : "opacity-0",
                 )}
               >
-                <FinishImage image={room} sizes="(min-width: 1024px) 80vw, 100vw" className="object-[50%_70%]" />
+                <FinishImage image={room} sizes="100vw" className="object-cover object-center" />
               </div>
             );
           })}

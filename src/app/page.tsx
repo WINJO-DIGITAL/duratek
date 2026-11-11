@@ -57,7 +57,8 @@ export default async function HomePage() {
     measures: measureLine(f.specs),
     sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
-    room: rooms.find((r) => r.finish.id === f.id)?.image,
+    // The photograph under the strip: the finish's grain close-up (floor only), else its swatch, else a room.
+    room: f.images.find((i) => i.kind === "closeup") ?? f.images.find((i) => i.kind === "swatch") ?? rooms.find((r) => r.finish.id === f.id)?.image,
   }));
 
   // Each format drawn with a mid-tone finish of its own, so the grain reads on white.
