@@ -68,11 +68,12 @@ export const EDITORIAL = {
     samples: "KeswickOak-16056-9-9.jpg",
     "where-to-buy": "CartmelOak2641-3close.jpg",
   },
-  /** The footer opens with one tall room scene: portrait photographs where the floor leads. */
+  /** The footer opens with a grain close-up: the floor fills the frame. */
   footer: [
-    "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
-    "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen.png",
-    "Honnister_Slate_Grey_kitchen.png",
+    "HonisterSlateGreyclose29045-6.jpg",
+    "KeswickOak-16056-9-9.jpg",
+    "Close-up_of_Grizedale_Aged_Oak_XL_flooring.png",
+    "CartmelOak2641-3close.jpg",
   ],
   room: [
     "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
