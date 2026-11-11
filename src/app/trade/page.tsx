@@ -39,33 +39,23 @@ export default async function TradePage() {
   return (
     <PageTransition>
       <>
-        {photo ? (
-          <section className="container-page pt-12 sm:pt-16">
-            <PageHero image={photo.image} focus="object-[50%_70%]">
-              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
-                <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
-              </SectionIntro>
-            </PageHero>
-            <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-              {enabled ? (
-                <ButtonLink href="/trade/apply" size="lg">
-                  Apply for a Trade Account
-                </ButtonLink>
-              ) : (
-                <p className="notice px-4 py-3 text-[0.9375rem] text-navy">Online trade applications open soon.</p>
-              )}
-              <ButtonLink href="/trade/login" variant="quiet" arrow={false}>
-                Log In
+        <PageHero image={photo?.image} focus="object-[50%_70%]">
+          <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
+            <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
+          </SectionIntro>
+          <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
+            {enabled ? (
+              <ButtonLink href="/trade/apply" size="lg" variant="on-dark">
+                Apply for a Trade Account
               </ButtonLink>
-            </div>
-          </section>
-        ) : (
-          <section className="container-page pb-section-sm pt-12 sm:pt-16">
-            <SectionIntro as="h1" size="lg" eyebrow="Trade accounts" title="For Fitters, Retailers, Contractors and Specifiers.">
-              <p>Your own prices, the documents you need, and a clean way to show the range to your customers.</p>
-            </SectionIntro>
-          </section>
-        )}
+            ) : (
+              <p className="px-1 text-[0.9375rem] text-on-dark/85">Online trade applications open soon.</p>
+            )}
+            <ButtonLink href="/trade/login" variant="quiet-on-dark" arrow={false}>
+              Log In
+            </ButtonLink>
+          </div>
+        </PageHero>
 
         <section aria-labelledby="benefits-heading" className="py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">

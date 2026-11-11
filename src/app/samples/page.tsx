@@ -32,22 +32,16 @@ export default async function SamplesPage() {
   const hero = pageHero(finishes, "samples");
   return (
     <PageTransition>
-      <div className="container-page pb-section pt-12 sm:pt-16">
-        {hero ? (
-          <PageHero image={hero.image} focus="object-[50%_45%]">
-            <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
-              <p>See the colour in your own light and feel the surface before you choose.</p>
-            </SectionIntro>
-          </PageHero>
-        ) : (
-          <SectionIntro as="h1" size="lg" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
+      <>
+        <PageHero image={hero?.image} focus="object-[50%_45%]">
+          <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
             <p>See the colour in your own light and feel the surface before you choose.</p>
           </SectionIntro>
-        )}
-        <div className="mt-12 lg:mt-16">
+        </PageHero>
+        <div className="container-page pb-section pt-10 lg:pt-14">
           <SampleRequest finishes={byId} enabled={samplesEnabled()} />
         </div>
-      </div>
+      </>
     </PageTransition>
   );
 }

@@ -64,19 +64,13 @@ export default async function InspirationPage() {
   return (
     <PageTransition>
       <>
-        <header className="container-page pb-10 pt-12 sm:pt-16">
-          {hero ? (
-            <PageHero image={hero.image} focus="object-[50%_70%]" className="mb-10">
-              <SectionIntro as="h1" size="lg" tone="dark" title="Inspiration">
-                <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
-              </SectionIntro>
-            </PageHero>
-          ) : (
-            <SectionIntro as="h1" size="lg" title="Inspiration">
-              <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
-            </SectionIntro>
-          )}
-          <nav aria-label="Moods" className="mt-8 flex flex-wrap gap-2">
+        <PageHero image={hero?.image} focus="object-[50%_70%]">
+          <SectionIntro as="h1" size="lg" tone="dark" title="Inspiration">
+            <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
+          </SectionIntro>
+        </PageHero>
+        <header className="container-page pb-10 pt-8 sm:pt-10">
+          <nav aria-label="Moods" className="flex flex-wrap gap-2">
             {moods.map((m) => (
               <a
                 key={m}

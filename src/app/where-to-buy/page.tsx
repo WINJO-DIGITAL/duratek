@@ -32,19 +32,13 @@ export default async function WhereToBuyPage({ searchParams }: PageProps<"/where
   return (
     <PageTransition>
       <>
-        <header className="container-page pb-section-sm pt-12 sm:pt-16">
-          {hero ? (
-            <PageHero image={hero.image} focus="object-[50%_58%]">
-              <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find duratek Near You.">
-                <p>See it at a local stockist, or buy it online.</p>
-              </SectionIntro>
-            </PageHero>
-          ) : (
-            <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find duratek Near You.">
-              <p>See it at a local stockist, or buy it online.</p>
-            </SectionIntro>
-          )}
-          <div className={hero ? "mt-8" : "mt-10"}>
+        <PageHero image={hero?.image} focus="object-[50%_58%]">
+          <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find duratek Near You.">
+            <p>See it at a local stockist, or buy it online.</p>
+          </SectionIntro>
+        </PageHero>
+        <header className="container-page pb-section-sm pt-8 sm:pt-10">
+          <div>
             <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
               <SearchWithValue searchParams={searchParams} />
             </Suspense>

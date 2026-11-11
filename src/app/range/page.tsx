@@ -54,35 +54,24 @@ export default async function RangePage() {
   const hero = pageHero(finishes, "range");
   return (
     <PageTransition>
-      <div className="container-page pb-section pt-8 sm:pt-12">
+      <>
         {/* The opening photograph carries the title; the finishes start just below. */}
-        {hero && (
-          <PageHero image={hero.image} focus="object-[50%_62%]">
-            <SectionIntro
-              as="h1"
-              size="lg"
-              tone="dark"
-              eyebrow="The range"
-              title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}
-            >
-              <p>Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
-            </SectionIntro>
-          </PageHero>
-        )}
-        <div className={hero ? "mt-6 flex flex-wrap items-center justify-between gap-x-10 gap-y-4" : "flex flex-wrap items-end justify-between gap-x-10 gap-y-4"}>
-          {!hero && (
-            <SectionIntro as="h1" size="lg" eyebrow="The range" title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}>
-              <p>
-                Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.
-                Choose up to three free samples.
-              </p>
-            </SectionIntro>
-          )}
-          <div className="flex items-center gap-8">
-            <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
-              Explore Them Full Screen
-            </ButtonLink>
-          </div>
+        <PageHero image={hero?.image} focus="object-[50%_62%]">
+          <SectionIntro
+            as="h1"
+            size="lg"
+            tone="dark"
+            eyebrow="The range"
+            title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}
+          >
+            <p>Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
+          </SectionIntro>
+        </PageHero>
+      <div className="container-page pb-section pt-6 sm:pt-8">
+        <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
+          <ButtonLink href="/explore" variant="quiet" arrow>
+            Explore Them Full Screen
+          </ButtonLink>
         </div>
         <div className="mt-8 sm:mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
@@ -98,6 +87,7 @@ export default async function RangePage() {
             .filter((x): x is NonNullable<typeof x> => Boolean(x))}
         />
       </div>
+      </>
     </PageTransition>
   );
 }

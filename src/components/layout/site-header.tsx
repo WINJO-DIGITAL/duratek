@@ -22,7 +22,7 @@ export function isActive(pathname: string, href: string) {
 }
 
 /** Pages whose hero is a full-bleed photo the header can sit over. */
-const OVERLAY_ROUTES = new Set(["/"]);
+const OVERLAY_ROUTES = new Set(["/", "/range", "/inspiration", "/samples", "/where-to-buy", "/trade"]);
 
 const LEFT_NAV = [
   { href: "/inspiration", label: "Inspiration" },

@@ -3,10 +3,12 @@ import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 
 /**
- * A page's opening photograph: a rounded frame with the page title set over
- * it in light type, shaded from the left and bottom so the text reads on any
- * photograph. The children are the page's own title block; the frame gives
- * them a calm place to sit, and the photograph shows what the page is about.
+ * A page's opening photograph, like the home page's: full bleed, starting at
+ * the very top of the screen with the header over it, tall enough to fill the
+ * first screen, with the page title set on the picture in light type. Shaded
+ * from the top and from the bottom so the header and the title read on any
+ * photograph. With no photograph it is a plain navy panel, so the header is
+ * still legible.
  */
 export function PageHero({
   image,
@@ -14,26 +16,27 @@ export function PageHero({
   focus = "object-[50%_60%]",
   className,
 }: {
-  image: CatalogueImage;
+  image?: CatalogueImage;
   children: React.ReactNode;
   /** Focal point of the crop, as an object-position class: for portrait or wide photographs. */
   focus?: string;
   className?: string;
 }) {
   return (
-    <section className={cn("on-dark relative isolate -mx-[var(--spacing-gutter)] overflow-hidden bg-navy sm:mx-0 sm:rounded-card", className)}>
-      <div className="relative aspect-[4/3] sm:aspect-[16/7] lg:aspect-[21/8]">
-        <FinishImage
-          image={image}
-          sizes="(min-width: 1024px) 1200px, 100vw"
-          priority
-          quality={80}
-          className={focus}
-        />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
-        <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-      </div>
-      <div className="absolute inset-x-0 bottom-0 pb-6 sm:pb-10 lg:pb-12"><div className="container-page">{children}</div></div>
+    <section
+      className={cn(
+        "on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] flex-col justify-end overflow-hidden bg-navy lg:min-h-[88svh]",
+        className,
+      )}
+    >
+      {image && (
+        <div aria-hidden="true" className="absolute inset-0 -z-20">
+          <FinishImage image={image} sizes="100vw" priority quality={80} className={focus} />
+        </div>
+      )}
+      <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/40 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 via-black/30 via-50% to-transparent to-80%" />
+      <div className="container-page relative pb-10 pt-40 sm:pb-14 lg:pb-16">{children}</div>
     </section>
   );
 }
