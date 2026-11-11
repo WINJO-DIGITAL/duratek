@@ -61,11 +61,12 @@ export const EDITORIAL = {
     "Cartmel_Oak_Lounge.png",
   ],
   /** Page heroes: one photograph per page, chosen so it is not already on that page. */
+  /** Page openers: floor-led. Close-ups of the grain, or a hallway where the floor runs the length of the frame. Each page differs. */
   pages: {
-    range: "Ambleside_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
+    range: "HonisterSlateGreyclose29045-6.jpg",
     inspiration: "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
-    samples: "Keswick_Oak_9.jpg",
-    "where-to-buy": "Cartmel_Oak_Kithcen_jpg.png",
+    samples: "KeswickOak-16056-9-9.jpg",
+    "where-to-buy": "CartmelOak2641-3close.jpg",
   },
   /** The footer opens with one tall room scene: portrait photographs where the floor leads. */
   footer: [

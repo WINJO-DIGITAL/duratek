@@ -32,8 +32,8 @@ const STEPS = [
 export default async function TradePage() {
   const enabled = tradeApplicationsEnabled();
   const photo = pickByFileName(imagePool(await getFinishes(), "room"), [
-    "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_kitchen_2.png",
     "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
+    "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
   ]);
 
   return (
