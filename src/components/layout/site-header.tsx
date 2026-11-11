@@ -84,7 +84,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
       className={cn(
         "sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300 ease-calm",
         overlay
-          ? "border-white/15 bg-transparent"
+          ? "border-transparent bg-transparent"
           : "border-line bg-off-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-off-white/85",
         !overlay && scrolled && "border-transparent shadow-card",
       )}
