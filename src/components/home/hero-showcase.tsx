@@ -134,7 +134,7 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
         )}
       </div>
 
-      <div className="container-page grid gap-10 pb-10 pt-40 sm:pb-14 lg:grid-cols-[1fr_auto] lg:items-end lg:pb-16">
+      <div className="container-page grid gap-6 pb-8 pt-28 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:items-end lg:pb-16">
         {children}
 
         <div className="flex items-center gap-1 self-end lg:justify-self-end">
