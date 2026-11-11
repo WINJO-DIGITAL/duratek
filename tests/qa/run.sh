@@ -21,5 +21,6 @@ fresh; run resolver
 fresh; run confidential
 fresh; run security
 fresh; run journeys
+fresh; run a11y
 fuser -k 3000/tcp 4010/tcp >/dev/null 2>&1
 exit $status

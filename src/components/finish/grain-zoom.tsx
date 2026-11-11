@@ -109,8 +109,8 @@ export function GrainZoom({
           zoomed && "opacity-0",
         )}
       >
-        <span className="[@media(hover:hover)]:hidden">Tap to look closer</span>
-        <span className="hidden [@media(hover:hover)]:inline">Hover to look closer</span>
+        {/* The visible words are part of the button's spoken name ("Look closer at the … grain"). */}
+        Look closer
       </span>
     </button>
   );

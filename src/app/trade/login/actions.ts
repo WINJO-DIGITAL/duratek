@@ -1,31 +1,17 @@
 "use server";
 
-import { createHash } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { loginSchema, safeNext, type LoginState } from "@/lib/auth/login";
+import { clientKey, createFailureLimiter } from "@/lib/rate-limit";
 import { siteUrl } from "@/lib/site";
 import { userSupabase } from "@/lib/supabase/server";
 
-/* Rate limit sign-in attempts per address (best effort, in memory on each
-   server instance). Supabase Auth applies its own limits as well. */
-// Per address, counting every attempt. Test servers may raise it (LOGIN_RATE_MAX); production leaves it at 10.
-const MAX = Number(process.env.LOGIN_RATE_MAX) || 10;
-const WINDOW_MS = 15 * 60 * 1000;
-const attempts = new Map<string, number[]>();
-
-function allowed(key: string): boolean {
-  const now = Date.now();
-  const recent = (attempts.get(key) ?? []).filter((t) => now - t < WINDOW_MS);
-  if (recent.length >= MAX) {
-    attempts.set(key, recent);
-    return false;
-  }
-  recent.push(now);
-  attempts.set(key, recent);
-  if (attempts.size > 5000) attempts.clear();
-  return true;
-}
+/* Rate limit failed sign-in attempts per address (best effort, in memory on each
+   server instance). Only failures count, so people signing in successfully from one
+   office address never lock each other out. Supabase Auth applies its own limits as well.
+   Test servers may raise the limit (LOGIN_RATE_MAX); production leaves it at 10. */
+const failures = createFailureLimiter({ max: Number(process.env.LOGIN_RATE_MAX) || 10, windowMs: 15 * 60 * 1000 });
 
 export async function logIn(_prev: LoginState, form: FormData): Promise<LoginState> {
   const email = typeof form.get("email") === "string" ? (form.get("email") as string).trim() : "";
@@ -37,9 +23,8 @@ export async function logIn(_prev: LoginState, form: FormData): Promise<LoginSta
     return { status: "error", message: parsed.error.issues[0]?.message ?? "Check your details.", email };
   }
 
-  const h = await headers();
-  const ip = (h.get("x-forwarded-for") ?? "").split(",")[0].trim() || h.get("x-real-ip") || "unknown";
-  if (!allowed(createHash("sha256").update(ip).digest("hex"))) {
+  const key = clientKey(await headers());
+  if (failures.blocked(key)) {
     return { status: "error", message: "Too many attempts. Please try again in a few minutes.", email };
   }
 
@@ -48,6 +33,7 @@ export async function logIn(_prev: LoginState, form: FormData): Promise<LoginSta
   // Auth only says this after the password matched, so it reveals nothing to a stranger.
   if (error?.code === "email_not_confirmed") return { status: "unconfirmed", email: parsed.data.email };
   if (error) {
+    failures.fail(key);
     // One message for every failure, so it can't be used to find out who has an account.
     return { status: "error", message: "Email or password isn't right.", email };
   }

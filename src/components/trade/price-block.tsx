@@ -39,24 +39,26 @@ const LOGIN_PROMPT = (
 function PublicRows({ rrpPence, offerPence }: { rrpPence?: number; offerPence?: number }) {
   const lead = offerPence ?? rrpPence;
   if (lead === undefined) return null;
+  const hasBoth = offerPence !== undefined && rrpPence !== undefined;
+  // Each group is a direct child of the <dl>, as a description list requires.
   return (
-    <div className="border-b border-line pb-4">
-      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+    <>
+      <div className={`flex flex-wrap items-baseline gap-x-3 gap-y-1 ${hasBoth ? "" : "border-b border-line pb-4"}`}>
         <dt className="order-2 text-[0.875rem] text-ink-muted">{offerPence !== undefined ? "Offer price, inc VAT" : "RRP, inc VAT"}</dt>
         <dd className="order-1 text-navy">
           <span className="data text-[1.75rem] leading-none tracking-tight">{formatPence(lead)}</span>{" "}
           <span className="text-[0.9375rem] text-ink-muted">per m²</span>
         </dd>
       </div>
-      {offerPence !== undefined && rrpPence !== undefined && (
-        <div className="mt-1 flex gap-1.5 text-[0.875rem] text-ink-muted">
+      {hasBoth && (
+        <div className="flex gap-1.5 border-b border-line pb-4 pt-1 text-[0.875rem] text-ink-muted">
           <dt>RRP</dt>
           <dd>
             <span className="data line-through">{formatPence(rrpPence)}</span> per m², inc VAT
           </dd>
         </div>
       )}
-    </div>
+    </>
   );
 }
 
