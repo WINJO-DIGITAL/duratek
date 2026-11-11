@@ -1,3 +1,4 @@
+import { formatPence } from "@/lib/money";
 import { PostcodeBand } from "@/components/content/postcode-band";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FiveLayers } from "@/components/home/five-layers";
@@ -55,6 +56,7 @@ export default async function HomePage() {
     name: f.name,
     detail: detailLine(f),
     measures: measureLine(f.specs),
+    rrp: f.rrpPence !== undefined ? formatPence(f.rrpPence) : undefined,
     sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
     // The photograph under the strip: the finish's grain close-up (floor only), else its swatch, else a room.

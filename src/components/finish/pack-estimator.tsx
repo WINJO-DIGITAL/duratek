@@ -32,7 +32,7 @@ export function PackEstimator({ coverageM2, rrpPence }: { coverageM2: number; rr
               <>
                 <span className="data font-medium">{plan.packs}</span> {plan.packs === 1 ? "pack" : "packs"}
                 <span className="data text-ink-muted"> · {plan.suppliedM2} m²</span>
-                {rrpPence !== undefined && <span className="data text-ink-muted"> · {formatPence(packsPrice(plan.packs, coverageM2, rrpPence))} RRP</span>}
+                {rrpPence !== undefined && <span className="data font-medium"> · {formatPence(packsPrice(plan.packs, coverageM2, rrpPence))} RRP</span>}
               </>
             ) : (
               <span className="text-ink-muted">{coverageM2} m² per pack</span>

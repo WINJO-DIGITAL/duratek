@@ -133,6 +133,11 @@ async function Comparison({ searchParams }: { searchParams: PageProps<"/compare"
   );
 }
 
+/** The public RRP row: set larger, so the price is the first thing read. */
+function isRrp(r: CompareRow): boolean {
+  return r.label === "RRP per m²";
+}
+
 function RowGroup({
   title,
   rows,
@@ -150,19 +155,19 @@ function RowGroup({
       <dl className="mt-4 border-t border-line">
         {rows.map((r) => (
           <div key={r.label} className="grid gap-x-6 gap-y-1 border-b border-line py-3 lg:grid-cols-[12rem_1fr]">
-            <dt className="flex items-center gap-2 text-[0.875rem] text-ink-muted">
+            <dt className={cn("flex items-center gap-2 text-[0.875rem] text-ink-muted", isRrp(r) && "font-medium text-navy")}>
               {highlight && <span aria-hidden="true" className="size-1.5 bg-green" />}
               {r.label}
             </dt>
             {r.same ? (
-              <dd className={cn("text-[0.9375rem] text-navy", r.measured && "data")}>{r.values[0] || "Not stated"}</dd>
+              <dd className={cn("text-[0.9375rem] text-navy", r.measured && "data", isRrp(r) && "text-[1.125rem] font-medium")}>{r.values[0] || "Not stated"}</dd>
             ) : (
               <dd
                 className="grid gap-3 sm:gap-6"
                 style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}
               >
                 {Array.from({ length: columns }, (_, i) => (
-                  <span key={i} className={cn("text-[0.8125rem] text-navy sm:text-[0.9375rem]", r.measured && "data text-[0.75rem] sm:text-[0.875rem]")}>
+                  <span key={i} className={cn("text-[0.8125rem] text-navy sm:text-[0.9375rem]", r.measured && "data text-[0.75rem] sm:text-[0.875rem]", isRrp(r) && "data text-[1.0625rem] font-medium sm:text-[1.125rem]")}>
                     {r.values[i] ?? ""}
                   </span>
                 ))}

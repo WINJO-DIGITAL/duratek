@@ -14,6 +14,8 @@ export interface LibraryBoard {
   name: string;
   detail: string;
   measures: string;
+  /** The public RRP per m², formatted, when set. */
+  rrp?: string;
   sampleAvailable?: boolean;
   swatch?: CatalogueImage;
   /** The finish in a room: shown under the strip when its board is open. */
@@ -158,6 +160,12 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
           </p>
           <p className="mt-1 text-[0.9375rem] text-ink-muted">{current.detail}</p>
           {current.measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{current.measures}</p>}
+          {current.rrp && (
+            <p className="mt-2 text-navy">
+              <span className="data text-[1.125rem] font-medium">{current.rrp}</span>{" "}
+              <span className="text-[0.8125rem] text-ink-muted">RRP per m²</span>
+            </p>
+          )}
         </div>
         <div className="flex flex-wrap items-start gap-x-8 gap-y-2">
           <AddToSamplesButton key={current.id} finish={{ id: current.id, slug: current.slug, name: current.name, unavailable: current.sampleAvailable === false }} />
