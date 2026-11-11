@@ -3,7 +3,7 @@ import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
 import { FinishGallery } from "@/components/finish/finish-gallery";
@@ -271,9 +271,12 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
       {/* About and full specification */}
       <section aria-labelledby="about-heading" className="py-section">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
-          <h2 id="about-heading" className="text-display-md text-navy lg:col-span-4">
-            About {finish.name}
-          </h2>
+          <div className="lg:col-span-4">
+            <h2 id="about-heading" className="text-display-md text-navy">
+              About {finish.name}
+            </h2>
+            <ScratchShieldBadge className="mt-8 w-28! sm:w-32!" />
+          </div>
           <div className="space-y-4 text-lede text-ink-muted lg:col-span-8">
             {finish.description.split(/\n\n+/).map((p) => (
               <p key={p.slice(0, 32)}>{p}</p>

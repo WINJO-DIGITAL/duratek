@@ -2,6 +2,7 @@ import type { ComponentType } from "react";
 import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { ScratchShieldBadge } from "@/components/content/warranty";
 import { FinishImage } from "@/components/finish/finish-image";
 import { ButtonLink } from "@/components/ui/button";
 import { ClickIcon, DropIcon, LayersIcon, ShieldIcon } from "@/components/ui/icons";
@@ -33,6 +34,7 @@ export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage;
             <figure className="mt-14 lg:mt-20">
               <div className="relative aspect-[4/3] overflow-hidden rounded-card bg-white/10 sm:aspect-[16/7]">
                 <FinishImage image={closeUp.image} sizes="(min-width: 1024px) 80vw, 100vw" quality={80} />
+                <ScratchShieldBadge className="absolute bottom-3 right-3 w-24! drop-shadow-[0_6px_18px_rgba(0,0,0,0.4)] sm:bottom-5 sm:right-5 sm:w-32! lg:bottom-6 lg:right-8 lg:w-40!" />
               </div>
               <figcaption className="data mt-3 text-[0.8125rem] text-on-dark/70">{closeUp.name}, up close</figcaption>
             </figure>

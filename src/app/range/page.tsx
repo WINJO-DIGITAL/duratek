@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { ScratchShieldBadge } from "@/components/content/warranty";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
@@ -60,9 +61,12 @@ export default async function RangePage() {
               Choose up to three free samples.
             </p>
           </SectionIntro>
-          <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
-            Explore them full screen
-          </ButtonLink>
+          <div className="flex items-center gap-8">
+            <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
+              Explore them full screen
+            </ButtonLink>
+            <ScratchShieldBadge className="hidden w-24! lg:block" />
+          </div>
         </div>
         <div className="mt-8 sm:mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
