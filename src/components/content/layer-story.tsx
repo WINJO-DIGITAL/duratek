@@ -72,12 +72,12 @@ function Story({ woodImage }: { woodImage?: CatalogueImage }) {
       </ol>
 
       {/* A tall track: scrolling through it moves the story on. */}
-      <div ref={track} aria-hidden="true" className="relative" style={{ height: `calc(${LAYERS.length * 55}svh + 70svh)` }}>
+      <div ref={track} aria-hidden="true" className="relative h-[260svh] lg:h-[345svh]">
         <div
           ref={pin}
           className="sticky top-[calc(var(--spacing-header)+0.5rem)] grid h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar)-1.5rem)] max-h-[44rem] grid-rows-[minmax(0,1fr)_auto] items-center gap-4 lg:h-[calc(100svh-var(--spacing-header)-2rem)] lg:grid-cols-[1.1fr_1fr] lg:grid-rows-1 lg:gap-16"
         >
-          <div className="relative mx-auto aspect-square h-full max-h-[26rem] min-h-0 max-w-full [perspective:1800px] lg:h-auto lg:w-full lg:max-w-[28rem]">
+          <div className="relative mx-auto aspect-square h-full max-h-[26rem] min-h-0 max-w-full overflow-hidden [perspective:1800px] lg:h-auto lg:w-full lg:max-w-[28rem]">
             <div className="absolute inset-0 [transform-style:preserve-3d] [transform:rotateX(58deg)_rotateZ(-36deg)]">
               {LAYERS.map((l, i) => {
                 const fromBottom = LAYERS.length - 1 - i;
@@ -111,7 +111,7 @@ function Story({ woodImage }: { woodImage?: CatalogueImage }) {
               </p>
               <p className="mt-2 font-display text-display-md text-on-dark">{layer.name}</p>
               <p className="mt-2 max-w-[28ch] text-lede text-on-dark/85">{layer.detail}</p>
-              {active === 0 && <ScratchShieldBadge className="mt-4 w-20! lg:mt-6 lg:w-28!" />}
+              {active === 0 && <ScratchShieldBadge className="mt-4 hidden w-28! lg:mt-6 lg:block" />}
             </div>
             {/* Where you are: one mark per layer. */}
             <div className="mt-5 flex items-center gap-2 lg:mt-8">
@@ -119,7 +119,7 @@ function Story({ woodImage }: { woodImage?: CatalogueImage }) {
                 <span key={l.name} className={cn("h-[2px] w-8 transition-colors duration-500", i <= active ? "bg-green-on-navy" : "bg-white/20")} />
               ))}
             </div>
-            <p className={cn("mt-3 text-[0.8125rem] text-on-dark/60 transition-opacity duration-500", active === 0 ? "opacity-100" : "opacity-0")}>
+            <p className={cn("mt-3 hidden text-[0.8125rem] text-on-dark/60 transition-opacity duration-500 lg:block", active === 0 ? "opacity-100" : "opacity-0")}>
               Keep scrolling to lift each layer away.
             </p>
           </div>
