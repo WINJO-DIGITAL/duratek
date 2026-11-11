@@ -6,6 +6,7 @@ import { Suspense } from "react";
 import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
+import { ProofPoints } from "@/components/finish/proof-points";
 import { FinishGallery } from "@/components/finish/finish-gallery";
 import { GrainZoom } from "@/components/finish/grain-zoom";
 import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
@@ -198,6 +199,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             </Suspense>
 
             {lead.lead && <p className="mt-6 max-w-[34ch] font-display text-[1.375rem] font-light leading-snug tracking-[-0.02em] text-navy">{lead.lead}</p>}
+            <ProofPoints />
 
             <div className="mt-6">
               <ColourSwatches
