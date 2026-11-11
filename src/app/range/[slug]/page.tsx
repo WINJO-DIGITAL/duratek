@@ -18,6 +18,7 @@ import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, Swatches } from "@/components/ui/icons";
 import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
+import { splitLead } from "@/lib/catalogue/text";
 import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
 import { relatedFinishes } from "@/lib/catalogue/related";
 import { compareHref } from "@/lib/saved/saved";
@@ -124,6 +125,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const grain = grainImage(finish);
   const gallery = [...imagesOfKind(finish, "room"), ...imagesOfKind(finish, "closeup")].filter((i) => i !== grain);
   const specs = specRows(finish.specs);
+  const lead = splitLead(finish.description);
   const keySpecs = specs.filter((r) => MEASURED.has(r.label));
   const format = plankFormat(finish.specs);
   const planks = scalePlanks(all, finish);
@@ -186,6 +188,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               {colourFamilyLabel(finish.colourFamily)}
               {format && <> · {FORMAT_LABELS[format]}</>}
             </p>
+            {lead.lead && <p className="mt-5 max-w-[34ch] font-display text-[1.375rem] font-light leading-snug tracking-[-0.02em] text-navy">{lead.lead}</p>}
 
             {/* RRP is public; the trade price is read at request time, only for an approved account. */}
             <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
@@ -278,7 +281,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <ScratchShieldBadge className="mt-8 w-28! sm:w-32!" />
           </div>
           <div className="space-y-4 text-lede text-ink-muted lg:col-span-8">
-            {finish.description.split(/\n\n+/).map((p) => (
+            {(lead.rest || finish.description).split(/\n\n+/).map((p) => (
               <p key={p.slice(0, 32)}>{p}</p>
             ))}
           </div>

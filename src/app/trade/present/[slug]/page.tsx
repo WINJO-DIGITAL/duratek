@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishGallery } from "@/components/finish/finish-gallery";
+import { FullscreenButton } from "@/components/trade/fullscreen-button";
 import { ProfitPanel } from "@/components/trade/profit-panel";
 import { ModeSwitch } from "@/components/trade/trade-shell";
 import { ArrowLeft } from "@/components/ui/icons";
@@ -52,7 +53,10 @@ async function Content({ params }: { params: PageProps<"/trade/present/[slug]">[
         <Link href="/trade/present" className="nav-link gap-2">
           <ArrowLeft size={16} /> All finishes
         </Link>
-        <ModeSwitch customerView={customerView} back={back} compact />
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+          <FullscreenButton />
+          <ModeSwitch customerView={customerView} back={back} compact />
+        </div>
       </div>
 
       {/* The room first: full width, swipe for the next photograph. */}

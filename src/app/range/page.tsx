@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { ScratchShieldBadge } from "@/components/content/warranty";
 import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
@@ -83,7 +82,6 @@ export default async function RangePage() {
             <ButtonLink href="/explore" variant="quiet" className="lg:mb-1">
               Explore Them Full Screen
             </ButtonLink>
-            <ScratchShieldBadge className="hidden w-24! lg:block" />
           </div>
         </div>
         <div className="mt-8 sm:mt-10">
