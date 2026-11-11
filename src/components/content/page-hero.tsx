@@ -33,7 +33,7 @@ export function PageHero({
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 px-[var(--spacing-gutter)] pb-6 sm:px-10 sm:pb-10 lg:px-14 lg:pb-12">{children}</div>
+      <div className="absolute inset-x-0 bottom-0 pb-6 sm:pb-10 lg:pb-12"><div className="container-page">{children}</div></div>
     </section>
   );
 }
