@@ -26,6 +26,11 @@ function detailLine(f: Finish): string {
 }
 
 /** "Windermere Oak flooring in a hallway" → "hallway" */
+/** Rooms where the floor fills the frame: a hallway, a living room, a lounge. */
+const FLOOR_LED_ROOM = /hallway|living|lounge|reading nook|bedroom|dining/i;
+/** Kitchens and bathrooms show cabinets and fittings more than the floor: not used for the board photographs. */
+const SKIP_ROOM = /kitchen|bathroom|kids|playroom|shower/i;
+
 function roomFromAlt(alt: string): string | undefined {
   return alt.match(/\bin an? (.+)$/i)?.[1];
 }
@@ -59,8 +64,12 @@ export default async function HomePage() {
     rrp: f.rrpPence !== undefined ? formatPence(f.rrpPence) : undefined,
     sampleAvailable: f.sampleAvailable,
     swatch: grainImage(f),
-    // The photograph under the strip: the finish's grain close-up (floor only), else its swatch, else a room.
-    room: f.images.find((i) => i.kind === "closeup") ?? f.images.find((i) => i.kind === "swatch") ?? rooms.find((r) => r.finish.id === f.id)?.image,
+    // The photograph under the strip: a real room where the floor runs through the frame (hallway, living room),
+    // never a kitchen; else the grain close-up; else the swatch.
+    room:
+      f.images.find((i) => i.kind === "room" && FLOOR_LED_ROOM.test(i.alt) && !SKIP_ROOM.test(i.alt)) ??
+      f.images.find((i) => i.kind === "closeup") ??
+      f.images.find((i) => i.kind === "swatch"),
   }));
 
   // Each format drawn with a mid-tone finish of its own, so the grain reads on white.
