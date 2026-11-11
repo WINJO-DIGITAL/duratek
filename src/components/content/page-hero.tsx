@@ -21,7 +21,7 @@ export function PageHero({
   className?: string;
 }) {
   return (
-    <section className={cn("on-dark relative isolate overflow-hidden rounded-card bg-navy", className)}>
+    <section className={cn("on-dark relative isolate -mx-[var(--spacing-gutter)] overflow-hidden bg-navy sm:mx-0 sm:rounded-card", className)}>
       <div className="relative aspect-[4/3] sm:aspect-[16/7] lg:aspect-[21/8]">
         <FinishImage
           image={image}
@@ -33,7 +33,7 @@ export function PageHero({
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/25 to-transparent" />
         <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
       </div>
-      <div className="absolute inset-x-0 bottom-0 px-5 pb-6 sm:px-10 sm:pb-10 lg:px-14 lg:pb-12">{children}</div>
+      <div className="absolute inset-x-0 bottom-0 px-[var(--spacing-gutter)] pb-6 sm:px-10 sm:pb-10 lg:px-14 lg:pb-12">{children}</div>
     </section>
   );
 }
