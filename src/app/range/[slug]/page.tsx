@@ -8,7 +8,6 @@ import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
 import { ProofPoints } from "@/components/finish/proof-points";
 import { FinishGallery } from "@/components/finish/finish-gallery";
-import { GrainZoom } from "@/components/finish/grain-zoom";
 import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
 import { PackEstimator } from "@/components/finish/pack-estimator";
 import { PriceBlock, PriceBlockPublic } from "@/components/trade/price-block";
@@ -166,14 +165,14 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
         <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)] lg:col-span-7 lg:self-start">
           {grain ? (
             <div className="relative">
-              <GrainZoom
-                image={grain}
+              {/* One gallery: the grain first, then the finish in the room. */}
+              <FinishGallery
+                images={[grain, ...gallery].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 6)}
                 name={finish.name}
-                priority
+                aspect="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
                 sizes="(min-width: 1024px) 54vw, 100vw"
-                className="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
               />
-              {/* A seal in the photo's bottom-right corner, clear of the "Look closer" hint at bottom-left. Outside the zoom button, so it stays put when the grain is zoomed. */}
+              {/* A seal in the bottom-right corner, clear of the gallery arrows and counter. */}
               <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
             </div>
           ) : (
@@ -238,24 +237,6 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           </div>
         </div>
       </div>
-
-      {gallery.length > 0 && (
-        <section aria-labelledby="rooms-heading" className="pt-section">
-          <div className="container-page">
-            <h2 id="rooms-heading" className="eyebrow font-sans">
-              {finish.name} in the room
-            </h2>
-            <div className="mt-6">
-              <FinishGallery
-                images={gallery}
-                name={finish.name}
-                aspect="aspect-[4/5] sm:aspect-[3/2] lg:aspect-[2/1]"
-                sizes="(min-width: 1440px) 1360px, 100vw"
-              />
-            </div>
-          </div>
-        </section>
-      )}
 
       {planks.length > 0 && (
         <section aria-labelledby="scale-heading" className="pt-section">
