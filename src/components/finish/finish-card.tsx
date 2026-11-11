@@ -63,6 +63,14 @@ export function FinishCard({
             <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
           </div>
         )}
+        {/* The name, set like a gallery caption on the photograph. The link stretches over the whole card. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent px-4 pb-3.5 pt-16 sm:px-5 sm:pb-4">
+          <H className="font-display text-[1.5rem] font-normal leading-[1.02] tracking-[-0.035em] text-white sm:text-[1.75rem]">
+            <Link href={`/range/${finish.slug}`} className="pointer-events-auto after:absolute after:inset-0 after:content-['']">
+              {finish.name}
+            </Link>
+          </H>
+        </div>
       </div>
       {/* Above the stretched link, in the photo's corner. */}
       <SaveButton
@@ -71,13 +79,8 @@ export function FinishCard({
         className="absolute right-3 top-3 z-10"
       />
 
-      <div className="flex flex-1 flex-col px-4 pb-2 pt-4 sm:px-5 sm:pt-5">
-        <H className="text-[1.25rem] font-normal leading-tight tracking-[-0.01em] text-navy sm:text-[1.4375rem]">
-          <Link href={`/range/${finish.slug}`} className="after:absolute after:inset-0 after:content-['']">
-            {finish.name}
-          </Link>
-        </H>
-        <p className="mt-1.5 text-[0.875rem] text-ink-muted">
+      <div className="flex flex-1 flex-col px-4 pb-2 pt-3.5 sm:px-5 sm:pt-4">
+        <p className="text-[0.875rem] text-ink-muted">
           {colourFamilyLabel(finish.colourFamily)}
           {format && <> · {FORMAT_LABELS[format]}</>}
         </p>

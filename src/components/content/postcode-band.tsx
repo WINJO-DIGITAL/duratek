@@ -10,7 +10,7 @@ export function PostcodeBand({ retailers }: { retailers?: OnlineRetailer[] }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_1fr] lg:items-end">
       <div>
-        <p className="eyebrow">Where to buy</p>
+        <span aria-hidden="true" className="block h-[2px] w-11 bg-green-ink" />
         <h2 className="mt-4 text-display-md text-navy">See it, then buy it near you.</h2>
         {retailers?.length ? (
           <p className="mt-4 max-w-md text-ink-muted">

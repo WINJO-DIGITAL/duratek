@@ -23,7 +23,7 @@ export function FloorHero({ slides }: { slides: HeroSlide[] }) {
         <div>
           <h1 id="hero-heading" className="max-w-[13ch] text-display-hero text-on-dark sm:max-w-none">
             <span className="sm:block">Beautifully considered.</span>{" "}
-            <span className="font-normal text-on-dark/90 sm:block">Built to perform.</span>
+            <span className="font-light text-on-dark/90 sm:block">Built to perform.</span>
           </h1>
           <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/85 sm:mt-6">
             Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.

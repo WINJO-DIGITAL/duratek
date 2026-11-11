@@ -67,28 +67,28 @@
 
   --text-display-xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
   --text-display-xl--line-height: 1.04;
-  --text-display-xl--letter-spacing: -0.03em;
+  --text-display-xl--letter-spacing: -0.035em;
   --text-display-xl--font-weight: 400;
   /* Home hero headline: 44px on phones, 76px on wide screens. */
   --text-display-hero: clamp(2.75rem, 2.1rem + 2.6vw, 4.75rem);
   --text-display-hero--line-height: 1.06;
-  --text-display-hero--letter-spacing: -0.025em;
+  --text-display-hero--letter-spacing: -0.035em;
   --text-display-hero--font-weight: 450;
   --text-hero-lede: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem); /* 17px phones, 19px desktop */
   --text-hero-lede--line-height: 1.65;
   /* Page title (H1): large and calm. */
   --text-display-lg: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
   --text-display-lg--line-height: 1.08;
-  --text-display-lg--letter-spacing: -0.025em;
+  --text-display-lg--letter-spacing: -0.035em;
   --text-display-lg--font-weight: 400;
   /* Section heading (H2): the anchor of each section. 32px phones, 48px desktop. */
   --text-display-md: clamp(2rem, 1.6rem + 1.6vw, 3rem);
   --text-display-md--line-height: 1.12;
-  --text-display-md--letter-spacing: -0.02em;
+  --text-display-md--letter-spacing: -0.03em;
   --text-display-md--font-weight: 500;
   --text-display-sm: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
   --text-display-sm--line-height: 1.25;
-  --text-display-sm--letter-spacing: -0.015em;
+  --text-display-sm--letter-spacing: -0.025em;
   --text-display-sm--font-weight: 400;
   --text-lede: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   --text-lede--line-height: 1.6;
@@ -198,14 +198,6 @@
   font-family: var(--font-display);
   text-transform: uppercase;
   color: var(--color-green-ink);
-  /* Small square marker before section labels. */
-  &::before {
-    content: "";
-    width: 0.5em;
-    height: 0.5em;
-    flex: none;
-    background: currentColor;
-  }
 }
 
 /* A soft card: white on ivory or cream, warm hairline, rounded, gentle shadow. */

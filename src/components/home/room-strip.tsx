@@ -38,7 +38,7 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
                   className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-black/55 to-transparent"
                 />
                 <p className="absolute inset-x-0 bottom-0 p-5 text-on-dark">
-                  <span className="block font-display text-[1.375rem] leading-tight">{r.name}</span>
+                  <span className="block font-display text-[1.625rem] leading-[1.02] tracking-[-0.035em] sm:text-[1.875rem]">{r.name}</span>
                   {r.room && <span className="mt-1 block text-[0.8125rem] text-on-dark/80">{r.room}</span>}
                 </p>
               </div>

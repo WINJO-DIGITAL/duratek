@@ -24,7 +24,7 @@ export function FiveLayers({ woodImage, closeUp }: { woodImage?: CatalogueImage;
     <section aria-labelledby="layers-heading" className="py-section-sm">
       <div className="container-page">
         <div className="on-dark rounded-card bg-navy px-5 py-section-sm sm:px-10 lg:px-16">
-          <SectionIntro eyebrow="Five layers" title={<span id="layers-heading">Five layers, one floor.</span>} tone="dark" />
+          <SectionIntro rule title={<span id="layers-heading">Five layers, one floor.</span>} tone="dark" />
           <div className="mt-stack">
             <LayerBreakdown woodImage={woodImage} />
           </div>
