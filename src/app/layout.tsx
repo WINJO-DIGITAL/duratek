@@ -79,7 +79,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" className="flex-1">
           {children}
         </main>
-        <SiteFooter nav={nav} />
+        <SiteFooter />
         {/* After the page content, so it runs after Next's own scroll handling. */}
         <Suspense fallback={null}>
           <RouteScrollReset />

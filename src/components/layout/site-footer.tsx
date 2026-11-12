@@ -2,12 +2,10 @@ import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/wordmark";
 import { FinishImage } from "@/components/finish/finish-image";
-import { getFinishes, grainImage } from "@/lib/catalogue";
+import { getFinishes } from "@/lib/catalogue";
 import { EDITORIAL, pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
-import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
-import { colourFamilyLabel } from "@/lib/config";
 import { COMPANY, GENERAL_CONTACT, telHref } from "@/lib/contact";
 import { FooterContact } from "./footer-contact";
 
@@ -21,7 +19,6 @@ const GROUPS: { title: string; links: FooterLink[] }[] = [
       { href: "/range", label: "The Range" },
       { href: "/samples", label: "Free Samples" },
       { href: "/where-to-buy", label: "Where to Buy" },
-      { href: "/saved", label: "Saved Finishes" },
     ],
   },
   {
@@ -58,18 +55,14 @@ async function copyrightYear() {
 
 /**
  * Site footer, top to bottom: a grain close-up beside a short column (the
- * tagline, three link groups, shop by colour, a call line); the oversized
- * wordmark; then a darker legal strip with copyright and company details.
+ * tagline, three link groups, a call line); the wordmark, signed small; then
+ * a darker legal strip with copyright and company details.
  */
-export async function SiteFooter({ nav }: { nav: NavData }) {
+export async function SiteFooter() {
   const year = await copyrightYear();
-  // One tall room photograph opens the footer; each colour family gets a round swatch from one of its finishes.
+  // One tall photograph opens the footer.
   const finishes = await getFinishes();
   const photo = pickByFileName(imagePool(finishes, "closeup"), EDITORIAL.footer);
-  const swatchFor = (family: string) => {
-    const f = finishes.find((x) => x.colourFamily === family);
-    return f ? grainImage(f) : undefined;
-  };
   const companyLine = [
     COMPANY.legalName,
     COMPANY.registrationNumber && `Company no. ${COMPANY.registrationNumber}`,
@@ -124,28 +117,6 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
             ))}
           </div>
 
-          <div className="mt-10">
-            <h2 className="eyebrow font-sans text-green-on-navy">Shop by Colour</h2>
-            <ul className="mt-3 flex flex-wrap gap-x-6 gap-y-3">
-              {nav.colourFamilies.map((c) => {
-                const swatch = swatchFor(c);
-                return (
-                  <li key={c}>
-                    <Link
-                      href={`/range?colour=${c}`}
-                      className="group inline-flex min-h-tap items-center gap-2.5 text-[0.9375rem] text-on-dark underline decoration-white/0 underline-offset-[6px] transition-[text-decoration-color] duration-300 hover:decoration-green-on-navy"
-                    >
-                      <span className="relative size-[24px] shrink-0 overflow-hidden rounded-full bg-white/10 ring-1 ring-inset ring-white/30">
-                        {swatch && <FinishImage image={{ ...swatch, alt: "" }} sizes="24px" />}
-                      </span>
-                      {colourFamilyLabel(c)}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-
           {GENERAL_CONTACT.phone && (
             <p className="mt-8 text-[0.9375rem] text-on-dark/85">
               Call us{" "}
@@ -159,9 +130,9 @@ export async function SiteFooter({ nav }: { nav: NavData }) {
 
       <FooterContact />
 
-      {/* Oversized wordmark: the closing signature of every page. */}
-      <div className="container-page pb-10 sm:pb-14" aria-hidden="true">
-        <Wordmark tone="dark" className="h-auto w-full" />
+      {/* The wordmark, signed small: the closing signature of every page. */}
+      <div className="container-page pb-8 sm:pb-10" aria-hidden="true">
+        <Wordmark tone="dark" className="h-auto w-44 sm:w-56" />
       </div>
 
       <div className="bg-navy-deep">
