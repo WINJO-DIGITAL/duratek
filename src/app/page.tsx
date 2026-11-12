@@ -33,9 +33,10 @@ const FLOOR_LED_ROOM = /hallway|living|lounge|reading nook|bedroom|dining/i;
 const SKIP_ROOM = /kitchen|bathroom|kids|playroom|shower/i;
 /** Board photographs chosen by hand, where the automatic choice didn't show the floor. Matched by file name. */
 const PINNED_BOARD_ROOM: Record<string, string> = {
+  "hawkshead-oak": "Hawkshead_Oak_Real_Homes.png",
   "conniston-oak": "29036_5-4.1920x1200.jpg",
-  "kirkstone-grey-oak": "29036-15_jpg.webp",
-  "ambleside-oak": "29036-1_jpg.webp",
+  "kirkstone-grey-oak": "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
+  "ambleside-oak": "Ambleside_Oak_Luxury_Click_Vinyl_Flooring_5mm_kitchen_image.png",
   "fellside-oak": "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_Living_Area.jpg",
 };
 function pinnedBoardRoom<T extends { slug: string; images: CatalogueImage[] }>(f: T): CatalogueImage | undefined {
