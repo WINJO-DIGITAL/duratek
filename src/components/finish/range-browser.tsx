@@ -10,7 +10,10 @@ import {
   matches,
   NO_FILTERS,
   readFilters,
+  SORTS,
+  sortItems,
   TONE_GROUPS,
+  type SortId,
   type FilterableFinish,
   type RangeFilters,
 } from "@/lib/catalogue/filter";
@@ -47,6 +50,7 @@ export function RangeBrowser({
     (t) => t.count > 0,
   );
   const visible = items.filter((i) => matches(i, filters));
+  const ordered = sortItems(visible, filters.sort);
   const sheet = useRef<HTMLDialogElement>(null);
   // How many finishes each choice would leave, with the other filters still applied.
   const countWith = (key: keyof RangeFilters, value: string | null) =>
@@ -122,7 +126,8 @@ export function RangeBrowser({
           Filters
           {activeCount > 0 && <span className="data ml-2 text-[0.8125rem] text-ink-muted">{activeCount}</span>}
         </button>
-        <span className="text-[0.9375rem] text-ink-muted">
+        <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} className="min-w-0 flex-1" />
+        <span className="shrink-0 text-[0.9375rem] text-ink-muted">
           {visible.length} {visible.length === 1 ? "finish" : "finishes"}
         </span>
       </div>
@@ -135,7 +140,12 @@ export function RangeBrowser({
             <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
           </div>
         </div>
-        <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1 pt-6">
+        <div className="flex shrink-0 items-center gap-4 pt-6">
+          <label className="flex items-center gap-2 text-[0.875rem] text-ink-muted">
+            Sort
+            <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} />
+          </label>
+        <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1">
           {(["large", "small"] as const).map((v) => (
             <button
               key={v}
@@ -151,6 +161,7 @@ export function RangeBrowser({
               {v}
             </button>
           ))}
+        </div>
         </div>
       </div>
 
@@ -179,7 +190,7 @@ export function RangeBrowser({
           </div>
           <div className="mt-8 flex items-center justify-between gap-4">
             {active ? (
-              <button type="button" onClick={() => update(NO_FILTERS)} className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4">
+              <button type="button" onClick={() => update({ ...NO_FILTERS, sort: filters.sort })} className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4">
                 Clear all
               </button>
             ) : (
@@ -217,7 +228,7 @@ export function RangeBrowser({
         {active && (
           <button
             type="button"
-            onClick={() => update(NO_FILTERS)}
+            onClick={() => update({ ...NO_FILTERS, sort: filters.sort })}
             className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4"
           >
             Clear filters
@@ -226,7 +237,7 @@ export function RangeBrowser({
       </div>
 
       {visible.length > 0 ? (
-        <RangeGrid items={visible} view={view} />
+        <RangeGrid items={ordered} view={view} />
       ) : (
         <div className="card mt-10 p-8 sm:p-12">
           <h2 className="text-display-sm text-navy">No Finishes Match Those Filters.</h2>
@@ -234,6 +245,27 @@ export function RangeBrowser({
         </div>
       )}
     </>
+  );
+}
+
+/** A native select, so phones open their own picker; styled to sit beside the Filters button. */
+function SortSelect({ value, onChange, className }: { value: SortId; onChange: (value: SortId) => void; className?: string }) {
+  return (
+    <select
+      aria-label="Sort finishes"
+      value={value}
+      onChange={(e) => onChange(e.target.value as SortId)}
+      className={cn(
+        "min-h-tap rounded-control border border-navy/20 bg-white px-3 text-[0.9375rem] text-navy focus:border-navy",
+        className,
+      )}
+    >
+      {SORTS.map((o) => (
+        <option key={o.id} value={o.id}>
+          {o.label}
+        </option>
+      ))}
+    </select>
   );
 }
 

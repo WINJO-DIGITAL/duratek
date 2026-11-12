@@ -53,6 +53,47 @@ export function parsePounds(value: string | null | undefined): number | null {
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
+/** How the range can be ordered. The catalogue arrives light to dark, which is the default. */
+export const SORTS = [
+  { id: "light", label: "Light to dark" },
+  { id: "dark", label: "Dark to light" },
+  { id: "price-asc", label: "Price: low to high" },
+  { id: "price-desc", label: "Price: high to low" },
+  { id: "name", label: "Name: A to Z" },
+] as const;
+export type SortId = (typeof SORTS)[number]["id"];
+export const DEFAULT_SORT: SortId = "light";
+
+/**
+ * Orders finishes. Items arrive light to dark. Price sorts keep that order
+ * between equal prices, and finishes without an RRP go last.
+ */
+export function sortItems<T extends { name: string; rrpPence?: number }>(items: T[], sort: SortId): T[] {
+  switch (sort) {
+    case "dark":
+      return [...items].reverse();
+    case "name":
+      return [...items].sort((a, b) => a.name.localeCompare(b.name));
+    case "price-asc":
+    case "price-desc": {
+      const dir = sort === "price-asc" ? 1 : -1;
+      return items
+        .map((item, index) => ({ item, index }))
+        .sort((a, b) => {
+          const pa = a.item.rrpPence;
+          const pb = b.item.rrpPence;
+          if (pa === undefined && pb === undefined) return a.index - b.index;
+          if (pa === undefined) return 1;
+          if (pb === undefined) return -1;
+          return (pa - pb) * dir || a.index - b.index;
+        })
+        .map((x) => x.item);
+    }
+    default:
+      return items;
+  }
+}
+
 export interface RangeFilters {
   style: string | null;
   format: string | null;
@@ -61,6 +102,7 @@ export interface RangeFilters {
   priceMin: number | null;
   priceMax: number | null;
   q: string;
+  sort: SortId;
 }
 
 export const NO_FILTERS: RangeFilters = {
@@ -71,6 +113,7 @@ export const NO_FILTERS: RangeFilters = {
   priceMin: null,
   priceMax: null,
   q: "",
+  sort: DEFAULT_SORT,
 };
 
 export function readFilters(params: { get(name: string): string | null }): RangeFilters {
@@ -82,6 +125,7 @@ export function readFilters(params: { get(name: string): string | null }): Range
     priceMin: parsePounds(params.get("from")),
     priceMax: parsePounds(params.get("to")),
     q: (params.get("q") ?? "").trim(),
+    sort: (SORTS.find((s) => s.id === params.get("sort"))?.id as SortId | undefined) ?? DEFAULT_SORT,
   };
 }
 
@@ -95,6 +139,7 @@ export function filtersToQuery(filters: RangeFilters): string {
   if (filters.priceMin !== null) sp.set("from", String(filters.priceMin));
   if (filters.priceMax !== null) sp.set("to", String(filters.priceMax));
   if (filters.q) sp.set("q", filters.q);
+  if (filters.sort !== DEFAULT_SORT) sp.set("sort", filters.sort);
   return sp.toString();
 }
 

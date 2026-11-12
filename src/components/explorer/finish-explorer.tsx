@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ArrowLeft, ArrowRight } from "@/components/ui/icons";
-import { matches, type FilterableFinish, type RangeFilters } from "@/lib/catalogue/filter";
+import { DEFAULT_SORT, matches, type FilterableFinish, type RangeFilters } from "@/lib/catalogue/filter";
 import type { FormatOption } from "@/lib/catalogue/format";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
@@ -53,6 +53,7 @@ export function FinishExplorer({
     priceMin: null,
     priceMax: null,
     q: "",
+    sort: DEFAULT_SORT,
   }));
   const visible = finishes.filter((f) => matches(f, filters));
   const [slug, setSlug] = useState<string | null>(() => params.get("finish"));
@@ -123,7 +124,7 @@ export function FinishExplorer({
           <h1 className="text-display-md font-light text-on-dark">No Finishes Match Those Filters.</h1>
           <button
             type="button"
-            onClick={() => setFilters({ style: null, format: null, colour: null, tone: null, priceMin: null, priceMax: null, q: "" })}
+            onClick={() => setFilters({ style: null, format: null, colour: null, tone: null, priceMin: null, priceMax: null, q: "", sort: DEFAULT_SORT })}
             className="min-h-tap text-on-dark underline underline-offset-4"
           >
             Show every finish

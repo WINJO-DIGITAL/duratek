@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtersToQuery, isFiltered, matches, NO_FILTERS, parsePounds, readFilters, toneGroups } from "./filter";
+import { filtersToQuery, isFiltered, matches, NO_FILTERS, parsePounds, readFilters, sortItems, toneGroups } from "./filter";
 
 const keswick = { id: "1", name: "Keswick Oak", style: "plank", colourFamily: "natural", format: "standard" };
 const honister = { id: "2", name: "Honister Slate Grey", style: "plank", colourFamily: "grey", format: "standard" };
@@ -17,12 +17,13 @@ describe("range filters", () => {
       priceMin: null,
       priceMax: null,
       q: "oak",
+      sort: "light",
     });
     expect(readFilters(new URLSearchParams(""))).toEqual(NO_FILTERS);
   });
 
   it("round-trips through the query string", () => {
-    const f = { style: null, format: "standard", colour: "warm", tone: "dark" as const, priceMin: 20, priceMax: 30, q: "oak" };
+    const f = { style: null, format: "standard", colour: "warm", tone: "dark" as const, priceMin: 20, priceMax: 30, q: "oak", sort: "name" as const };
     expect(readFilters(new URLSearchParams(filtersToQuery(f)))).toEqual(f);
     expect(filtersToQuery(NO_FILTERS)).toBe("");
     expect(isFiltered(NO_FILTERS)).toBe(false);
@@ -95,5 +96,36 @@ describe("tone groups", () => {
     const f = { id: "a", name: "A", style: "plank", colourFamily: "grey", toneGroup: "dark" as const };
     expect(matches(f, { ...NO_FILTERS, tone: "dark" })).toBe(true);
     expect(matches(f, { ...NO_FILTERS, tone: "light" })).toBe(false);
+  });
+});
+
+describe("sorting", () => {
+  const a = { name: "Cartmel Oak", rrpPence: 2500 };
+  const b = { name: "Hawkshead Oak", rrpPence: 3715 };
+  const c = { name: "Ambleside Oak", rrpPence: 2500 };
+  const d = { name: "Truffle Oak" };
+  const list = [a, b, c, d]; // light to dark
+
+  it("keeps light to dark by default and reverses it for dark to light", () => {
+    expect(sortItems(list, "light")).toEqual(list);
+    expect(sortItems(list, "dark").map((x) => x.name)).toEqual(["Truffle Oak", "Ambleside Oak", "Hawkshead Oak", "Cartmel Oak"]);
+  });
+
+  it("sorts by price with ties kept in light-to-dark order and unpriced last", () => {
+    expect(sortItems(list, "price-asc").map((x) => x.name)).toEqual(["Cartmel Oak", "Ambleside Oak", "Hawkshead Oak", "Truffle Oak"]);
+    expect(sortItems(list, "price-desc").map((x) => x.name)).toEqual(["Hawkshead Oak", "Cartmel Oak", "Ambleside Oak", "Truffle Oak"]);
+  });
+
+  it("sorts by name and does not change the input", () => {
+    expect(sortItems(list, "name").map((x) => x.name)).toEqual(["Ambleside Oak", "Cartmel Oak", "Hawkshead Oak", "Truffle Oak"]);
+    expect(list.map((x) => x.name)).toEqual(["Cartmel Oak", "Hawkshead Oak", "Ambleside Oak", "Truffle Oak"]);
+  });
+
+  it("keeps the sort in the URL only when it is not the default, and ignores unknown values", () => {
+    expect(filtersToQuery({ ...NO_FILTERS, sort: "price-asc" })).toBe("sort=price-asc");
+    expect(filtersToQuery({ ...NO_FILTERS, sort: "light" })).toBe("");
+    expect(readFilters(new URLSearchParams("sort=name")).sort).toBe("name");
+    expect(readFilters(new URLSearchParams("sort=nonsense")).sort).toBe("light");
+    expect(isFiltered({ ...NO_FILTERS, sort: "dark" })).toBe(false);
   });
 });
