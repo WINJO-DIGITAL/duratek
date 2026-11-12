@@ -53,7 +53,14 @@ function Seal({
 export function WarrantyBadges({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
   return (
     <div className={cn("flex flex-wrap gap-4", className)}>
-      <Seal tone={tone} top="Residential" big="Lifetime" bottom="Warranty" />
+      <Image
+        src="/brand/warranty-residential-lifetime.png"
+        alt="Residential lifetime warranty"
+        width={467}
+        height={467}
+        sizes="(min-width: 640px) 10rem, 9rem"
+        className="h-auto w-36 sm:w-40"
+      />
       <Image
         src="/brand/warranty-commercial-10-year.png"
         alt="Commercial 10 year warranty"
