@@ -26,13 +26,18 @@ export function FloorHero({ slides, note }: { slides: HeroSlide[]; note?: string
             <span className="block font-light text-on-dark/90">Built to perform.</span>
           </h1>
           <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/90 [text-shadow:0_1px_14px_rgb(0_0_0/0.45)] sm:mt-6">
-            Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.
+            <span className="sm:hidden">Waterproof, scratch-resistant click flooring.</span>
+            <span className="hidden sm:inline">Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.</span>
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-9 gap-y-3 sm:mt-10">
             <ButtonLink href="/range" variant="on-dark" size="lg">
               Explore the Range
             </ButtonLink>
-            <OrderSamplesButton variant="quiet-on-dark" arrow={false}>
+            <OrderSamplesButton
+              variant="quiet-on-dark"
+              arrow={false}
+              className="-ml-3 rounded-control bg-black/35 px-3 [text-shadow:0_1px_10px_rgb(0_0_0/0.5)] sm:ml-0 sm:bg-transparent sm:px-0"
+            >
               Order free samples
             </OrderSamplesButton>
           </div>
