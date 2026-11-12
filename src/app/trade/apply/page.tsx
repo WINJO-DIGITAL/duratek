@@ -7,8 +7,8 @@ import { ArrowLeft } from "@/components/ui/icons";
 import { tradeApplicationsEnabled } from "@/lib/trade/settings";
 
 export const metadata: Metadata = {
-  title: "Apply for a trade account",
-  description: "Apply for a Duratek trade account. Every application is checked by hand.",
+  title: "Apply for a Trade Account",
+  description: "Apply for a Duratek Trade Account. Every application is checked by hand.",
 };
 
 export default function TradeApplyPage() {

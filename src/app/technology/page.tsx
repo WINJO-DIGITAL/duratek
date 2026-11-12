@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
 import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
-import { ScratchShieldBadge } from "@/components/content/warranty";
+import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishImage } from "@/components/finish/finish-image";
 import { AskForDocuments } from "@/components/content/ask-for-documents";
 import { byTone, getFinishes, grainImage, imagesOfKind } from "@/lib/catalogue";
@@ -120,6 +120,7 @@ export default async function TechnologyPage() {
                   Ask for the technical sheet, the warranty terms and any independent test certificates for the finish
                   you’re considering, and always follow its installation and care guidance.
                 </p>
+                <WarrantyDisclaimer className="mt-4" />
               </SectionIntro>
               <div className="lg:justify-self-end">
                 <AskForDocuments />

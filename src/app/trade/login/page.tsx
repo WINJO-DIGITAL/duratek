@@ -60,7 +60,7 @@ async function LoginPanel({ searchParams }: { searchParams: PageProps<"/trade/lo
       <p className="mt-8 max-w-md text-[0.9375rem] text-ink-muted">
         No account yet?{" "}
         <Link href="/trade/apply" className="text-navy underline underline-offset-4 hover:text-green-ink">
-          Apply for a trade account
+          Apply for a Trade Account
         </Link>
         .
       </p>

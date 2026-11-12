@@ -11,7 +11,7 @@ export default function NotFound() {
           It may have moved, or the finish may no longer be in the range.
         </p>
         <ButtonLink href="/range" className="mt-10">
-          Explore the Range
+          Explore the range
         </ButtonLink>
       </div>
     </PageTransition>

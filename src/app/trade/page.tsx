@@ -66,7 +66,7 @@ export default async function TradePage() {
         <section aria-labelledby="benefits-heading" className="py-section">
           <div className="container-page">
             <h2 id="benefits-heading" className="title-rule text-display-md text-navy">
-              What Your Account Is For
+              What your account is for
             </h2>
             <dl className="mt-stack grid gap-x-12 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {BENEFITS.map(({ icon: Icon, title, body }) => (
@@ -83,7 +83,7 @@ export default async function TradePage() {
         <section aria-labelledby="steps-heading" className="bg-cream py-section">
           <div className="container-page">
             <h2 id="steps-heading" className="reveal title-rule text-display-md text-navy">
-              How It Works
+              How it works
             </h2>
             <ol className="mt-stack grid gap-10 lg:grid-cols-3 lg:gap-12">
               {steps.map((s) => (

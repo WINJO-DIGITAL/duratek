@@ -32,7 +32,7 @@ export function FloorHero({ slides }: { slides: HeroSlide[] }) {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-9 gap-y-3 sm:mt-10">
             <ButtonLink href="/range" variant="on-dark" size="lg">
-              Explore the Range
+              Explore the range
             </ButtonLink>
             <OrderSamplesButton
               variant="quiet-on-dark"

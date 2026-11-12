@@ -145,7 +145,7 @@ export default async function HomePage() {
                 }
               />
               <ButtonLink href="/explore" variant="quiet" className="reveal">
-                Explore Them Full Screen
+                Open full-screen view
               </ButtonLink>
             </div>
             <div className="mt-stack">

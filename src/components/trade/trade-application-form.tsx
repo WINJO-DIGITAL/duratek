@@ -133,7 +133,7 @@ export function TradeApplicationForm() {
       </p>
 
       <Button type="submit" size="lg" disabled={pending} arrow={!pending} className="w-full sm:w-auto">
-        {pending ? "Sending your application" : "Apply for a trade account"}
+        {pending ? "Sending your application" : "Apply for a Trade Account"}
       </Button>
     </form>
   );
