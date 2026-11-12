@@ -72,7 +72,7 @@ export default async function RangePage() {
             eyebrow="The range"
             title={`${countWord(finishes.length)} ${finishes.length === 1 ? "finish" : "finishes"}, light to dark`}
           >
-            <p>Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
+            <p>Every floor has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
           </SectionIntro>
           <div className="mt-6">
             <ButtonLink href="#finishes" variant="quiet-on-dark" arrow>
