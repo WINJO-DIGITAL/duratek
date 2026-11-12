@@ -20,7 +20,9 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
   if (rooms.length < 3) return null;
   return (
     <div className="mt-stack">
-      <p className="eyebrow container-page">More rooms</p>
+      <div className="container-page">
+        <h2 className="title-rule text-display-sm text-navy">More rooms</h2>
+      </div>
       <ul
         role="list"
         className="scrollbar-none mt-5 flex snap-x snap-mandatory scroll-px-[var(--spacing-gutter)] gap-4 overflow-x-auto px-[var(--spacing-gutter)] pb-2 lg:gap-6"
@@ -41,6 +43,8 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
                 {r.name}
               </p>
               {r.room && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{r.room}</p>}
+              {/* Facts every Duratek floor carries, so each photograph reassures, not only the seal. */}
+              <p className="mt-1 text-[0.8125rem] text-ink-muted">Waterproof · 0.55 mm wear layer</p>
             </Link>
           </li>
         ))}
