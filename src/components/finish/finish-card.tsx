@@ -41,9 +41,7 @@ export function FinishCard({
   const others = finish.images.filter((i) => (i.kind === "room" || i.kind === "closeup") && !isSecondaryRoom(i) && i !== primary);
   const photos = [primary, ...others].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 5);
   const format = plankFormat(finish.specs);
-  const measures = [measureLine(finish.specs), finish.specs.wear_layer_mm && `${finish.specs.wear_layer_mm} mm wear layer`]
-    .filter(Boolean)
-    .join(" · ");
+  const measures = measureLine(finish.specs);
 
   return (
     <article
@@ -82,24 +80,31 @@ export function FinishCard({
       <div className="flex flex-1 flex-col px-4 pb-2 pt-3.5 sm:px-5 sm:pt-4">
         <p className="text-[0.875rem] text-ink-muted">
           {colourFamilyLabel(finish.colourFamily)}
-          {format && <> · {FORMAT_LABELS[format]}</>}
+          {format && <> · {FORMAT_LABELS[format].replace(" plank", "")}</>}
         </p>
         {measures && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{measures}</p>}
         {showPrice && finish.rrpPence !== undefined && (
-          <p className="mt-2.5 flex flex-wrap items-baseline gap-x-2 text-navy">
+          <p className="mt-3 flex flex-wrap items-baseline gap-x-2 text-navy">
             {finish.offerPence !== undefined ? (
               <>
-                <span className="data text-[1.125rem] font-medium">{formatPence(finish.offerPence)}</span>
+                <span className="data text-[1.375rem] font-medium">{formatPence(finish.offerPence)}</span>
                 <span className="data text-[0.875rem] text-ink-muted line-through">{formatPence(finish.rrpPence)}</span>
                 <span className="text-[0.8125rem] text-ink-muted">per m²</span>
               </>
             ) : (
               <>
                 <span className="text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted">RRP</span>
-                <span className="data text-[1.125rem] font-medium">{formatPence(finish.rrpPence)}</span>
+                <span className="data text-[1.375rem] font-medium">{formatPence(finish.rrpPence)}</span>
                 <span className="text-[0.8125rem] text-ink-muted">per m²</span>
               </>
             )}
+          </p>
+        )}
+
+        {finish.specs.underlay && (
+          <p className="mt-2.5 flex items-center gap-2 text-[0.875rem] text-navy">
+            <span aria-hidden="true" className="size-2 shrink-0 bg-green-ink" />
+            Underlay included
           </p>
         )}
 
