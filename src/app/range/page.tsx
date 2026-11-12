@@ -74,8 +74,13 @@ export default async function RangePage() {
           >
             <p>Every one has a 0.55mm wear layer, Scratch Shield surface protection and a waterproof rigid SPC core.</p>
           </SectionIntro>
+          <div className="mt-6">
+            <ButtonLink href="#finishes" variant="quiet-on-dark" arrow>
+              Explore the {finishes.length} finishes
+            </ButtonLink>
+          </div>
         </PageHero>
-      <div className="container-page pb-section pt-6 sm:pt-8">
+      <div id="finishes" className="scroll-mt-header container-page pb-section pt-6 sm:pt-8">
         <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
           <ButtonLink href="/explore" variant="quiet" arrow>
             Explore Them Full Screen
