@@ -51,7 +51,8 @@ export function SaveButton({
           </span>
         )}
       </button>
-      <span aria-live="polite" className="sr-only">
+      {/* Said aloud for everyone, and shown for text buttons, so a save is never silent. */}
+      <span aria-live="polite" className={variant === "text" && message ? "mt-2 block text-[0.875rem] text-green-ink" : "sr-only"}>
         {message}
       </span>
     </>

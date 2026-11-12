@@ -148,6 +148,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
         {/* Mobile and tablet controls */}
         <div className={cn("-mr-2 flex items-center transition-colors duration-300 lg:hidden", overlay ? "text-white" : "text-navy")}>
+          <SavedLink onDark={overlay} />
           <button
             type="button"
             className="flex size-tap items-center justify-center"
