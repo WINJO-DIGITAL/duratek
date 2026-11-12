@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { Close, Search } from "@/components/ui/icons";
 import {
   distinct,
@@ -19,25 +19,10 @@ import {
 import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
 import { STYLE_LABELS } from "@/lib/config";
+import { FilterRows, type FilterOption, type FilterRowDef } from "./filter-rows";
 
 export interface RangeItem extends FilterableFinish {
   card: ReactNode;
-}
-
-function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={pressed}
-      onClick={onClick}
-      className={cn(
-        "min-h-tap shrink-0 rounded-control border px-4 text-[0.875rem] transition-colors duration-300",
-        pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
-      )}
-    >
-      {children}
-    </button>
-  );
 }
 
 /**
@@ -65,6 +50,47 @@ export function RangeBrowser({
   // Only the price bands that at least one finish falls in.
   const bands = PRICE_BANDS.filter((b) => items.some((i) => priceBandOf(i.rrpPence) === b.id));
   const visible = items.filter((i) => matches(i, filters));
+  const sheet = useRef<HTMLDialogElement>(null);
+  // How many finishes each choice would leave, with the other filters still applied.
+  const countWith = (key: keyof RangeFilters, value: string | null) =>
+    items.filter((i) => matches(i, { ...filters, [key]: value } as RangeFilters)).length;
+  const activeCount = [filters.style, filters.format, filters.tone, filters.price].filter(Boolean).length;
+  const option = (key: keyof RangeFilters, value: string | null, label: string, sub?: string): FilterOption => ({
+    value,
+    label,
+    sub,
+    count: countWith(key, value),
+  });
+  const rows: FilterRowDef[] = [
+    {
+      key: "style",
+      label: "Look",
+      value: filters.style,
+      onChange: (v) => update({ style: v }),
+      options: [option("style", null, "All"), ...styles.map((s) => option("style", s, STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s))],
+    },
+    {
+      key: "format",
+      label: "Board size",
+      value: filters.format,
+      onChange: (v) => update({ format: v }),
+      options: [option("format", null, "All"), ...formats.map((f) => option("format", f.format, f.label, f.size))],
+    },
+    {
+      key: "tone",
+      label: "Tone",
+      value: filters.tone,
+      onChange: (v) => update({ tone: v as RangeFilters["tone"] }),
+      options: [option("tone", null, "All"), ...tones.map((t) => option("tone", t.id, t.label))],
+    },
+    {
+      key: "price",
+      label: "Price per m²",
+      value: filters.price,
+      onChange: (v) => update({ price: v as RangeFilters["price"] }),
+      options: [option("price", null, "All"), ...bands.map((b) => option("price", b.id, b.label))],
+    },
+  ];
   const active = isFiltered(filters);
   const [view, setView] = useState<GridView>("large");
   // Raw text as typed (the URL holds the trimmed query).
@@ -83,85 +109,86 @@ export function RangeBrowser({
 
   return (
     <>
-      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] border-y border-line bg-off-white/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
-          <div
-            role="group"
-            aria-label="Filter finishes"
-            className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
-          >
-            {styles.length > 1 &&
-              styles.map((s) => (
-                <Chip
-                  key={s}
-                  pressed={filters.style === s}
-                  onClick={() => update({ style: filters.style === s ? null : s })}
-                >
-                  {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
-                </Chip>
-              ))}
-            {styles.length > 1 && <Divider />}
-            {formats.length > 1 && (
-              <>
-                {formats.map((f) => (
-                  <Chip
-                    key={f.format}
-                    pressed={filters.format === f.format}
-                    onClick={() => update({ format: filters.format === f.format ? null : f.format })}
-                  >
-                    <span className="flex items-baseline gap-2 whitespace-nowrap">
-                      {f.label}
-                      {f.size && <span className="data text-[0.75rem] opacity-70">{f.size}</span>}
-                    </span>
-                  </Chip>
-                ))}
-                <Divider />
-              </>
-            )}
-            <Chip pressed={!filters.tone} onClick={() => update({ tone: null })}>
-              All tones
-            </Chip>
-            {tones.map((t) => (
-              <Chip
-                key={t.id}
-                pressed={filters.tone === t.id}
-                onClick={() => update({ tone: filters.tone === t.id ? null : t.id })}
-              >
-                {t.label}
-                <span className="data ml-2 text-[0.75rem] opacity-70">{t.count}</span>
-              </Chip>
-            ))}
-            {bands.length > 1 && <Divider />}
-            {bands.length > 1 &&
-              bands.map((b) => (
-                <Chip
-                  key={b.id}
-                  pressed={filters.price === b.id}
-                  onClick={() => update({ price: filters.price === b.id ? null : b.id })}
-                >
-                  {b.label}
-                </Chip>
-              ))}
-          </div>
-          <div role="group" aria-label="Grid size" className="hidden shrink-0 items-center gap-1 lg:flex">
-            {(["large", "small"] as const).map((v) => (
-              <button
-                key={v}
-                type="button"
-                aria-pressed={view === v}
-                onClick={() => setView(v)}
-                className={cn(
-                  "flex min-h-tap items-center gap-2 px-3 text-[0.875rem] capitalize transition-colors duration-300",
-                  view === v ? "text-navy" : "text-ink-muted hover:text-navy",
-                )}
-              >
-                <GridIcon dense={v === "small"} />
-                {v}
-              </button>
-            ))}
-          </div>
+      {/* Phones and tablets: every filter lives in one sheet, opened from this bar. */}
+      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] flex items-center justify-between gap-4 border-y border-line bg-off-white/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm lg:hidden">
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => sheet.current?.showModal()}
+          className="min-h-tap rounded-control border border-navy/20 bg-white px-4 text-[0.9375rem] text-navy"
+        >
+          Filters
+          {activeCount > 0 && <span className="data ml-2 text-[0.8125rem] text-ink-muted">{activeCount}</span>}
+        </button>
+        <span className="text-[0.9375rem] text-ink-muted">
+          {visible.length} {visible.length === 1 ? "finish" : "finishes"}
+        </span>
+      </div>
+
+      {/* Desktop: every filter in view, above the grid, with the grid size beside it. */}
+      <div className="hidden gap-8 lg:flex lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <FilterRows rows={rows} />
+        </div>
+        <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1 pt-6">
+          {(["large", "small"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={view === v}
+              onClick={() => setView(v)}
+              className={cn(
+                "flex min-h-tap items-center gap-2 px-3 text-[0.875rem] capitalize transition-colors duration-300",
+                view === v ? "text-navy" : "text-ink-muted hover:text-navy",
+              )}
+            >
+              <GridIcon dense={v === "small"} />
+              {v}
+            </button>
+          ))}
         </div>
       </div>
+
+      <dialog
+        ref={sheet}
+        aria-labelledby="filter-title"
+        className="filter-sheet"
+        onClick={(e) => {
+          // A tap on the backdrop closes the sheet; a tap inside it does not.
+          if (e.target === e.currentTarget) sheet.current?.close();
+        }}
+      >
+        <div className="px-[var(--spacing-gutter)] pb-8 pt-5">
+          <div className="flex items-center justify-between">
+            <h2 id="filter-title" className="font-display text-[1.5rem] font-normal text-navy">
+              Filters
+            </h2>
+            <button type="button" onClick={() => sheet.current?.close()} className="flex size-tap items-center justify-center text-navy">
+              <Close size={20} />
+              <span className="sr-only">Close filters</span>
+            </button>
+          </div>
+          <div className="mt-6">
+            <FilterRows rows={rows} />
+          </div>
+          <div className="mt-8 flex items-center justify-between gap-4">
+            {active ? (
+              <button type="button" onClick={() => update(NO_FILTERS)} className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4">
+                Clear all
+              </button>
+            ) : (
+              <span />
+            )}
+            <button
+              type="button"
+              onClick={() => sheet.current?.close()}
+              className="min-h-tap rounded-control bg-green-ink px-6 text-[0.9375rem] font-medium text-white transition-colors duration-300 hover:bg-navy"
+            >
+              Show {visible.length} {visible.length === 1 ? "finish" : "finishes"}
+            </button>
+          </div>
+        </div>
+      </dialog>
 
       <div className="mt-6 flex min-h-tap flex-wrap items-center gap-x-6 gap-y-3">
         <SearchField
@@ -237,10 +264,6 @@ function SearchField({
       )}
     </div>
   );
-}
-
-function Divider() {
-  return <span className="mx-2 h-6 w-px shrink-0 bg-line" aria-hidden="true" />;
 }
 
 export type GridView = "large" | "small";

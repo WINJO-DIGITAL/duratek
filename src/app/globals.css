@@ -514,3 +514,25 @@
     box-shadow: none !important;
   }
 }
+
+/* Range filters on phones and tablets: a bottom sheet, native <dialog>, so focus and Escape are handled. */
+.filter-sheet {
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 85dvh;
+  padding: 0;
+  border: 0;
+  border-radius: 20px 20px 0 0;
+  background: var(--color-off-white);
+  color: var(--color-navy);
+  overflow-y: auto;
+}
+.filter-sheet::backdrop {
+  background: rgb(24 54 76 / 0.45);
+}
+@media (min-width: 64rem) {
+  .filter-sheet {
+    display: none;
+  }
+}
