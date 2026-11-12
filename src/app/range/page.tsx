@@ -44,7 +44,7 @@ export default async function RangePage() {
           headingLevel="h2"
           sizes="(min-width: 1024px) 31vw, 48vw"
           // Shorter photographs on wide screens, so names and prices show on the first screen.
-          aspect="aspect-[4/5] lg:aspect-[4/3]"
+          aspect="aspect-[3/4]"
         />
       ),
     };
