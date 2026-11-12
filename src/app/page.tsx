@@ -30,6 +30,10 @@ function detailLine(f: Finish): string {
 const FLOOR_LED_ROOM = /hallway|living|lounge|reading nook|bedroom|dining/i;
 /** Kitchens and bathrooms show cabinets and fittings more than the floor: not used for the board photographs. */
 const SKIP_ROOM = /kitchen|bathroom|kids|playroom|shower/i;
+/** The room is named in the caption or, for the Kwik photographs, in the file name. */
+function roomText(image: { alt: string; src: string }): string {
+  return `${image.alt} ${decodeURIComponent(image.src.split("/").pop() ?? "")}`;
+}
 
 function roomFromAlt(alt: string): string | undefined {
   return alt.match(/\bin an? (.+)$/i)?.[1];
@@ -67,9 +71,8 @@ export default async function HomePage() {
     // The photograph under the strip: a real room, floor-led first (hallway, living room), any room
     // that isn't a kitchen next, then a kitchen; the grain close-up or swatch only if no room photo exists.
     room:
-      f.images.find((i) => i.kind === "room" && FLOOR_LED_ROOM.test(i.alt) && !SKIP_ROOM.test(i.alt)) ??
-      f.images.find((i) => i.kind === "room" && !SKIP_ROOM.test(i.alt)) ??
-      f.images.find((i) => i.kind === "room") ??
+      f.images.find((i) => i.kind === "room" && FLOOR_LED_ROOM.test(roomText(i)) && !SKIP_ROOM.test(roomText(i))) ??
+      f.images.find((i) => i.kind === "room" && !SKIP_ROOM.test(roomText(i))) ??
       f.images.find((i) => i.kind === "closeup") ??
       f.images.find((i) => i.kind === "swatch"),
   }));
