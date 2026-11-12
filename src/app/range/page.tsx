@@ -83,7 +83,7 @@ export default async function RangePage() {
       <div id="finishes" className="scroll-mt-header container-page pb-section pt-6 sm:pt-8">
         <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-4">
           <ButtonLink href="/explore" variant="quiet" arrow>
-            Explore Them Full Screen
+            Open full-screen view
           </ButtonLink>
           <HelpChoose styles={distinct(finishes.map((f) => f.style))} colours={distinct(finishes.map((f) => f.colourFamily))} formats={distinct(finishes.map((f) => plankFormat(f.specs)).filter((x): x is NonNullable<typeof x> => x !== undefined))} />
         </div>
