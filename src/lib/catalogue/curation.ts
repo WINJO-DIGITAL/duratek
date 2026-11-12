@@ -64,7 +64,7 @@ export const EDITORIAL = {
   /** Page heroes: one photograph per page, chosen so it is not already on that page. */
   /** Page openers: real rooms where the floor runs through the frame (living rooms, hallways). Each page differs. */
   pages: {
-    range: "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_Living_Area.jpg",
+    range: "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
     inspiration: "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
     samples: "Honnister_Slate_Grey_lounge.png",
     "where-to-buy": "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway_image.png",

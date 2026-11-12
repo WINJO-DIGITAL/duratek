@@ -15,6 +15,7 @@ export function PageHero({
   children,
   focus = "object-[50%_60%]",
   compact = false,
+  badge,
   className,
 }: {
   image?: CatalogueImage;
@@ -23,6 +24,8 @@ export function PageHero({
   focus?: string;
   /** Pages with a form or search straight under the photograph: shorter, so the form shows on the first screen. */
   compact?: boolean;
+  /** A seal or badge in the photograph's bottom-right corner, not interactive. */
+  badge?: React.ReactNode;
   className?: string;
 }) {
   return (
@@ -42,6 +45,7 @@ export function PageHero({
       )}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-black/40 to-transparent" />
       <div aria-hidden="true" className="absolute inset-0 -z-10 bg-gradient-to-t from-black/75 via-black/30 via-50% to-transparent to-80%" />
+      {badge && <div aria-hidden="true" className="pointer-events-none absolute bottom-6 right-[var(--spacing-gutter)] z-10">{badge}</div>}
       <div className={cn("container-page relative pb-10 sm:pb-14 lg:pb-16", compact ? "pt-28 sm:pt-32" : "pt-40")}>{children}</div>
     </section>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHero } from "@/components/content/page-hero";
+import { ScratchShieldBadge } from "@/components/content/warranty";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { HelpChoose } from "@/components/finish/help-choose";
@@ -59,7 +60,11 @@ export default async function RangePage() {
     <PageTransition>
       <>
         {/* The opening photograph carries the title; the finishes start just below. */}
-        <PageHero image={hero?.image} focus="object-[50%_62%]">
+        <PageHero
+          image={hero?.image}
+          focus="object-[50%_62%]"
+          badge={<ScratchShieldBadge className="w-20 drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-28" />}
+        >
           <SectionIntro
             as="h1"
             size="lg"
