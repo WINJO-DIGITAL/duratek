@@ -6,24 +6,24 @@ import { HeroShowcase, type HeroSlide } from "./hero-showcase";
  * Full-bleed, floor-led photographs (a slow cross-fade between a few curated
  * finishes). One primary action, one quiet sample link, the finish named.
  */
-export function FloorHero({ slides }: { slides: HeroSlide[] }) {
+export function FloorHero({ slides, note }: { slides: HeroSlide[]; note?: string }) {
   return (
     <section
       aria-labelledby="hero-heading"
       className="on-dark relative isolate -mt-[var(--spacing-header)] flex min-h-[calc(100svh-var(--spacing-bottom-bar))] flex-col justify-end overflow-hidden bg-navy lg:min-h-svh"
     >
-      {/* Neutral scrims, so the floor keeps its own colour: a light one under
-          the header, a deeper one behind the copy in the lower left only. */}
+      {/* Neutral scrims, so the floor keeps its own colour: a deeper one behind the header and the copy
+          at the top, none over the floor in the lower half. */}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-black/50 to-transparent" />
       <div
         aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-black/70 via-black/25 via-45% to-transparent to-70% lg:bg-[radial-gradient(ellipse_70%_60%_at_0%_100%,rgb(0_0_0/0.6),transparent)]"
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/15 via-45% to-transparent to-60% lg:bg-[radial-gradient(ellipse_65%_60%_at_0%_0%,rgb(0_0_0/0.5),transparent)]"
       />
-      <HeroShowcase slides={slides}>
+      <HeroShowcase slides={slides} note={note}>
         <div>
-          <h1 id="hero-heading" className="max-w-[13ch] text-display-hero text-on-dark sm:max-w-none">
-            <span className="sm:block">Beautifully considered.</span>{" "}
-            <span className="font-light text-on-dark/90 sm:block">Built to perform.</span>
+          <h1 id="hero-heading" className="text-[2.125rem] leading-[1.08] tracking-[-0.035em] text-on-dark sm:text-display-hero">
+            <span className="block">Beautifully considered.</span>
+            <span className="block font-light text-on-dark/90">Built to perform.</span>
           </h1>
           <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/85 sm:mt-6">
             Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.

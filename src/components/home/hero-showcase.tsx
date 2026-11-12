@@ -34,7 +34,7 @@ function subscribeReducedMotion(onChange: () => void) {
  * when the tab is hidden or the hero is off screen, and on request; with
  * reduced motion it stays on the first photograph.
  */
-export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; children: ReactNode }) {
+export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; children: ReactNode; note?: string }) {
   const root = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   // The outgoing photograph stays fully opaque beneath the incoming one, so
@@ -135,11 +135,12 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
         )}
       </div>
 
-      <div className="container-page grid gap-6 pb-8 pt-28 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:items-end lg:pb-16">
-        <div className="flex flex-col items-start gap-8">
+      <div className="container-page grid flex-1 gap-6 pb-8 pt-28 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:pb-16">
+        {/* The copy at the top, over the walls; the finish control at the bottom. The floor between stays clear. */}
+        <div className="flex h-full flex-col items-start justify-between gap-8">
         {children}
 
-        <div className="flex items-center gap-1">
+        <div className="flex flex-wrap items-center gap-x-1 gap-y-1">
           {/* Hovering or focusing the finish holds it; the pause button is its own control. */}
           <Link
             href={`/range/${current.slug}`}
@@ -220,10 +221,11 @@ export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; childr
               <span className="sr-only">{userPaused ? "Play the photographs" : "Pause the photographs"}</span>
             </button>
           )}
+          {note && <p className="data basis-full text-[0.8125rem] text-on-dark/80 sm:basis-auto sm:pl-3">{note}</p>}
         </div>
         </div>
-        {/* Scratch Shield, the headline surface feature: wide screens, bottom right. */}
-        <ScratchShieldBadge className="hidden w-28! self-end drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] lg:block xl:w-32!" />
+        {/* Scratch Shield, the headline surface feature: bottom right, on every screen. */}
+        <ScratchShieldBadge className="w-16! self-end justify-self-end drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-24! lg:w-28! xl:w-32!" />
       </div>
     </div>
   );

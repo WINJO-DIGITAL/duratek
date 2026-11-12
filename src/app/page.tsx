@@ -31,6 +31,13 @@ function detailLine(f: Finish): string {
 const FLOOR_LED_ROOM = /hallway|living|lounge|reading nook|bedroom|dining/i;
 /** Kitchens and bathrooms show cabinets and fittings more than the floor: not used for the board photographs. */
 const SKIP_ROOM = /kitchen|bathroom|kids|playroom|shower/i;
+/** "From £25.00 per m² RRP": the lowest public RRP, a quiet line in the hero. */
+function fromRrpNote(finishes: { rrpPence?: number }[]): string | undefined {
+  const prices = finishes.map((f) => f.rrpPence).filter((p): p is number => p !== undefined);
+  if (prices.length === 0) return undefined;
+  return `From ${formatPence(Math.min(...prices))} per m² RRP`;
+}
+
 /** Board photographs chosen by hand, where the automatic choice didn't show the floor. Matched by file name. */
 const PINNED_BOARD_ROOM: Record<string, string> = {
   "conniston-oak": "29036_5-4.1920x1200.jpg",
@@ -125,6 +132,7 @@ export default async function HomePage() {
     <PageTransition>
       <>
         <FloorHero
+          note={fromRrpNote(finishes)}
           slides={heroes.map((h) => ({
             image: h.image,
             name: h.finish.name,

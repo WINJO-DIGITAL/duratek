@@ -53,12 +53,13 @@ export function curateImages(images: CatalogueImage[]): CatalogueImage[] {
  * Falls back to the first floor-led room scene if none is available.
  */
 export const EDITORIAL = {
-  /** The hero cross-fades through these, in order: one per finish, light and dark. */
+  /** The hero cross-fades through these, in order: one per finish. Rooms where the floor fills the lower half, never a kitchen. */
   hero: [
-    "Hawkshead_Kitchen.png",
-    "Keswick_Oak_Kitchen.png",
     "Honnister_Slate_Grey_lounge.png",
     "Cartmel_Oak_Lounge.png",
+    "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
+    "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
+    "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_Living_Area.jpg",
   ],
   /** Page heroes: one photograph per page, chosen so it is not already on that page. */
   /** Page openers: real rooms where the floor runs through the frame (living rooms, hallways). Each page differs. */
