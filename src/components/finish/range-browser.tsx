@@ -187,12 +187,14 @@ export function RangeBrowser({
             </button>
           </div>
           <div className="mt-6 grid gap-6">
-            <fieldset className="min-w-0">
-              <legend className="text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted">Sort by</legend>
-              <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} className="mt-2.5 w-full" />
-            </fieldset>
             <FilterRows rows={rows} />
             <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
+            <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
+              <label htmlFor="sheet-sort" className="text-[1rem] text-navy">
+                Sort by:
+              </label>
+              <SortSelect id="sheet-sort" value={filters.sort} onChange={(sort) => update({ sort })} className="w-[58%]" />
+            </div>
           </div>
           <div className="mt-8 flex items-center justify-between gap-4">
             {active ? (
@@ -255,9 +257,10 @@ export function RangeBrowser({
 }
 
 /** A native select, so phones open their own picker; styled to sit beside the Filters button. */
-function SortSelect({ value, onChange, className }: { value: SortId; onChange: (value: SortId) => void; className?: string }) {
+function SortSelect({ id, value, onChange, className }: { id?: string; value: SortId; onChange: (value: SortId) => void; className?: string }) {
   return (
     <select
+      id={id}
       aria-label="Sort finishes"
       value={value}
       onChange={(e) => onChange(e.target.value as SortId)}
