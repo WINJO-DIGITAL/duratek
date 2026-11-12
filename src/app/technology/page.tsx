@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { PageTransition } from "@/components/layout/page-transition";
-import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
 import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishImage } from "@/components/finish/finish-image";
 import { AskForDocuments } from "@/components/content/ask-for-documents";
-import { byTone, getFinishes, grainImage, imagesOfKind } from "@/lib/catalogue";
+import { byTone, getFinishes, grainImage } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
 import { ButtonLink } from "@/components/ui/button";
@@ -46,7 +45,6 @@ const CHAPTERS: { title: string; body: string; note?: string; logo?: { src: stri
 
 export default async function TechnologyPage() {
   const finishes = byTone(await getFinishes());
-  const swatch = finishes.map((f) => imagesOfKind(f, "swatch")[0]).find(Boolean);
   // The grain held beside the chapters: a mid-tone finish, so the detail reads.
   const grainFinish = finishes[Math.floor(finishes.length / 2)];
   const grain = grainFinish && grainImage(grainFinish);
@@ -70,7 +68,23 @@ export default async function TechnologyPage() {
 
         <section className="on-dark bg-navy py-section" aria-label="The five layers">
           <div className="container-page">
-            <LayerBreakdown woodImage={swatch} />
+            {/* The same film as the home page: the layers are named in the chapters below. */}
+            <div className="relative mx-auto w-full max-w-[30rem] overflow-hidden rounded-card bg-navy" aria-hidden="true">
+              <video
+                className="block h-auto w-full motion-reduce:hidden"
+                src="/brand/layers-assemble.mp4"
+                poster="/brand/layers-poster.jpg"
+                autoPlay
+                loop
+                muted
+                playsInline
+                preload="metadata"
+              >
+                <source src="/brand/layers-assemble.webm" type="video/webm" />
+              </video>
+              {/* eslint-disable-next-line @next/next/no-img-element -- still poster for reduced motion */}
+              <img src="/brand/layers-poster.jpg" alt="" className="hidden h-auto w-full motion-reduce:block" loading="lazy" decoding="async" />
+            </div>
           </div>
         </section>
 

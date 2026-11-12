@@ -27,7 +27,9 @@ export function SectionIntro({
   const sizeClass = { xl: "text-display-xl", lg: "text-display-lg", md: "text-display-md" }[size];
   return (
     <div className={cn("reveal max-w-prose", className)}>
-      {eyebrow && <p className={cn("eyebrow", tone === "dark" && "text-green-on-navy")}>{eyebrow}</p>}
+      {eyebrow && (
+        <p className={cn("eyebrow", tone === "dark" && "text-green-on-navy [text-shadow:0_1px_14px_rgb(0_0_0/0.55)]")}>{eyebrow}</p>
+      )}
       <H className={cn(sizeClass, "title-rule", eyebrow && "mt-label", tone === "dark" ? "text-on-dark" : "text-navy")}>{title}</H>
       {children && (
         <div
