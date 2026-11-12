@@ -208,7 +208,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <div className="mt-6">
               <ColourSwatches
                 current={finish.slug}
-                options={byTone(all).map((f) => ({ slug: f.slug, name: f.name, swatch: imagesOfKind(f, "swatch")[0] }))}
+                options={byTone(all).map((f) => ({ slug: f.slug, name: f.name, swatch: grainImage(f) }))}
               />
             </div>
 

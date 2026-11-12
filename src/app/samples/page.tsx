@@ -3,7 +3,7 @@ import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
 import { SampleRequest, type SampleFinish } from "@/components/samples/sample-request";
-import { getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { getFinishes, grainImage } from "@/lib/catalogue";
 import { pageHero } from "@/lib/catalogue/heroes";
 import { colourFamilyLabel, SAMPLE_LIMIT, STYLE_LABELS } from "@/lib/config";
 import { samplesEnabled } from "@/lib/samples/settings";
@@ -24,7 +24,7 @@ export default async function SamplesPage() {
         name: f.name,
         slug: f.slug,
         detail: `${STYLE_LABELS[f.style]} · ${colourFamilyLabel(f.colourFamily)}`,
-        swatch: imagesOfKind(f, "swatch")[0],
+        swatch: grainImage(f),
       },
     ]),
   );
