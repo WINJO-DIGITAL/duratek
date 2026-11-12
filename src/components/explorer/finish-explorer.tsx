@@ -410,8 +410,9 @@ function StageArrow({ side, onClick, label }: { side: "left" | "right"; onClick:
       type="button"
       onClick={onClick}
       className={cn(
-        "absolute top-1/2 z-[5] hidden size-14 -translate-y-1/2 items-center justify-center rounded-control bg-off-white/85 text-navy backdrop-blur-sm transition-colors duration-300 hover:bg-white sm:flex",
-        side === "left" ? "left-[var(--spacing-gutter)]" : "right-[var(--spacing-gutter)]",
+        // Top right, under the header: clear of the name and the sample button at the bottom.
+        "absolute top-[calc(var(--spacing-header)+1rem)] z-[5] hidden size-14 items-center justify-center rounded-control bg-off-white/85 text-navy backdrop-blur-sm transition-colors duration-300 hover:bg-white sm:flex",
+        side === "left" ? "right-[calc(var(--spacing-gutter)+4.5rem)]" : "right-[var(--spacing-gutter)]",
       )}
     >
       {side === "left" ? <ArrowLeft size={20} /> : <ArrowRight size={20} />}

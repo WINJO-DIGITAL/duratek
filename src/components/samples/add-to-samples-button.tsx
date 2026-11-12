@@ -72,7 +72,7 @@ export function AddToSamplesButton({
           added && compact && "text-green-ink",
           !added && !blocked && !compact && "bg-green-ink text-white hover:bg-green-ink-hover",
           !added && !blocked && compact && "text-navy hover:text-green-ink",
-          blocked && (compact ? "text-ink-muted hover:text-navy" : "border border-navy/30 bg-transparent text-navy hover:border-navy"),
+          blocked && (compact ? "text-ink-muted hover:text-navy" : "border border-navy/30 bg-off-white/95 text-navy hover:border-navy hover:bg-white"),
         )}
       >
         {added ? (
