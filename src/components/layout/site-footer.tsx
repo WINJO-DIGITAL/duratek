@@ -93,11 +93,7 @@ export async function SiteFooter() {
         )}
 
         <div>
-          <p className="max-w-[26ch] font-display text-[1.5rem] font-light leading-snug tracking-[-0.02em] text-on-dark">
-            Waterproof SPC click flooring, with free samples and trade accounts.
-          </p>
-
-          <div className="mt-10 grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
             {GROUPS.map((g) => (
               <nav key={g.title} aria-label={g.title}>
                 <h2 className="eyebrow font-sans text-green-on-navy">{g.title}</h2>
