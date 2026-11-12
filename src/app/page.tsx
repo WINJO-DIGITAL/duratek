@@ -116,8 +116,6 @@ export default async function HomePage() {
     .filter((img): img is NonNullable<typeof img> => Boolean(img));
 
   // The surface up close: a grain close-up from the catalogue, for the layers panel.
-  const closeUpPick = imagePool(finishes, "closeup")[0];
-  const closeUp = closeUpPick && { image: closeUpPick.image, name: closeUpPick.finish.name };
 
   const swatches = Object.fromEntries(finishes.map((f) => [f.id, grainImage(f)]));
   // A mid-range swatch for the decorative layer in the diagram.
@@ -187,7 +185,7 @@ export default async function HomePage() {
           </section>
         )}
 
-        <FiveLayers woodImage={layerWood} closeUp={closeUp} />
+        <FiveLayers woodImage={layerWood} />
 
         {/* Three free samples: the tray made visible, in its own panel. Then the one quiet trade band. */}
         <section id="samples" aria-labelledby="samples-heading" className="py-section-sm">
