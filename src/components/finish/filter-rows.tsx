@@ -35,13 +35,15 @@ export function FilterRow({ row }: { row: FilterRowDef }) {
               aria-pressed={selected}
               onClick={() => row.onChange(o.value)}
               className={cn(
-                "flex min-h-tap flex-1 items-center justify-center gap-2 whitespace-nowrap rounded-[7px] px-3.5 text-[0.9375rem] transition-colors duration-300",
+                "flex min-h-tap min-w-0 flex-1 flex-col items-center justify-center rounded-[7px] px-3 py-1.5 text-center text-[0.9375rem] leading-snug transition-colors duration-300",
                 selected ? "bg-navy text-off-white" : "text-navy hover:bg-navy/5",
               )}
             >
-              {o.label}
-              {o.sub && <span className="data text-[0.75rem] opacity-70">{o.sub}</span>}
-              <span className={cn("data text-[0.75rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.count}</span>
+              <span className="flex items-baseline gap-1.5">
+                {o.label}
+                <span className={cn("data text-[0.75rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.count}</span>
+              </span>
+              {o.sub && <span className={cn("data text-[0.6875rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.sub}</span>}
             </button>
           );
         })}

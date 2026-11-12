@@ -18,7 +18,7 @@ import {
 } from "@/lib/catalogue/filter";
 import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
-import { STYLE_LABELS } from "@/lib/config";
+import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 import { FilterRows, type FilterOption, type FilterRowDef } from "./filter-rows";
 
 export interface RangeItem extends FilterableFinish {
@@ -54,7 +54,8 @@ export function RangeBrowser({
   // How many finishes each choice would leave, with the other filters still applied.
   const countWith = (key: keyof RangeFilters, value: string | null) =>
     items.filter((i) => matches(i, { ...filters, [key]: value } as RangeFilters)).length;
-  const activeCount = [filters.style, filters.format, filters.tone, filters.price].filter(Boolean).length;
+  const colours = distinct(items.map((i) => i.colourFamily));
+  const activeCount = [filters.style, filters.format, filters.colour, filters.tone, filters.price].filter(Boolean).length;
   const option = (key: keyof RangeFilters, value: string | null, label: string, sub?: string): FilterOption => ({
     value,
     label,
@@ -74,7 +75,14 @@ export function RangeBrowser({
       label: "Board size",
       value: filters.format,
       onChange: (v) => update({ format: v }),
-      options: [option("format", null, "All"), ...formats.map((f) => option("format", f.format, f.label, f.size))],
+      options: [option("format", null, "All"), ...formats.map((f) => option("format", f.format, f.label.replace(" plank", ""), f.size))],
+    },
+    {
+      key: "colour",
+      label: "Colour",
+      value: filters.colour,
+      onChange: (v) => update({ colour: v }),
+      options: [option("colour", null, "All"), ...colours.map((c) => option("colour", c, colourFamilyLabel(c)))],
     },
     {
       key: "tone",
