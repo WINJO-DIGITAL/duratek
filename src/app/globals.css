@@ -144,7 +144,7 @@
     background: var(--color-off-white);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01";
+    font-feature-settings: "ss01", "zero" 0;
     /* Body copy: 17px on phones, 18px from desktop (approved direction). */
     font-size: 1.0625rem;
     line-height: 1.65;
@@ -424,7 +424,8 @@
 /* Measurements and specifications, set like a technical drawing. */
 @utility data {
   font-family: var(--font-mono);
-  font-feature-settings: "tnum";
+  /* Plain zeros: DM Mono draws a slashed zero by default, which reads as a different character in prices. */
+  font-feature-settings: "tnum", "zero" 0;
   font-size: 0.9em;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
