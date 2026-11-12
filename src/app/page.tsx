@@ -1,3 +1,4 @@
+import type { CatalogueImage } from "@/lib/catalogue/types";
 import { formatPence } from "@/lib/money";
 import { PostcodeBand } from "@/components/content/postcode-band";
 import { SectionIntro } from "@/components/content/section-intro";
@@ -30,6 +31,19 @@ function detailLine(f: Finish): string {
 const FLOOR_LED_ROOM = /hallway|living|lounge|reading nook|bedroom|dining/i;
 /** Kitchens and bathrooms show cabinets and fittings more than the floor: not used for the board photographs. */
 const SKIP_ROOM = /kitchen|bathroom|kids|playroom|shower/i;
+/** Board photographs chosen by hand, where the automatic choice didn't show the floor. Matched by file name. */
+const PINNED_BOARD_ROOM: Record<string, string> = {
+  "conniston-oak": "29036_5-4.1920x1200.jpg",
+  "kirkstone-grey-oak": "29036-15_jpg.webp",
+  "ambleside-oak": "29036-1_jpg.webp",
+  "fellside-oak": "Fellside_Oak_XL_Luxury_Click_Vinyl_Flooring_Living_Area.jpg",
+};
+function pinnedBoardRoom<T extends { slug: string; images: CatalogueImage[] }>(f: T): CatalogueImage | undefined {
+  const file = PINNED_BOARD_ROOM[f.slug];
+  if (!file) return undefined;
+  return f.images.find((i) => i.kind === "room" && decodeURIComponent(i.src.split("?")[0]).endsWith(`/${file}`));
+}
+
 /** The room is named in the caption or, for the Kwik photographs, in the file name. */
 function roomText(image: { alt: string; src: string }): string {
   return `${image.alt} ${decodeURIComponent(image.src.split("/").pop() ?? "")}`;
@@ -71,6 +85,7 @@ export default async function HomePage() {
     // The photograph under the strip: a real room, floor-led first (hallway, living room), any room
     // that isn't a kitchen next, then a kitchen; the grain close-up or swatch only if no room photo exists.
     room:
+      pinnedBoardRoom(f) ??
       f.images.find((i) => i.kind === "room" && FLOOR_LED_ROOM.test(roomText(i)) && !SKIP_ROOM.test(roomText(i))) ??
       f.images.find((i) => i.kind === "room" && !SKIP_ROOM.test(roomText(i))) ??
       f.images.find((i) => i.kind === "closeup") ??
