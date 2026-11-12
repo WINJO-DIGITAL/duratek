@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { LayerStack } from "@/components/content/layer-stack";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
@@ -21,9 +22,12 @@ export function FiveLayers() {
             <LayerStack />
           </div>
 
-          <p className="mt-10 text-lede text-on-dark/85 lg:mt-12">
-            Fitted with Unilin click-lock, as a floating floor.
-          </p>
+          <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4 text-lede text-on-dark/85 lg:mt-12">
+            <span className="inline-flex rounded-control bg-off-white px-4 py-2">
+              <Image src="/brand/unilin-logo.png" alt="Unilin" width={752} height={185} sizes="10rem" className="h-auto w-36" />
+            </span>
+            <p>Fitted with Unilin click-lock, as a floating floor.</p>
+          </div>
 
           <div className="mt-10 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-16">
             <div>

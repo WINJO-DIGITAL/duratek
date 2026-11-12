@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { PageTransition } from "@/components/layout/page-transition";
 import { LayerBreakdown } from "@/components/content/layer-breakdown";
 import { SectionIntro } from "@/components/content/section-intro";
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
     "Scratch Shield surface protection, a 0.55mm wear layer, a waterproof rigid SPC core, integrated underlay and the Unilin click-lock system.",
 };
 
-const CHAPTERS: { title: string; body: string; note?: string }[] = [
+const CHAPTERS: { title: string; body: string; note?: string; logo?: { src: string; width: number; height: number; alt: string } }[] = [
   {
     title: "Scratch Shield",
     body: "A clear protective finish over the wear layer. It helps the surface resist the scuffs and fine scratches that build up in a busy home, and it doesn’t change how the floor looks.",
@@ -38,6 +39,7 @@ const CHAPTERS: { title: string; body: string; note?: string }[] = [
   {
     title: "Unilin click-lock",
     body: "Each plank clicks into the next using Unilin’s locking joint, so the planks stay aligned and the finished floor floats over the subfloor instead of being glued. Follow the fitting instructions, including subfloor preparation.",
+    logo: { src: "/brand/unilin-logo.png", width: 752, height: 185, alt: "Unilin" },
   },
 ];
 
@@ -95,6 +97,7 @@ export default async function TechnologyPage() {
                       <h3 className="font-display text-display-sm text-navy">{c.title}</h3>
                       <p className="mt-3 max-w-prose text-ink-muted">{c.body}</p>
                       {c.note && <p className="mt-3 font-medium text-navy">{c.note}</p>}
+                      {c.logo && <Image src={c.logo.src} alt={c.logo.alt} width={c.logo.width} height={c.logo.height} sizes="10rem" className="mt-5 h-auto w-40" />}
                     </div>
                     {i === 0 && <ScratchShieldBadge className="w-16! sm:w-20!" />}
                   </li>
