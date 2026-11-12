@@ -22,31 +22,31 @@ export function FiveLayers() {
             <LayerStack />
           </div>
 
-          <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4 text-lede text-on-dark/85 lg:mt-12">
-            <span className="inline-flex rounded-control bg-off-white px-4 py-2">
-              <Image src="/brand/unilin-logo.png" alt="Unilin" width={752} height={185} sizes="10rem" className="h-auto w-36" />
+          <div className="mt-10 flex items-center gap-4 text-[1rem] leading-snug text-on-dark/85 lg:mt-12">
+            <span className="inline-flex shrink-0 rounded-control bg-off-white px-3 py-1.5">
+              <Image src="/brand/unilin-logo.png" alt="Unilin" width={752} height={185} sizes="6rem" className="h-auto w-20" />
             </span>
             <p>Fitted with Unilin click-lock, as a floating floor.</p>
           </div>
 
-          <div className="mt-10 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-16">
+          <div className="mt-10 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
             <div>
-              <div className="flex items-center gap-5">
+              <div className="flex items-start gap-5">
                 <Image
                   src="/brand/warranty-residential-lifetime.png"
                   alt="Residential lifetime warranty"
                   width={467}
                   height={467}
-                  sizes="6rem"
-                  className="h-auto w-20 shrink-0 sm:w-24"
+                  sizes="5rem"
+                  className="h-auto w-20 shrink-0"
                 />
-                <p className="text-lede text-on-dark">
+                <p className="pt-1 text-[1.0625rem] leading-relaxed text-on-dark">
                   Residential lifetime warranty. 10 years commercial, in light and medium traffic areas.
                 </p>
               </div>
-              <WarrantyDisclaimer tone="dark" className="mt-3 max-w-3xl text-[0.75rem]" />
+              <WarrantyDisclaimer tone="dark" className="mt-4 max-w-3xl text-[0.75rem]" />
             </div>
-            <ButtonLink href="/technology" variant="quiet-on-dark">
+            <ButtonLink href="/technology" variant="quiet-on-dark" className="justify-self-start lg:justify-self-end">
               Inside a duratek Plank
             </ButtonLink>
           </div>
