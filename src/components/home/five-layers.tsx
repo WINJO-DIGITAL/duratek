@@ -2,7 +2,6 @@ import { LayerStack } from "@/components/content/layer-stack";
 import { SectionIntro } from "@/components/content/section-intro";
 import { WarrantyDisclaimer } from "@/components/content/warranty";
 import { ButtonLink } from "@/components/ui/button";
-import type { CatalogueImage } from "@/lib/catalogue/types";
 
 /**
  * The page's one navy moment, as a rounded panel inset in the page: the floor
@@ -10,7 +9,7 @@ import type { CatalogueImage } from "@/lib/catalogue/types";
  * warranty. The layers carry the 0.55 mm, Scratch Shield and waterproof facts,
  * so they are not repeated in a separate list.
  */
-export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
+export function FiveLayers() {
   return (
     <section aria-labelledby="layers-heading" className="py-section-sm">
       <div className="container-page">
@@ -19,7 +18,7 @@ export function FiveLayers({ woodImage }: { woodImage?: CatalogueImage }) {
             <p>Each layer has a job. Together they make a floor that is waterproof, scratch-resistant and quieter underfoot.</p>
           </SectionIntro>
           <div className="mt-stack">
-            <LayerStack woodImage={woodImage} />
+            <LayerStack />
           </div>
 
           <p className="mt-10 text-lede text-on-dark/85 lg:mt-12">

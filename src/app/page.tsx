@@ -119,7 +119,6 @@ export default async function HomePage() {
 
   const swatches = Object.fromEntries(finishes.map((f) => [f.id, grainImage(f)]));
   // A mid-range swatch for the decorative layer in the diagram.
-  const layerWood = grainImage(finishes[Math.floor(finishes.length / 3)]);
 
   return (
     <PageTransition>
@@ -185,7 +184,7 @@ export default async function HomePage() {
           </section>
         )}
 
-        <FiveLayers woodImage={layerWood} />
+        <FiveLayers />
 
         {/* Three free samples: the tray made visible, in its own panel. Then the one quiet trade band. */}
         <section id="samples" aria-labelledby="samples-heading" className="py-section-sm">
