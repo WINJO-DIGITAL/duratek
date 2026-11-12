@@ -49,6 +49,7 @@ export function FinishExplorer({
     style: params.get("style") || null,
     format: params.get("format") || null,
     colour: params.get("colour") || null,
+    tone: null,
     price: null,
     q: "",
   }));
@@ -121,7 +122,7 @@ export function FinishExplorer({
           <h1 className="text-display-md font-light text-on-dark">No Finishes Match Those Filters.</h1>
           <button
             type="button"
-            onClick={() => setFilters({ style: null, format: null, colour: null, price: null, q: "" })}
+            onClick={() => setFilters({ style: null, format: null, colour: null, tone: null, price: null, q: "" })}
             className="min-h-tap text-on-dark underline underline-offset-4"
           >
             Show every finish

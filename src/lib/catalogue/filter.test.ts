@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtersToQuery, isFiltered, matches, NO_FILTERS, priceBandOf, readFilters } from "./filter";
+import { filtersToQuery, isFiltered, matches, NO_FILTERS, priceBandOf, readFilters, toneGroups } from "./filter";
 
 const keswick = { id: "1", name: "Keswick Oak", style: "plank", colourFamily: "natural", format: "standard" };
 const honister = { id: "2", name: "Honister Slate Grey", style: "plank", colourFamily: "grey", format: "standard" };
@@ -7,10 +7,13 @@ const fellside = { id: "3", name: "Fellside Oak", style: "plank", colourFamily: 
 
 describe("range filters", () => {
   it("reads filters from search params", () => {
+    expect(readFilters(new URLSearchParams("tone=light")).tone).toBe("light");
+    expect(readFilters(new URLSearchParams("tone=nonsense")).tone).toBeNull();
     expect(readFilters(new URLSearchParams("style=plank&format=extra-long&colour=grey&q=%20oak%20"))).toEqual({
       style: "plank",
       format: "extra-long",
       colour: "grey",
+      tone: null,
       price: null,
       q: "oak",
     });
@@ -18,7 +21,7 @@ describe("range filters", () => {
   });
 
   it("round-trips through the query string", () => {
-    const f = { style: null, format: "standard", colour: "warm", price: "under-30" as const, q: "oak" };
+    const f = { style: null, format: "standard", colour: "warm", tone: "dark" as const, price: "under-30" as const, q: "oak" };
     expect(readFilters(new URLSearchParams(filtersToQuery(f)))).toEqual(f);
     expect(filtersToQuery(NO_FILTERS)).toBe("");
     expect(isFiltered(NO_FILTERS)).toBe(false);
@@ -61,5 +64,25 @@ describe("range filters", () => {
     expect(readFilters(new URLSearchParams("price=30-to-40")).price).toBe("30-to-40");
     expect(readFilters(new URLSearchParams("price=nonsense")).price).toBeNull();
     expect(isFiltered({ ...NO_FILTERS, price: "over-40" })).toBe(true);
+  });
+});
+
+describe("tone groups", () => {
+  it("splits measured finishes into light, mid and dark thirds, and leaves unmeasured ones out", () => {
+    const items = [1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ id: `f${n}`, tone: n / 10 }));
+    const groups = toneGroups([...items, { id: "none" }]);
+    const count = (g: string) => [...groups.values()].filter((v) => v === g).length;
+    expect(count("light")).toBe(3);
+    expect(count("mid")).toBe(3);
+    expect(count("dark")).toBe(3);
+    expect(groups.get("f9")).toBe("light");
+    expect(groups.get("f1")).toBe("dark");
+    expect(groups.has("none")).toBe(false);
+  });
+
+  it("filters finishes by their tone group", () => {
+    const f = { id: "a", name: "A", style: "plank", colourFamily: "grey", toneGroup: "dark" as const };
+    expect(matches(f, { ...NO_FILTERS, tone: "dark" })).toBe(true);
+    expect(matches(f, { ...NO_FILTERS, tone: "light" })).toBe(false);
   });
 });

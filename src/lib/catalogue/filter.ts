@@ -10,6 +10,31 @@ export interface FilterableFinish {
   keywords?: string;
   /** Public RRP per m² in pence, when set. Used for the price bands. */
   rrpPence?: number;
+  /** Light, mid or dark third of the range, from the measured swatch; absent when unmeasured. */
+  toneGroup?: ToneGroupId;
+}
+
+/** Tone groups, light to dark. Each holds about a third of the range. */
+export const TONE_GROUPS = [
+  { id: "light", label: "Light" },
+  { id: "mid", label: "Mid" },
+  { id: "dark", label: "Dark" },
+] as const;
+export type ToneGroupId = (typeof TONE_GROUPS)[number]["id"];
+
+/**
+ * Splits measured finishes into light, mid and dark thirds by swatch tone, so
+ * each group has a share of the range whatever its colours. Unmeasured finishes
+ * are left out of the map.
+ */
+export function toneGroups(items: { id: string; tone?: number }[]): Map<string, ToneGroupId> {
+  const measured = items.filter((i) => i.tone !== undefined).sort((a, b) => b.tone! - a.tone!);
+  const n = measured.length;
+  const groups = new Map<string, ToneGroupId>();
+  measured.forEach((item, i) => {
+    groups.set(item.id, i < Math.ceil(n / 3) ? "light" : i < Math.ceil((2 * n) / 3) ? "mid" : "dark");
+  });
+  return groups;
 }
 
 /** Price bands on the RRP per m², in pence, inclusive. Shown only where a finish falls in them. */
@@ -29,17 +54,19 @@ export interface RangeFilters {
   style: string | null;
   format: string | null;
   colour: string | null;
+  tone: ToneGroupId | null;
   price: PriceBandId | null;
   q: string;
 }
 
-export const NO_FILTERS: RangeFilters = { style: null, format: null, colour: null, price: null, q: "" };
+export const NO_FILTERS: RangeFilters = { style: null, format: null, colour: null, tone: null, price: null, q: "" };
 
 export function readFilters(params: { get(name: string): string | null }): RangeFilters {
   return {
     style: params.get("style") || null,
     format: params.get("format") || null,
     colour: params.get("colour") || null,
+    tone: (TONE_GROUPS.find((t) => t.id === params.get("tone"))?.id as ToneGroupId | undefined) ?? null,
     price: (PRICE_BANDS.find((b) => b.id === params.get("price"))?.id as PriceBandId | undefined) ?? null,
     q: (params.get("q") ?? "").trim(),
   };
@@ -51,19 +78,21 @@ export function filtersToQuery(filters: RangeFilters): string {
   if (filters.style) sp.set("style", filters.style);
   if (filters.format) sp.set("format", filters.format);
   if (filters.colour) sp.set("colour", filters.colour);
+  if (filters.tone) sp.set("tone", filters.tone);
   if (filters.price) sp.set("price", filters.price);
   if (filters.q) sp.set("q", filters.q);
   return sp.toString();
 }
 
 export function isFiltered(filters: RangeFilters): boolean {
-  return Boolean(filters.style || filters.format || filters.colour || filters.price || filters.q);
+  return Boolean(filters.style || filters.format || filters.colour || filters.tone || filters.price || filters.q);
 }
 
 export function matches(f: FilterableFinish, filters: RangeFilters): boolean {
   if (filters.style && f.style !== filters.style) return false;
   if (filters.format && f.format !== filters.format) return false;
   if (filters.colour && f.colourFamily !== filters.colour) return false;
+  if (filters.tone && f.toneGroup !== filters.tone) return false;
   if (filters.price && priceBandOf(f.rrpPence) !== filters.price) return false;
   if (filters.q) {
     const words = filters.q.toLowerCase().replace(/-/g, " ").split(/\s+/).filter(Boolean);

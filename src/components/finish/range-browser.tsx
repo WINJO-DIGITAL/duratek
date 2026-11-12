@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { Close, Search } from "@/components/ui/icons";
@@ -13,12 +12,13 @@ import {
   PRICE_BANDS,
   priceBandOf,
   readFilters,
+  TONE_GROUPS,
   type FilterableFinish,
   type RangeFilters,
 } from "@/lib/catalogue/filter";
 import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
-import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { STYLE_LABELS } from "@/lib/config";
 
 export interface RangeItem extends FilterableFinish {
   card: ReactNode;
@@ -47,12 +47,10 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
 export function RangeBrowser({
   items,
   formats = [],
-  colourSwatches = {},
 }: {
   items: RangeItem[];
   /** Plank formats with their dimensions; shown when there is more than one. */
   formats?: FormatOption[];
-  colourSwatches?: Record<string, string>;
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -60,7 +58,10 @@ export function RangeBrowser({
   const filters = readFilters(params);
 
   const styles = distinct(items.map((i) => i.style));
-  const colours = distinct(items.map((i) => i.colourFamily));
+  // Light, mid and dark, each with how many finishes it holds; empty groups are not shown.
+  const tones = TONE_GROUPS.map((t) => ({ ...t, count: items.filter((i) => i.toneGroup === t.id).length })).filter(
+    (t) => t.count > 0,
+  );
   // Only the price bands that at least one finish falls in.
   const bands = PRICE_BANDS.filter((b) => items.some((i) => priceBandOf(i.rrpPence) === b.id));
   const visible = items.filter((i) => matches(i, filters));
@@ -117,23 +118,17 @@ export function RangeBrowser({
                 <Divider />
               </>
             )}
-            <Chip pressed={!filters.colour} onClick={() => update({ colour: null })}>
-              All colours
+            <Chip pressed={!filters.tone} onClick={() => update({ tone: null })}>
+              All tones
             </Chip>
-            {colours.map((c) => (
+            {tones.map((t) => (
               <Chip
-                key={c}
-                pressed={filters.colour === c}
-                onClick={() => update({ colour: filters.colour === c ? null : c })}
+                key={t.id}
+                pressed={filters.tone === t.id}
+                onClick={() => update({ tone: filters.tone === t.id ? null : t.id })}
               >
-                <span className="flex items-center gap-2">
-                  {colourSwatches[c] && (
-                    <span className="relative block size-5 shrink-0 overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgb(24_54_76/0.1)]">
-                      <Image src={colourSwatches[c]} alt="" fill sizes="20px" quality={70} className="object-cover" />
-                    </span>
-                  )}
-                  {colourFamilyLabel(c)}
-                </span>
+                {t.label}
+                <span className="data ml-2 text-[0.75rem] opacity-70">{t.count}</span>
               </Chip>
             ))}
             {bands.length > 1 && <Divider />}

@@ -6,7 +6,7 @@ import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { HelpChoose } from "@/components/finish/help-choose";
 import { RangeBrowser, RangeGrid, type RangeItem } from "@/components/finish/range-browser";
-import { distinct } from "@/lib/catalogue/filter";
+import { distinct, toneGroups } from "@/lib/catalogue/filter";
 import { SamplePromo } from "@/components/samples/sample-promo";
 import { ButtonLink } from "@/components/ui/button";
 import { PageTransition } from "@/components/layout/page-transition";
@@ -25,6 +25,7 @@ export const metadata: Metadata = {
 export default async function RangePage() {
   // Light to dark, measured from each swatch, so the grid reads as one palette.
   const finishes = byTone(await getFinishes());
+  const toneOf = toneGroups(finishes);
   const items: RangeItem[] = finishes.map((f, i) => {
     const format = plankFormat(f.specs);
     return {
@@ -33,6 +34,7 @@ export default async function RangePage() {
       style: f.style,
       colourFamily: f.colourFamily,
       rrpPence: f.rrpPence,
+      toneGroup: toneOf.get(f.id),
       format,
       keywords: [colourFamilyLabel(f.colourFamily), format && FORMAT_LABELS[format]].filter(Boolean).join(" "),
       card: (
@@ -47,13 +49,6 @@ export default async function RangePage() {
       ),
     };
   });
-
-  // One swatch per colour family for the round filter chips.
-  const colourSwatches: Record<string, string> = {};
-  for (const f of finishes) {
-    const sw = imagesOfKind(f, "swatch")[0];
-    if (sw && !colourSwatches[f.colourFamily]) colourSwatches[f.colourFamily] = sw.src;
-  }
 
   const hero = pageHero(finishes, "range");
   return (
@@ -85,12 +80,12 @@ export default async function RangePage() {
           <ButtonLink href="/explore" variant="quiet" arrow>
             Open full-screen view
           </ButtonLink>
-          <HelpChoose styles={distinct(finishes.map((f) => f.style))} colours={distinct(finishes.map((f) => f.colourFamily))} formats={distinct(finishes.map((f) => plankFormat(f.specs)).filter((x): x is NonNullable<typeof x> => x !== undefined))} />
+          <HelpChoose styles={distinct(finishes.map((f) => f.style))} tones={distinct([...toneOf.values()])}formats={distinct(finishes.map((f) => plankFormat(f.specs)).filter((x): x is NonNullable<typeof x> => x !== undefined))} />
         </div>
         <div className="mt-8 sm:mt-10">
           {/* The fallback is the full, unfiltered grid: works without JavaScript. */}
           <Suspense fallback={<RangeGrid items={items} />}>
-            <RangeBrowser items={items} formats={formatOptions(finishes)} colourSwatches={colourSwatches} />
+            <RangeBrowser items={items} formats={formatOptions(finishes)} />
           </Suspense>
         </div>
         {/* The warranty, once, with its disclaimer, where the range is chosen. */}

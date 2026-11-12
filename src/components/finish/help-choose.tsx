@@ -2,9 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useId, useState } from "react";
-import { filtersToQuery, NO_FILTERS, type RangeFilters } from "@/lib/catalogue/filter";
+import { filtersToQuery, NO_FILTERS, TONE_GROUPS, type RangeFilters, type ToneGroupId } from "@/lib/catalogue/filter";
 import { cn } from "@/lib/cn";
-import { colourFamilyLabel } from "@/lib/config";
 
 /** One question: a row of choices, each a set of filter values. Only real filters, so every answer finds finishes. */
 function Question({
@@ -46,7 +45,7 @@ function Question({
  * matching finishes. Answers are the same filters the range already has, so
  * nothing here is a separate catalogue or a promise the range can't keep.
  */
-export function HelpChoose({ styles, colours, formats }: { styles: string[]; colours: string[]; formats: string[] }) {
+export function HelpChoose({ styles, tones, formats }: { styles: string[]; tones: ToneGroupId[]; formats: string[] }) {
   const router = useRouter();
   const panelId = useId();
   const [open, setOpen] = useState(false);
@@ -55,7 +54,7 @@ export function HelpChoose({ styles, colours, formats }: { styles: string[]; col
   const [size, setSize] = useState<string | null>(null);
 
   const patternOptions = styles.map((s) => ({ value: s, label: s === "herringbone" ? "Herringbone" : "Straight plank" }));
-  const toneOptions = colours.map((c) => ({ value: c, label: colourFamilyLabel(c) }));
+  const toneOptions = tones.map((t) => ({ value: t, label: TONE_GROUPS.find((g) => g.id === t)?.label ?? t }));
   const sizeOptions = formats.map((f) => ({ value: f, label: f === "extra-long" ? "Extra-long, 228 mm" : "Standard, 181 mm" }));
   const showSize = pattern === null || pattern === "plank";
 
@@ -63,7 +62,7 @@ export function HelpChoose({ styles, colours, formats }: { styles: string[]; col
     const filters: RangeFilters = {
       ...NO_FILTERS,
       style: pattern,
-      colour: tone,
+      tone: tone as ToneGroupId | null,
       format: showSize ? size : null,
     };
     const qs = filtersToQuery(filters);
