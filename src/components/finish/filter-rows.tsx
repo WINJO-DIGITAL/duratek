@@ -5,7 +5,7 @@ export interface FilterOption {
   label: string;
   /** Measurement shown after the label, in the data face (e.g. a board size). */
   sub?: string;
-  count: number;
+  count?: number;
 }
 
 export interface FilterRowDef {
@@ -41,7 +41,9 @@ export function FilterRow({ row }: { row: FilterRowDef }) {
             >
               <span className="flex items-baseline gap-1.5">
                 {o.label}
-                <span className={cn("data text-[0.75rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.count}</span>
+                {o.count !== undefined && (
+                  <span className={cn("data text-[0.75rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.count}</span>
+                )}
               </span>
               {o.sub && <span className={cn("data text-[0.6875rem]", selected ? "opacity-80" : "text-ink-muted")}>{o.sub}</span>}
             </button>

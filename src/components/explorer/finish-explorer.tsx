@@ -11,6 +11,7 @@ import type { FormatOption } from "@/lib/catalogue/format";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel } from "@/lib/config";
+import { FilterRows, type FilterRowDef } from "@/components/finish/filter-rows";
 import { gesture, keepPosition, step, type ExplorerView } from "@/lib/explorer/explorer";
 
 export interface ExplorerFinish extends FilterableFinish {
@@ -423,7 +424,6 @@ function Filters({
   filters,
   formats,
   colours,
-  colourSwatches,
   count,
   onChange,
 }: {
@@ -434,58 +434,28 @@ function Filters({
   count: number;
   onChange: (next: Partial<RangeFilters>) => void;
 }) {
+  const rows: FilterRowDef[] = [
+    {
+      key: "colour",
+      label: "Colour",
+      value: filters.colour,
+      onChange: (v) => onChange({ colour: v }),
+      options: [{ value: null, label: "All" }, ...colours.map((c) => ({ value: c, label: colourFamilyLabel(c) }))],
+    },
+    {
+      key: "format",
+      label: "Board size",
+      value: filters.format,
+      onChange: (v) => onChange({ format: v }),
+      options: [{ value: null, label: "All" }, ...formats.map((f) => ({ value: f.format, label: f.label.replace(" plank", ""), sub: f.size }))],
+    },
+  ];
   return (
     <div className="border-b border-line bg-off-white">
-      <div
-        role="group"
-        aria-label={`Filter finishes, ${count} shown`}
-        className="container-page scrollbar-none flex items-center gap-2 overflow-x-auto py-2"
-      >
-        <Chip pressed={!filters.colour && !filters.format} onClick={() => onChange({ colour: null, format: null })}>
-          All
-        </Chip>
-        <span aria-hidden="true" className="mx-1 h-6 w-px shrink-0 bg-line" />
-        {colours.map((c) => (
-          <Chip key={c} pressed={filters.colour === c} onClick={() => onChange({ colour: filters.colour === c ? null : c })}>
-            {colourSwatches[c] && (
-              <span className="relative block size-5 shrink-0 overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgb(24_54_76/0.1)]">
-                <Image src={colourSwatches[c]!.src} alt="" fill sizes="20px" quality={70} className="object-cover" />
-              </span>
-            )}
-            {colourFamilyLabel(c)}
-          </Chip>
-        ))}
-        {formats.length > 1 && (
-          <>
-            <span aria-hidden="true" className="mx-1 h-6 w-px shrink-0 bg-line" />
-            {formats.map((f) => (
-              <Chip
-                key={f.format}
-                pressed={filters.format === f.format}
-                onClick={() => onChange({ format: filters.format === f.format ? null : f.format })}
-              >
-                {f.label}
-              </Chip>
-            ))}
-          </>
-        )}
+      <div role="group" aria-label={`Filter finishes, ${count} shown`} className="container-page grid gap-4 py-4">
+        <FilterRows rows={rows} />
       </div>
     </div>
   );
 }
 
-function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={pressed}
-      onClick={onClick}
-      className={cn(
-        "flex min-h-tap shrink-0 items-center gap-2 rounded-control border px-3 text-[0.875rem] transition-colors duration-300",
-        pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
-      )}
-    >
-      {children}
-    </button>
-  );
-}

@@ -102,16 +102,22 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
         {!enabled ? (
           <div className="notice px-5 py-5 sm:px-6">
             <h2 id="details-heading" className="font-medium text-navy">
-              Online Sample Requests Open Soon.
+              Ask us for your samples
             </h2>
             <p className="mt-2 text-[0.9375rem] text-ink-muted">
-              Your choices are saved on this device, so they&rsquo;ll be here when requests open. In the meantime you
-              can{" "}
+              Send us a message with the finishes you&rsquo;ve chosen and we&rsquo;ll arrange your free samples. Your
+              choices stay saved on this device. Or you can{" "}
               <Link href="/where-to-buy" className="text-navy underline underline-offset-4 hover:text-green-ink">
                 find where to buy
               </Link>
               .
             </p>
+            <Link
+              href="/contact"
+              className="mt-5 inline-flex min-h-tap items-center rounded-control bg-green-ink px-6 text-[0.9375rem] font-medium text-white transition-colors duration-300 hover:bg-navy"
+            >
+              Ask for samples
+            </Link>
           </div>
         ) : chosen.length === 0 ? (
           <div>
