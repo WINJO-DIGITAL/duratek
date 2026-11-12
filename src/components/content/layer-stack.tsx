@@ -1,4 +1,5 @@
 import type { CSSProperties } from "react";
+import { ScratchShieldBadge } from "@/components/content/warranty";
 import { cn } from "@/lib/cn";
 
 /**
@@ -110,6 +111,7 @@ export function LayerStack() {
                   )}
                 </div>
                 <p className="mt-1.5 max-w-[44ch] text-[0.9375rem] leading-relaxed text-on-dark/85">{layer.text}</p>
+                {layer.name === "Protective top finish" && <ScratchShieldBadge className="mt-4 hidden w-16! sm:block" />}
               </div>
             </li>
           ))}

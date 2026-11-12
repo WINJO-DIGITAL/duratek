@@ -270,7 +270,6 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
             <h2 id="about-heading" className="text-display-md text-navy">
               About {finish.name}
             </h2>
-            <ScratchShieldBadge className="mt-8 w-28! sm:w-32!" />
           </div>
           <div className="space-y-4 text-lede text-ink-muted lg:col-span-8">
             {(lead.rest || finish.description).split(/\n\n+/).map((p) => (

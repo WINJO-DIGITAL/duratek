@@ -1,4 +1,16 @@
 import "server-only";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+
+/** The Scratch Shield seal as a data URL for the share images, or undefined if the file can't be read. */
+export async function scratchShieldData(): Promise<string | undefined> {
+  try {
+    const file = await readFile(path.join(process.cwd(), "public", "brand", "scratch-shield.png"));
+    return `data:image/png;base64,${file.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
+}
 
 /**
  * Fetches an image for a generated social image as a data URL. The image

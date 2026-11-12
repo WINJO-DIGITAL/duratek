@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { DURA, TEK } from "@/components/brand/wordmark";
 import { getFinish, grainImage } from "@/lib/catalogue";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
-import { ogImageData } from "@/lib/og";
+import { ogImageData, scratchShieldData } from "@/lib/og";
 
 export const alt = "Duratek finish";
 export const size = { width: 1200, height: 630 };
@@ -14,11 +14,13 @@ export default async function Image({ params }: { params: Promise<{ slug: string
   const finish = await getFinish(slug);
   const grain = finish ? grainImage(finish) : undefined;
   const photo = await ogImageData(grain?.src, grain?.blurDataURL);
+  const seal = await scratchShieldData();
   const s = finish?.specs;
 
   return new ImageResponse(
     (
-      <div style={{ display: "flex", width: "100%", height: "100%", background: "#ffffff" }}>
+      <div style={{ display: "flex", position: "relative", width: "100%", height: "100%", background: "#ffffff" }}>
+        {seal && <img src={seal} width={150} height={141} style={{ position: "absolute", right: 48, top: 44 }} alt="" />}
         <div style={{ display: "flex", width: 630, height: 630, background: "#e1e6ea" }}>
           {photo && <img src={photo} width={630} height={630} style={{ objectFit: "cover" }} alt="" />}
         </div>

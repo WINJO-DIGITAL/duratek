@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishGallery } from "@/components/finish/finish-gallery";
 import { FullscreenButton } from "@/components/trade/fullscreen-button";
 import { ProfitPanel } from "@/components/trade/profit-panel";
@@ -60,7 +60,7 @@ async function Content({ params }: { params: PageProps<"/trade/present/[slug]">[
       </div>
 
       {/* The room first: full width, swipe for the next photograph. */}
-      <div className="mt-6 sm:mt-8">
+      <div className="relative mt-6 sm:mt-8">
         {rooms.length > 0 ? (
           <FinishGallery images={rooms} name={finish.name} aspect="aspect-[4/5] sm:aspect-[16/9]" sizes="100vw" />
         ) : (
@@ -70,6 +70,8 @@ async function Content({ params }: { params: PageProps<"/trade/present/[slug]">[
             </div>
           )
         )}
+        {/* The same seal, in the same corner, as on the finish page. */}
+        <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
       </div>
 
       <div className="container-page mt-10 grid gap-10 lg:grid-cols-12 lg:gap-14">
