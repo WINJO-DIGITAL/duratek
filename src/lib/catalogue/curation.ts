@@ -67,6 +67,7 @@ export const EDITORIAL = {
     range: "Windermere_Oak_XL_Luxury_Click_Vinyl_Flooring_7mm_hallway.png",
     inspiration: "Coniston_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway.png",
     samples: "Honnister_Slate_Grey_lounge.png",
+    trade: "Cartmel_Oak_Lounge.png",
     "where-to-buy": "Kirkstone_Grey_Oak_Luxury_Click_Vinyl_Flooring_5mm_hallway_image.png",
   },
   /** The footer opens with a grain close-up: the floor fills the frame. */
