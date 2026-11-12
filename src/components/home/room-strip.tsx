@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FinishImage } from "@/components/finish/finish-image";
+import { DropIcon, LayersIcon } from "@/components/ui/icons";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 
 export interface StripRoom {
@@ -41,7 +42,16 @@ export function RoomStrip({ rooms }: { rooms: StripRoom[] }) {
               </p>
               {r.room && <p className="data mt-1 text-[0.8125rem] text-ink-muted">{r.room}</p>}
               {/* Facts every Duratek floor carries, so each photograph reassures, not only the seal. */}
-              <p className="mt-1 text-[0.8125rem] text-ink-muted">Waterproof · 0.55 mm wear layer</p>
+              <p className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.8125rem] text-ink-muted">
+                <span className="inline-flex items-center gap-1.5">
+                  <DropIcon size={16} className="shrink-0 text-oak" />
+                  Waterproof
+                </span>
+                <span className="inline-flex items-center gap-1.5">
+                  <LayersIcon size={16} className="shrink-0 text-oak" />
+                  0.55 mm wear layer
+                </span>
+              </p>
             </Link>
           </li>
         ))}
