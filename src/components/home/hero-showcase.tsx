@@ -11,6 +11,8 @@ export interface HeroSlide {
   name: string;
   slug: string;
   swatch?: CatalogueImage;
+  /** This finish's public RRP per m², formatted. */
+  rrp?: string;
 }
 
 /** How long each photograph holds, and how long the cross-fade takes. */
@@ -34,7 +36,7 @@ function subscribeReducedMotion(onChange: () => void) {
  * when the tab is hidden or the hero is off screen, and on request; with
  * reduced motion it stays on the first photograph.
  */
-export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; children: ReactNode; note?: string }) {
+export function HeroShowcase({ slides, children }: { slides: HeroSlide[]; children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   // The outgoing photograph stays fully opaque beneath the incoming one, so
@@ -191,14 +193,19 @@ export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; 
                 )}
               </span>
             </span>
-            <span className="leading-tight">
-              <span className="block text-[0.6875rem] uppercase tracking-[0.16em] text-on-dark/70">Shown</span>
+            <span className="leading-tight [text-shadow:0_1px_10px_rgb(0_0_0/0.45)]">
+              <span className="block text-[0.6875rem] uppercase tracking-[0.16em] text-on-dark/80">Shown</span>
               <span
                 key={current.slug}
                 aria-live={running ? "off" : "polite"}
-                className="animate-[label-in_700ms_var(--ease-calm)] text-[0.9375rem] underline-offset-4 group-hover:underline"
+                className="block animate-[label-in_700ms_var(--ease-calm)]"
               >
-                {current.name}
+                <span className="block text-[1rem] underline-offset-4 group-hover:underline">{current.name}</span>
+                {current.rrp && (
+                  <span className="data mt-1 block text-[0.75rem] text-on-dark/90">
+                    <span className="text-[0.9375rem] font-medium text-on-dark">{current.rrp}</span> per m² RRP
+                  </span>
+                )}
               </span>
             </span>
           </Link>
@@ -221,7 +228,6 @@ export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; 
               <span className="sr-only">{userPaused ? "Play the photographs" : "Pause the photographs"}</span>
             </button>
           )}
-          {note && <p className="data basis-full text-[0.8125rem] text-on-dark/80 sm:basis-auto sm:pl-3">{note}</p>}
         </div>
         </div>
         {/* Scratch Shield, the headline surface feature: bottom right, on every screen. */}

@@ -6,7 +6,7 @@ import { HeroShowcase, type HeroSlide } from "./hero-showcase";
  * Full-bleed, floor-led photographs (a slow cross-fade between a few curated
  * finishes). One primary action, one quiet sample link, the finish named.
  */
-export function FloorHero({ slides, note }: { slides: HeroSlide[]; note?: string }) {
+export function FloorHero({ slides }: { slides: HeroSlide[] }) {
   return (
     <section
       aria-labelledby="hero-heading"
@@ -15,11 +15,12 @@ export function FloorHero({ slides, note }: { slides: HeroSlide[]; note?: string
       {/* Neutral scrims, so the floor keeps its own colour: a deeper one behind the header and the copy
           at the top, none over the floor in the lower half. */}
       <div aria-hidden="true" className="absolute inset-x-0 top-0 -z-10 h-48 bg-gradient-to-b from-black/50 to-transparent" />
+      <div aria-hidden="true" className="absolute inset-x-0 bottom-0 -z-10 h-44 bg-gradient-to-t from-black/40 to-transparent" />
       <div
         aria-hidden="true"
         className="absolute inset-0 -z-10 bg-gradient-to-b from-black/45 via-black/15 via-45% to-transparent to-60% lg:bg-[radial-gradient(ellipse_65%_60%_at_0%_0%,rgb(0_0_0/0.5),transparent)]"
       />
-      <HeroShowcase slides={slides} note={note}>
+      <HeroShowcase slides={slides}>
         <div>
           <h1 id="hero-heading" className="text-[2.125rem] leading-[1.08] tracking-[-0.035em] text-on-dark [text-shadow:0_1px_16px_rgb(0_0_0/0.4)] sm:text-display-hero">
             <span className="block">Beautifully considered.</span>
