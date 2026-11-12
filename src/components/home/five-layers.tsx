@@ -31,9 +31,19 @@ export function FiveLayers() {
 
           <div className="mt-10 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[1fr_auto] lg:items-start lg:gap-16">
             <div>
-              <p className="text-lede text-on-dark">
-                Residential lifetime warranty. 10 years commercial, in light and medium traffic areas.
-              </p>
+              <div className="flex items-center gap-5">
+                <Image
+                  src="/brand/warranty-residential-lifetime.png"
+                  alt="Residential lifetime warranty"
+                  width={467}
+                  height={467}
+                  sizes="6rem"
+                  className="h-auto w-20 shrink-0 sm:w-24"
+                />
+                <p className="text-lede text-on-dark">
+                  Residential lifetime warranty. 10 years commercial, in light and medium traffic areas.
+                </p>
+              </div>
               <WarrantyDisclaimer tone="dark" className="mt-3 max-w-3xl text-[0.75rem]" />
             </div>
             <ButtonLink href="/technology" variant="quiet-on-dark">
