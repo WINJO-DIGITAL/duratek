@@ -41,7 +41,9 @@ export function FinishCard({
   const others = finish.images.filter((i) => (i.kind === "room" || i.kind === "closeup") && !isSecondaryRoom(i) && i !== primary);
   const photos = [primary, ...others].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 5);
   const format = plankFormat(finish.specs);
-  const measures = measureLine(finish.specs);
+  const measures = [measureLine(finish.specs), finish.specs.wear_layer_mm && `${finish.specs.wear_layer_mm} mm wear layer`]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <article

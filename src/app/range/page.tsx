@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { PageHero } from "@/components/content/page-hero";
-import { ScratchShieldBadge } from "@/components/content/warranty";
+import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishCard } from "@/components/finish/finish-card";
 import { HelpChoose } from "@/components/finish/help-choose";
@@ -92,6 +92,11 @@ export default async function RangePage() {
           <Suspense fallback={<RangeGrid items={items} />}>
             <RangeBrowser items={items} formats={formatOptions(finishes)} colourSwatches={colourSwatches} />
           </Suspense>
+        </div>
+        {/* The warranty, once, with its disclaimer, where the range is chosen. */}
+        <div className="mt-stack border-t border-line pt-6">
+          <p className="text-navy">Residential lifetime warranty, 25 years. Commercial, 10 years for light and medium traffic.</p>
+          <WarrantyDisclaimer className="mt-3" />
         </div>
         {/* The sample offer follows the range: by then there is something to choose from. */}
         <SamplePromo
