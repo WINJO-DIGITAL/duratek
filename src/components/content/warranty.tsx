@@ -18,39 +18,7 @@ export function WarrantyDisclaimer({ tone = "light", className }: { tone?: "ligh
   );
 }
 
-/*
- * Warranty badge placeholders: typographic seals until the client supplies
- * the warranty artwork. Replace the internals with the real files.
- */
-function Seal({
-  top,
-  big,
-  bottom,
-  tone,
-  className,
-}: {
-  top: string;
-  big: string;
-  bottom: string;
-  tone: "light" | "dark";
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn(
-        "flex aspect-square w-36 flex-col items-center justify-center border p-3 text-center sm:w-40",
-        tone === "dark" ? "border-on-dark/40 text-on-dark" : "border-navy/30 text-navy",
-        className,
-      )}
-    >
-      <span className={cn("eyebrow text-[0.625rem] before:hidden", tone === "dark" && "text-green-on-navy")}>{top}</span>
-      <span className="mt-2 font-display text-[1.75rem] leading-none">{big}</span>
-      <span className="mt-2 text-[0.6875rem] font-medium uppercase tracking-[0.14em]">{bottom}</span>
-    </div>
-  );
-}
-
-export function WarrantyBadges({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
+export function WarrantyBadges({ className }: { className?: string }) {
   return (
     <div className={cn("flex flex-wrap gap-4", className)}>
       <Image
