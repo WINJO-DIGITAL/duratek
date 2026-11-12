@@ -1,19 +1,32 @@
 # Production upgrade plan
 
-Status: **rehearsed locally, not applied.** Nothing in this plan has been run against production. Applying it needs the owner's go-ahead.
+Status: **applied.** All eight migrations are in the live database. They were applied by hand, in pieces, not with `supabase db push`, so the migration history table needed repairing (see "Migration history" below). Keep this file for the steps to follow when the next migration is added.
 
 ## Where production is
 
-- The live site runs commit `6b40e4e` from branch `claude/dazzling-gauss-c8nd72`. Pushing to that branch deploys.
-- The live database (`oxmwtjyfjbhajzctisbi`) has the first two migrations: `20261104120000_init_schema` and `20261105100000_finish_rrp`.
-- **Six** migrations are waiting, in this order:
+- The live database is the Supabase project `yylabmndksmbfeuqgtmt` (name `duratek`, eu-west-1). `NEXT_PUBLIC_SUPABASE_URL` in Vercel points at it. The older project `oxmwtjyfjbhajzctisbi` is no longer the live one; do not link the CLI to it.
+- The live site deploys from the branch `claude/dazzling-gauss-c8nd72`. Pushing to that branch deploys. The working branch is `claude/bold-gauss-flm5ge`; merge it into the live branch fast-forward only.
+- All eight migrations in `supabase/migrations/` are applied:
+  - `20261104120000_init_schema`
+  - `20261105100000_finish_rrp`
   - `20261108100000_trade_platform`
   - `20261109090000_account_suspended`
   - `20261109100000_foundation`
   - `20261110090000_quote_line_kinds`
   - `20261110100000_trade_portal`
   - `20261111090000_admin_operations`
-- The working branch `claude/bold-gauss-flm5ge` merges into the production branch with no conflicts.
+
+## Migration history
+
+The Supabase CLI decides what to apply by comparing the versions in `supabase_migrations.schema_migrations` with the file names in `supabase/migrations/`. Applied by hand, the live history did not match: the first migrations were recorded under the time they were applied (for example `20261111204943`), `foundation` was recorded as three parts, and `trade_portal` and `admin_operations` were not recorded at all. Run as it was, `supabase db push` would have tried to apply every migration again and failed.
+
+The history is repaired when it lists exactly the eight versions above, one row each, with the names in the file names. To check:
+
+```sql
+select version, name from supabase_migrations.schema_migrations order by version;
+```
+
+If it does not match, repair it without touching the schema (every object from these migrations already exists): rename each recorded version to the file's version, keep one `foundation` row, and insert `trade_portal` and `admin_operations`. Or, from a machine with the CLI, `supabase migration repair --status applied <version>` for each version in the list. **Do not run `supabase db push` until the check above matches.** The next migration should then be added as a new file and applied with `supabase db push`, which will record it correctly.
 
 ## What the rehearsal showed
 
@@ -37,7 +50,7 @@ What the rehearsal cannot show: production's real rows. If production holds data
 ## The steps
 
 - **Count the rows first**, so there is something to compare. In the Supabase SQL editor on the live project, run the counts of `finishes`, `prices`, `price_overrides`, `profiles`, `sample_requests`, `stockists`, `documents` and `shortlists`, and keep the result.
-- **Apply the migrations.** From a machine with the Supabase CLI: `supabase link --project-ref oxmwtjyfjbhajzctisbi`, then `supabase db push`. It lists the six pending migrations and asks before applying. Do not use `db reset` on the live project: it deletes data.
+- **Apply the migrations.** From a machine with the Supabase CLI: `supabase link --project-ref yylabmndksmbfeuqgtmt`, then `supabase db push`. It lists the pending migrations and asks before applying. Do not use `db reset` on the live project: it deletes data.
 - **Check the data.** Run the same counts again; they must match. Then check: `select count(*) from product_variants where is_default` equals the number of finishes, and `select role, count(*) from profiles group by role` shows the owner as `super_admin`.
 - **Deploy the code.** Merge `claude/bold-gauss-flm5ge` into `claude/dazzling-gauss-c8nd72` and push. Vercel builds and deploys.
 - **Check the live site.** Open the home page, the range and a finish page (the RRP should show). Log in as the owner and open `/admin`. Log in as a trade account and open `/trade/account/catalogue`.

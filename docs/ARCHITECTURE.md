@@ -8,7 +8,7 @@ This file records what was found in the existing project (Phase 1) and how the b
 | --- | --- |
 | Frontend | Next.js 16 App Router, React 19, TypeScript strict, Cache Components (`"use cache"`, `cacheTag`, `updateTag`), Tailwind v4 tokens in `src/app/globals.css`, Motion. |
 | Hosting | Vercel project `duratek` (team `wnjo`). Production deploys from the `claude/dazzling-gauss-c8nd72` branch of this repository. |
-| Database | Supabase Postgres (project ref `oxmwtjyfjbhajzctisbi`, eu-west-1), set by `NEXT_PUBLIC_SUPABASE_URL` in Vercel. Schema in `supabase/migrations/`, RLS on every table, pgTAP tests in `supabase/tests/`. |
+| Database | Supabase Postgres (project ref `yylabmndksmbfeuqgtmt`, eu-west-1), set by `NEXT_PUBLIC_SUPABASE_URL` in Vercel. Schema in `supabase/migrations/`, RLS on every table, pgTAP tests in `supabase/tests/`. |
 | Auth | Supabase Auth (email and password). `src/proxy.ts` refreshes sessions only for visitors with an auth cookie. `getAccount()` verifies the user with the auth server once per request. |
 | Clients | `publicSupabase()` (anon, cookie-less, safe inside `"use cache"`), `userSupabase()` (as the signed-in user, RLS applies), `adminSupabase()` (service role, server only, after validation). |
 | Product data | Eleven published demo finishes (from the Kwik Floors Duratek collection, `is_demo`): eight standard planks (5mm, 181 × 1219mm, 2.21 m² per pack) and three extra-long planks (7mm, 228 × 1492mm, 2.05 m² per pack). All 0.55mm wear layer, rigid SPC core, Scratch Shield, integrated underlay, Unilin click. No herringbone finish yet. |

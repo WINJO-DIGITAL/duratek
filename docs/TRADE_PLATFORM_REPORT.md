@@ -5,7 +5,7 @@ November 2026. Branch `claude/bold-gauss-flm5ge`, built on the production branch
 ## Audit findings that shaped the work
 
 - Production deploys from `claude/dazzling-gauss-c8nd72`. That branch already had public RRP, trade login and application, tier prices, Customer view, and admin for prices and accounts. The work extends it; nothing was rebuilt.
-- Production database: Supabase project `oxmwtjyfjbhajzctisbi` (eu-west-1). It is **not** reachable from this build environment (not in the connected Supabase account, and the network blocks it). The connected Supabase project `oqwkvrhkgmuhrrxfsahx` belongs to an unrelated application and was not touched.
+- Production database: Supabase project `yylabmndksmbfeuqgtmt` (eu-west-1). It is **not** reachable from this build environment (not in the connected Supabase account, and the network blocks it). The connected Supabase project `oqwkvrhkgmuhrrxfsahx` belongs to an unrelated application and was not touched.
 - Production environment variables have no `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_FROM` or `OWNER_NOTIFY_EMAIL`. Until they are set, sample requests and trade applications stay closed online (by design), and no emails are sent.
 - Verified against the seed and the live site: eleven finishes; standard plank 5mm, 181 × 1219mm, 2.21 m² per pack; extra-long 7mm, 228 × 1492mm, 2.05 m² per pack; 0.55mm wear layer; Unilin click; no herringbone finish yet. No RRPs are set in production yet.
 
@@ -79,8 +79,8 @@ These need you, or Duratek. Nothing here was guessed:
 
 Run the steps in this order. The migration is additive: it creates three tables, three functions and one nullable column, and changes or deletes nothing that exists. The public site does not depend on it (verified on the preview against production), but the new trade and admin pages do, so apply it before the code goes live.
 
-1. **Back up.** In the Supabase dashboard for project `oxmwtjyfjbhajzctisbi`: Database, Backups. Confirm a recent backup exists.
-2. **Apply the migration.** Either `npx supabase link --project-ref oxmwtjyfjbhajzctisbi && npx supabase db push`, which applies only `20261108100000_trade_platform.sql`, or paste that file into the SQL editor and run it once.
+1. **Back up.** In the Supabase dashboard for project `yylabmndksmbfeuqgtmt`: Database, Backups. Confirm a recent backup exists.
+2. **Apply the migration.** Either `npx supabase link --project-ref yylabmndksmbfeuqgtmt && npx supabase db push`, which applies only `20261108100000_trade_platform.sql`, or paste that file into the SQL editor and run it once.
 3. **Run the RLS tests against a branch or staging copy** if you have one: `npx supabase test db --linked`. They roll back and leave no data.
 4. **Set Vercel environment variables (Production):**
    - `SUPABASE_SERVICE_ROLE_KEY`: Supabase, Settings, API, service role. Server only; never prefix with `NEXT_PUBLIC_`.

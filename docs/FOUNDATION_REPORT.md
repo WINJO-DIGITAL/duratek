@@ -85,7 +85,7 @@ The pgTAP corrections were all mistakes in the tests' expectations. For example,
 The order matters: database first, then code.
 
 1. Back up the production database (Supabase, Database, Backups).
-2. Apply the migrations: `npx supabase link --project-ref oxmwtjyfjbhajzctisbi && npx supabase db push`. This applies `20261108100000`, `20261109090000` and `20261109100000`. The backfill copies existing prices and accounts and refuses to finish if anything would be lost.
+2. Apply the migrations: `npx supabase link --project-ref yylabmndksmbfeuqgtmt && npx supabase db push`. This applies `20261108100000`, `20261109090000` and `20261109100000`. The backfill copies existing prices and accounts and refuses to finish if anything would be lost.
 3. Set the Auth settings above. Set `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`, `EMAIL_FROM` and `OWNER_NOTIFY_EMAIL` in Vercel (Production).
 4. Merge the branch into the production branch; Vercel builds and deploys it.
 5. Smoke test:

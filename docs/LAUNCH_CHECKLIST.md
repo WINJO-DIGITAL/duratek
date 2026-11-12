@@ -10,7 +10,7 @@ Not ready for public launch. The code is in good shape and the automated checks 
 
 ## Blockers (must be done before launch)
 
-- [ ] **Production database has not received the newer migrations.** The production database (`oxmwtjyfjbhajzctisbi`) is on the first two migrations. Six are waiting (not three, as first written). The upgrade is rehearsed locally with no data change: follow `docs/PRODUCTION_UPGRADE.md`, after a backup. *Owner, needs your approval.* Until then the trade portal, enquiries, privacy and analytics do not work in production.
+- [x] **Production database migrations are applied.** All eight migrations are in the live project (`yylabmndksmbfeuqgtmt`). They were applied by hand, so the migration history needed repairing before any `supabase db push`: see `docs/PRODUCTION_UPGRADE.md`.
 - [ ] **Service-role key is not set in production.** `SUPABASE_SERVICE_ROLE_KEY` is missing from the Vercel project. Without it, online sample requests, enquiries, privacy requests, the view counter and the email log all stay closed or silent, and the owner-side code paths that use the service client do not run. *Owner.* Set it as a sensitive variable on Production only.
 - [ ] **No email provider is configured.** `RESEND_API_KEY`, `EMAIL_FROM` and `OWNER_NOTIFY_EMAIL` are missing. Every transactional email (trade application received and approved, sample confirmation, owner alerts, dispatch, enquiries, privacy) will be logged as "not configured" and nothing will be sent. *Owner.* Verify a sending domain in Resend first; `EMAIL_FROM` must be on that domain.
 - [ ] **Retention cron cannot run.** `CRON_SECRET` is missing, so `/api/cron/retention` refuses every call (correct, but personal data is never purged automatically). Set a long random value. *Owner.*
