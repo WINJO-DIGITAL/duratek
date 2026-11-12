@@ -63,7 +63,7 @@ export default async function RangePage() {
         <PageHero
           image={hero?.image}
           focus="object-[50%_62%]"
-          badge={<ScratchShieldBadge className="w-20 drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-28" />}
+          badge={<ScratchShieldBadge className="w-16! drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-24!" />}
         >
           <SectionIntro
             as="h1"
