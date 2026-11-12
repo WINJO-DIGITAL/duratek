@@ -77,7 +77,7 @@ export async function SiteFooter() {
         {photo && (
           <Link
             href={`/range/${photo.finish.slug}`}
-            className="group relative block aspect-[5/6] overflow-hidden rounded-card bg-white/5 lg:aspect-[4/5]"
+            className="group relative hidden aspect-[4/5] overflow-hidden rounded-card bg-white/5 lg:block"
           >
             <FinishImage
               image={photo.image}
