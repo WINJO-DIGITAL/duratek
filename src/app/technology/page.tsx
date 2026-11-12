@@ -8,6 +8,7 @@ import { AskForDocuments } from "@/components/content/ask-for-documents";
 import { byTone, getFinishes, grainImage, imagesOfKind } from "@/lib/catalogue";
 import { pickByFileName } from "@/lib/catalogue/curation";
 import { imagePool } from "@/lib/catalogue/image-pool";
+import { ButtonLink } from "@/components/ui/button";
 import { GENERAL_CONTACT } from "@/lib/contact";
 
 export const metadata: Metadata = {
@@ -36,7 +37,7 @@ const CHAPTERS: { title: string; body: string; note?: string }[] = [
   },
   {
     title: "Unilin click-lock",
-    body: "Each plank clicks into the next using Unilin’s locking joint, and the finished floor floats over the subfloor instead of being glued. Follow the fitting instructions, including subfloor preparation.",
+    body: "Each plank clicks into the next using Unilin’s locking joint, so the planks stay aligned and the finished floor floats over the subfloor instead of being glued. Follow the fitting instructions, including subfloor preparation.",
   },
 ];
 
@@ -128,6 +129,20 @@ export default async function TechnologyPage() {
             </div>
           </section>
         )}
+        <section className="bg-cream py-section-sm">
+          <div className="container-page grid gap-8 lg:grid-cols-12 lg:items-end lg:gap-14">
+            <div className="lg:col-span-8">
+              <p className="eyebrow">Straight plank or herringbone</p>
+              <h2 className="mt-3 text-display-md text-navy">Timeless in style. Resilient by design.</h2>
+              <p className="mt-4 max-w-[60ch] text-lede text-navy/80">
+                Choose the look you want, then the tone that suits the room.
+              </p>
+            </div>
+            <div className="lg:col-span-4 lg:justify-self-end">
+              <ButtonLink href="/range">Explore the range</ButtonLink>
+            </div>
+          </div>
+        </section>
         <div className="pb-section" />
       </>
     </PageTransition>
