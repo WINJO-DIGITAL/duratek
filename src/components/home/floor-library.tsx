@@ -141,7 +141,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
                   i === active ? "opacity-100" : "opacity-0",
                 )}
               >
-                <FinishImage image={room} sizes="100vw" className="object-cover object-center" />
+                <FinishImage image={room} sizes="100vw" className="object-cover object-[50%_90%]" />
               </div>
             );
           })}
