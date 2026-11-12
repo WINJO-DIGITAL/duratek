@@ -132,7 +132,7 @@ export async function SiteFooter() {
 
       {/* The wordmark, signed small: the closing signature of every page. */}
       <div className="container-page pb-8 sm:pb-10" aria-hidden="true">
-        <Wordmark tone="dark" className="h-auto w-44 sm:w-56" />
+        <Wordmark tone="dark" className="h-auto! w-44! sm:w-56!" />
       </div>
 
       <div className="bg-navy-deep">
