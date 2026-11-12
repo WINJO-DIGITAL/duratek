@@ -536,3 +536,59 @@
     display: none;
   }
 }
+
+/* Price range: two handles on one track. Only the handles take pointer input, so the track stays tappable. */
+.price-range {
+  position: relative;
+  height: 44px;
+}
+.price-range input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+}
+.price-range input[type="range"]::-webkit-slider-runnable-track {
+  height: 44px;
+  background: transparent;
+}
+.price-range input[type="range"]::-moz-range-track {
+  height: 44px;
+  background: transparent;
+}
+.price-range input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 24px;
+  height: 24px;
+  margin-top: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-navy);
+  background: var(--color-off-white);
+  cursor: grab;
+}
+.price-range input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-navy);
+  background: var(--color-off-white);
+  cursor: grab;
+}
+.price-range input[type="range"]:focus-visible {
+  outline: none;
+}
+.price-range input[type="range"]:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-green-ink);
+  outline-offset: 2px;
+}
+.price-range input[type="range"]:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-green-ink);
+  outline-offset: 2px;
+}

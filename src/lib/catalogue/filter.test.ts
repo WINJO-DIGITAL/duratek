@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { filtersToQuery, isFiltered, matches, NO_FILTERS, priceBandOf, readFilters, toneGroups } from "./filter";
+import { filtersToQuery, isFiltered, matches, NO_FILTERS, parsePounds, readFilters, toneGroups } from "./filter";
 
 const keswick = { id: "1", name: "Keswick Oak", style: "plank", colourFamily: "natural", format: "standard" };
 const honister = { id: "2", name: "Honister Slate Grey", style: "plank", colourFamily: "grey", format: "standard" };
@@ -14,14 +14,15 @@ describe("range filters", () => {
       format: "extra-long",
       colour: "grey",
       tone: null,
-      price: null,
+      priceMin: null,
+      priceMax: null,
       q: "oak",
     });
     expect(readFilters(new URLSearchParams(""))).toEqual(NO_FILTERS);
   });
 
   it("round-trips through the query string", () => {
-    const f = { style: null, format: "standard", colour: "warm", tone: "dark" as const, price: "under-30" as const, q: "oak" };
+    const f = { style: null, format: "standard", colour: "warm", tone: "dark" as const, priceMin: 20, priceMax: 30, q: "oak" };
     expect(readFilters(new URLSearchParams(filtersToQuery(f)))).toEqual(f);
     expect(filtersToQuery(NO_FILTERS)).toBe("");
     expect(isFiltered(NO_FILTERS)).toBe(false);
@@ -49,21 +50,31 @@ describe("range filters", () => {
     expect(matches(long, { ...f, q: "grey" })).toBe(false);
   });
 
-  it("filters by price band on the RRP per m²", () => {
+  it("filters by a typed or dragged price range on the RRP per m²", () => {
     const cheap = { ...keswick, rrpPence: 2500 };
     const mid = { ...fellside, rrpPence: 3715 };
     const unpriced = { ...honister };
-    expect(priceBandOf(2500)).toBe("under-30");
-    expect(priceBandOf(3715)).toBe("30-to-40");
-    expect(priceBandOf(4500)).toBe("over-40");
-    expect(priceBandOf(undefined)).toBeUndefined();
-    expect(matches(cheap, { ...NO_FILTERS, price: "under-30" })).toBe(true);
-    expect(matches(mid, { ...NO_FILTERS, price: "under-30" })).toBe(false);
-    expect(matches(unpriced, { ...NO_FILTERS, price: "under-30" })).toBe(false);
+    const between = (min: number | null, max: number | null) => ({ ...NO_FILTERS, priceMin: min, priceMax: max });
+    expect(matches(cheap, between(20, 30))).toBe(true);
+    expect(matches(mid, between(20, 30))).toBe(false);
+    expect(matches(cheap, between(25, 25))).toBe(true);
+    expect(matches(cheap, between(null, 30))).toBe(true);
+    expect(matches(mid, between(30, null))).toBe(true);
+    expect(matches(unpriced, between(20, 30))).toBe(false);
     expect(matches(unpriced, NO_FILTERS)).toBe(true);
-    expect(readFilters(new URLSearchParams("price=30-to-40")).price).toBe("30-to-40");
-    expect(readFilters(new URLSearchParams("price=nonsense")).price).toBeNull();
-    expect(isFiltered({ ...NO_FILTERS, price: "over-40" })).toBe(true);
+    expect(readFilters(new URLSearchParams("from=20&to=30")).priceMin).toBe(20);
+    expect(readFilters(new URLSearchParams("from=20&to=30")).priceMax).toBe(30);
+    expect(readFilters(new URLSearchParams("from=nonsense")).priceMin).toBeNull();
+    expect(isFiltered(between(null, 40))).toBe(true);
+    expect(isFiltered(NO_FILTERS)).toBe(false);
+    expect(filtersToQuery(between(20, 30))).toBe("from=20&to=30");
+  });
+
+  it("parses pounds from the URL, rejecting negatives and non-numbers", () => {
+    expect(parsePounds("27.5")).toBe(27.5);
+    expect(parsePounds("-3")).toBeNull();
+    expect(parsePounds("abc")).toBeNull();
+    expect(parsePounds(null)).toBeNull();
   });
 });
 

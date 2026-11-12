@@ -8,7 +8,7 @@ export interface FilterableFinish {
   format?: string;
   /** Extra words search should match, such as the colour family and format labels. */
   keywords?: string;
-  /** Public RRP per m² in pence, when set. Used for the price bands. */
+  /** Public RRP per m² in pence, when set. Used for the price filter. */
   rrpPence?: number;
   /** Light, mid or dark third of the range, from the measured swatch; absent when unmeasured. */
   toneGroup?: ToneGroupId;
@@ -37,17 +37,20 @@ export function toneGroups(items: { id: string; tone?: number }[]): Map<string, 
   return groups;
 }
 
-/** Price bands on the RRP per m², in pence, inclusive. Shown only where a finish falls in them. */
-export const PRICE_BANDS = [
-  { id: "under-30", label: "Under £30", min: 0, max: 2999 },
-  { id: "30-to-40", label: "£30 to £40", min: 3000, max: 4000 },
-  { id: "over-40", label: "Over £40", min: 4001, max: Number.POSITIVE_INFINITY },
-] as const;
-export type PriceBandId = (typeof PRICE_BANDS)[number]["id"];
+/** The price slider's domain, in pounds per m² (RRP). Typed values outside it are clamped to it. */
+export const PRICE_DOMAIN = { min: 10, max: 50 } as const;
 
-export function priceBandOf(rrpPence: number | undefined): PriceBandId | undefined {
-  if (rrpPence === undefined) return undefined;
-  return PRICE_BANDS.find((b) => rrpPence >= b.min && rrpPence <= b.max)?.id;
+/** A price filter in pounds per m² (RRP): a finish is in range when its RRP falls between the two, inclusive. */
+export interface PriceRange {
+  min: number | null;
+  max: number | null;
+}
+
+/** A pound amount from the URL or a form: a non-negative number, or null. */
+export function parsePounds(value: string | null | undefined): number | null {
+  if (value === null || value === undefined || value.trim() === "") return null;
+  const n = Number(value);
+  return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
 export interface RangeFilters {
@@ -55,11 +58,20 @@ export interface RangeFilters {
   format: string | null;
   colour: string | null;
   tone: ToneGroupId | null;
-  price: PriceBandId | null;
+  priceMin: number | null;
+  priceMax: number | null;
   q: string;
 }
 
-export const NO_FILTERS: RangeFilters = { style: null, format: null, colour: null, tone: null, price: null, q: "" };
+export const NO_FILTERS: RangeFilters = {
+  style: null,
+  format: null,
+  colour: null,
+  tone: null,
+  priceMin: null,
+  priceMax: null,
+  q: "",
+};
 
 export function readFilters(params: { get(name: string): string | null }): RangeFilters {
   return {
@@ -67,7 +79,8 @@ export function readFilters(params: { get(name: string): string | null }): Range
     format: params.get("format") || null,
     colour: params.get("colour") || null,
     tone: (TONE_GROUPS.find((t) => t.id === params.get("tone"))?.id as ToneGroupId | undefined) ?? null,
-    price: (PRICE_BANDS.find((b) => b.id === params.get("price"))?.id as PriceBandId | undefined) ?? null,
+    priceMin: parsePounds(params.get("from")),
+    priceMax: parsePounds(params.get("to")),
     q: (params.get("q") ?? "").trim(),
   };
 }
@@ -79,13 +92,16 @@ export function filtersToQuery(filters: RangeFilters): string {
   if (filters.format) sp.set("format", filters.format);
   if (filters.colour) sp.set("colour", filters.colour);
   if (filters.tone) sp.set("tone", filters.tone);
-  if (filters.price) sp.set("price", filters.price);
+  if (filters.priceMin !== null) sp.set("from", String(filters.priceMin));
+  if (filters.priceMax !== null) sp.set("to", String(filters.priceMax));
   if (filters.q) sp.set("q", filters.q);
   return sp.toString();
 }
 
 export function isFiltered(filters: RangeFilters): boolean {
-  return Boolean(filters.style || filters.format || filters.colour || filters.tone || filters.price || filters.q);
+  return Boolean(
+    filters.style || filters.format || filters.colour || filters.tone || filters.priceMin !== null || filters.priceMax !== null || filters.q,
+  );
 }
 
 export function matches(f: FilterableFinish, filters: RangeFilters): boolean {
@@ -93,7 +109,12 @@ export function matches(f: FilterableFinish, filters: RangeFilters): boolean {
   if (filters.format && f.format !== filters.format) return false;
   if (filters.colour && f.colourFamily !== filters.colour) return false;
   if (filters.tone && f.toneGroup !== filters.tone) return false;
-  if (filters.price && priceBandOf(f.rrpPence) !== filters.price) return false;
+  if (filters.priceMin !== null || filters.priceMax !== null) {
+    if (f.rrpPence === undefined) return false;
+    const pounds = f.rrpPence / 100;
+    if (filters.priceMin !== null && pounds < filters.priceMin) return false;
+    if (filters.priceMax !== null && pounds > filters.priceMax) return false;
+  }
   if (filters.q) {
     const words = filters.q.toLowerCase().replace(/-/g, " ").split(/\s+/).filter(Boolean);
     const hay = `${f.name} ${f.keywords ?? ""}`.toLowerCase().replace(/-/g, " ");

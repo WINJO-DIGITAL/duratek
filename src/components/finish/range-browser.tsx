@@ -9,8 +9,6 @@ import {
   isFiltered,
   matches,
   NO_FILTERS,
-  PRICE_BANDS,
-  priceBandOf,
   readFilters,
   TONE_GROUPS,
   type FilterableFinish,
@@ -20,6 +18,7 @@ import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
 import { FilterRows, type FilterOption, type FilterRowDef } from "./filter-rows";
+import { PriceRangeFilter } from "./price-range-filter";
 
 export interface RangeItem extends FilterableFinish {
   card: ReactNode;
@@ -47,15 +46,17 @@ export function RangeBrowser({
   const tones = TONE_GROUPS.map((t) => ({ ...t, count: items.filter((i) => i.toneGroup === t.id).length })).filter(
     (t) => t.count > 0,
   );
-  // Only the price bands that at least one finish falls in.
-  const bands = PRICE_BANDS.filter((b) => items.some((i) => priceBandOf(i.rrpPence) === b.id));
   const visible = items.filter((i) => matches(i, filters));
   const sheet = useRef<HTMLDialogElement>(null);
   // How many finishes each choice would leave, with the other filters still applied.
   const countWith = (key: keyof RangeFilters, value: string | null) =>
     items.filter((i) => matches(i, { ...filters, [key]: value } as RangeFilters)).length;
   const colours = distinct(items.map((i) => i.colourFamily));
-  const activeCount = [filters.style, filters.format, filters.colour, filters.tone, filters.price].filter(Boolean).length;
+  const priceSet = filters.priceMin !== null || filters.priceMax !== null;
+  const activeCount = [filters.style, filters.format, filters.colour, filters.tone, priceSet ? 1 : null].filter(Boolean).length;
+  // How many finishes a given price range would leave, with the other filters still applied.
+  const countPrice = (range: { min: number | null; max: number | null }) =>
+    items.filter((i) => matches(i, { ...filters, priceMin: range.min, priceMax: range.max })).length;
   const option = (key: keyof RangeFilters, value: string | null, label: string, sub?: string): FilterOption => ({
     value,
     label,
@@ -90,13 +91,6 @@ export function RangeBrowser({
       value: filters.tone,
       onChange: (v) => update({ tone: v as RangeFilters["tone"] }),
       options: [option("tone", null, "All"), ...tones.map((t) => option("tone", t.id, t.label))],
-    },
-    {
-      key: "price",
-      label: "Price per m²",
-      value: filters.price,
-      onChange: (v) => update({ price: v as RangeFilters["price"] }),
-      options: [option("price", null, "All"), ...bands.map((b) => option("price", b.id, b.label))],
     },
   ];
   const active = isFiltered(filters);
@@ -137,6 +131,9 @@ export function RangeBrowser({
       <div className="hidden gap-8 lg:flex lg:items-start lg:justify-between">
         <div className="min-w-0 flex-1">
           <FilterRows rows={rows} />
+          <div className="mt-6 max-w-md">
+            <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
+          </div>
         </div>
         <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1 pt-6">
           {(["large", "small"] as const).map((v) => (
@@ -176,8 +173,9 @@ export function RangeBrowser({
               <span className="sr-only">Close filters</span>
             </button>
           </div>
-          <div className="mt-6">
+          <div className="mt-6 grid gap-6">
             <FilterRows rows={rows} />
+            <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
           </div>
           <div className="mt-8 flex items-center justify-between gap-4">
             {active ? (

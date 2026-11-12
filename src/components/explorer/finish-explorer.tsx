@@ -50,7 +50,8 @@ export function FinishExplorer({
     format: params.get("format") || null,
     colour: params.get("colour") || null,
     tone: null,
-    price: null,
+    priceMin: null,
+    priceMax: null,
     q: "",
   }));
   const visible = finishes.filter((f) => matches(f, filters));
@@ -122,7 +123,7 @@ export function FinishExplorer({
           <h1 className="text-display-md font-light text-on-dark">No Finishes Match Those Filters.</h1>
           <button
             type="button"
-            onClick={() => setFilters({ style: null, format: null, colour: null, tone: null, price: null, q: "" })}
+            onClick={() => setFilters({ style: null, format: null, colour: null, tone: null, priceMin: null, priceMax: null, q: "" })}
             className="min-h-tap text-on-dark underline underline-offset-4"
           >
             Show every finish
