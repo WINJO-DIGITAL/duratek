@@ -18,7 +18,7 @@ const STACK = [
 export function LayerStack() {
   return (
     <div className="grid items-center gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
-      <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-card bg-navy/60 lg:max-w-[30rem]" aria-hidden="true">
+      <div className="relative mx-auto w-full max-w-[26rem] overflow-hidden rounded-card bg-navy lg:max-w-[30rem]" aria-hidden="true">
         <video
           className="block h-auto w-full motion-reduce:hidden"
           src="/brand/layers-assemble.mp4"
