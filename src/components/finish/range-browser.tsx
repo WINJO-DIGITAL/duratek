@@ -10,6 +10,7 @@ import {
   matches,
   NO_FILTERS,
   readFilters,
+  DEFAULT_SORT,
   SORTS,
   sortItems,
   TONE_GROUPS,
@@ -58,6 +59,8 @@ export function RangeBrowser({
   const colours = distinct(items.map((i) => i.colourFamily));
   const priceSet = filters.priceMin !== null || filters.priceMax !== null;
   const activeCount = [filters.style, filters.format, filters.colour, filters.tone, priceSet ? 1 : null].filter(Boolean).length;
+  // The badge on the phone button: filters set, plus one if the order has been changed.
+  const changedCount = activeCount + (filters.sort !== DEFAULT_SORT ? 1 : 0);
   // How many finishes a given price range would leave, with the other filters still applied.
   const countPrice = (range: { min: number | null; max: number | null }) =>
     items.filter((i) => matches(i, { ...filters, priceMin: range.min, priceMax: range.max })).length;
@@ -123,10 +126,9 @@ export function RangeBrowser({
           onClick={() => sheet.current?.showModal()}
           className="min-h-tap rounded-control border border-navy/20 bg-white px-4 text-[0.9375rem] text-navy"
         >
-          Filters
-          {activeCount > 0 && <span className="data ml-2 text-[0.8125rem] text-ink-muted">{activeCount}</span>}
+          Filters and sort
+          {changedCount > 0 && <span className="data ml-2 text-[0.8125rem] text-ink-muted">{changedCount}</span>}
         </button>
-        <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} className="min-w-0 flex-1" />
         <span className="shrink-0 text-[0.9375rem] text-ink-muted">
           {visible.length} {visible.length === 1 ? "finish" : "finishes"}
         </span>
@@ -142,7 +144,7 @@ export function RangeBrowser({
         </div>
         <div className="flex shrink-0 items-center gap-4 pt-6">
           <label className="flex items-center gap-2 text-[0.875rem] text-ink-muted">
-            Sort
+            Sort by
             <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} />
           </label>
         <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1">
@@ -177,7 +179,7 @@ export function RangeBrowser({
         <div className="px-[var(--spacing-gutter)] pb-8 pt-5">
           <div className="flex items-center justify-between">
             <h2 id="filter-title" className="font-display text-[1.5rem] font-normal text-navy">
-              Filters
+              Filters and sort
             </h2>
             <button type="button" onClick={() => sheet.current?.close()} className="flex size-tap items-center justify-center text-navy">
               <Close size={20} />
@@ -185,6 +187,10 @@ export function RangeBrowser({
             </button>
           </div>
           <div className="mt-6 grid gap-6">
+            <fieldset className="min-w-0">
+              <legend className="text-[0.8125rem] font-medium uppercase tracking-[0.12em] text-ink-muted">Sort by</legend>
+              <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} className="mt-2.5 w-full" />
+            </fieldset>
             <FilterRows rows={rows} />
             <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
           </div>
