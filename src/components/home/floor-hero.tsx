@@ -21,11 +21,11 @@ export function FloorHero({ slides, note }: { slides: HeroSlide[]; note?: string
       />
       <HeroShowcase slides={slides} note={note}>
         <div>
-          <h1 id="hero-heading" className="text-[2.125rem] leading-[1.08] tracking-[-0.035em] text-on-dark sm:text-display-hero">
+          <h1 id="hero-heading" className="text-[2.125rem] leading-[1.08] tracking-[-0.035em] text-on-dark [text-shadow:0_1px_16px_rgb(0_0_0/0.4)] sm:text-display-hero">
             <span className="block">Beautifully considered.</span>
             <span className="block font-light text-on-dark/90">Built to perform.</span>
           </h1>
-          <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/85 sm:mt-6">
+          <p className="mt-5 max-w-[30rem] text-hero-lede text-on-dark/90 [text-shadow:0_1px_14px_rgb(0_0_0/0.45)] sm:mt-6">
             Waterproof click flooring with a 0.55mm wear layer and a scratch-resistant finish.
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-x-9 gap-y-3 sm:mt-10">

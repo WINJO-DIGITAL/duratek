@@ -135,7 +135,7 @@ export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; 
         )}
       </div>
 
-      <div className="container-page grid flex-1 gap-6 pb-8 pt-28 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:pb-16">
+      <div className="container-page relative grid flex-1 gap-6 pb-8 pt-24 sm:gap-10 sm:pb-14 sm:pt-40 lg:grid-cols-[1fr_auto] lg:pb-16">
         {/* The copy at the top, over the walls; the finish control at the bottom. The floor between stays clear. */}
         <div className="flex h-full flex-col items-start justify-between gap-8">
         {children}
@@ -225,7 +225,9 @@ export function HeroShowcase({ slides, children, note }: { slides: HeroSlide[]; 
         </div>
         </div>
         {/* Scratch Shield, the headline surface feature: bottom right, on every screen. */}
-        <ScratchShieldBadge className="w-16! self-end justify-self-end drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-24! lg:w-28! xl:w-32!" />
+        <div className="absolute bottom-8 right-[var(--spacing-gutter)] sm:bottom-14 lg:static lg:self-end">
+          <ScratchShieldBadge className="w-16! drop-shadow-[0_6px_18px_rgba(0,0,0,0.35)] sm:w-24! lg:w-28! xl:w-32!" />
+        </div>
       </div>
     </div>
   );
