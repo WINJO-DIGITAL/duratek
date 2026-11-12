@@ -36,29 +36,6 @@ export default async function WarrantyPage() {
           </div>
         </div>
 
-        <section className="py-section" aria-label="Warranty cover">
-          <div className="container-page">
-            <div className="grid gap-px border border-line bg-line md:grid-cols-2">
-              <div className="bg-off-white p-6 sm:p-10">
-                <p className="eyebrow">Residential</p>
-                <h2 className="reveal mt-3 text-display-md text-navy">Lifetime Warranty</h2>
-                <p className="mt-4 text-lede text-ink-muted">
-                  For homes. Residential lifetime is defined as{" "}
-                  <strong className="font-medium text-navy">25 years</strong>.
-                </p>
-              </div>
-              <div className="bg-off-white p-6 sm:p-10">
-                <p className="eyebrow">Commercial</p>
-                <h2 className="reveal mt-3 text-display-md text-navy">10 Year Warranty</h2>
-                <p className="mt-4 text-lede text-ink-muted">
-                  For <strong className="font-medium text-navy">light and medium traffic</strong> commercial areas.
-                  Not applicable to heavy traffic areas.
-                </p>
-              </div>
-            </div>
-          </div>
-        </section>
-
         <section className="bg-cream py-section">
           <div className="container-page grid gap-10 lg:grid-cols-12 lg:items-center lg:gap-16">
             {image && (

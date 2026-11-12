@@ -69,7 +69,7 @@ export default async function TechnologyPage() {
         <section className="on-dark bg-navy py-section" aria-label="The five layers">
           <div className="container-page">
             {/* The same film as the home page: the layers are named in the chapters below. */}
-            <div className="relative mx-auto w-full max-w-[30rem] overflow-hidden rounded-card bg-navy" aria-hidden="true">
+            <div className="relative mx-auto w-full max-w-[30rem] overflow-hidden rounded-card bg-navy lg:max-w-[40rem]" aria-hidden="true">
               <video
                 className="block h-auto w-full motion-reduce:hidden"
                 src="/brand/layers-assemble.mp4"
