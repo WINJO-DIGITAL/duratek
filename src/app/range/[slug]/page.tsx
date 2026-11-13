@@ -176,9 +176,11 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
                 name={finish.name}
                 aspect="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
                 sizes="(min-width: 1024px) 54vw, 100vw"
+                overlay={
+                  // A seal in the bottom-right corner of the photograph, clear of the gallery arrows and counter.
+                  <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
+                }
               />
-              {/* A seal in the bottom-right corner, clear of the gallery arrows and counter. */}
-              <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24! lg:bottom-auto lg:top-4" />
             </div>
           ) : (
             <div className="aspect-[4/5] rounded-card bg-line sm:aspect-[6/5]" />

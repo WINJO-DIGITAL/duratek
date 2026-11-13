@@ -19,12 +19,15 @@ export function FinishGallery({
   name,
   aspect = "aspect-[4/5] sm:aspect-[6/5]",
   sizes = "(min-width: 1024px) 58vw, 100vw",
+  overlay,
 }: {
   images: CatalogueImage[];
   name: string;
   /** Frame proportions (Tailwind aspect classes), per breakpoint. */
   aspect?: string;
   sizes?: string;
+  /** Drawn over the photograph itself, bottom right (for example the Scratch Shield seal). */
+  overlay?: React.ReactNode;
 }) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
@@ -82,6 +85,7 @@ export function FinishGallery({
           ))}
         </div>
 
+        {overlay}
         {images.length > 1 && (
           <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
             <div className="pointer-events-auto flex items-center gap-1 rounded-control bg-off-white/90 px-1 text-navy backdrop-blur-sm">
