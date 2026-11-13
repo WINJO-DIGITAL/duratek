@@ -55,7 +55,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
         role="group"
         aria-label="Finishes, light to dark"
         // pan-y: vertical movement stays the page's scroll; sideways is ours.
-        className="-mx-[var(--spacing-gutter)] flex h-[clamp(13rem,38svh,24rem)] touch-pan-y select-none gap-[2px] sm:h-[30rem] lg:h-[36rem]"
+        className="-mx-[var(--spacing-gutter)] flex h-[clamp(13rem,38svh,24rem)] touch-pan-y select-none gap-[2px] sm:h-[30rem] lg:h-[26rem]"
         onPointerDown={(e) => {
           // A new press: any click left over from a previous scrub no longer applies.
           swallowClick.current = false;

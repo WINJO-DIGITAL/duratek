@@ -115,7 +115,7 @@ export function FinishExplorer({
       }}
     />
   );
-  const frame = "flex h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar)-env(safe-area-inset-bottom))] flex-col bg-navy lg:h-[calc(100svh-var(--spacing-header))]";
+  const frame = "flex h-[calc(100svh-var(--spacing-header)-var(--spacing-bottom-bar)-env(safe-area-inset-bottom))] flex-col bg-navy lg:h-[calc(100svh-var(--spacing-header)-6rem)]";
 
   if (!current) {
     return (
@@ -453,7 +453,7 @@ function Filters({
   ];
   return (
     <div className="border-b border-line bg-off-white">
-      <div role="group" aria-label={`Filter finishes, ${count} shown`} className="container-page grid gap-4 py-4">
+      <div role="group" aria-label={`Filter finishes, ${count} shown`} className="container-page grid gap-4 py-4 lg:grid-cols-2 lg:gap-x-10 lg:py-3">
         <FilterRows rows={rows} />
       </div>
     </div>

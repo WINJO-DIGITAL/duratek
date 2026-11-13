@@ -39,7 +39,7 @@ export default async function WhereToBuyPage({ searchParams }: PageProps<"/where
         </PageHero>
         <header className="container-page pb-section-sm pt-8 sm:pt-10">
           <div>
-            <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
+            <Suspense fallback={<PostcodeSearch id="postcode" />}>
               <SearchWithValue searchParams={searchParams} />
             </Suspense>
           </div>
@@ -63,7 +63,7 @@ async function postcodeParam(searchParams: PageProps<"/where-to-buy">["searchPar
 
 async function SearchWithValue({ searchParams }: { searchParams: PageProps<"/where-to-buy">["searchParams"] }) {
   const raw = await postcodeParam(searchParams);
-  return <PostcodeSearch id="postcode" defaultValue={normalisePostcode(raw) ?? raw} className="lg:justify-self-end" />;
+  return <PostcodeSearch id="postcode" defaultValue={normalisePostcode(raw) ?? raw} />;
 }
 
 async function Results({ searchParams }: { searchParams: PageProps<"/where-to-buy">["searchParams"] }) {
