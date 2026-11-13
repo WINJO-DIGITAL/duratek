@@ -1,11 +1,6 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { Wordmark } from "@/components/brand/wordmark";
-import { FinishImage } from "@/components/finish/finish-image";
-import { getFinishes } from "@/lib/catalogue";
-import { EDITORIAL, pickByFileName } from "@/lib/catalogue/curation";
-import { imagePool } from "@/lib/catalogue/image-pool";
-import { cn } from "@/lib/cn";
 import { COMPANY, GENERAL_CONTACT, telHref } from "@/lib/contact";
 import { FooterContact } from "./footer-contact";
 
@@ -60,9 +55,6 @@ async function copyrightYear() {
  */
 export async function SiteFooter() {
   const year = await copyrightYear();
-  // One tall photograph opens the footer.
-  const finishes = await getFinishes();
-  const photo = pickByFileName(imagePool(finishes, "closeup"), EDITORIAL.footer);
   const companyLine = [
     COMPANY.legalName,
     COMPANY.registrationNumber && `Company no. ${COMPANY.registrationNumber}`,
@@ -72,26 +64,7 @@ export async function SiteFooter() {
 
   return (
     <footer className="on-dark mx-2 overflow-hidden rounded-t-card bg-navy text-on-dark sm:mx-[var(--spacing-gutter)]">
-      <div className={cn("container-page grid gap-10 py-section-sm lg:gap-16", photo && "lg:grid-cols-[1fr_1.15fr] lg:items-start")}>
-        {/* A room first: the finish is named like a caption, and the photograph opens it. */}
-        {photo && (
-          <Link
-            href={`/range/${photo.finish.slug}`}
-            className="group relative hidden aspect-[4/5] overflow-hidden rounded-card bg-white/5 lg:block"
-          >
-            <FinishImage
-              image={photo.image}
-              sizes="(min-width: 1024px) 42vw, 100vw"
-              quality={80}
-              className="object-cover object-center transition-transform duration-[1400ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
-            />
-            <span aria-hidden="true" className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/70 to-transparent" />
-            <span className="data absolute inset-x-0 bottom-0 p-5 text-[0.8125rem] text-white/85 sm:p-6">
-              {photo.finish.name}
-            </span>
-          </Link>
-        )}
-
+      <div className="container-page grid gap-10 py-section-sm lg:gap-16">
         <div>
           <div className="grid grid-cols-2 gap-x-8 gap-y-8 sm:grid-cols-3">
             {GROUPS.map((g) => (
