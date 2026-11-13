@@ -54,10 +54,10 @@
   --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   /* Data face: measurements and specifications (plank sizes, thickness, pack coverage). */
-  --font-mono: var(--font-data), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-mono: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
   /* Type system. Manrope leads (headings, labels, names, menu); DM Sans for
-     running text and controls; DM Mono for measurements. One place to tune. */
+     running text, controls and measurements. One place to tune. */
 
   /* Section label: small, tracked, green, above every section heading. */
   --text-eyebrow: 0.75rem;
@@ -424,8 +424,8 @@
 /* Measurements and specifications, set like a technical drawing. */
 @utility data {
   font-family: var(--font-mono);
-  /* Plain zeros: DM Mono draws a slashed zero by default, which reads as a different character in prices. */
-  font-feature-settings: "tnum", "zero" 0;
+  /* Measurements and prices: DM Sans with lining, tabular figures, so columns line up. */
+  font-feature-settings: "tnum", "lnum";
   font-size: 0.9em;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
