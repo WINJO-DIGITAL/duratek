@@ -128,7 +128,7 @@ export function FloorLibrary({ boards }: { boards: LibraryBoard[] }) {
       </div>
 
       {boards.some((b) => b.room) && (
-        <div className="relative -mx-[var(--spacing-gutter)] mt-[2px] aspect-[4/3] bg-line sm:aspect-[16/7]">
+        <div className="relative -mx-[var(--spacing-gutter)] mt-[2px] aspect-[4/3] bg-line sm:aspect-[16/7] lg:aspect-[21/8]">
           {visited.map((i) => {
             const room = boards[i]?.room;
             if (!room) return null;

@@ -64,7 +64,7 @@ function scalePlanks(all: Finish[], finish: Finish): ScalePlank[] {
         width_mm: specs.plank_width_mm,
         length_mm: specs.plank_length_mm,
         current: format === current,
-        image: format === current ? grainImage(finish) : undefined,
+        image: format === current ? grainImage(finish) : grainImage(all.find((f) => plankFormat(f.specs) === format)!),
       },
     ];
   })];
