@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Suspense } from "react";
 import { DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
+import { CookieNotice } from "@/components/layout/cookie-notice";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/layout/reveal-observer";
 import { RouteScrollReset } from "@/components/layout/route-scroll-reset";
@@ -80,6 +81,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           <MobileBottomBar />
           <SampleTray catalogue={nav.catalogue} />
         </Suspense>
+        <CookieNotice />
       </body>
     </html>
   );

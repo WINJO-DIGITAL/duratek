@@ -12,22 +12,33 @@ export default function CookiesPage() {
     <LegalPage title="Cookies" updated="4 November 2026">
       <p>
         This website doesn&rsquo;t use advertising or analytics cookies, and doesn&rsquo;t track you across other
-        sites. That&rsquo;s why there&rsquo;s no cookie banner.
+        sites. The notice at the foot of the page tells you what it does keep. Each item below is needed for the site to
+        work, so none of them needs your consent.
       </p>
 
       <h2>What We Keep on Your Device</h2>
-      <p>To remember the choices you make, the site keeps two small items in your browser&rsquo;s own storage:</p>
       <ul>
         <li>
-          <strong>Your sample choices</strong>, so the finishes you pick stay in your sample tray as you browse.
+          <strong>Your sample choices</strong>, so the finishes you pick stay in your sample tray as you browse. This
+          stays in your browser&rsquo;s own storage until you request samples.
         </li>
         <li>
-          <strong>Your saved finishes</strong>, so you can come back to them and compare them.
+          <strong>Your saved finishes</strong>, so you can come back to them and compare them. This stays in your
+          browser&rsquo;s own storage.
+        </li>
+        <li>
+          <strong>Your cookie notice choice</strong>, so the notice doesn&rsquo;t return once you&rsquo;ve closed it.
+          This stays in your browser&rsquo;s own storage.
+        </li>
+        <li>
+          <strong>Trade sign-in and Customer view</strong>, if you log in to a trade account. A sign-in cookie keeps you
+          logged in, and a Customer view cookie hides trade prices. Both are set only when you use them, and they end
+          when you log out or close the browser.
         </li>
       </ul>
       <p>
-        Both stay on your device. Nothing is sent to us until you request samples. Clearing your browser&rsquo;s site
-        data removes them.
+        Clearing your browser&rsquo;s site data removes all of these. Nothing is sent to us until you request samples or
+        sign in.
       </p>
 
       <h2>More About Your Data</h2>
