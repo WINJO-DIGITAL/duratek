@@ -1,5 +1,7 @@
 # Duratek
 
+**Owner's checklist:** when the user asks for the owner's checklist (or "owner's list", "client checklist"), read `docs/OWNER_CHECKLIST.md` and reply with its "For the owner" items as a numbered list, in order. Show nothing else unless asked. Do not tick or add items.
+
 A premium, image-led brand website for **Duratek** (waterproof SPC click flooring). It serves two audiences:
 
 - **Homeowners**: browse the range, get inspired, order free samples, and find where to buy. They see the RRP (recommended retail price) only.
