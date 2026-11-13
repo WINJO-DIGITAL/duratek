@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { MouseEvent, RefObject } from "react";
+import type { CSSProperties, MouseEvent, RefObject } from "react";
 import { Wordmark } from "@/components/brand/wordmark";
 import { ArrowRight, Close } from "@/components/ui/icons";
 import type { NavData } from "@/lib/catalogue/nav";
@@ -12,10 +12,10 @@ import { NavSwatch } from "./nav-swatch";
 import { SampleCount } from "./sample-count";
 
 const SECONDARY = [
+  { href: "/saved", label: "Saved Finishes" },
   { href: "/technology", label: "Technology" },
   { href: "/warranty", label: "Warranty" },
-  { href: "/contact", label: "Contact" },
-  { href: TRADE_NAV.href, label: "Trade accounts" },
+  { href: TRADE_NAV.href, label: "Trade Accounts" },
 ];
 
 const CLOSE_FALLBACK = 350; // ms; a little longer than the CSS close fade (200ms)
@@ -155,14 +155,14 @@ export function MobileMenu({
         className="container-page flex flex-1 flex-col overflow-y-auto pb-10 pt-4"
       >
         <ul className="flex flex-col">
-          {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item) => {
+          {[{ href: "/", label: "Home" }, ...PRIMARY_NAV].map((item, i) => {
             const current =
               item.href === "/"
                 ? pathname === "/"
                 : pathname === item.href ||
                   pathname.startsWith(`${item.href}/`);
             return (
-              <li key={item.href} className="border-b border-line">
+              <li key={item.href} className="menu-item border-b border-line" style={{ "--i": i } as CSSProperties}>
                 <Link
                   href={item.href}
                   aria-current={current ? "page" : undefined}
@@ -172,7 +172,7 @@ export function MobileMenu({
                   {/* Green underline draws in under the label: full for the current page, on hover otherwise. */}
                   <span
                     className={cn(
-                      "relative font-display text-display-sm transition-colors duration-300",
+                      "relative font-display text-menu transition-colors duration-300",
                       "after:absolute after:inset-x-0 after:-bottom-1 after:h-px after:origin-left after:bg-green after:transition-transform after:duration-500 after:ease-calm",
                       current
                         ? "text-green-ink after:scale-x-100"
@@ -196,7 +196,7 @@ export function MobileMenu({
         </ul>
 
         {nav.featured.length > 0 && (
-          <div className="mt-10">
+          <div className="menu-item mt-10" style={{ "--i": PRIMARY_NAV.length + 1 } as CSSProperties}>
             <div>
               <div className="flex items-baseline justify-between">
                 <p className="eyebrow">Finishes</p>
@@ -225,8 +225,8 @@ export function MobileMenu({
         )}
 
         <ul className="mt-10 grid grid-cols-2 gap-x-6">
-          {SECONDARY.map((item) => (
-            <li key={item.href}>
+          {SECONDARY.map((item, i) => (
+            <li key={item.href} className="menu-item" style={{ "--i": PRIMARY_NAV.length + 2 + i } as CSSProperties}>
               <Link
                 href={item.href}
                 onClick={go}

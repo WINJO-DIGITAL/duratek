@@ -22,9 +22,12 @@ npm run dev
 npm run typecheck
 npm run lint
 npm test          # unit tests (Vitest)
-npm run db:test   # RLS tests (pgTAP via supabase test db)
+npm run db:test   # RLS tests (pgTAP via supabase test db): supabase/tests/*.test.sql
 npm run build
+npm run test:e2e  # browser and security suites (local stack only; see tests/e2e/run.sh)
 ```
+
+Database, security and pricing are documented in `docs/DATABASE.md`, `docs/SECURITY.md` and `docs/PRICING.md`.
 
 ## Data
 
@@ -39,5 +42,26 @@ npm run build
 
 - Prices are only readable by approved trade users for their own tier or account override (RLS), and are
   never fetched by public pages.
-- Sample requests have no public insert policy: the (upcoming) server route validates, rate-limits and
-  inserts with the service role key, which must never be exposed to the client.
+- Sample requests have no public insert policy: the server action validates, rate-limits and inserts with the
+  service role key, which must never be exposed to the client.
+
+## Trade login, prices and the owner
+
+- Public pages show the RRP (`finishes.rrp_per_m2_pence`). Trade prices come from `prices` (per tier) and
+  `price_overrides` (per account) and are read only for an approved, logged-in account.
+- The owner sets prices at `/admin/prices` and approves accounts at `/admin/accounts` (both need `is_admin`).
+- The first owner account has to be promoted in the database once. Sign up through `/trade/apply` (or the
+  Supabase dashboard), then run:
+
+  ```sql
+  update public.profiles set is_admin = true, status = 'approved'
+  where id = (select id from auth.users where email = 'owner@your-domain');
+  ```
+- Approval emails need `RESEND_API_KEY` and `EMAIL_FROM` (see `.env.example`).
+
+## Trade platform (November 2026)
+
+See `docs/ARCHITECTURE.md` for the design and `docs/TRADE_PLATFORM_REPORT.md` for the test evidence and deployment
+steps. In short: quotes, customer quote links, a packs and profit calculator, shortlists, documents and trader
+settings under `/trade/account`; overview, finishes, samples, where to buy, documents and account prices under `/admin`.
+Pricing maths lives in `src/lib/pricing/` (integer pence, basis points, packs always rounded up).

@@ -1,9 +1,13 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Mono, DM_Sans, Manrope } from "next/font/google";
+import { Suspense } from "react";
+import { DM_Sans, Manrope } from "next/font/google";
 import { MobileBottomBar } from "@/components/layout/mobile-bottom-bar";
+import { CookieNotice } from "@/components/layout/cookie-notice";
 import { SiteFooter } from "@/components/layout/site-footer";
 import { RevealObserver } from "@/components/layout/reveal-observer";
+import { RouteScrollReset } from "@/components/layout/route-scroll-reset";
 import { SiteHeader } from "@/components/layout/site-header";
+import { SampleTray } from "@/components/samples/sample-tray";
 import { JsonLd } from "@/components/seo/json-ld";
 import { getNavData } from "@/lib/catalogue/nav";
 import { siteUrl } from "@/lib/site";
@@ -23,14 +27,6 @@ const body = DM_Sans({
   display: "swap",
 });
 
-// Data: measurements and specifications.
-const data = DM_Mono({
-  variable: "--font-data",
-  subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   title: {
@@ -42,14 +38,14 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f6f2",
+  themeColor: "#faf7f1",
   viewportFit: "cover",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const nav = await getNavData();
   return (
-    <html lang="en-GB" className={`${heading.variable} ${body.variable} ${data.variable} antialiased`}>
+    <html lang="en-GB" className={`${heading.variable} ${body.variable} antialiased`}>
       <body className="flex min-h-dvh flex-col pb-[calc(var(--spacing-bottom-bar)+env(safe-area-inset-bottom))] lg:pb-0">
         <a
           href="#main"
@@ -67,12 +63,25 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
             logo: siteUrl("/icon.svg"),
           }}
         />
-        <SiteHeader nav={nav} />
+        {/* The chrome reads the URL (active links), which isn't known when the finish page's
+            fallback shell is regenerated, so each piece loads behind a boundary. The header's
+            fallback holds its space, so nothing moves. */}
+        <Suspense fallback={<div aria-hidden="true" className="h-[calc(var(--spacing-header)+1px)]" />}>
+          <SiteHeader nav={nav} />
+        </Suspense>
         <main id="main" className="flex-1">
           {children}
         </main>
-        <SiteFooter nav={nav} />
-        <MobileBottomBar />
+        <SiteFooter />
+        {/* After the page content, so it runs after Next's own scroll handling. */}
+        <Suspense fallback={null}>
+          <RouteScrollReset />
+        </Suspense>
+        <Suspense fallback={null}>
+          <MobileBottomBar />
+          <SampleTray catalogue={nav.catalogue} />
+        </Suspense>
+        <CookieNotice />
       </body>
     </html>
   );

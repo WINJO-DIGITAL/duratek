@@ -2,13 +2,15 @@
 
 /*
  * Duratek design tokens. Defined once here and consumed through Tailwind
- * utilities (bg-navy, text-ink-muted, font-display, py-section, ...).
+ * utilities (bg-navy, bg-cream, rounded-card, shadow-card, font-display, ...).
  *
- * Palette: Duratek navy, green and white only. No beige, brown, taupe or gold
- * as brand colours; warmth comes from the floor photography, not the UI.
+ * Direction (client, November 2026): soft, premium, architectural minimalism.
+ * Warm ivory, cream and sand neutrals with natural oak, carrying the brand's
+ * navy (ink, headings) and green (actions, selected states). Soft radii on
+ * cards (20px) and controls (10px); never pill-shaped layouts.
  * Green is one hue at three strengths so every use passes WCAG AA:
  *   green          #4B9B48  brand green: wordmark, rules, indicators, large text
- *   green-ink      #3D7F3B  small green text and button fills on light (4.5:1+)
+ *   green-ink      #387636  small green text and button fills on ivory/cream (4.5:1+)
  *   green-on-navy  #54AE51  small green text on navy (4.5:1)
  */
 @theme {
@@ -24,17 +26,20 @@
   --color-navy: #18364c; /* heroes, footer, feature areas, headings on light */
   --color-navy-deep: #112839; /* same hue, darker: the footer's legal strip */
   --color-green: #4b9b48;
-  --color-green-ink: #3d7f3b;
-  --color-green-ink-hover: #336b31;
+  --color-green-ink: #387636; /* AA on ivory (5.2:1) and cream (4.7:1); white text on it 5.5:1 */
+  --color-green-ink-hover: #2f6430;
   --color-green-on-navy: #54ae51;
   /* Logo artwork's own colours, sampled from the client's logo file. Used by
      the logo only; UI colour stays on the brand tokens above. */
   --color-logo-green: #468e3c;
   --color-logo-navy: #123066;
 
-  /* Surfaces */
-  --color-off-white: #f7f6f2; /* page and collection sections */
-  --color-line: #e1e6ea; /* cool hairlines and image placeholders */
+  /* Surfaces: warm architectural neutrals */
+  --color-off-white: #faf7f1; /* ivory: the page */
+  --color-cream: #f3ede3; /* alternating sections, soft panels */
+  --color-sand: #e7dccb; /* soft fills, chip and card borders on cream */
+  --color-line: #e6ded2; /* warm hairlines and image placeholders */
+  --color-oak: #9a6f45; /* natural oak accent: decorative details only */
 
   /* Text */
   --color-ink: #18364c;
@@ -42,53 +47,73 @@
   --color-on-dark: #ffffff;
   --color-on-dark-muted: #b9c6d0;
 
-  --color-focus: #3d7f3b;
+  --color-focus: #387636;
   --color-error: #a3352b;
 
   /* Type */
   --font-display: var(--font-heading), ui-sans-serif, system-ui, sans-serif;
   --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
   /* Data face: measurements and specifications (plank sizes, thickness, pack coverage). */
-  --font-mono: var(--font-data), ui-monospace, "SFMono-Regular", Menlo, monospace;
+  --font-mono: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 
+  /* Type system. Manrope leads (headings, labels, names, menu); DM Sans for
+     running text, controls and measurements. One place to tune. */
+
+  /* Section label: small, tracked, green, above every section heading. */
   --text-eyebrow: 0.75rem;
   --text-eyebrow--line-height: 1rem;
   --text-eyebrow--letter-spacing: 0.16em;
-  --text-eyebrow--font-weight: 500;
+  --text-eyebrow--font-weight: 600;
 
   --text-display-xl: clamp(2.75rem, 1.6rem + 4.6vw, 5.5rem);
   --text-display-xl--line-height: 1.04;
-  --text-display-xl--letter-spacing: -0.04em;
-  --text-display-xl--font-weight: 300;
-  /* Home hero headline: 42px on phones, about 60px at 1440, never above 66px.
-     Lighter than other headings, tracked in slightly. */
-  --text-display-hero: clamp(2.625rem, 2.2rem + 1.75vw, 4.125rem);
-  --text-display-hero--line-height: 1.08;
-  --text-display-hero--letter-spacing: -0.028em;
-  --text-display-hero--font-weight: 400;
+  --text-display-xl--letter-spacing: -0.035em;
+  --text-display-xl--font-weight: 400;
+  /* Home hero headline: 44px on phones, 76px on wide screens. */
+  --text-display-hero: clamp(2.75rem, 2.1rem + 2.6vw, 4.75rem);
+  --text-display-hero--line-height: 1.06;
+  --text-display-hero--letter-spacing: -0.035em;
+  --text-display-hero--font-weight: 450;
   --text-hero-lede: clamp(1.0625rem, 1rem + 0.2vw, 1.1875rem); /* 17px phones, 19px desktop */
   --text-hero-lede--line-height: 1.65;
-  --text-display-lg: clamp(2.25rem, 1.5rem + 3vw, 4rem);
+  /* Page title (H1): large and calm. */
+  --text-display-lg: clamp(2.25rem, 1.6rem + 2.6vw, 3.75rem);
   --text-display-lg--line-height: 1.08;
   --text-display-lg--letter-spacing: -0.035em;
-  --text-display-lg--font-weight: 300;
-  --text-display-md: clamp(1.75rem, 1.35rem + 1.6vw, 2.75rem);
-  --text-display-md--line-height: 1.15;
-  --text-display-md--letter-spacing: -0.025em;
+  --text-display-lg--font-weight: 400;
+  /* Section heading (H2): the anchor of each section. 32px phones, 48px desktop. */
+  --text-display-md: clamp(2rem, 1.6rem + 1.6vw, 3rem);
+  --text-display-md--line-height: 1.12;
+  --text-display-md--letter-spacing: -0.03em;
+  --text-display-md--font-weight: 500;
   --text-display-sm: clamp(1.375rem, 1.2rem + 0.7vw, 1.75rem);
   --text-display-sm--line-height: 1.25;
-  --text-display-sm--letter-spacing: -0.015em;
+  --text-display-sm--letter-spacing: -0.025em;
+  --text-display-sm--font-weight: 400;
   --text-lede: clamp(1.0625rem, 1rem + 0.3vw, 1.25rem);
   --text-lede--line-height: 1.6;
+  /* Supporting text under a section heading: subordinate, readable. 15 to 16px. */
+  --text-support: clamp(0.9375rem, 0.9rem + 0.2vw, 1rem);
+  --text-support--line-height: 1.6;
+  /* Mobile menu items: clear, but never louder than a section heading. */
+  --text-menu: 1.375rem;
+  --text-menu--line-height: 1.25;
+  --text-menu--letter-spacing: -0.01em;
+  --text-menu--font-weight: 400;
 
   /* Layout */
   --spacing-gutter: clamp(1rem, 0.5rem + 2.2vw, 2.5rem);
+  /* Section stack: label, heading, description, then the content. */
+  --spacing-label: 0.875rem; /* label to heading (14px) */
+  --spacing-lede: 1.125rem; /* heading to description (18px) */
+  --spacing-stack: clamp(3rem, 2.25rem + 3vw, 5rem); /* stack to content: 48px phones, 80px desktop */
   --spacing-section: clamp(4rem, 2.5rem + 6vw, 9rem);
   --spacing-section-sm: clamp(2.5rem, 1.8rem + 3vw, 5rem);
   --spacing-tap: 2.75rem; /* 44px minimum touch target */
   --spacing-cta: 3.375rem; /* 54px large call to action (home hero) */
   --spacing-header: 4rem;
   --spacing-bottom-bar: 4rem;
+  --spacing-sample-bar: 3.75rem; /* phone sticky "Add to samples" bar on finish pages */
   --container-page: 90rem;
   --container-prose: 38rem;
 
@@ -98,12 +123,19 @@
   --default-transition-timing-function: cubic-bezier(0.22, 0.61, 0.36, 1);
 
   --radius-none: 0;
+  --radius-card: 1.25rem; /* 20px: cards, panels, framed photography */
+  --radius-control: 0.625rem; /* 10px: buttons, inputs, chips */
+
+  /* Soft, warm shadows: depth without weight */
+  --shadow-card: 0 1px 2px rgb(64 46 26 / 0.04), 0 10px 30px -18px rgb(64 46 26 / 0.18);
+  --shadow-card-hover: 0 2px 4px rgb(64 46 26 / 0.05), 0 18px 40px -20px rgb(64 46 26 / 0.26);
 }
 
 @layer base {
   html {
     -webkit-text-size-adjust: 100%;
-    scroll-behavior: smooth;
+    /* No global smooth scrolling: it made route changes and Back/Forward
+       scroll restoration glide visibly. Animated scrolls opt in in code. */
     /* Sticky header (plus its 1px border): anchors and the router's
        scroll-into-view land below it, not underneath it. */
     scroll-padding-top: calc(var(--spacing-header) + 1px);
@@ -112,7 +144,7 @@
     background: var(--color-off-white);
     color: var(--color-ink);
     font-family: var(--font-sans);
-    font-feature-settings: "ss01";
+    font-feature-settings: "ss01", "zero" 0;
     /* Body copy: 17px on phones, 18px from desktop (approved direction). */
     font-size: 1.0625rem;
     line-height: 1.65;
@@ -138,9 +170,6 @@
     outline-color: var(--color-green-on-navy);
   }
   @media (prefers-reduced-motion: reduce) {
-    html {
-      scroll-behavior: auto;
-    }
     *,
     *::before,
     *::after {
@@ -166,16 +195,39 @@
   line-height: var(--text-eyebrow--line-height);
   letter-spacing: var(--text-eyebrow--letter-spacing);
   font-weight: var(--text-eyebrow--font-weight);
+  font-family: var(--font-display);
   text-transform: uppercase;
   color: var(--color-green-ink);
-  /* Small square marker before section labels. */
-  &::before {
-    content: "";
-    width: 0.5em;
-    height: 0.5em;
-    flex: none;
-    background: currentColor;
-  }
+}
+
+/* A short green rule under a title: the one accent line that sets section and page titles apart. */
+@utility title-rule {
+  background-image: linear-gradient(var(--color-green-ink), var(--color-green-ink));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 2.75rem 2px;
+  padding-bottom: 0.45em;
+}
+
+/* A soft card: white on ivory or cream, warm hairline, rounded, gentle shadow. */
+@utility card {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+}
+
+/* Framed photography: rounded, clipped. */
+@utility frame {
+  border-radius: var(--radius-card);
+  overflow: hidden;
+}
+
+/* A calm message panel (notices, closed forms, empty states). */
+@utility notice {
+  background: var(--color-white);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-control);
 }
 
 @utility scrollbar-none {
@@ -192,7 +244,9 @@
  * Unsupported browsers navigate normally.
  * ------------------------------------------------------------------------- */
 :root {
-  --vt-enter: 200ms;
+  --vt-exit: 280ms;
+  --vt-enter: 500ms;
+  --vt-enter-delay: 90ms;
 }
 
 ::view-transition {
@@ -214,13 +268,14 @@
   animation: none;
 }
 
-/* The old page holds still while the new one fades in over it: no moment
-   where both are half transparent (that read as a white flash). */
+/* A soft crossfade: the old page fades away quickly while the new one fades
+   in a little later and settles up by a few pixels. Both pages sit on the
+   same ivory, so the brief blend between them reads as one calm dissolve. */
 ::view-transition-old(.page-exit) {
-  animation: none;
+  animation: var(--vt-exit) var(--ease-calm) both vt-fade-out;
 }
 ::view-transition-new(.page-enter) {
-  animation: var(--vt-enter) var(--ease-calm) both vt-fade-in;
+  animation: var(--vt-enter) var(--ease-calm) var(--vt-enter-delay) both vt-rise-in;
 }
 /* Navigating from the mobile menu: the menu stays up until the new page is
    ready, so skip the old page entirely and let the menu (in the root
@@ -229,23 +284,20 @@
   display: none;
 }
 
-/* Finish photo morphs from card to detail hero. */
-::view-transition-group(.finish-morph) {
-  animation-duration: 520ms;
-  animation-timing-function: var(--ease-calm);
-}
-::view-transition-image-pair(.finish-morph) {
-  animation-name: vt-soften;
-}
-
 @keyframes vt-fade-in {
   from {
     opacity: 0;
   }
 }
-@keyframes vt-soften {
-  40% {
-    filter: blur(2px);
+@keyframes vt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes vt-rise-in {
+  from {
+    opacity: 0;
+    translate: 0 10px;
   }
 }
 
@@ -259,7 +311,7 @@
 }
 
 /* ---------------------------------------------------------------------------
- * Motion: menus. Short, soft fades; no staggered items.
+ * Motion: menus. Short, soft fades; the mobile menu links arrive in a gentle cascade.
  * ------------------------------------------------------------------------- */
 /* Mobile menu: one short, soft fade-down. Closing is driven by closeMenu()
    ([data-closing] while the dialog is still open and modal), so it never
@@ -285,11 +337,20 @@
 .menu-sheet::backdrop {
   background: transparent;
 }
-
-@keyframes stagger-in {
+/* Menu links arrive in a gentle cascade, top to bottom. */
+.menu-sheet[open] .menu-item {
+  animation: menu-item-in 420ms var(--ease-calm) both;
+  animation-delay: calc(80ms + var(--i, 0) * 40ms);
+}
+@keyframes menu-item-in {
   from {
     opacity: 0;
-    translate: 0 12px;
+    translate: 0 6px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .menu-sheet[open] .menu-item {
+    animation: none;
   }
 }
 
@@ -318,12 +379,6 @@
   from {
     opacity: 0;
     scale: 0.6;
-  }
-}
-
-@keyframes hero-ring {
-  to {
-    stroke-dashoffset: 0;
   }
 }
 
@@ -369,7 +424,172 @@
 /* Measurements and specifications, set like a technical drawing. */
 @utility data {
   font-family: var(--font-mono);
+  /* Measurements and prices: DM Sans with lining, tabular figures, so columns line up. */
+  font-feature-settings: "tnum", "lnum";
   font-size: 0.9em;
   letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
+}
+
+/* Label swap in the floor library: the new name settles in. */
+@keyframes label-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}
+
+/* Sample tray: a sheet rising from the bottom on phones, a drawer from the
+   right on desktop. Native <dialog>, so focus and Escape are handled. */
+.sample-tray {
+  opacity: 0;
+  translate: 0 100%;
+}
+.sample-tray[open] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 300ms var(--ease-calm),
+    translate 450ms var(--ease-calm);
+}
+@starting-style {
+  .sample-tray[open] {
+    opacity: 0;
+    translate: 0 100%;
+  }
+}
+.sample-tray[open][data-closing] {
+  opacity: 0;
+  translate: 0 100%;
+  transition:
+    opacity 200ms var(--ease-calm),
+    translate 220ms var(--ease-calm);
+}
+@media (min-width: 64rem) {
+  .sample-tray,
+  .sample-tray[open][data-closing] {
+    translate: 100% 0;
+  }
+  @starting-style {
+    .sample-tray[open] {
+      translate: 100% 0;
+    }
+  }
+}
+.sample-tray::backdrop {
+  background: rgb(24 54 76 / 0.35);
+}
+
+/* Hero progress ring: traces one photograph's hold. Duration set inline. */
+.hero-ring {
+  animation-name: hero-ring;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes hero-ring {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Finish explorer: the incoming photograph fades in over the still outgoing one. */
+@keyframes explorer-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+ * Print: a customer quote or shortlist prints as the document alone.
+ * ------------------------------------------------------------------------- */
+@media print {
+  body {
+    padding-bottom: 0 !important;
+    background: #fff !important;
+  }
+  body > *:not(main),
+  [data-print-hide] {
+    display: none !important;
+  }
+  main .card {
+    box-shadow: none !important;
+  }
+}
+
+/* Range filters on phones and tablets: a bottom sheet, native <dialog>, so focus and Escape are handled. */
+.filter-sheet {
+  margin: auto 0 0;
+  width: 100%;
+  max-width: 100%;
+  max-height: 85dvh;
+  padding: 0;
+  border: 0;
+  border-radius: 20px 20px 0 0;
+  background: var(--color-off-white);
+  color: var(--color-navy);
+  overflow-y: auto;
+}
+.filter-sheet::backdrop {
+  background: rgb(24 54 76 / 0.45);
+}
+@media (min-width: 64rem) {
+  .filter-sheet {
+    display: none;
+  }
+}
+
+/* Price range: two handles on one track. Only the handles take pointer input, so the track stays tappable. */
+.price-range {
+  position: relative;
+  height: 44px;
+}
+.price-range input[type="range"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 44px;
+  margin: 0;
+  background: none;
+  appearance: none;
+  -webkit-appearance: none;
+  pointer-events: none;
+}
+.price-range input[type="range"]::-webkit-slider-runnable-track {
+  height: 44px;
+  background: transparent;
+}
+.price-range input[type="range"]::-moz-range-track {
+  height: 44px;
+  background: transparent;
+}
+.price-range input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  pointer-events: auto;
+  width: 24px;
+  height: 24px;
+  margin-top: 10px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-navy);
+  background: var(--color-off-white);
+  cursor: grab;
+}
+.price-range input[type="range"]::-moz-range-thumb {
+  pointer-events: auto;
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  border: 2px solid var(--color-navy);
+  background: var(--color-off-white);
+  cursor: grab;
+}
+.price-range input[type="range"]:focus-visible {
+  outline: none;
+}
+.price-range input[type="range"]:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-green-ink);
+  outline-offset: 2px;
+}
+.price-range input[type="range"]:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-green-ink);
+  outline-offset: 2px;
 }

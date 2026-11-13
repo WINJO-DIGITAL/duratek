@@ -29,11 +29,11 @@ export function PostcodeSearch({
         spellCheck={false}
         maxLength={10}
         placeholder="Enter your postcode"
-        className="min-h-14 w-full min-w-0 border border-r-0 border-navy/30 bg-white px-5 text-base uppercase text-navy placeholder:normal-case placeholder:text-ink-muted"
+        className="min-h-14 w-full min-w-0 rounded-l-control border border-r-0 border-navy/30 bg-white px-5 text-base uppercase text-navy placeholder:normal-case placeholder:text-ink-muted"
       />
       <button
         type="submit"
-        className="group inline-flex min-h-14 shrink-0 items-center gap-3 bg-green-ink px-5 font-medium text-white transition-colors hover:bg-green-ink-hover sm:px-6"
+        className="group inline-flex min-h-14 shrink-0 items-center gap-3 rounded-r-control bg-green-ink px-5 font-medium text-white transition-colors hover:bg-green-ink-hover sm:px-6"
       >
         <span>Search</span>
         <ArrowRight size={18} className="transition-transform duration-300 group-hover:translate-x-1" />

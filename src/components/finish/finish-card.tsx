@@ -1,26 +1,27 @@
 import Link from "next/link";
-import { ViewTransition } from "react";
+import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
-import { grainImage, imagesOfKind, leadImage } from "@/lib/catalogue/mappers";
+import { measureLine } from "@/lib/catalogue/format";
+import { grainImage, leadImage } from "@/lib/catalogue/mappers";
 import type { Finish } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
-import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
-import { FinishImage } from "./finish-image";
+import { formatPence } from "@/lib/money";
+import { isSecondaryRoom } from "@/lib/catalogue/curation";
+import { PhotoSlides } from "./photo-slides";
 
-/** Small square tag for finish attributes. */
-function Tag({ children }: { children: React.ReactNode }) {
-  return (
-    <span className="inline-flex h-6 items-center border border-line px-2 text-[0.75rem] text-ink-muted">{children}</span>
-  );
-}
-
+/**
+ * A finish, photograph first: the name and the RRP sit on the picture like a
+ * gallery caption, and one quiet row under it carries the board size and the
+ * "Add to samples" button.
+ */
 export function FinishCard({
   finish,
   sizes,
-  aspect = "aspect-[4/5]",
-  media = "room",
+  aspect = "aspect-[3/4]",
+  media = "texture",
   priority = false,
   headingLevel: H = "h3",
+  showPrice = true,
   className,
 }: {
   finish: Finish;
@@ -30,54 +31,73 @@ export function FinishCard({
   media?: "room" | "texture";
   priority?: boolean;
   headingLevel?: "h2" | "h3";
+  /** Off on a trader's shared shortlist, which never shows prices. */
+  showPrice?: boolean;
   className?: string;
 }) {
-  const room = leadImage(finish);
-  // Clean swatch first: it shows the grain without a room in the way.
-  const grain = imagesOfKind(finish, "swatch")[0] ?? grainImage(finish);
-  const primary = media === "texture" ? (grain ?? room) : room;
-  const reveal = media === "texture" && grain && room && room !== grain ? room : undefined;
+  const grain = grainImage(finish);
+  const primary = media === "texture" ? (grain ?? leadImage(finish)) : (finish.images.find((i) => i.kind === "room") ?? leadImage(finish));
+  // The strip: the lead photograph, then the other floor-led scenes and close-ups, swipeable.
+  const others = finish.images.filter((i) => (i.kind === "room" || i.kind === "closeup") && !isSecondaryRoom(i) && i !== primary);
+  const photos = [primary, ...others].filter((i): i is NonNullable<typeof i> => Boolean(i)).slice(0, 5);
+  const measures = measureLine(finish.specs);
 
   return (
-    <article className={cn("reveal group relative flex flex-col", className)}>
-      {/* Same name as the detail page hero: the photo morphs into it on click. */}
-      <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
-        <div className={cn("relative overflow-hidden bg-line", aspect)}>
-          {primary && (
-            <FinishImage
-              image={primary}
-              sizes={sizes}
-              priority={priority}
-              className="transition-transform duration-[1200ms] ease-calm group-hover:scale-[1.03] motion-reduce:transition-none"
-            />
+    <article
+      className={cn(
+        "card reveal group relative flex flex-col overflow-hidden transition-shadow duration-500 ease-calm hover:shadow-card-hover",
+        className,
+      )}
+    >
+      <div className={cn("relative", aspect)}>
+        {photos.length > 0 && (
+          <PhotoSlides
+            slides={photos}
+            name={finish.name}
+            href={`/range/${finish.slug}`}
+            sizes={sizes}
+            priority={priority}
+            aspect="h-full w-full"
+          />
+        )}
+        {/* The name and price, set like a gallery caption on the photograph. Only the name links to the finish, so the photograph can be swiped. */}
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/75 via-black/35 to-transparent px-4 pb-3.5 pt-20 sm:px-5 sm:pb-4">
+          <H className="font-display text-[1.375rem] font-normal leading-[1.02] tracking-[-0.035em] text-white sm:text-[1.625rem]">
+            <Link href={`/range/${finish.slug}`} className="pointer-events-auto underline-offset-4 hover:underline">
+              {finish.name}
+            </Link>
+          </H>
+          {showPrice && finish.rrpPence !== undefined && (
+            <p className="mt-1.5 flex flex-wrap items-baseline gap-x-2 text-white">
+              {finish.offerPence !== undefined ? (
+                <>
+                  <span className="data text-[1.0625rem] font-medium">{formatPence(finish.offerPence)}</span>
+                  <span className="data text-[0.8125rem] text-white/70 line-through">{formatPence(finish.rrpPence)}</span>
+                </>
+              ) : (
+                <>
+                  <span className="data text-[1.0625rem] font-medium">{formatPence(finish.rrpPence)}</span>
+                </>
+              )}
+              <span className="text-[0.8125rem] text-white/80">per m²</span>
+            </p>
           )}
-          {reveal && (
-            // Room scene fades in over the texture on devices that can hover.
-            <div className="absolute inset-0 hidden opacity-0 transition-opacity duration-700 ease-calm [@media(hover:hover)]:block [@media(hover:hover)]:group-hover:opacity-100">
-              <FinishImage image={reveal} sizes={sizes} className="scale-[1.03]" />
-            </div>
-          )}
-        </div>
-      </ViewTransition>
-      <div className="mt-4">
-        <H className="text-display-sm leading-tight text-navy">
-          <Link href={`/range/${finish.slug}`} className="after:absolute after:inset-0 after:content-['']">
-            {finish.name}
-          </Link>
-        </H>
-        <p className="mt-0.5 text-[0.9375rem] text-ink-muted">{STYLE_LABELS[finish.style]}</p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          <Tag>{colourFamilyLabel(finish.colourFamily)}</Tag>
-          {finish.specs.thickness_mm ? <Tag>{finish.specs.thickness_mm}mm</Tag> : null}
-          {finish.specs.plank_length_mm && finish.specs.plank_length_mm > 1400 ? <Tag>Extra long</Tag> : null}
         </div>
       </div>
-      {/* Above the stretched link so it stays independently clickable. */}
-      <AddToSamplesButton
-        finish={{ id: finish.id, slug: finish.slug, name: finish.name }}
-        size="compact"
-        className="relative z-10 mt-1 self-start"
+      {/* Above the stretched link, in the photo's corner. */}
+      <SaveButton
+        finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }}
+        variant="overlay"
+        className="absolute right-3 top-3 z-10"
       />
+
+      {/* One quiet row: the board size on the left, the sample action on the right. */}
+      <div className="relative z-10 flex flex-wrap items-center justify-between gap-x-3 gap-y-2 px-4 pb-4 pt-3 sm:px-5">
+        {measures && <p className="data min-w-0 text-[0.8125rem] leading-snug text-ink-muted">{measures}</p>}
+        <div className="shrink-0">
+          <AddToSamplesButton finish={{ id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false }} size="compact" />
+        </div>
+      </div>
     </article>
   );
 }

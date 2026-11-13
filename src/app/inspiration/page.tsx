@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { FinishImage } from "@/components/finish/finish-image";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
@@ -8,6 +9,7 @@ import { getFinishes, getInspiration } from "@/lib/catalogue";
 import type { Finish, InspirationItem } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 import { distinct } from "@/lib/catalogue/filter";
+import { pageHero } from "@/lib/catalogue/heroes";
 
 export const metadata: Metadata = {
   title: "Inspiration",
@@ -26,7 +28,7 @@ function Story({ item, finishes, large }: { item: InspirationItem; finishes: Map
     <figure className="flex flex-col">
       <div
         className={cn(
-          "relative overflow-hidden bg-line",
+          "relative overflow-hidden rounded-card bg-line",
           large ? "aspect-[4/5] sm:aspect-[5/4] lg:aspect-[4/5]" : "aspect-[4/5] lg:aspect-[3/2]",
         )}
       >
@@ -45,7 +47,7 @@ function Story({ item, finishes, large }: { item: InspirationItem; finishes: Map
                 {f.name}
               </Link>
             </p>
-            <AddToSamplesButton finish={{ id: f.id, slug: f.slug, name: f.name }} size="compact" />
+            <AddToSamplesButton finish={{ id: f.id, slug: f.slug, name: f.name, unavailable: f.sampleAvailable === false }} size="compact" />
           </div>
         ))}
       </figcaption>
@@ -57,15 +59,18 @@ export default async function InspirationPage() {
   const [items, finishes] = await Promise.all([getInspiration(), getFinishes()]);
   const byId = new Map(finishes.map((f) => [f.id, f]));
   const moods = distinct(items.map((i) => i.mood));
+  const hero = pageHero(finishes, "inspiration");
 
   return (
     <PageTransition>
       <>
-        <header className="container-page pb-10 pt-12 sm:pt-16">
-          <SectionIntro as="h1" size="lg" title="Inspiration">
+        <PageHero image={hero?.image} focus="object-[50%_70%]">
+          <SectionIntro as="h1" size="lg" tone="dark" title="Inspiration">
             <p>Duratek floors in real rooms, grouped by mood. Each photo tells you which finish it is.</p>
           </SectionIntro>
-          <nav aria-label="Moods" className="mt-8 flex flex-wrap gap-2">
+        </PageHero>
+        <header className="container-page pb-10 pt-8 sm:pt-10">
+          <nav aria-label="Moods" className="flex flex-wrap gap-2">
             {moods.map((m) => (
               <a
                 key={m}
@@ -87,7 +92,7 @@ export default async function InspirationPage() {
               key={mood}
               id={slugify(mood)}
               aria-labelledby={`${slugify(mood)}-h`}
-              className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-white")}
+              className={cn("scroll-mt-header py-section-sm", mi % 2 === 1 && "bg-cream")}
             >
               <div className="container-page">
                 <h2 id={`${slugify(mood)}-h`} className="reveal text-display-md text-navy">

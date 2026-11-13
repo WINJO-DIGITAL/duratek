@@ -111,7 +111,7 @@ export function FooterContact({
       <div className="container-page grid gap-x-10 gap-y-12 py-section-sm lg:grid-cols-[3fr_1fr]">
         {hasHello && (
           <div>
-            <h2 className="eyebrow font-sans text-green-on-navy">Say hello</h2>
+            <h2 className="eyebrow font-sans text-green-on-navy">Say Hello</h2>
             <div className="mt-5 grid gap-x-10 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
               {hasGeneral && (
                 <div>
@@ -127,7 +127,7 @@ export function FooterContact({
 
         {social.length > 0 && (
           <div>
-            <h2 className="eyebrow font-sans text-green-on-navy">Stay in touch</h2>
+            <h2 className="eyebrow font-sans text-green-on-navy">Stay in Touch</h2>
             <ul className="mt-3">
               {social.map(({ network, url }) => {
                 const IconC = SOCIAL_ICONS[network];

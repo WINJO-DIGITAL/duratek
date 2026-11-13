@@ -1,4 +1,5 @@
 import "server-only";
+import { outboundEmailSuppressed } from "./runtime-env";
 
 /**
  * Transactional email through Resend's HTTP API (no SDK needed).
@@ -16,6 +17,11 @@ export async function sendEmail(message: {
   html: string;
   replyTo?: string;
 }): Promise<boolean> {
+  // Previews share the live database; a real customer must not get email from a test build.
+  if (outboundEmailSuppressed()) {
+    console.warn("Email not sent: this is a preview build (ALLOW_EMAIL_FROM_PREVIEW is not set).");
+    return false;
+  }
   const key = process.env.RESEND_API_KEY;
   const from = process.env.EMAIL_FROM;
   if (!key || !from) return false;
@@ -41,7 +47,4 @@ export async function sendEmail(message: {
   }
 }
 
-/** Escape text for inclusion in HTML email bodies. */
-export function escapeHtml(s: string): string {
-  return s.replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]!);
-}
+export { escapeHtml } from "./escape";

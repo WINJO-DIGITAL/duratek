@@ -3,7 +3,7 @@
 -- PostgREST would set, then checks what that user can read and write.
 begin;
 create extension if not exists pgtap with schema extensions;
-select plan(41);
+select plan(44);
 
 -- ---------------------------------------------------------------------------
 -- Fixtures (as postgres)
@@ -58,6 +58,9 @@ select is((select count(*)::int from public.finishes where slug = 'hidden-draft'
 select is((select count(*)::int from public.finish_images i join public.finishes f on f.id = i.finish_id where f.slug = 'hidden-draft'), 0, 'anon cannot see images of an unpublished finish');
 select throws_ok('select * from public.prices', '42501', null, 'anon cannot read prices');
 select throws_ok('select * from public.price_overrides', '42501', null, 'anon cannot read price overrides');
+select is((select count(*)::int from public.finishes where rrp_per_m2_pence = 3333), 11, 'anon can read the public RRP');
+update public.finishes set rrp_per_m2_pence = 1;
+select is((select count(*)::int from public.finishes where rrp_per_m2_pence = 1), 0, 'anon cannot change an RRP');
 select throws_ok('select * from public.my_prices', '42501', null, 'anon cannot read my_prices');
 select throws_ok('select * from public.price_tiers', '42501', null, 'anon cannot read price tiers');
 select throws_ok('select * from public.profiles', '42501', null, 'anon cannot read profiles');
@@ -67,7 +70,7 @@ select throws_ok(
   '42501', null, 'anon cannot insert sample requests directly (server route only)');
 select is((select count(*)::int from public.documents), 1, 'anon sees only public documents');
 select is((select count(*)::int from public.online_retailers), 1, 'anon sees published online retailers');
-select is((select count(*)::int from public.inspiration), 10, 'anon sees published inspiration');
+select is((select count(*)::int from public.inspiration), 8, 'anon sees published inspiration');
 select is((select name from public.get_shared_shortlist('test-token-abcdefghijklmnop')), 'Smith kitchen', 'anon can open a shared shortlist by token');
 select is((select count(*)::int from public.get_shared_shortlist('test-token')), 0, 'a short or wrong token returns nothing');
 select throws_ok('select public.is_admin()', '42501', null, 'anon cannot call role helpers');
@@ -145,6 +148,11 @@ reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"00000000-0000-4000-a000-000000000005","role":"authenticated"}';
 select is((select count(*)::int from public.prices), 22, 'admin sees every tier''s prices');
+-- RRPs are written to the RRP price list; finishes.rrp_per_m2_pence follows.
+update public.price_list_items set amount_pence = 4444
+  where price_list_id = (select id from public.price_lists where kind = 'rrp')
+    and variant_id = (select v.id from public.product_variants v join public.finishes f on f.id = v.finish_id where f.slug = 'keswick-oak' and v.is_default);
+select is((select rrp_per_m2_pence from public.finishes where slug = 'keswick-oak'), 4444, 'admin can set an RRP (through the RRP price list)');
 select is((select count(*)::int from public.sample_requests), 1, 'admin can read sample requests');
 select lives_ok(
   $$update public.profiles set status = 'approved' where id = '00000000-0000-4000-a000-000000000001'$$,

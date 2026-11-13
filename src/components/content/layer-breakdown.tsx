@@ -5,7 +5,7 @@ import { useId, useState, type CSSProperties } from "react";
 import type { CatalogueImage } from "@/lib/catalogue/types";
 import { cn } from "@/lib/cn";
 
-const LAYERS = [
+export const LAYERS = [
   { name: "Protective top finish", detail: "Scratch Shield. Helps resist scuffs and scratches." },
   { name: "0.55mm wear layer", detail: "Clear, and protects the design from wear." },
   { name: "Decorative layer", detail: "The printed oak pattern you see." },
@@ -13,7 +13,7 @@ const LAYERS = [
   { name: "Integrated underlay", detail: "Comfort underfoot, and less noise." },
 ] as const;
 
-const SLAB_STYLES: CSSProperties[] = [
+export const SLAB_STYLES: CSSProperties[] = [
   {
     background: "linear-gradient(135deg, rgb(255 255 255 / 0.55), rgb(255 255 255 / 0.12) 55%, rgb(255 255 255 / 0.4))",
     border: "1px solid rgb(255 255 255 / 0.85)",
@@ -80,7 +80,7 @@ export function LayerBreakdown({ woodImage, tone = "dark" }: { woodImage?: Catal
               onClick={() => setActive(active === i ? null : i)}
               className={cn(
                 "flex w-full items-start gap-5 py-4 text-left transition-colors duration-300 min-h-tap",
-                dark ? "text-on-dark-muted hover:text-on-dark" : "text-ink-muted hover:text-navy",
+                dark ? "text-on-dark/80 hover:text-on-dark" : "text-navy/75 hover:text-navy",
                 active === i && (dark ? "text-on-dark" : "text-navy"),
               )}
             >

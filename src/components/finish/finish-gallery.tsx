@@ -14,7 +14,21 @@ const smooth = () =>
  * counter, and thumbnails on larger screens. The first image is the room
  * scene the finish card morphs into.
  */
-export function FinishGallery({ images, name }: { images: CatalogueImage[]; name: string }) {
+export function FinishGallery({
+  images,
+  name,
+  aspect = "aspect-[4/5] sm:aspect-[6/5]",
+  sizes = "(min-width: 1024px) 58vw, 100vw",
+  overlay,
+}: {
+  images: CatalogueImage[];
+  name: string;
+  /** Frame proportions (Tailwind aspect classes), per breakpoint. */
+  aspect?: string;
+  sizes?: string;
+  /** Drawn over the photograph itself, bottom right (for example the Scratch Shield seal). */
+  overlay?: React.ReactNode;
+}) {
   const track = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
 
@@ -33,7 +47,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
     return () => el.removeEventListener("scroll", onScroll);
   }, []);
 
-  if (images.length === 0) return <div className="aspect-[4/5] bg-line sm:aspect-[6/5]" />;
+  if (images.length === 0) return <div className={cn("bg-line", aspect)} />;
 
   return (
     <div aria-roledescription="carousel" aria-label={`${name} photographs`}>
@@ -46,7 +60,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
             e.preventDefault();
             go(index + (e.key === "ArrowRight" ? 1 : -1));
           }}
-          className="scrollbar-none flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto bg-line sm:aspect-[6/5]"
+          className={cn("scrollbar-none flex snap-x snap-mandatory overflow-x-auto rounded-card bg-line shadow-card", aspect)}
         >
           {images.map((img, i) => (
             <div
@@ -61,7 +75,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
                 alt={img.alt}
                 fill
                 priority={i === 0}
-                sizes="(min-width: 1024px) 58vw, 100vw"
+                sizes={sizes}
                 quality={80}
                 placeholder={img.blurDataURL ? "blur" : "empty"}
                 blurDataURL={img.blurDataURL}
@@ -71,9 +85,10 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
           ))}
         </div>
 
+        {overlay}
         {images.length > 1 && (
           <div className="pointer-events-none absolute inset-x-0 bottom-4 flex justify-center">
-            <div className="pointer-events-auto flex items-center gap-1 bg-off-white/90 px-1 text-navy backdrop-blur-sm">
+            <div className="pointer-events-auto flex items-center gap-1 rounded-control bg-off-white/90 px-1 text-navy backdrop-blur-sm">
               <button
                 type="button"
                 onClick={() => go(index - 1)}
@@ -109,7 +124,7 @@ export function FinishGallery({ images, name }: { images: CatalogueImage[]; name
                 onClick={() => go(i)}
                 aria-current={index === i || undefined}
                 className={cn(
-                  "relative block aspect-square w-full overflow-hidden bg-line outline-offset-2 transition-opacity duration-300",
+                  "relative block aspect-square w-full overflow-hidden rounded-control bg-line outline-offset-2 transition-opacity duration-300",
                   index === i ? "opacity-100 ring-1 ring-navy ring-offset-2 ring-offset-off-white" : "opacity-60 hover:opacity-100",
                 )}
               >

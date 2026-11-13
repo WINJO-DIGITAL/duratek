@@ -1,11 +1,14 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
+import { OrderSamplesButton } from "@/components/samples/order-samples-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ArrowUpRight, Phone } from "@/components/ui/icons";
 import { PostcodeSearch } from "@/components/where-to-buy/postcode-search";
-import { getOnlineRetailers } from "@/lib/catalogue";
+import { getFinishes, getOnlineRetailers } from "@/lib/catalogue";
+import { pageHero } from "@/lib/catalogue/heroes";
 import { normalisePostcode } from "@/lib/postcode";
 import {
   formatMiles,
@@ -24,24 +27,30 @@ export const metadata: Metadata = {
 const MAX_MILES = 60;
 const MAX_RESULTS = 10;
 
-export default function WhereToBuyPage({ searchParams }: PageProps<"/where-to-buy">) {
+export default async function WhereToBuyPage({ searchParams }: PageProps<"/where-to-buy">) {
+  const hero = pageHero(await getFinishes(), "where-to-buy");
   return (
     <PageTransition>
       <>
-        <header className="container-page grid gap-10 pb-section-sm pt-12 sm:pt-16 lg:grid-cols-2 lg:items-end">
-          <SectionIntro as="h1" size="lg" eyebrow="Where to buy" title="Find Duratek near you.">
+        <PageHero compact image={hero?.image} focus="object-[50%_58%]">
+          <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Where to buy" title="Find duratek Near You.">
             <p>See it at a local stockist, or buy it online.</p>
           </SectionIntro>
-          <Suspense fallback={<PostcodeSearch id="postcode" className="lg:justify-self-end" />}>
-            <SearchWithValue searchParams={searchParams} />
-          </Suspense>
+        </PageHero>
+        <header className="container-page pb-section-sm pt-8 sm:pt-10">
+          <div>
+            <Suspense fallback={<PostcodeSearch id="postcode" />}>
+              <SearchWithValue searchParams={searchParams} />
+            </Suspense>
+          </div>
         </header>
 
-        <Suspense fallback={null}>
+        {/* Results and the retailers arrive together, behind a placeholder that
+            keeps the footer below the fold, so nothing on screen moves. */}
+        <Suspense fallback={<div aria-hidden="true" className="min-h-[70svh]" />}>
           <Results searchParams={searchParams} />
+          <OnlineRetailers />
         </Suspense>
-
-        <OnlineRetailers />
       </>
     </PageTransition>
   );
@@ -54,7 +63,7 @@ async function postcodeParam(searchParams: PageProps<"/where-to-buy">["searchPar
 
 async function SearchWithValue({ searchParams }: { searchParams: PageProps<"/where-to-buy">["searchParams"] }) {
   const raw = await postcodeParam(searchParams);
-  return <PostcodeSearch id="postcode" defaultValue={normalisePostcode(raw) ?? raw} className="lg:justify-self-end" />;
+  return <PostcodeSearch id="postcode" defaultValue={normalisePostcode(raw) ?? raw} />;
 }
 
 async function Results({ searchParams }: { searchParams: PageProps<"/where-to-buy">["searchParams"] }) {
@@ -66,7 +75,8 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
     return <Notice title="That doesn't look like a UK postcode.">Check it and try again, for example SW1A 1AA.</Notice>;
   }
 
-  const [geo, stockists] = await Promise.all([geocodePostcode(postcode), getStockists()]);
+  const [geo, stockists, finishes] = await Promise.all([geocodePostcode(postcode), getStockists(), getFinishes()]);
+  const finishNames = new Map(finishes.map((f) => [f.id, f.name]));
   if (!geo.ok) {
     return geo.reason === "not-found" ? (
       <Notice title={`We couldn't find ${postcode}.`}>Check the postcode and try again.</Notice>
@@ -87,9 +97,12 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
             </h2>
             <ul className="mt-6 border-t border-line">
               {results.map((s) => (
-                <StockistRow key={s.id} stockist={s} miles={s.miles} />
+                <StockistRow key={s.id} stockist={s} miles={s.miles} finishNames={finishNames} />
               ))}
             </ul>
+            <p className="mt-6 max-w-prose text-[0.8125rem] text-ink-muted">
+              Stockists are independent businesses and set their own prices and stock. The recommended retail price on this site is a guide only.
+            </p>
           </>
         ) : (
           <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-end">
@@ -103,9 +116,12 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-              <ButtonLink href="/samples">Order free samples</ButtonLink>
+              <OrderSamplesButton />
               <ButtonLink href="#online" variant="quiet" arrow={false}>
-                Buy online
+                Buy Online
+              </ButtonLink>
+              <ButtonLink href="/contact" variant="quiet" arrow={false}>
+                Send Us an Enquiry
               </ButtonLink>
             </div>
           </div>
@@ -118,7 +134,7 @@ async function Results({ searchParams }: { searchParams: PageProps<"/where-to-bu
 function Notice({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section aria-live="polite" className="container-page pb-section-sm">
-      <div className="border-l-2 border-green-ink bg-white px-5 py-4 sm:px-6">
+      <div className="notice px-5 py-4 sm:px-6">
         <p className="font-medium text-navy">{title}</p>
         <p className="mt-1 text-[0.9375rem] text-ink-muted">{children}</p>
       </div>
@@ -126,7 +142,8 @@ function Notice({ title, children }: { title: string; children: React.ReactNode 
   );
 }
 
-function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number }) {
+function StockistRow({ stockist: s, miles, finishNames }: { stockist: Stockist; miles: number; finishNames: Map<string, string> }) {
+  const range = s.finishIds.map((id) => finishNames.get(id)).filter((n): n is string => Boolean(n));
   const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(`${s.address}, ${s.postcode}`)}`;
   return (
     <li className="grid gap-4 border-b border-line py-6 sm:grid-cols-[1fr_auto] sm:items-start sm:gap-10">
@@ -136,6 +153,19 @@ function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number
         <address className="mt-2 text-[0.9375rem] not-italic leading-relaxed text-ink-muted">
           {s.address}, {s.postcode}
         </address>
+        {s.description && <p className="mt-2 max-w-prose text-[0.9375rem] text-navy/75">{s.description}</p>}
+        {s.openingHours && (
+          <p className="mt-2 whitespace-pre-line text-[0.875rem] text-ink-muted">
+            <span className="font-medium text-navy">Opening: </span>
+            {s.openingHours}
+          </p>
+        )}
+        {range.length > 0 && (
+          <p className="mt-2 max-w-prose text-[0.875rem] text-ink-muted">
+            <span className="font-medium text-navy">Range carried: </span>
+            {range.join(", ")}. Stock changes, so please contact {s.name} to check availability.
+          </p>
+        )}
       </div>
       <div className="flex flex-col gap-1 sm:items-end">
         <p className="text-[0.9375rem] font-medium text-navy tabular-nums">{formatMiles(miles)}</p>
@@ -160,6 +190,19 @@ function StockistRow({ stockist: s, miles }: { stockist: Stockist; miles: number
               <span className="sr-only"> (opens in a new tab)</span>
             </a>
           )}
+          {s.email && (
+            <a href={`mailto:${s.email}`} className="inline-flex min-h-tap items-center px-3 text-[0.9375rem] text-navy hover:text-green-ink">
+              Email
+              <span className="sr-only"> {s.name}</span>
+            </a>
+          )}
+          <a
+            href={`/contact?stockist=${s.id}`}
+            className="inline-flex min-h-tap items-center px-3 text-[0.9375rem] font-medium text-navy underline decoration-green underline-offset-4"
+          >
+            Ask this stockist
+            <span className="sr-only"> ({s.name})</span>
+          </a>
           <a
             href={directions}
             target="_blank"
@@ -179,9 +222,9 @@ async function OnlineRetailers() {
   const retailers = await getOnlineRetailers();
   if (retailers.length === 0) return null;
   return (
-    <section id="online" aria-labelledby="online-heading" className="scroll-mt-24 bg-white py-section-sm">
+    <section id="online" aria-labelledby="online-heading" className="scroll-mt-24 bg-cream py-section-sm">
       <div className="container-page grid gap-10 lg:grid-cols-[1fr_1.4fr] lg:items-start">
-        <SectionIntro eyebrow="Buy online" title={<span id="online-heading">Order Duratek online.</span>}>
+        <SectionIntro eyebrow="Buy online" title={<span id="online-heading">Order duratek online.</span>}>
           <p>Buy Duratek from our online retailers.</p>
         </SectionIntro>
         <ul className="border-t border-line">

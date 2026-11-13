@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { DURA, TEK } from "@/components/brand/wordmark";
 import { byTone, getFinishes } from "@/lib/catalogue";
+import { scratchShieldData } from "@/lib/og";
 
 export const alt = "Duratek: beautifully considered, built to perform";
 export const size = { width: 1200, height: 630 };
@@ -9,11 +10,13 @@ export const contentType = "image/png";
 /** Default share image: wordmark and line over the range as boards, light to dark. */
 export default async function Image() {
   const finishes = byTone(await getFinishes());
+  const seal = await scratchShieldData();
   const boards = finishes.map((f) => f.images.find((i) => i.kind === "swatch")?.blurDataURL).filter(Boolean) as string[];
 
   return new ImageResponse(
     (
-      <div style={{ display: "flex", flexDirection: "column", width: "100%", height: "100%", background: "#f7f6f2" }}>
+      <div style={{ display: "flex", flexDirection: "column", position: "relative", width: "100%", height: "100%", background: "#f7f6f2" }}>
+        {seal && <img src={seal} width={170} height={160} style={{ position: "absolute", right: 56, top: 36 }} alt="" />}
         <div style={{ display: "flex", flexDirection: "column", padding: "60px 64px 40px", gap: 28 }}>
           <svg viewBox="286 480 1039 232" width={270} height={60}>
             {DURA.map((d) => (

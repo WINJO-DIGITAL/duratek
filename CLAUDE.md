@@ -1,18 +1,20 @@
 # Duratek
 
+**Owner's checklist:** when the user asks for the owner's checklist (or "owner's list", "client checklist"), read `docs/OWNER_CHECKLIST.md` and reply with its "For the owner" items as a numbered list, in order. Show nothing else unless asked. Do not tick or add items.
+
 A premium, image-led brand website for **Duratek** (waterproof SPC click flooring). It serves two audiences:
 
-- **Homeowners**: browse the range, get inspired, order free samples, and find where to buy. No prices shown.
+- **Homeowners**: browse the range, get inspired, order free samples, and find where to buy. They see the RRP (recommended retail price) only.
 - **Trade** (fitters, retailers, contractors, specifiers): apply for an account, get approved, log in to see their own prices and download documents, and show the range to their customers.
 
 Duratek is the client's own brand. Kwik Floors and Dave's Tiles are the client's separate Shopify consumer stores. They are NOT part of this codebase, but Kwik Floors appears on the site as an online retailer, and its Duratek collection is the source of demo product data (see Demo content).
 
 ## Scope (v1)
 
-- **Public**: a visual showcase of the range, finish explorer, inspiration, free sample ordering, where to buy, and a brochure download. No prices anywhere.
-- **Trade**: apply, get approved, log in, see prices, download documents, build shareable shortlists, and use Customer view.
-- **Owner admin**: approve trade applications, assign price tiers, enter and edit prices, manage finishes, manage stockists, view and process sample requests, and upload documents.
-- **Out of v1**: no basket, checkout or online payment, no ordering, and no quotes. Public prices and direct selling may come in v2. Structure the code so a cart can be added later, but build none of it now.
+- **Public**: a visual showcase of the range, finish explorer, inspiration, free sample ordering, where to buy, and a brochure download. The only public price is the RRP per m², set by the business (client decision, November 2026); no price is shown for a finish with no RRP. Trade prices are never public.
+- **Trade**: apply, get approved, log in, see prices, download documents, build shareable shortlists, use Customer view, and (client instruction, November 2026) work out packs and profit and build quotations for their own customers.
+- **Owner admin**: approve trade applications, assign price tiers, enter and edit prices (tier and per account), manage finishes and their photographs, manage stockists and online retailers, view and process sample requests (CSV export), upload documents, and an overview of demand.
+- **Out of v1**: no basket, checkout or online payment, and no ordering from Duratek. Trade quotations are the trader's own quotes to their customers (Duratek does not sell through them). Structure the code so a cart can be added later, but build none of it now.
 
 ## Business flow (modelled on luvanto.com, executed better)
 
@@ -53,16 +55,19 @@ Audience: no homeowner/trade switch block (retired in the approved redesign, Nov
 - `/technology`: the spec story in depth (Scratch Shield, 0.55mm, layers, Unilin)
 - `/trade`: trade landing page (benefits, apply, login)
 - `/trade/apply`, `/trade/login`
-- `/trade/account`: prices, documents, shortlists (approved only)
+- `/trade/account`: dashboard; `/trade/account/catalogue` (prices), `/quotes` (and `/[id]`, `/[id]/pdf`), `/projects` (and `/[id]`), `/customers` (and `/[id]`), `/calculator`, `/shortlists`, `/documents`, `/settings` (approved only); `/trade/present` and `/trade/present/[slug]` (customer presentation)
+- `/q/[token]/pdf`: the customer's PDF of a sent quote
+- `/q/[token]`: a trader's quote, as their customer sees it (the trader's sell prices only; never cost or margin; printable)
+- `/documents/[id]`: document download through a 60 second signed link
 - `/s/[token]`: public shared shortlist (never shows prices)
-- `/admin/...`: owner admin
-- `/contact`, `/privacy`, `/cookies`, `/terms`
+- `/admin`: owner overview; `/admin/analytics`, `/admin/accounts` (and `/[id]` account prices), `/admin/prices` (and `/history`), `/admin/finishes`, `/admin/samples`, `/admin/stockists`, `/admin/enquiries`, `/admin/documents`, `/admin/settings`, `/admin/privacy`, `/admin/audit`
+- `/contact` (enquiry form: general, about a finish, or for a live stockist), `/privacy`, `/privacy/request`, `/cookies`, `/terms`
 
 ## Home page
 
 Approved redesign (November 2026, "The floor is the hero"). Seven sections, then the footer:
 
-1. **Floor-led hero**: one full-bleed photograph, camera low, floor filling the frame; heading "Beautifully considered. Built to perform." set light; one primary action (Explore the range), one quiet sample link; the finish shown is named and linked.
+1. **Floor-led hero**: full-bleed photographs, camera low, floor filling the frame. A few curated finishes (one per colour) each hold still for about 7 seconds, then dissolve slowly into the next (client request, November 2026); pausable, pauses on hover/focus and off screen, still under reduced motion. Heading "Beautifully considered. Built to perform." set light; one primary action (Explore the range), one quiet sample link; the finish shown is named and linked in the swatch circle, whose ring traces the time to the next photograph.
 2. **The floor library**: all finishes as boards side by side, ordered light to dark (measured from each swatch); tap or hover widens a board with its name, format and Add sample. Doorway to the explorer.
 3. **Two formats, to scale**: the standard and extra-long planks drawn to scale with dimension lines (replaces the style tiles until herringbone exists).
 4. **One room**: a single editorial photograph, captioned with the finish, with Add sample.
@@ -114,9 +119,10 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 ## Security rules (non-negotiable)
 
-1. Prices are never sent to logged-out or unapproved users. Gate on the SERVER (server components / route handlers), not with CSS or client-side hiding. Customer view also strips prices on the server.
+1. Trade prices (tier and account prices) are never sent to logged-out or unapproved users; the RRP is public. Gate on the SERVER (server components / route handlers), not with CSS or client-side hiding. Customer view also strips prices on the server.
 2. Price data lives in tables protected by Row Level Security. Only approved users can read it, and only their own tier or account price.
-3. Only the owner/admin role can write prices, tiers, approvals, finishes, stockists and documents.
+3. Only administrators with the matching permission can write prices, tiers, approvals, finishes, stockists and documents (roles: super_admin, admin with granted permissions, trade, stockist; see `docs/SECURITY.md`). Check with `requireAdmin(permission)` on the server and `has_permission()` in RLS.
+3a. Every price comes from the resolver (`price_for`, `catalogue_prices`; rules in `docs/PRICING.md`). Never take a price from the browser, and write prices only to `price_lists`/`price_list_items` (`prices`, `price_overrides` and `finishes.rrp_per_m2_pence` are derived copies).
 4. Never expose the Supabase service-role key to the client. Never commit secrets; use env vars.
 5. Gated documents are served via short-lived signed URLs, not public links.
 6. Validate all form input on the server. Rate-limit application, login, sample request and contact endpoints. Add a honeypot to public forms.
@@ -124,19 +130,28 @@ If the site can't be reached, ask for exports or screenshots rather than inventi
 
 ## Data model
 
-- `profiles`: id (auth user), company_name, contact_name, phone, trade_type (fitter | retailer | contractor | specifier), status (pending | approved | rejected), tier_id, is_admin, list_as_stockist (bool)
+- `profiles`: id (auth user), company_name, contact_name, phone, trade_type (fitter | retailer | contractor | specifier), status (pending | approved | rejected | suspended), role (super_admin | admin | trade | stockist), business_id, tier_id, is_admin (legacy, follows role), list_as_stockist (bool)
+- `businesses`, `trade_applications`, `admin_permissions`: the company, what was applied for and its review, and an administrator's permissions
 - `price_tiers`: id, name
-- `finishes`: id, name, slug, style (plank | herringbone), colour_family, description, specs (jsonb: sizes, thickness, pack coverage etc.), sort_order, published, is_demo
+- `finishes`: id, name, slug, style (plank | herringbone), colour_family, description, specs (jsonb: sizes, thickness, pack coverage etc.), rrp_per_m2_pence (public RRP, nullable), sort_order, published, is_demo
+- `collections`; `product_variants`: finish_id, sku, unit_of_sale (m2 | pack | item | linear_metre), pack_coverage_m2, dimensions, vat_rate_bp, is_default (measurements are the source; `finishes.specs` keeps a display copy)
+- `price_lists` (rrp | trade | stockist | account | promotion; VAT inclusive or not; dates) and `price_list_items` (amount, unit, volume break, dates): the single source of prices
 - `finish_images`: finish_id, url, kind (swatch | room | closeup), alt, sort_order
 - `prices`: finish_id, tier_id, price_per_m2_pence (integer), updated_at
 - `price_overrides`: finish_id, profile_id, price_per_m2_pence
 - `documents`: id, title, type (tech sheet | warranty | certificate | fitting guide | brochure), finish_id nullable, storage_path, trade_only
-- `sample_requests`: id, name, email, phone, address_line1, address_line2, town, postcode, finish_ids, marketing_opt_in, status (new | sent), created_at
-- `stockists`: id, name, type (showroom | retailer | fitter), address, postcode, lat, lng, phone, website, published
+- `sample_requests`: id, name, email, phone, address_line1, address_line2, town, postcode, finish_ids, marketing_opt_in, status (new | processing | sent | cancelled), carrier, tracking_ref, dispatch_note, created_at. `finishes.sample_available` and `archived_at`
+- `enquiries`, `consent_records`, `privacy_requests`, `notification_log` (the real result of every email), `finish_views` (a daily count, nothing about the visitor). Reports distinguish enquiries, quotes and sales; actual sales are not tracked
+- `stockists`: id, name, type (showroom | retailer | fitter), address, postcode, lat, lng, phone, website, email, opening_hours, description, published, verified_at (required before published). Private to the owner in `stockist_private` (lead email, notes, commercial terms, price list); `stockist_products` is the range carried, never live stock
 - `online_retailers`: id, name, url, logo_path, sort_order, published
 - `shortlists`: id, profile_id, name, token, finish_ids, created_at
 - `inspiration`: id, title, mood, image_path, finish_ids, sort_order, published
-- Trade applications are captured as `profiles` with status = pending.
+- `trade_preferences`: profile_id, default_markup_bp, default_wastage_pct, vat_registered, quote_footer (private to the trader)
+- `quotes`: id, profile_id, reference (Q-0001 per trader), customer details, site, status (draft | sent | accepted | declined), vat_rate_bp, notes, valid_until, share_token, sent_at, responded_at
+- `quote_lines`: quote_id, kind (flooring | accessory | labour | other), finish_id, description, quantity, unit, unit_cost_pence (private), unit_sell_pence, area_m2, wastage_pct
+- A trader's quotes, costs and margins are private to that trader: the owner sees only aggregate demand (`admin_dashboard_stats()`). Customers read a quote only through `get_shared_quote(token)`, which returns sell prices.
+- `customers` (a trader's own), `projects` (with `customer_id`), `project_items` (rooms: length, width, wastage), `saved_products`; `audit_log` (append-only); `system_settings`
+- Trade applications are captured as `profiles` with status = pending, plus their `businesses` and `trade_applications` rows. Full reference: `docs/DATABASE.md`.
 
 Money is stored as integer pence.
 
@@ -145,7 +160,8 @@ Money is stored as integer pence.
 - **Finish explorer** (the one signature interaction, done really well): full-screen, image-led browsing of every finish. Swipe or arrow between finishes, tap to switch between the room scene and the grain close-up, filter by style and colour family, and "Add to samples" without leaving. Smooth, slow transitions; respects prefers-reduced-motion.
 - **Sample tray**: see Samples.
 - **Where to buy**: see Where to buy.
-- **Customer view toggle**: a logged-in trader can switch, with one tap, to a mode that hides ALL prices so they can show the site to homeowners on a phone or tablet. It persists for the session and is clearly indicated, with an easy exit.
+- **Pricing, built**: the RRP shows to everyone (finish page, range cards, compare); an approved trade account also sees its own price (account price if set, else its tier price) on the finish page and the account price list, read server-side as that user under RLS. The owner sets RRPs, tier prices and tiers at `/admin/prices`, and approves accounts and assigns tiers at `/admin/accounts` (approval emails the applicant). Seed RRP and trade prices are fake repeated-digit placeholders.
+- **Customer view toggle**: a logged-in trader can switch, with one tap, to a mode that hides ALL trade prices (the public RRP stays) so they can show the site to homeowners on a phone or tablet. It persists for the session and is clearly indicated, with an easy exit.
 - **Shareable shortlists**: a trader picks finishes and shares a clean link (a PDF can come later) with no prices.
 - **Trade application**: short form, email confirmation, owner approval flow.
 - **Trade area**: prices, documents, shortlists.
@@ -154,18 +170,20 @@ Money is stored as integer pence.
 
 **Standing rule from the client:** any design idea or reference they share (a screenshot of another site, a pattern they like) is to be built in the Duratek theme below unless they say otherwise. Take the structure or idea, never the other brand's colours, fonts, logo or copy.
 
-**Approved direction (November 2026): "The floor is the hero".** Scandinavian, architectural, warm minimalism, with the warmth coming from the oak and the photography, never from the interface. Pages are mostly white and linen and photographic; navy is the ink (at most one full navy section per page); green is a small signal (selected states, the sample action, markers), never a background block. Rough proportion on a page: white and linen 62%, photography 30%, navy 6%, green 2%. No warm stone or beige neutral. Measurements (plank sizes, thickness, pack coverage, wear layer) are set in DM Mono, the data face. Finish names are set in display type like gallery labels. Product pages lead with the plank (grain), then rooms. Imagery is curated until a commissioned shoot: no playrooms, showers or bathrooms where the floor barely features, no computer-generated rooms.
+**Approved direction (November 2026): "The floor is the hero", softened.** Soft, premium, architectural minimalism (client update, November 2026, superseding the earlier "no beige, square corners" rules): warm ivory, cream and sand neutrals with natural oak, soft rounded cards and controls, generous whitespace, large photography. Navy is the ink (headings, text, at most one navy panel per page, inset with rounded corners); green is the action and selected-state colour, never a background block. Rough proportion on a page: ivory, cream and white 62%, photography 30%, navy 6%, green 2%. Avoid excessive animation, gradients, heavy shadows and pill-shaped layouts. Measurements (plank sizes, thickness, pack coverage, wear layer) are set in DM Mono, the data face. Finish names are set in display type like gallery labels. Product pages lead with the plank (grain), then rooms. Imagery is curated until a commissioned shoot: no playrooms, showers or bathrooms where the floor barely features, no computer-generated rooms.
 
-Use the existing Duratek brand identity. Do NOT use Ted Todd's beige, brown, taupe or natural-wood brand palette, and do not introduce beige, brown or gold as alternative brand colours. Take Ted Todd's editorial approach (premium typography, generous whitespace, large photography, elegant composition), but the identity must feel unmistakably Duratek.
+Use the existing Duratek brand identity: the warm neutrals are surfaces, not new brand colours, and the wordmark, navy and green stay as they are. Do not copy Ted Todd's palette or introduce brown or gold as brand colours. Take Ted Todd's editorial approach (premium typography, generous whitespace, large photography, elegant composition), but the identity must feel unmistakably Duratek.
 
 - Primary navy `#18364C`: hero sections, footer and important feature areas; navy typography on light backgrounds.
-- Duratek green `#4B9B48`: accent text, subtle highlights, selected navigation details, interactive elements. For WCAG AA, small green text and button fills use the darker `#3D7F3B` on light backgrounds, and `#54AE51` on navy (same hue).
+- Duratek green `#4B9B48`: accent text, subtle highlights, selected navigation details, interactive elements. For WCAG AA, small green text and button fills use the darker `#387636` on light backgrounds (AA on ivory and cream), and `#54AE51` on navy (same hue).
 - White `#FFFFFF`: prominent headings on navy; alternating sections.
-- Off-white `#F7F6F2`: spacious product and collection sections.
+- Warm neutrals (tokens in `globals.css`): ivory `#FAF7F1` (the page), cream `#F3EDE3` (alternating sections and soft panels, e.g. the free-sample panels), sand `#E7DCCB` (soft fills and borders), warm hairline `#E6DED2`, and oak `#9A6F45` for decorative details and icons only (not small text).
+- Shape: cards and framed photography 20px radius (`rounded-card`, the `card` and `frame` utilities); buttons, inputs and chips 10px (`rounded-control`). Soft, warm shadows (`shadow-card`). Technical drawings (the plank scale) stay crisp.
 - Secondary text: muted slate grey `#5A6B78` (on navy: `#B9C6D0`).
-- Headings and product titles: Manrope (light 300 for large display, 400 for titles, 500 sparingly; no italics). Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav). Data (measurements and specifications): DM Mono 400. Avoid unnecessary bold.
+- Type system (tokens in `globals.css`, one place to tune): Manrope leads. Section headings (H2) 500, 32px phones to 48px desktop, tracking -0.02em, line height 1.12, balanced; page titles (H1) 400; hero 450; card titles and menu items 400 (menu 22px, never louder than a heading); section labels Manrope 600, 12px, tracking 0.16em, green. Body, navigation and buttons: DM Sans (400 body, 500 buttons and nav); supporting text under a heading 15–16px, line height 1.6, max 60ch, muted navy (navy/75) on light and off-white at 80–85% on navy. Data (measurements and specifications): DM Mono 400, tabular figures. Section stack spacing: label to heading 14px, heading to description 18px, stack to content 48–80px (`mt-label`, `mt-lede`, `mt-stack`). No italics; avoid unnecessary bold.
 - Small tracked uppercase green eyebrow labels above headings (e.g. "DURATEK SURFACE TECHNOLOGY", "ENGINEERED DURABILITY")
-- Buttons: square-cornered. Off-white on navy, or green on light, with a trailing arrow ("Shop full Duratek range →").
+- Buttons: softly rounded (10px). Ivory on navy or photography, green on light, with a trailing arrow ("Shop full Duratek range →"). A secondary action next to a primary one is a quiet underlined link, not a second button.
+- Iconography: simple 1.5px line icons, alone (never in circles), in oak on light or green on navy, for facts and benefits cards.
 - The wordmark is lowercase "duratek": "dura" in green, "tek" bold (white on navy). Use a placeholder text version only; use the real SVG when supplied.
 - Badges: Scratch Shield, Residential Lifetime Warranty and Commercial 10 Year Warranty artwork. Use placeholders until the client supplies the files.
 

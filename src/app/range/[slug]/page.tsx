@@ -2,18 +2,32 @@ import type { Metadata } from "next";
 import { PageTransition } from "@/components/layout/page-transition";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense, ViewTransition } from "react";
-import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { Suspense } from "react";
+import { ScratchShieldBadge, WarrantyDisclaimer } from "@/components/content/warranty";
 import { FinishCard } from "@/components/finish/finish-card";
 import { ColourSwatches } from "@/components/finish/colour-swatches";
+import { ProofPoints } from "@/components/finish/proof-points";
 import { FinishGallery } from "@/components/finish/finish-gallery";
+import { PlankScale, type ScalePlank } from "@/components/finish/plank-scale";
+import { PackEstimator } from "@/components/finish/pack-estimator";
+import { PriceBlock, PriceBlockPublic } from "@/components/trade/price-block";
+import { StickySampleBar } from "@/components/finish/sticky-sample-bar";
+import { ViewBeacon } from "@/components/finish/view-beacon";
+import { SaveButton } from "@/components/saved/save-button";
 import { AddToSamplesButton } from "@/components/samples/add-to-samples-button";
 import { ButtonLink } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, Check } from "@/components/ui/icons";
-import { getFinish, getFinishes, imagesOfKind, specRows } from "@/lib/catalogue";
+import { ArrowLeft, ArrowRight, Swatches } from "@/components/ui/icons";
+import { byTone, getFinish, getFinishes, grainImage, imagesOfKind, specRows } from "@/lib/catalogue";
+import { isSecondaryRoom } from "@/lib/catalogue/curation";
+import { splitLead } from "@/lib/catalogue/text";
+import { FORMAT_LABELS, formatOptions, plankFormat } from "@/lib/catalogue/format";
+import { relatedFinishes } from "@/lib/catalogue/related";
+import { compareHref } from "@/lib/saved/saved";
 import type { Finish } from "@/lib/catalogue/types";
 import { JsonLd } from "@/components/seo/json-ld";
-import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { cn } from "@/lib/cn";
+import { colourFamilyLabel } from "@/lib/config";
+import { countWord } from "@/lib/number-words";
 import { siteUrl } from "@/lib/site";
 
 export async function generateStaticParams() {
@@ -32,11 +46,47 @@ export async function generateMetadata({ params }: PageProps<"/range/[slug]">): 
   };
 }
 
-function related(all: Finish[], finish: Finish, n = 4): Finish[] {
-  const others = all.filter((f) => f.id !== finish.id);
-  const same = others.filter((f) => f.colourFamily === finish.colourFamily);
-  const rest = others.filter((f) => f.colourFamily !== finish.colourFamily);
-  return [...same, ...rest].slice(0, n);
+/** Every plank format in the range, to scale; this finish's is filled with its grain. */
+function scalePlanks(all: Finish[], finish: Finish): ScalePlank[] {
+  const current = plankFormat(finish.specs);
+  const own: ScalePlank[] =
+    !current && finish.specs.plank_width_mm && finish.specs.plank_length_mm
+      ? // A herringbone board is not a plank format: draw this board itself, filled with its grain.
+        [{ key: "this", label: finish.specs.format ?? "This board", width_mm: finish.specs.plank_width_mm, length_mm: finish.specs.plank_length_mm, current: true, image: grainImage(finish) }]
+      : [];
+  return [...own, ...formatOptions(all).flatMap(({ format, label }) => {
+    const specs = format === current ? finish.specs : all.find((f) => plankFormat(f.specs) === format)?.specs;
+    if (!specs?.plank_width_mm || !specs.plank_length_mm) return [];
+    return [
+      {
+        key: format,
+        label,
+        width_mm: specs.plank_width_mm,
+        length_mm: specs.plank_length_mm,
+        current: format === current,
+        image: format === current ? grainImage(finish) : grainImage(all.find((f) => plankFormat(f.specs) === format)!),
+      },
+    ];
+  })];
+}
+
+const SAMPLE_BUTTON_ID = "finish-sample";
+
+/** Rows whose values are measurements, set in the data face. */
+const MEASURED = new Set(["Plank size", "Thickness", "Wear layer", "Pack coverage"]);
+
+/** Spec table: measurements in the data face, everything else in the body face. */
+function SpecList({ rows, className }: { rows: { label: string; value: React.ReactNode }[]; className?: string }) {
+  return (
+    <dl className={className}>
+      {rows.map((r) => (
+        <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
+          <dt className="text-ink-muted">{r.label}</dt>
+          <dd className={cn("text-right text-navy", MEASURED.has(r.label) && "data")}>{r.value}</dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 export default function FinishPage({ params }: PageProps<"/range/[slug]">) {
@@ -72,15 +122,16 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
   const [finish, all] = await Promise.all([getFinish(slug), getFinishes()]);
   if (!finish) notFound();
 
-  // Room scenes first (the card photo morphs into the first), then grain.
-  const gallery = [
-    ...imagesOfKind(finish, "room"),
-    ...imagesOfKind(finish, "closeup"),
-    ...imagesOfKind(finish, "swatch"),
-  ];
+  // The plank leads; rooms and close-ups follow in their own gallery.
+  const grain = grainImage(finish);
+  const gallery = [...imagesOfKind(finish, "room"), ...imagesOfKind(finish, "closeup")].filter((i) => i !== grain);
   const specs = specRows(finish.specs);
-  const keySpecs = specs.filter((r) => ["Plank size", "Thickness", "Wear layer", "Pack coverage"].includes(r.label));
-  const sample = { id: finish.id, slug: finish.slug, name: finish.name };
+  const lead = splitLead(finish.description);
+  const keySpecs = specs.filter((r) => MEASURED.has(r.label));
+  const format = plankFormat(finish.specs);
+  const planks = scalePlanks(all, finish);
+  const sample = { id: finish.id, slug: finish.slug, name: finish.name, unavailable: finish.sampleAvailable === false };
+  const related = relatedFinishes(all, finish);
 
   return (
     <article>
@@ -93,7 +144,7 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               name: `Duratek ${finish.name}`,
               description: finish.description,
               url: siteUrl(`/range/${finish.slug}`),
-              image: gallery.slice(0, 6).map((i) => i.src),
+              image: [grain, ...gallery].filter(Boolean).slice(0, 6).map((i) => i!.src),
               brand: { "@type": "Brand", name: "Duratek" },
               category: "SPC click flooring",
               additionalProperty: specs.map((r) => ({ "@type": "PropertyValue", name: r.label, value: r.value })),
@@ -109,17 +160,34 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
           ],
         }}
       />
-      {/* Gallery beside a sticky information panel */}
+      {/* The plank first, beside a sticky information panel */}
       <div className="container-page grid gap-8 pt-4 sm:pt-8 lg:grid-cols-12 lg:gap-14">
-        <div className="lg:col-span-7">
-          <ViewTransition name={`finish-${finish.slug}`} share="finish-morph" default="none">
-            <div>
-              <FinishGallery images={gallery} name={finish.name} />
+        {/* The plank stays in view while the panel beside it scrolls. */}
+        <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)] lg:col-span-7 lg:self-start">
+          {grain ? (
+            <div className="relative">
+              {/* One gallery: the grain first, then the finish in the room. */}
+              <FinishGallery
+                // The finish in the room first, then the grain close-up, then any other close-ups.
+                images={[...imagesOfKind(finish, "room").filter((i) => !isSecondaryRoom(i)), grain, ...gallery.filter((i) => i.kind === "closeup")]
+                  .filter((i): i is NonNullable<typeof i> => Boolean(i))
+                  .filter((i, idx, all) => all.findIndex((x) => x.src === i.src) === idx)
+                  .slice(0, 6)}
+                name={finish.name}
+                aspect="aspect-[4/5] rounded-card shadow-card sm:aspect-[6/5]"
+                sizes="(min-width: 1024px) 54vw, 100vw"
+                overlay={
+                  // A seal in the bottom-right corner of the photograph, clear of the gallery arrows and counter.
+                  <ScratchShieldBadge className="pointer-events-none absolute bottom-4 right-4 z-10 w-20! drop-shadow-[0_4px_12px_rgba(0,0,0,0.35)] sm:w-24!" />
+                }
+              />
             </div>
-          </ViewTransition>
+          ) : (
+            <div className="aspect-[4/5] rounded-card bg-line sm:aspect-[6/5]" />
+          )}
         </div>
 
-        <aside className="lg:col-span-5">
+        <div className="lg:col-span-5">
           <div className="lg:sticky lg:top-[calc(var(--spacing-header)+2rem)]">
             <nav aria-label="Breadcrumb">
               <Link href="/range" className="nav-link gap-2">
@@ -127,93 +195,119 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               </Link>
             </nav>
             <h1 className="mt-5 text-display-lg text-navy">{finish.name}</h1>
-            <p className="mt-1 font-display text-display-sm text-ink-muted">
-              {STYLE_LABELS[finish.style]} · {colourFamilyLabel(finish.colourFamily)}
+            <p className="mt-2 text-[1rem] text-ink-muted">
+              {colourFamilyLabel(finish.colourFamily)}
+              {format && <> · {FORMAT_LABELS[format]}</>}
             </p>
+            {/* RRP is public and leads the panel; the trade price is read at request time, only for an approved account. */}
+            <Suspense fallback={<PriceBlockPublic rrpPence={finish.rrpPence} offerPence={finish.offerPence} />}>
+              <PriceBlock finishId={finish.id} slug={finish.slug} rrpPence={finish.rrpPence} offerPence={finish.offerPence} />
+            </Suspense>
+
+            {lead.lead && <p className="mt-6 max-w-[34ch] font-display text-[1.375rem] font-light leading-snug tracking-[-0.02em] text-navy">{lead.lead}</p>}
+            <ProofPoints />
 
             <div className="mt-6">
               <ColourSwatches
                 current={finish.slug}
-                options={all.map((f) => ({ slug: f.slug, name: f.name, swatch: imagesOfKind(f, "swatch")[0] }))}
+                options={byTone(all).map((f) => ({ slug: f.slug, name: f.name, swatch: grainImage(f) }))}
               />
             </div>
 
-            <dl className="mt-8 border-t border-line">
-              {keySpecs.map((r) => (
-                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                  <dt className="text-ink-muted">{r.label}</dt>
-                  <dd className="text-right text-navy">{r.value}</dd>
+            {/* The sample offer and actions, together in one soft panel. */}
+            <div className="card mt-6 p-5 sm:p-6">
+              <p className="flex items-center gap-2.5 text-[0.9375rem] text-navy">
+                <Swatches size={20} className="shrink-0 text-oak" />
+                Up to three free samples, posted to you.
+              </p>
+              <div className="mt-4 flex flex-wrap items-start gap-x-6 gap-y-3">
+                <div id={SAMPLE_BUTTON_ID}>
+                  <AddToSamplesButton finish={sample} />
                 </div>
-              ))}
-            </dl>
-
-            <div className="mt-8 flex flex-wrap items-start gap-x-8 gap-y-3">
-              <AddToSamplesButton finish={sample} />
-              <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
-                Where to buy
-              </ButtonLink>
+                <ButtonLink href="/where-to-buy" variant="quiet" arrow={false}>
+                  Where to Buy
+                </ButtonLink>
+                <SaveButton finish={sample} />
+              </div>
+              <p className="mt-3 border-t border-line pt-3 text-[0.875rem] text-ink-muted">
+                <Link
+                  href={compareHref([finish.slug, ...related.slice(0, 2).map((f) => f.slug)])}
+                  className="inline-block py-1 text-navy underline underline-offset-4 hover:text-green-ink"
+                >
+                  Compare with similar finishes
+                </Link>
+              </p>
             </div>
 
-            <ul className="mt-8 grid gap-3 text-[0.875rem] text-navy sm:grid-cols-2">
-              {[
-                "Up to 3 free samples",
-                "Waterproof rigid SPC core",
-                "Scratch Shield surface protection",
-                "Residential lifetime warranty",
-              ].map((b) => (
-                <li key={b} className="flex items-start gap-2">
-                  <Check size={16} className="mt-0.5 shrink-0 text-green-ink" />
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
+            <SpecList rows={keySpecs} className="mt-8 border-t border-line" />
+            {finish.specs.pack_coverage_m2 && <PackEstimator coverageM2={finish.specs.pack_coverage_m2} rrpPence={finish.offerPence ?? finish.rrpPence} />}
           </div>
-        </aside>
+        </div>
       </div>
+
+      {planks.length > 0 && (
+        <section aria-labelledby="scale-heading" className="pt-section">
+          <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
+            <div className="lg:col-span-4">
+              <h2 id="scale-heading" className="text-display-md text-navy">
+                To Scale
+              </h2>
+              <p className="mt-4 text-ink-muted">
+                {planks.length > 1
+                  ? `The range comes in ${countWord(planks.length).toLowerCase()} plank sizes, drawn here to the same scale. ${finish.name} is the ${(format ? FORMAT_LABELS[format] : "").toLowerCase()}.`
+                  : `${finish.name}, drawn to scale.`}
+              </p>
+            </div>
+            <div className="card p-5 sm:p-10 lg:col-span-8">
+              <PlankScale planks={planks} />
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* About and full specification */}
       <section aria-labelledby="about-heading" className="py-section">
         <div className="container-page grid gap-10 lg:grid-cols-12 lg:gap-14">
-          <h2 id="about-heading" className="text-display-lg text-navy lg:col-span-5">
-            About {finish.name}
-          </h2>
-          <div className="space-y-4 text-lede text-ink-muted lg:col-span-7">
-            {finish.description.split(/\n\n+/).map((p) => (
+          <div className="lg:col-span-4">
+            <h2 id="about-heading" className="text-display-md text-navy">
+              About {finish.name}
+            </h2>
+          </div>
+          <div className="space-y-4 text-lede text-ink-muted lg:col-span-8">
+            {(lead.rest || finish.description).split(/\n\n+/).map((p) => (
               <p key={p.slice(0, 32)}>{p}</p>
             ))}
           </div>
 
-          <div className="lg:col-span-7 lg:col-start-6">
+          <div className="lg:col-span-8 lg:col-start-5">
             <h3 className="eyebrow font-sans">Specification</h3>
-            <dl className="mt-4 grid border-t border-line sm:grid-cols-2 sm:gap-x-10">
-              {specs.map((r) => (
-                <div key={r.label} className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                  <dt className="text-ink-muted">{r.label}</dt>
-                  <dd className="text-right text-navy">{r.value}</dd>
-                </div>
-              ))}
-              <div className="flex justify-between gap-4 border-b border-line py-3 text-[0.9375rem]">
-                <dt className="text-ink-muted">Warranty</dt>
-                <dd className="text-right text-navy">
-                  <Link href="/warranty" className="underline underline-offset-4 hover:text-green-ink">
-                    Residential lifetime, 10 year commercial
-                  </Link>
-                </dd>
-              </div>
-            </dl>
-            <p className="mt-4 text-[0.8125rem] text-ink-muted">
+            <SpecList
+              className="card mt-4 grid px-5 py-2 sm:grid-cols-2 sm:gap-x-10 sm:px-8 sm:py-4 [&>div:last-child]:border-b-0 sm:[&>div:nth-last-child(2)]:border-b-0"
+              rows={[
+                ...specs,
+                {
+                  label: "Warranty",
+                  value: (
+                    <Link href="/warranty" className="-my-3 inline-block py-3 underline underline-offset-4 hover:text-green-ink">
+                      Residential lifetime, 10 year commercial
+                    </Link>
+                  ),
+                },
+              ]}
+            />
+            <WarrantyDisclaimer className="mt-4 text-[0.75rem]" />
+            <p className="mt-3 text-[0.8125rem] text-ink-muted">
               Always follow the product&apos;s installation and care guidance, including subfloor preparation.
             </p>
           </div>
         </div>
       </section>
 
-      <section aria-labelledby="related-heading" className="py-section">
+      <section aria-labelledby="related-heading" className="pb-section">
         <div className="container-page">
-          <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="flex flex-wrap items-end justify-between gap-4 border-t border-line pt-section-sm">
             <h2 id="related-heading" className="text-display-md text-navy">
-              You might also like
+              You Might Also Like
             </h2>
             <Link
               href="/range"
@@ -222,15 +316,18 @@ async function FinishContent({ params }: { params: PageProps<"/range/[slug]">["p
               View all finishes <ArrowRight size={16} />
             </Link>
           </div>
-          <ul className="mt-10 grid grid-cols-1 gap-x-6 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
-            {related(all, finish).map((f) => (
+          <ul className="mt-10 grid grid-cols-2 gap-3 sm:gap-6 lg:gap-8 lg:grid-cols-4">
+            {related.map((f) => (
               <li key={f.id}>
-                <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, (min-width: 640px) 48vw, 100vw" />
+                <FinishCard finish={f} sizes="(min-width: 1024px) 23vw, 48vw" />
               </li>
             ))}
           </ul>
         </div>
       </section>
+
+      <StickySampleBar finish={sample} watch={SAMPLE_BUTTON_ID} />
+      <ViewBeacon slug={finish.slug} />
     </article>
   );
 }

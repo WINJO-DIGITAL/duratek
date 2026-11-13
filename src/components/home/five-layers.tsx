@@ -1,0 +1,57 @@
+import Image from "next/image";
+import { LayerStack } from "@/components/content/layer-stack";
+import { SectionIntro } from "@/components/content/section-intro";
+import { WarrantyDisclaimer } from "@/components/content/warranty";
+import { ButtonLink } from "@/components/ui/button";
+
+/**
+ * The page's one navy moment, as a rounded panel inset in the page: the floor
+ * in section with each layer's job in plain words, the click system, and the
+ * warranty. The layers carry the 0.55 mm, Scratch Shield and waterproof facts,
+ * so they are not repeated in a separate list.
+ */
+export function FiveLayers() {
+  return (
+    <section aria-labelledby="layers-heading" className="py-section-sm">
+      <div className="container-page">
+        <div className="on-dark rounded-card bg-navy px-5 py-section-sm sm:px-10 lg:px-16">
+          <SectionIntro title={<span id="layers-heading">Five layers, one floor.</span>} tone="dark">
+            <p>Each layer has a job. Together they make a floor that is waterproof, scratch-resistant and quieter underfoot.</p>
+          </SectionIntro>
+          <div className="mt-stack">
+            <LayerStack />
+          </div>
+
+          <div className="mt-10 flex items-center gap-4 text-[1rem] leading-snug text-on-dark/85 lg:mt-12">
+            <span className="inline-flex shrink-0 rounded-control bg-off-white px-3 py-1.5">
+              <Image src="/brand/unilin-logo.png" alt="Unilin" width={752} height={185} sizes="6rem" className="h-auto w-20" />
+            </span>
+            <p>Fitted with Unilin click-lock, as a floating floor.</p>
+          </div>
+
+          <div className="mt-10 grid gap-6 border-t border-white/15 pt-8 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-16">
+            <div>
+              <div className="flex items-start gap-5">
+                <Image
+                  src="/brand/warranty-residential-lifetime.png"
+                  alt="Residential lifetime warranty"
+                  width={467}
+                  height={467}
+                  sizes="5rem"
+                  className="h-auto w-20 shrink-0"
+                />
+                <p className="pt-1 text-[1.0625rem] leading-relaxed text-on-dark">
+                  Residential lifetime warranty. 10 years commercial, in light and medium traffic areas.
+                </p>
+              </div>
+              <WarrantyDisclaimer tone="dark" className="mt-4 max-w-3xl text-[0.75rem]" />
+            </div>
+            <ButtonLink href="/technology" variant="quiet-on-dark" className="justify-self-start lg:justify-self-end">
+              Inside a duratek Plank
+            </ButtonLink>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

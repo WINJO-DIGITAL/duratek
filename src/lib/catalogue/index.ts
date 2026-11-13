@@ -1,7 +1,9 @@
 import "server-only";
 import { cacheLife, cacheTag } from "next/cache";
 import { publicSupabase } from "@/lib/supabase/public";
+import { isMissingFunction } from "./errors";
 import { toFinish, toImage, type FinishRow } from "./mappers";
+import { isRetired, isSecondaryRoom } from "./curation";
 import { measureTone } from "./tone";
 import type { Finish, InspirationItem, OnlineRetailer } from "./types";
 
@@ -16,11 +18,13 @@ export const TAGS = {
 } as const;
 
 const FINISH_SELECT =
-  "id, name, slug, style, colour_family, description, specs, is_demo, finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
+  "id, name, slug, style, colour_family, description, specs, is_demo, rrp_per_m2_pence, finish_images (url, alt, kind, width, height, blur_data_url, sort_order)";
 
 export async function getFinishes(): Promise<Finish[]> {
   "use cache";
-  cacheLife("hours");
+  // Minutes, not hours: a dated price change or promotion starts on time.
+  // Admin edits refresh it at once through the finishes tag.
+  cacheLife("minutes");
   cacheTag(TAGS.finishes);
   const { data, error } = await publicSupabase()
     .from("finishes")
@@ -29,6 +33,29 @@ export async function getFinishes(): Promise<Finish[]> {
     .order("name");
   if (error) throw new Error(`Failed to load finishes: ${error.message}`);
   const finishes = (data as FinishRow[]).map(toFinish);
+
+  // Finishes whose samples are out just now. Separate and forgiving: before the admin
+  // migration the column doesn't exist, and then every finish simply counts as available.
+  const { data: noSamples, error: sampleError } = await publicSupabase().from("finishes").select("id").eq("sample_available", false);
+  if (!sampleError) {
+    const out = new Set(noSamples.map((r) => r.id));
+    for (const f of finishes) if (out.has(f.id)) f.sampleAvailable = false;
+  }
+
+  // Public prices come from the price resolver as a visitor: the RRP, or a
+  // public promotion below it. Never a trade price (the resolver decides).
+  const { data: prices, error: priceError } = await publicSupabase().rpc("catalogue_prices");
+  // Deploy safety net: before the pricing migration runs, the resolver doesn't
+  // exist yet, so keep the legacy RRP column (still maintained) instead of failing.
+  if (priceError && isMissingFunction(priceError)) return finishes;
+  if (priceError) throw new Error(`Failed to load prices: ${priceError.message}`);
+  for (const f of finishes) f.rrpPence = undefined;
+  for (const f of finishes) {
+    const p = prices?.find((x) => x.finish_id === f.id && x.price_unit === "m2");
+    if (!p) continue;
+    f.rrpPence = p.rrp_amount_pence ?? (p.source === "rrp" ? p.amount_pence : undefined);
+    if (p.is_promotion && p.prices_include_vat && (f.rrpPence === undefined || p.amount_pence < f.rrpPence)) f.offerPence = p.amount_pence;
+  }
   await Promise.all(
     finishes.map(async (f) => {
       f.tone = await measureTone(f.images.find((i) => i.kind === "swatch")?.blurDataURL);
@@ -51,7 +78,10 @@ export async function getInspiration(): Promise<InspirationItem[]> {
     .select("id, title, mood, image_path, alt, width, height, blur_data_url, finish_ids")
     .order("sort_order");
   if (error) throw new Error(`Failed to load inspiration: ${error.message}`);
-  return data.map((r) => ({
+  // Same curation as finish photography: no retired files, and no
+  // bathrooms or playrooms where the floor is not the subject.
+  return data
+    .map((r) => ({
     id: r.id,
     title: r.title,
     mood: r.mood,
@@ -65,7 +95,8 @@ export async function getInspiration(): Promise<InspirationItem[]> {
       blur_data_url: r.blur_data_url,
       sort_order: 0,
     }),
-  }));
+    }))
+    .filter((item) => !isRetired(item.image) && !isSecondaryRoom({ ...item.image, alt: `${item.image.alt} ${item.title}` }));
 }
 
 export async function getOnlineRetailers(): Promise<OnlineRetailer[]> {

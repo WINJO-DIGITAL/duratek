@@ -121,7 +121,7 @@ export function RangeMenu({
           setOpenedOn(pathname);
         }}
         className={cn(
-          "flex size-8 items-center justify-center transition-colors duration-300",
+          "-mx-1.5 flex size-tap items-center justify-center transition-colors duration-300",
           onDark ? "text-white" : "text-navy hover:text-green-ink",
         )}
       >
@@ -159,7 +159,7 @@ export function RangeMenu({
         role="region"
         aria-label="The range"
         inert={!isOpen}
-        className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-[0_32px_48px_-28px_rgb(24_54_76/0.35)]"
+        className="dropdown-panel absolute inset-x-0 top-full border-b border-line bg-off-white shadow-card-hover"
       >
         <span
           aria-hidden="true"

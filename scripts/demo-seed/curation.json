@@ -1,418 +1,465 @@
 {
-  "$comment": "Hand curation of the Kwik Floors Duratek collection for the client preview. Image indexes refer to each product's images array in products.json. Kinds: room | closeup | swatch. 'room' labels feed the alt text. Colour families are a judgement from the photography, not client data; confirm with the client. Size diagrams are deliberately excluded. Descriptions are written for the preview from the swatches and plank formats (no performance claims); replace with the client's copy when supplied.",
-  "source": {
-    "collection": "https://www.kwikfloors.co.uk/collections/duratekplank/products.json?limit=250",
-    "retailer_url": "https://www.kwikfloors.co.uk/collections/duratek"
+ "$comment": "Hand curation of the Kwik Floors Duratek collection for the client preview. Image indexes refer to each product's images array in products.json. Kinds: room | closeup | swatch. 'room' labels feed the alt text. Colour families are a judgement from the photography, not client data; confirm with the client. Size diagrams are deliberately excluded. Descriptions are written for the preview from the swatches and plank formats (no performance claims); replace with the client's copy when supplied. Herringbone finishes come from the herringbone collection (source.herringbone_collection) and set style 'herringbone'. Bathroom photographs and size diagrams are excluded for herringbone, per the imagery rules.",
+ "source": {
+  "collection": "https://www.kwikfloors.co.uk/collections/duratekplank/products.json?limit=250",
+  "retailer_url": "https://www.kwikfloors.co.uk/collections/duratek",
+  "herringbone_collection": "https://www.kwikfloors.co.uk/collections/duratek-herringbone/products.json"
+ },
+ "colour_families": [
+  {
+   "id": "natural",
+   "label": "Natural oak"
   },
-  "colour_families": [
+  {
+   "id": "warm",
+   "label": "Warm oak"
+  },
+  {
+   "id": "greige",
+   "label": "Greige"
+  },
+  {
+   "id": "grey",
+   "label": "Grey"
+  }
+ ],
+ "finishes": [
+  {
+   "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "natural",
+   "images": [
     {
-      "id": "natural",
-      "label": "Natural oak"
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
     },
     {
-      "id": "warm",
-      "label": "Warm oak"
+     "i": 12,
+     "kind": "room",
+     "room": "kitchen"
     },
     {
-      "id": "greige",
-      "label": "Greige"
+     "i": 7,
+     "kind": "room",
+     "room": "open-plan living space"
     },
     {
-      "id": "grey",
-      "label": "Grey"
+     "i": 9,
+     "kind": "closeup"
+    },
+    {
+     "i": 13,
+     "kind": "closeup"
+    },
+    {
+     "i": 16,
+     "kind": "swatch"
     }
-  ],
-  "finishes": [
+   ],
+   "description": "A light, honey-toned oak with soft grain and the odd small knot. It keeps a room bright without looking washed out, and suits kitchens and open-plan spaces well."
+  },
+  {
+   "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm",
+   "colour_family": "natural",
+   "images": [
     {
-      "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "natural",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "children's playroom"
-        },
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 12,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 7,
-          "kind": "room",
-          "room": "open-plan living space"
-        },
-        {
-          "i": 9,
-          "kind": "closeup"
-        },
-        {
-          "i": 13,
-          "kind": "closeup"
-        },
-        {
-          "i": 16,
-          "kind": "swatch"
-        }
-      ],
-      "description": "A light, honey-toned oak with soft grain and the odd small knot. It keeps a room bright without looking washed out, and suits kitchens and open-plan spaces well."
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen and dining area"
     },
     {
-      "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm",
-      "colour_family": "natural",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen and dining area"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "living area"
-        },
-        {
-          "i": 4,
-          "kind": "closeup"
-        },
-        {
-          "i": 3,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Mid-brown oak with darker streaks and plenty of knots. The planks are longer and wider than our standard boards, at 228 × 1492mm, so a large room reads with fewer joins."
+     "i": 0,
+     "kind": "room",
+     "room": "kitchen"
     },
     {
-      "handle": "hawkshead-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "warm",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 3,
-          "kind": "closeup"
-        },
-        {
-          "i": 2,
-          "kind": "swatch"
-        }
-      ],
-      "description": "The warmest finish in the range: rich amber oak with strong, flowing grain and dark knots. It sits naturally in older houses and in rooms that get a lot of daylight."
+     "i": 2,
+     "kind": "room",
+     "room": "living area"
     },
     {
-      "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "grey",
-      "images": [
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "living room"
-        },
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "children's playroom"
-        },
-        {
-          "i": 3,
-          "kind": "room",
-          "room": "hallway"
-        },
-        {
-          "i": 4,
-          "kind": "closeup"
-        },
-        {
-          "i": 5,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Deep charcoal grey with crisp grain lines, and the darkest finish in the range. Put it against white walls, pale cabinetry or concrete and let the contrast do the work."
+     "i": 4,
+     "kind": "closeup"
     },
     {
-      "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm",
-      "colour_family": "natural",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 3,
-          "kind": "room",
-          "room": "dining room"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "hallway and stairs"
-        },
-        {
-          "i": 2,
-          "kind": "closeup"
-        },
-        {
-          "i": 4,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Golden oak with the splits, knots and colour shifts of reclaimed boards. It comes in our extra-long, wider plank (228 × 1492mm), which suits the aged look."
-    },
-    {
-      "handle": "cartmel-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "greige",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "living room"
-        },
-        {
-          "i": 3,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 4,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Brown oak with a cool grey wash and a fair amount of grain movement. If you can't decide between warm and grey, start here."
-    },
-    {
-      "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "grey",
-      "images": [
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "hallway"
-        },
-        {
-          "i": 4,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 5,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Pale silver-grey, close to whitewashed. The lightest finish we make, and a good choice for small rooms and bathrooms that need every bit of light."
-    },
-    {
-      "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "warm",
-      "images": [
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "living room"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "hallway"
-        },
-        {
-          "i": 3,
-          "kind": "closeup"
-        },
-        {
-          "i": 4,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Caramel oak, warm without tipping into orange, with long, straight grain. It looks right with creams, muted greens and natural materials like rattan and linen."
-    },
-    {
-      "handle": "ambleside-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "greige",
-      "images": [
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "kitchen"
-        },
-        {
-          "i": 3,
-          "kind": "room",
-          "room": "bedroom"
-        },
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 2,
-          "kind": "room",
-          "room": "shower room"
-        },
-        {
-          "i": 4,
-          "kind": "swatch"
-        }
-      ],
-      "description": "A soft, slightly olive greige with gentle knots. Quieter than Cartmel and a touch warmer than Skiddaw."
-    },
-    {
-      "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm",
-      "colour_family": "greige",
-      "images": [
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "hallway"
-        },
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 2,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Smoked brown oak with real variation from plank to plank, some lighter and some darker. Extra-long, wider planks (228 × 1492mm) give it the look of a wide-board floor."
-    },
-    {
-      "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm",
-      "colour_family": "greige",
-      "images": [
-        {
-          "i": 0,
-          "kind": "room",
-          "room": "living room"
-        },
-        {
-          "i": 1,
-          "kind": "room",
-          "room": "bathroom"
-        },
-        {
-          "i": 2,
-          "kind": "swatch"
-        }
-      ],
-      "description": "Smoky grey-brown with pale grain and darker knots. It works as well with a modern kitchen as it does with exposed beams and a log burner."
+     "i": 3,
+     "kind": "swatch"
     }
-  ],
-  "inspiration": [
+   ],
+   "description": "Mid-brown oak with darker streaks and plenty of knots. The planks are longer and wider than our standard boards, at 228 \u00d7 1492mm, so a large room reads with fewer joins."
+  },
+  {
+   "handle": "hawkshead-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "warm",
+   "images": [
     {
-      "title": "Light through the kitchen",
-      "mood": "Calm and light",
-      "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 1
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
     },
     {
-      "title": "Space to play",
-      "mood": "Calm and light",
-      "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 0
+     "i": 0,
+     "kind": "room",
+     "room": "kitchen"
     },
     {
-      "title": "A quiet hallway",
-      "mood": "Calm and light",
-      "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm",
-      "i": 0
+     "i": 3,
+     "kind": "closeup"
     },
     {
-      "title": "Kitchen, dining, together",
-      "mood": "Warm and natural",
-      "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm",
-      "i": 1
-    },
-    {
-      "title": "Honey tones in the living room",
-      "mood": "Warm and natural",
-      "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 2
-    },
-    {
-      "title": "Set for dinner",
-      "mood": "Warm and natural",
-      "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm",
-      "i": 3
-    },
-    {
-      "title": "Slate and softness",
-      "mood": "Cool and contemporary",
-      "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm",
-      "i": 0
-    },
-    {
-      "title": "Dark cabinetry, pale floor",
-      "mood": "Cool and contemporary",
-      "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 2
-    },
-    {
-      "title": "Bathrooms that can take it",
-      "mood": "Cool and contemporary",
-      "handle": "cartmel-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 0
-    },
-    {
-      "title": "Evening in the lounge",
-      "mood": "Warm and natural",
-      "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm",
-      "i": 0
+     "i": 2,
+     "kind": "swatch"
     }
-  ]
+   ],
+   "description": "The warmest finish in the range: rich amber oak with strong, flowing grain and dark knots. It sits naturally in older houses and in rooms that get a lot of daylight."
+  },
+  {
+   "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "grey",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "hallway"
+    },
+    {
+     "i": 4,
+     "kind": "closeup"
+    },
+    {
+     "i": 5,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Deep charcoal grey with crisp grain lines, and the darkest finish in the range. Put it against white walls, pale cabinetry or concrete and let the contrast do the work."
+  },
+  {
+   "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm",
+   "colour_family": "natural",
+   "images": [
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "dining room"
+    },
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "hallway and stairs"
+    },
+    {
+     "i": 2,
+     "kind": "closeup"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Golden oak with the splits, knots and colour shifts of reclaimed boards. It comes in our extra-long, wider plank (228 \u00d7 1492mm), which suits the aged look."
+  },
+  {
+   "handle": "cartmel-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Brown oak with a cool grey wash and a fair amount of grain movement. If you can't decide between warm and grey, start here."
+  },
+  {
+   "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "grey",
+   "images": [
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "hallway"
+    },
+    {
+     "i": 5,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Pale silver-grey, close to whitewashed. The lightest finish we make, and a good choice for small rooms and bathrooms that need every bit of light."
+  },
+  {
+   "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "warm",
+   "images": [
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "hallway"
+    },
+    {
+     "i": 3,
+     "kind": "closeup"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Caramel oak, warm without tipping into orange, with long, straight grain. It looks right with creams, muted greens and natural materials like rattan and linen."
+  },
+  {
+   "handle": "ambleside-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "bedroom"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "A soft, slightly olive greige with gentle knots. Quieter than Cartmel and a touch warmer than Skiddaw."
+  },
+  {
+   "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "hallway"
+    },
+    {
+     "i": 2,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Smoked brown oak with real variation from plank to plank, some lighter and some darker. Extra-long, wider planks (228 \u00d7 1492mm) give it the look of a wide-board floor."
+  },
+  {
+   "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
+     "i": 2,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Smoky grey-brown with pale grain and darker knots. It works as well with a modern kitchen as it does with exposed beams and a log burner."
+  },
+  {
+   "handle": "honey-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "warm",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "interior"
+    },
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "room"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Honey oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  },
+  {
+   "handle": "heritage-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "natural",
+   "images": [
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "hallway"
+    },
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Heritage oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  },
+  {
+   "handle": "biscuit-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "natural",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "interior"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "living space"
+    },
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "living room"
+    },
+    {
+     "i": 3,
+     "kind": "room",
+     "room": "bedroom"
+    },
+    {
+     "i": 4,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Biscuit oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  },
+  {
+   "handle": "truffle-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+   "style": "herringbone",
+   "colour_family": "greige",
+   "images": [
+    {
+     "i": 0,
+     "kind": "room",
+     "room": "reading nook"
+    },
+    {
+     "i": 1,
+     "kind": "room",
+     "room": "kitchen"
+    },
+    {
+     "i": 2,
+     "kind": "room",
+     "room": "interior"
+    },
+    {
+     "i": 3,
+     "kind": "swatch"
+    }
+   ],
+   "description": "Truffle oak in a herringbone pattern. Painted bevel edges outline each plank, so the pattern reads clearly across the floor. Rigid SPC core, waterproof, with a 0.55 mm wear layer, Duratek Scratch Shield surface and integrated underlay. Unilin click-lock, floating installation."
+  }
+ ],
+ "inspiration": [
+  {
+   "title": "Light through the kitchen",
+   "mood": "Calm and light",
+   "handle": "keswick-oak-luxury-click-vinyl-flooring-5mm",
+   "i": 1
+  },
+  {
+   "title": "A quiet hallway",
+   "mood": "Calm and light",
+   "handle": "windermere-oak-xl-luxury-click-vinyl-flooring-7mm",
+   "i": 0
+  },
+  {
+   "title": "Kitchen, dining, together",
+   "mood": "Warm and natural",
+   "handle": "fellside-oak-luxury-click-vinyl-flooring-7mm",
+   "i": 1
+  },
+  {
+   "title": "Honey tones in the living room",
+   "mood": "Warm and natural",
+   "handle": "conniston-oak-luxury-click-vinyl-flooring-5mm",
+   "i": 2
+  },
+  {
+   "title": "Set for dinner",
+   "mood": "Warm and natural",
+   "handle": "grizedale-aged-oak-luxury-click-vinyl-flooring-7mm",
+   "i": 3
+  },
+  {
+   "title": "Slate and softness",
+   "mood": "Cool and contemporary",
+   "handle": "honister-slate-grey-luxury-click-vinyl-flooring-5mm",
+   "i": 0
+  },
+  {
+   "title": "Dark cabinetry, pale floor",
+   "mood": "Cool and contemporary",
+   "handle": "kirkstone-grey-oak-luxury-click-vinyl-flooring-5mm",
+   "i": 2
+  },
+  {
+   "title": "Evening in the lounge",
+   "mood": "Warm and natural",
+   "handle": "skiddaw-smoked-oak-luxury-click-vinyl-flooring-5mm",
+   "i": 0
+  }
+ ]
 }

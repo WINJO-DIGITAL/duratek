@@ -12,13 +12,17 @@
     "db:test": "supabase test db",
     "db:reset": "supabase db reset",
     "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
-    "seed:build": "node scripts/demo-seed/build-demo-seed.mjs"
+    "seed:build": "node scripts/demo-seed/build-demo-seed.mjs",
+    "test:e2e": "bash tests/e2e/run.sh",
+    "test:qa": "bash tests/qa/run.sh",
+    "admin:owner": "node scripts/create-owner-admin.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",
     "@supabase/supabase-js": "^2.119.0",
     "motion": "^14.9.1",
     "next": "16.4.5",
+    "pdf-lib": "1.17.1",
     "react": "19.3.0",
     "react-dom": "19.3.0",
     "server-only": "^0.0.1",

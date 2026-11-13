@@ -1,0 +1,88 @@
+"use server";
+
+import { getAccount } from "@/lib/auth/session";
+import { requireApprovedTrade } from "@/lib/auth/trade";
+import { refresh } from "next/cache";
+import { redirect } from "next/navigation";
+import { IMAGE_EXTENSION, isWholeImage, sniffImage } from "@/lib/files";
+import { echo, LOGO_MAX_BYTES, parseBranding, parsePreferences, type FieldErrors } from "@/lib/trade/quote-forms";
+import { userSupabase } from "@/lib/supabase/server";
+
+export type SettingsState = { status: "idle" } | { status: "saved" } | { status: "error"; errors: FieldErrors; message?: string; values?: Record<string, string> };
+
+export async function savePreferences(_prev: SettingsState, form: FormData): Promise<SettingsState> {
+  const { account } = await requireApprovedTrade("/trade/account/settings");
+  const parsed = parsePreferences(form);
+  if (!parsed.ok) return { status: "error", errors: parsed.errors, values: echo(form) };
+  const db = await userSupabase();
+  const { error } = await db.from("trade_preferences").upsert({ profile_id: account.userId, ...parsed.data });
+  if (error) return { status: "error", errors: {}, message: "Couldn’t save. Please try again.", values: echo(form) };
+  refresh();
+  return { status: "saved" };
+}
+
+/** Business name, contact details, website, address and colour for quotes. */
+export async function saveBranding(_prev: SettingsState, form: FormData): Promise<SettingsState> {
+  const { account } = await requireApprovedTrade("/trade/account/settings");
+  const parsed = parseBranding(form);
+  if (!parsed.ok) return { status: "error", errors: parsed.errors, values: echo(form) };
+  const db = await userSupabase();
+  const { error } = await db.from("trade_preferences").upsert({ profile_id: account.userId, ...parsed.data });
+  if (error) return { status: "error", errors: {}, message: "Couldn’t save. Please try again.", values: echo(form) };
+  refresh();
+  return { status: "saved" };
+}
+
+/** A logo for quotes: PNG or JPEG, up to 1 MB, checked by its first bytes, not just its name. */
+export async function uploadLogo(form: FormData) {
+  const { account } = await requireApprovedTrade("/trade/account/settings");
+  const back = (n: string): never => redirect(`/trade/account/settings?notice=${n}#branding`);
+  const file = form.get("logo");
+  if (!(file instanceof File) || file.size === 0) return back("logo-missing");
+  if (file.size > LOGO_MAX_BYTES) return back("logo-size");
+  // The type comes from the bytes, not from what the browser said, and the file must be only the image.
+  const bytes = new Uint8Array(await file.arrayBuffer());
+  const mime = sniffImage(bytes);
+  if ((mime !== "image/png" && mime !== "image/jpeg") || !isWholeImage(bytes, mime)) return back("logo-type");
+  const type = IMAGE_EXTENSION[mime];
+
+  const db = await userSupabase();
+  const path = `${account.userId}/logo-${Date.now().toString(36)}.${type}`;
+  const { error: upErr } = await db.storage.from("trade-logos").upload(path, file, { contentType: mime, upsert: false });
+  if (upErr) return back("logo-failed");
+  const { data: was } = await db.from("trade_preferences").select("logo_path").maybeSingle();
+  const { error } = await db.from("trade_preferences").upsert({ profile_id: account.userId, logo_path: path });
+  if (error) {
+    await db.storage.from("trade-logos").remove([path]);
+    return back("logo-failed");
+  }
+  if (was?.logo_path && was.logo_path !== path) await db.storage.from("trade-logos").remove([was.logo_path]);
+  back("logo-saved");
+}
+
+export async function removeLogo() {
+  const { account } = await requireApprovedTrade("/trade/account/settings");
+  const db = await userSupabase();
+  const { data } = await db.from("trade_preferences").select("logo_path").maybeSingle();
+  if (data?.logo_path) {
+    await db.storage.from("trade-logos").remove([data.logo_path]);
+    await db.from("trade_preferences").upsert({ profile_id: account.userId, logo_path: null });
+  }
+  redirect("/trade/account/settings?notice=logo-removed#branding");
+}
+
+/**
+ * Deletes the signed-in trader's own account and everything it owns:
+ * customers, projects, quotes and settings. Needs the word DELETE typed.
+ * The database refuses for administrators and for anyone else's account.
+ */
+export async function deleteMyAccount(form: FormData) {
+  const account = await getAccount();
+  if (!account) redirect("/trade/login");
+  if (String(form.get("confirm") ?? "").trim() !== "DELETE") redirect("/trade/account/settings?notice=delete-confirm#your-data");
+  const db = await userSupabase();
+  const { error } = await db.rpc("delete_trade_account", { p_profile: account.userId });
+  if (error) redirect("/trade/account/settings?notice=delete-failed#your-data");
+  await db.auth.signOut().catch(() => {});
+  redirect("/trade?notice=account-deleted");
+}

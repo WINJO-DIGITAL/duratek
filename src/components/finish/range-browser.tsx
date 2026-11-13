@@ -1,30 +1,31 @@
 "use client";
 
-import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, type ReactNode } from "react";
-import { distinct, matches, readFilters, type FilterableFinish, type RangeFilters } from "@/lib/catalogue/filter";
+import { useRef, useState, type ReactNode } from "react";
+import { Close, Search } from "@/components/ui/icons";
+import {
+  distinct,
+  filtersToQuery,
+  isFiltered,
+  matches,
+  NO_FILTERS,
+  readFilters,
+  DEFAULT_SORT,
+  SORTS,
+  sortItems,
+  TONE_GROUPS,
+  type SortId,
+  type FilterableFinish,
+  type RangeFilters,
+} from "@/lib/catalogue/filter";
+import type { FormatOption } from "@/lib/catalogue/format";
 import { cn } from "@/lib/cn";
 import { colourFamilyLabel, STYLE_LABELS } from "@/lib/config";
+import { FilterRows, type FilterOption, type FilterRowDef } from "./filter-rows";
+import { PriceRangeFilter } from "./price-range-filter";
 
 export interface RangeItem extends FilterableFinish {
   card: ReactNode;
-}
-
-function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () => void; children: ReactNode }) {
-  return (
-    <button
-      type="button"
-      aria-pressed={pressed}
-      onClick={onClick}
-      className={cn(
-        "min-h-tap shrink-0 border px-4 text-[0.875rem] transition-colors duration-300",
-        pressed ? "border-navy bg-navy text-off-white" : "border-navy/20 text-navy hover:border-navy",
-      )}
-    >
-      {children}
-    </button>
-  );
 }
 
 /**
@@ -33,10 +34,11 @@ function Chip({ pressed, onClick, children }: { pressed: boolean; onClick: () =>
  */
 export function RangeBrowser({
   items,
-  colourSwatches = {},
+  formats = [],
 }: {
   items: RangeItem[];
-  colourSwatches?: Record<string, string>;
+  /** Plank formats with their dimensions; shown when there is more than one. */
+  formats?: FormatOption[];
 }) {
   const router = useRouter();
   const pathname = usePathname();
@@ -44,82 +46,184 @@ export function RangeBrowser({
   const filters = readFilters(params);
 
   const styles = distinct(items.map((i) => i.style));
-  const colours = distinct(items.map((i) => i.colourFamily));
+  // Light, mid and dark, each with how many finishes it holds; empty groups are not shown.
+  const tones = TONE_GROUPS.map((t) => ({ ...t, count: items.filter((i) => i.toneGroup === t.id).length })).filter(
+    (t) => t.count > 0,
+  );
   const visible = items.filter((i) => matches(i, filters));
-  const active = Boolean(filters.style || filters.colour || filters.q);
+  const ordered = sortItems(visible, filters.sort);
+  const sheet = useRef<HTMLDialogElement>(null);
+  // How many finishes each choice would leave, with the other filters still applied.
+  const countWith = (key: keyof RangeFilters, value: string | null) =>
+    items.filter((i) => matches(i, { ...filters, [key]: value } as RangeFilters)).length;
+  const colours = distinct(items.map((i) => i.colourFamily));
+  const priceSet = filters.priceMin !== null || filters.priceMax !== null;
+  const activeCount = [filters.style, filters.format, filters.colour, filters.tone, priceSet ? 1 : null].filter(Boolean).length;
+  // The badge on the phone button: filters set, plus one if the order has been changed.
+  const changedCount = activeCount + (filters.sort !== DEFAULT_SORT ? 1 : 0);
+  // How many finishes a given price range would leave, with the other filters still applied.
+  const countPrice = (range: { min: number | null; max: number | null }) =>
+    items.filter((i) => matches(i, { ...filters, priceMin: range.min, priceMax: range.max })).length;
+  const option = (key: keyof RangeFilters, value: string | null, label: string, sub?: string): FilterOption => ({
+    value,
+    label,
+    sub,
+    count: countWith(key, value),
+  });
+  const rows: FilterRowDef[] = [
+    {
+      key: "style",
+      label: "Look",
+      value: filters.style,
+      onChange: (v) => update({ style: v }),
+      options: [option("style", null, "All"), ...styles.map((s) => option("style", s, STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s))],
+    },
+    {
+      key: "format",
+      label: "Board size",
+      value: filters.format,
+      onChange: (v) => update({ format: v }),
+      options: [option("format", null, "All"), ...formats.map((f) => option("format", f.format, f.label.replace(" plank", ""), f.size))],
+    },
+    {
+      key: "colour",
+      label: "Colour",
+      value: filters.colour,
+      onChange: (v) => update({ colour: v }),
+      options: [option("colour", null, "All"), ...colours.map((c) => option("colour", c, colourFamilyLabel(c)))],
+    },
+    {
+      key: "tone",
+      label: "Tone",
+      value: filters.tone,
+      onChange: (v) => update({ tone: v as RangeFilters["tone"] }),
+      options: [option("tone", null, "All"), ...tones.map((t) => option("tone", t.id, t.label))],
+    },
+  ];
+  const active = isFiltered(filters);
   const [view, setView] = useState<GridView>("large");
+  // Raw text as typed (the URL holds the trimmed query).
+  const [text, setText] = useState(filters.q);
+  const [lastQ, setLastQ] = useState(filters.q);
+  if (filters.q !== lastQ) {
+    // The query changed elsewhere (header search, Clear filters): follow it.
+    setLastQ(filters.q);
+    if (filters.q !== text.trim()) setText(filters.q);
+  }
 
   function update(next: Partial<RangeFilters>) {
-    const merged = { ...filters, ...next };
-    const sp = new URLSearchParams();
-    if (merged.style) sp.set("style", merged.style);
-    if (merged.colour) sp.set("colour", merged.colour);
-    if (merged.q) sp.set("q", merged.q);
-    const qs = sp.toString();
+    const qs = filtersToQuery({ ...filters, ...next });
     router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
   }
 
   return (
     <>
-      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] border-y border-line bg-off-white/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm">
-        <div className="flex items-center gap-4">
-          <div
-            role="group"
-            aria-label="Filter finishes"
-            className="scrollbar-none flex min-w-0 flex-1 items-center gap-2 overflow-x-auto"
-          >
-            {styles.length > 1 &&
-              styles.map((s) => (
-                <Chip
-                  key={s}
-                  pressed={filters.style === s}
-                  onClick={() => update({ style: filters.style === s ? null : s })}
-                >
-                  {STYLE_LABELS[s as keyof typeof STYLE_LABELS] ?? s}
-                </Chip>
-              ))}
-            {styles.length > 1 && <span className="mx-2 h-6 w-px shrink-0 bg-line" aria-hidden="true" />}
-            <Chip pressed={!filters.colour} onClick={() => update({ colour: null })}>
-              All colours
-            </Chip>
-            {colours.map((c) => (
-              <Chip
-                key={c}
-                pressed={filters.colour === c}
-                onClick={() => update({ colour: filters.colour === c ? null : c })}
-              >
-                <span className="flex items-center gap-2">
-                  {colourSwatches[c] && (
-                    <span className="relative block size-5 shrink-0 overflow-hidden rounded-full shadow-[inset_0_0_0_1px_rgb(24_54_76/0.1)]">
-                      <Image src={colourSwatches[c]} alt="" fill sizes="20px" quality={70} className="object-cover" />
-                    </span>
-                  )}
-                  {colourFamilyLabel(c)}
-                </span>
-              </Chip>
-            ))}
+      {/* Phones and tablets: every filter lives in one sheet, opened from this bar. */}
+      <div className="sticky top-header z-30 -mx-[var(--spacing-gutter)] flex items-center justify-between gap-4 border-y border-line bg-off-white/95 px-[var(--spacing-gutter)] py-3 backdrop-blur-sm lg:hidden">
+        <button
+          type="button"
+          aria-haspopup="dialog"
+          onClick={() => sheet.current?.showModal()}
+          className="min-h-tap rounded-control border border-navy/20 bg-white px-4 text-[0.9375rem] text-navy"
+        >
+          Filters and sort
+          {changedCount > 0 && <span className="data ml-2 text-[0.8125rem] text-ink-muted">{changedCount}</span>}
+        </button>
+        <span className="shrink-0 text-[0.9375rem] text-ink-muted">
+          {visible.length} {visible.length === 1 ? "finish" : "finishes"}
+        </span>
+      </div>
+
+      {/* Desktop: every filter in view, above the grid, with the grid size beside it. */}
+      <div className="hidden gap-8 lg:flex lg:items-start lg:justify-between">
+        <div className="min-w-0 flex-1">
+          <FilterRows rows={rows} />
+          <div className="mt-6 max-w-md">
+            <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
           </div>
-          <div role="group" aria-label="Grid size" className="hidden shrink-0 items-center gap-1 lg:flex">
-            {(["large", "small"] as const).map((v) => (
-              <button
-                key={v}
-                type="button"
-                aria-pressed={view === v}
-                onClick={() => setView(v)}
-                className={cn(
-                  "flex min-h-tap items-center gap-2 px-3 text-[0.875rem] capitalize transition-colors duration-300",
-                  view === v ? "text-navy" : "text-ink-muted hover:text-navy",
-                )}
-              >
-                <GridIcon dense={v === "small"} />
-                {v}
-              </button>
-            ))}
-          </div>
+        </div>
+        <div className="flex shrink-0 items-center gap-4 pt-6">
+          <label className="flex items-center gap-2 text-[0.875rem] text-ink-muted">
+            Sort by
+            <SortSelect value={filters.sort} onChange={(sort) => update({ sort })} />
+          </label>
+        <div role="group" aria-label="Grid size" className="flex shrink-0 items-center gap-1">
+          {(["large", "small"] as const).map((v) => (
+            <button
+              key={v}
+              type="button"
+              aria-pressed={view === v}
+              onClick={() => setView(v)}
+              className={cn(
+                "flex min-h-tap items-center gap-2 px-3 text-[0.875rem] capitalize transition-colors duration-300",
+                view === v ? "text-navy" : "text-ink-muted hover:text-navy",
+              )}
+            >
+              <GridIcon dense={v === "small"} />
+              {v}
+            </button>
+          ))}
+        </div>
         </div>
       </div>
 
-      <div className="mt-6 flex min-h-tap flex-wrap items-center justify-between gap-3">
+      <dialog
+        ref={sheet}
+        aria-labelledby="filter-title"
+        className="filter-sheet"
+        onClick={(e) => {
+          // A tap on the backdrop closes the sheet; a tap inside it does not.
+          if (e.target === e.currentTarget) sheet.current?.close();
+        }}
+      >
+        <div className="px-[var(--spacing-gutter)] pb-8 pt-5">
+          <div className="flex items-center justify-between">
+            <h2 id="filter-title" className="font-display text-[1.5rem] font-normal text-navy">
+              Filters and sort
+            </h2>
+            <button type="button" onClick={() => sheet.current?.close()} className="flex size-tap items-center justify-center text-navy">
+              <Close size={20} />
+              <span className="sr-only">Close filters</span>
+            </button>
+          </div>
+          <div className="mt-6 grid gap-6">
+            <FilterRows rows={rows} />
+            <PriceRangeFilter min={filters.priceMin} max={filters.priceMax} count={countPrice({ min: filters.priceMin, max: filters.priceMax })} onChange={(r) => update({ priceMin: r.min, priceMax: r.max })} />
+            <div className="flex items-center justify-between gap-4 border-t border-line pt-6">
+              <label htmlFor="sheet-sort" className="text-[1rem] text-navy">
+                Sort by:
+              </label>
+              <SortSelect id="sheet-sort" value={filters.sort} onChange={(sort) => update({ sort })} className="w-[58%]" />
+            </div>
+          </div>
+          <div className="mt-8 flex items-center justify-between gap-4">
+            {active ? (
+              <button type="button" onClick={() => update({ ...NO_FILTERS, sort: filters.sort })} className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4">
+                Clear all
+              </button>
+            ) : (
+              <span />
+            )}
+            <button
+              type="button"
+              onClick={() => sheet.current?.close()}
+              className="min-h-tap rounded-control bg-green-ink px-6 text-[0.9375rem] font-medium text-white transition-colors duration-300 hover:bg-navy"
+            >
+              Show {visible.length} {visible.length === 1 ? "finish" : "finishes"}
+            </button>
+          </div>
+        </div>
+      </dialog>
+
+      <div className="mt-6 flex min-h-tap flex-wrap items-center gap-x-6 gap-y-3">
+        <SearchField
+          value={text}
+          onChange={(v) => {
+            setText(v);
+            update({ q: v.trim() });
+          }}
+          className="flex w-full sm:order-last sm:ml-auto sm:w-64"
+        />
         <p aria-live="polite" className="text-[0.9375rem] text-ink-muted">
           {visible.length} {visible.length === 1 ? "finish" : "finishes"}
           {filters.q && (
@@ -132,7 +236,7 @@ export function RangeBrowser({
         {active && (
           <button
             type="button"
-            onClick={() => update({ style: null, colour: null, q: "" })}
+            onClick={() => update({ ...NO_FILTERS, sort: filters.sort })}
             className="min-h-tap text-[0.9375rem] text-navy underline underline-offset-4"
           >
             Clear filters
@@ -141,14 +245,71 @@ export function RangeBrowser({
       </div>
 
       {visible.length > 0 ? (
-        <RangeGrid items={visible} view={view} />
+        <RangeGrid items={ordered} view={view} />
       ) : (
-        <div className="mt-10 border border-line bg-white p-8 sm:p-12">
-          <h2 className="text-display-sm text-navy">No finishes match those filters.</h2>
+        <div className="card mt-10 p-8 sm:p-12">
+          <h2 className="text-display-sm text-navy">No Finishes Match Those Filters.</h2>
           <p className="mt-3 text-ink-muted">Try another colour, or clear the filters to see the full range.</p>
         </div>
       )}
     </>
+  );
+}
+
+/** A native select, so phones open their own picker; styled to sit beside the Filters button. */
+function SortSelect({ id, value, onChange, className }: { id?: string; value: SortId; onChange: (value: SortId) => void; className?: string }) {
+  return (
+    <select
+      id={id}
+      aria-label="Sort finishes"
+      value={value}
+      onChange={(e) => onChange(e.target.value as SortId)}
+      className={cn(
+        "min-h-tap rounded-control border border-navy/20 bg-white px-3 text-[0.9375rem] text-navy focus:border-navy",
+        className,
+      )}
+    >
+      {SORTS.map((o) => (
+        <option key={o.id} value={o.id}>
+          {o.label}
+        </option>
+      ))}
+    </select>
+  );
+}
+
+function SearchField({
+  value,
+  onChange,
+  className,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}) {
+  return (
+    <div role="search" className={cn("relative shrink-0 items-center", className)}>
+      <Search size={18} className="pointer-events-none absolute left-3 text-ink-muted" aria-hidden="true" />
+      <input
+        type="search"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="Search finishes"
+        aria-label="Search finishes"
+        enterKeyHint="search"
+        className="min-h-tap w-full rounded-control border border-navy/20 bg-white pl-10 pr-10 text-[0.9375rem] text-navy placeholder:text-ink-muted focus:border-navy [&::-webkit-search-cancel-button]:hidden"
+      />
+      {value && (
+        <button
+          type="button"
+          onClick={() => onChange("")}
+          className="absolute right-0 flex size-tap items-center justify-center text-ink-muted hover:text-navy"
+        >
+          <Close size={16} />
+          <span className="sr-only">Clear search</span>
+        </button>
+      )}
+    </div>
   );
 }
 
@@ -177,8 +338,8 @@ export function RangeGrid({ items, view = "large" }: { items: { id: string; card
   return (
     <ul
       className={cn(
-        "mt-6 grid grid-cols-2 gap-x-3 gap-y-10 transition-[gap] sm:gap-x-6 sm:gap-y-14",
-        view === "large" ? "lg:grid-cols-3" : "lg:grid-cols-4 lg:gap-x-5 lg:gap-y-12",
+        "mt-6 grid grid-cols-2 gap-3 transition-[gap] sm:gap-6 lg:gap-8",
+        view === "large" ? "lg:grid-cols-3" : "lg:grid-cols-4 lg:gap-6",
       )}
     >
       {items.map((i) => (

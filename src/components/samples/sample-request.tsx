@@ -40,7 +40,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
       <section aria-labelledby="tray-heading" className="lg:sticky lg:top-28 lg:self-start">
         <div className="flex items-baseline justify-between gap-4 border-b border-line pb-4">
           <h2 id="tray-heading" className="text-display-sm text-navy">
-            Your samples
+            Your Samples
           </h2>
           <p className="text-[0.9375rem] text-ink-muted tabular-nums" aria-live="polite">
             {chosen.length} of {limit} chosen
@@ -54,7 +54,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
               <li key={item?.id ?? `empty-${i}`} className="flex min-h-28 items-center gap-5 py-4">
                 {f ? (
                   <>
-                    <Link href={`/range/${f.slug}`} className="relative size-20 shrink-0 overflow-hidden bg-line">
+                    <Link href={`/range/${f.slug}`} className="relative size-20 shrink-0 overflow-hidden rounded-control bg-line">
                       {f.swatch && (
                         <Image src={f.swatch.src} alt="" fill sizes="80px" quality={70} className="object-cover" />
                       )}
@@ -81,7 +81,7 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
                   >
                     <span
                       aria-hidden="true"
-                      className="flex size-20 shrink-0 items-center justify-center border border-dashed border-navy/25 text-2xl font-light transition-colors group-hover:border-navy/50"
+                      className="flex size-20 shrink-0 items-center justify-center rounded-control border border-dashed border-oak/40 text-2xl font-light transition-colors group-hover:border-navy/50"
                     >
                       +
                     </span>
@@ -100,38 +100,44 @@ export function SampleRequest({ finishes, enabled }: { finishes: Record<string, 
       {/* Form */}
       <section aria-labelledby="details-heading">
         {!enabled ? (
-          <div className="border-l-2 border-green-ink bg-white px-5 py-5 sm:px-6">
+          <div className="notice px-5 py-5 sm:px-6">
             <h2 id="details-heading" className="font-medium text-navy">
-              Online sample requests open soon.
+              Ask us for your samples
             </h2>
             <p className="mt-2 text-[0.9375rem] text-ink-muted">
-              Your choices are saved on this device, so they&rsquo;ll be here when requests open. In the meantime you
-              can{" "}
+              Send us a message with the finishes you&rsquo;ve chosen and we&rsquo;ll arrange your free samples. Your
+              choices stay saved on this device. Or you can{" "}
               <Link href="/where-to-buy" className="text-navy underline underline-offset-4 hover:text-green-ink">
                 find where to buy
               </Link>
               .
             </p>
+            <Link
+              href="/contact"
+              className="mt-5 inline-flex min-h-tap items-center rounded-control bg-green-ink px-6 text-[0.9375rem] font-medium text-white transition-colors duration-300 hover:bg-navy"
+            >
+              Ask for samples
+            </Link>
           </div>
         ) : chosen.length === 0 ? (
           <div>
             <h2 id="details-heading" className="text-display-sm text-navy">
-              Start with a finish.
+              Start with a Finish.
             </h2>
             <p className="mt-3 max-w-md text-ink-muted">
               Add up to {limit} finishes from the range, then come back here to tell us where to send them.
             </p>
             <ButtonLink href="/range" className="mt-6">
-              Browse the range
+              Browse the Range
             </ButtonLink>
           </div>
         ) : (
           <form action={action} noValidate className="space-y-5">
             <h2 id="details-heading" className="text-display-sm text-navy">
-              Where should we send them?
+              Where Should We Send Them?
             </h2>
             {state.status === "error" && state.message && (
-              <p role="alert" className="border-l-2 border-error bg-white px-4 py-3 text-[0.9375rem] text-navy">
+              <p role="alert" className="notice border-error/50 px-4 py-3 text-[0.9375rem] text-navy">
                 {state.message}
               </p>
             )}
@@ -223,7 +229,7 @@ function Field({
         aria-invalid={error ? true : undefined}
         aria-describedby={described}
         className={cn(
-          "mt-2 min-h-14 w-full border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
+          "mt-2 min-h-14 w-full rounded-control border bg-white px-4 text-base text-navy transition-colors focus:border-navy",
           error ? "border-error" : "border-navy/25",
           className,
         )}
@@ -260,9 +266,9 @@ function Sent({ state }: { state: Extract<SampleRequestState, { status: "sent" }
       )}
       <p className="mt-6 text-ink-muted">We&rsquo;ll email a confirmation to {state.email}.</p>
       <div className="mt-8 flex flex-wrap items-center gap-x-8 gap-y-3">
-        <ButtonLink href="/where-to-buy">Find where to buy</ButtonLink>
+        <ButtonLink href="/where-to-buy">Find Where to Buy</ButtonLink>
         <ButtonLink href="/range" variant="quiet" arrow={false}>
-          Keep browsing
+          Keep Browsing
         </ButtonLink>
       </div>
     </section>

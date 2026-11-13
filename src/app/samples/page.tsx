@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
+import { PageHero } from "@/components/content/page-hero";
 import { SectionIntro } from "@/components/content/section-intro";
 import { PageTransition } from "@/components/layout/page-transition";
 import { SampleRequest, type SampleFinish } from "@/components/samples/sample-request";
-import { getFinishes, imagesOfKind } from "@/lib/catalogue";
+import { getFinishes, grainImage } from "@/lib/catalogue";
+import { pageHero } from "@/lib/catalogue/heroes";
 import { colourFamilyLabel, SAMPLE_LIMIT, STYLE_LABELS } from "@/lib/config";
 import { samplesEnabled } from "@/lib/samples/settings";
 
@@ -22,21 +24,24 @@ export default async function SamplesPage() {
         name: f.name,
         slug: f.slug,
         detail: `${STYLE_LABELS[f.style]} · ${colourFamilyLabel(f.colourFamily)}`,
-        swatch: imagesOfKind(f, "swatch")[0],
+        swatch: grainImage(f),
       },
     ]),
   );
 
+  const hero = pageHero(finishes, "samples");
   return (
     <PageTransition>
-      <div className="container-page pb-section pt-12 sm:pt-16">
-        <SectionIntro as="h1" size="lg" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
-          <p>See the colour in your own light and feel the surface before you choose.</p>
-        </SectionIntro>
-        <div className="mt-12 lg:mt-16">
+      <>
+        <PageHero compact image={hero?.image} focus="object-[50%_45%]">
+          <SectionIntro as="h1" size="lg" tone="dark" eyebrow="Free samples" title={`Order up to ${WORDS[SAMPLE_LIMIT] ?? SAMPLE_LIMIT} free samples.`}>
+            <p>See the colour in your own light and feel the surface before you choose.</p>
+          </SectionIntro>
+        </PageHero>
+        <div className="container-page pb-section pt-10 lg:pt-14">
           <SampleRequest finishes={byId} enabled={samplesEnabled()} />
         </div>
-      </div>
+      </>
     </PageTransition>
   );
 }

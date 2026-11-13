@@ -1,0 +1,60 @@
+{
+  "$comment": "The four Duratek herringbone products from the Kwik Floors feed (https://www.kwikfloors.co.uk/collections/duratek-herringbone/products.json, read 11 November 2026), trimmed to the fields the loader uses: title, handle, size and coverage variant, the first paragraphs of copy, and the photographs. Prices are deliberately left out.",
+  "products": [
+    {
+      "title": "Honey Oak Herringbone Luxury Click Vinyl Flooring 6.5mm",
+      "handle": "honey-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "body_html": "<p>Luxury Click Vinyl Flooring · 6.5mm · Painted Bevel Edges</p><p>Bring timeless parquet-inspired style to your home with Honey Oak Herringbone Luxury Click Vinyl Flooring. Its warm honey oak tones and distinctive herringbone pattern create an inviting foundation for both classic and contemporary interiors.</p><p>The painted bevel edges define each individual plank, giving the pattern greater depth and a beautifully tailored finish. With a 6.5mm overall thickness, Honey Oak brings together considered detailing and the everyday practicality of luxury click vinyl.</p>",
+      "variants": [{ "title": "Herringbone 122mmx610mm 1.49 m² per box" }],
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Honey_Oak_Herringbone_Interior.png?v=1793724338", "width": 1051, "height": 1496 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Golden_Oak_Herringbone_Luxury_Click_Vinyl_Flooring_6.5mm_roomset_new.png?v=1793724614", "width": 1024, "height": 1536 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Golden_Oak_Herringbone_Kitchen.png?v=1793725054", "width": 1254, "height": 1254 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Golden_Oak_Herringbone_Bathroom.png?v=1793725293", "width": 1008, "height": 1561 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Golden_Oak.png?v=1792497917", "width": 996, "height": 932 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Revised_plank_dimensions_diagram.png?v=1792497204", "width": 1254, "height": 1254 }
+      ]
+    },
+    {
+      "title": "Heritage Oak Herringbone Luxury Click Vinyl Flooring 6.5mm",
+      "handle": "heritage-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "body_html": "<p>Luxury Click Vinyl Flooring · 6.5mm · Painted Bevel Edges</p><p>Bring timeless parquet-inspired style to your home with Heritage Oak Herringbone Luxury Click Vinyl Flooring. Combining an oak-effect design with the distinctive rhythm of herringbone, it creates an elegant foundation for both classic and contemporary interiors.</p><p>The painted bevel edges define each individual plank, giving the pattern greater depth and a beautifully tailored finish. With a 6.5mm overall thickness, Heritage Oak brings together considered detailing and the everyday practicality of luxury click vinyl.</p>",
+      "variants": [{ "title": "Herringbone 122mmx610mm 1.49 m² per box" }],
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Oak_Spa_Bathroom_Retreat.png?v=1793717001", "width": 1312, "height": 1199 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Herringbone_Hallway_Interior.png?v=1793717002", "width": 1127, "height": 1396 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Terracotta_Kitchen_with_Herringbone_Floors.png?v=1793717004", "width": 1268, "height": 1240 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Modern_Navy_Kitchen_Bag-Free.png?v=1794252973", "width": 949, "height": 1658 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/HeritageOak.png?v=1792496836", "width": 992, "height": 804 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Revised_plank_dimensions_diagram.png?v=1792497204", "width": 1254, "height": 1254 }
+      ]
+    },
+    {
+      "title": "Biscuit Oak Herringbone Luxury Click Vinyl Flooring 6.5mm",
+      "handle": "biscuit-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "body_html": "<p>Luxury Click Vinyl Flooring · 6.5mm · Painted Bevel Edges</p><p>Bring timeless parquet-inspired style to your home with Biscuit Oak Herringbone Luxury Click Vinyl Flooring. Its warm oak tones and distinctive herringbone pattern create an inviting foundation for both classic and contemporary interiors.</p><p>The painted bevel edges define each individual plank, giving the pattern greater depth and a beautifully tailored finish. With a 6.5mm overall thickness, Biscuit Oak brings together considered detailing and the everyday practicality of luxury click vinyl.</p>",
+      "variants": [{ "title": "Herringbone 122mmx610mm 1.49 m² per box" }],
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Biscuit_Oak_Herringbone_Floor.png?v=1793723521", "width": 1254, "height": 1254 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Cozy_Sideboard_with_Herringbone_Flooring.png?v=1793723520", "width": 1254, "height": 1254 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Fluffy_Dog_in_a_Sunny_Teal_Living_Room.png?v=1793723522", "width": 1254, "height": 1254 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Bedroom_with_Biscuit_Oak_Herringbone_Floor.png?v=1793723517", "width": 1254, "height": 1254 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Bisucuit_Oak.png?v=1792497916", "width": 898, "height": 638 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Revised_plank_dimensions_diagram.png?v=1792497204", "width": 1254, "height": 1254 }
+      ]
+    },
+    {
+      "title": "Truffle Oak Herringbone Luxury Click Vinyl Flooring 6.5mm",
+      "handle": "truffle-oak-herringbone-luxury-click-vinyl-flooring-6-5mm",
+      "body_html": "<p>Luxury Click Vinyl Flooring · 6.5mm · Painted Bevel Edges</p><p>Bring timeless parquet-inspired style to your home with Truffle Oak Herringbone Luxury Click Vinyl Flooring. Its warm oak tones and distinctive herringbone pattern create an inviting foundation for both classic and contemporary interiors.</p><p>The painted bevel edges define each individual plank, giving the pattern greater depth and a beautifully tailored finish. With a 6.5mm overall thickness, Truffle Oak brings together considered detailing and the everyday practicality of luxury click vinyl.</p>",
+      "variants": [{ "title": "Herringbone 122mmx610mm 1.49 m² per box" }],
+      "images": [
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Scandinavian_Reading_Nook.png?v=1793720609", "width": 1171, "height": 1343 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Sage_Green_Herringbone_Kitchen_Retreat.png?v=1793721995", "width": 1236, "height": 1272 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Warm_Herringbone_Credenza_Interior_copy.png?v=1793725997", "width": 1467, "height": 1072 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Truffle_Oak.png?v=1792497916", "width": 936, "height": 694 },
+        { "src": "https://cdn.shopify.com/s/files/1/1032/3902/4989/files/Revised_plank_dimensions_diagram.png?v=1792497204", "width": 1254, "height": 1254 }
+      ]
+    }
+  ]
+}

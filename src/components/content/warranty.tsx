@@ -18,43 +18,36 @@ export function WarrantyDisclaimer({ tone = "light", className }: { tone?: "ligh
   );
 }
 
-/*
- * Warranty badge placeholders: typographic seals until the client supplies
- * the warranty artwork. Replace the internals with the real files.
- */
-function Seal({
-  top,
-  big,
-  bottom,
-  tone,
-  className,
-}: {
-  top: string;
-  big: string;
-  bottom: string;
-  tone: "light" | "dark";
-  className?: string;
-}) {
+/** The two badges, each with the one fact a customer needs under it. */
+export function WarrantyBadges({ className }: { className?: string }) {
   return (
-    <div
-      className={cn(
-        "flex aspect-square w-36 flex-col items-center justify-center border p-3 text-center sm:w-40",
-        tone === "dark" ? "border-on-dark/40 text-on-dark" : "border-navy/30 text-navy",
-        className,
-      )}
-    >
-      <span className={cn("eyebrow text-[0.625rem] before:hidden", tone === "dark" && "text-green-on-navy")}>{top}</span>
-      <span className="mt-2 font-display text-[1.75rem] leading-none">{big}</span>
-      <span className="mt-2 text-[0.6875rem] font-medium uppercase tracking-[0.14em]">{bottom}</span>
-    </div>
-  );
-}
-
-export function WarrantyBadges({ tone = "light", className }: { tone?: "light" | "dark"; className?: string }) {
-  return (
-    <div className={cn("flex flex-wrap gap-4", className)}>
-      <Seal tone={tone} top="Residential" big="Lifetime" bottom="Warranty" />
-      <Seal tone={tone} top="Commercial" big="10 year" bottom="Warranty" />
+    <div className={cn("flex flex-wrap gap-8", className)}>
+      <figure className="max-w-[11rem]">
+        <Image
+          src="/brand/warranty-residential-lifetime.png"
+          alt="Residential lifetime warranty"
+          width={467}
+          height={467}
+          sizes="(min-width: 640px) 10rem, 9rem"
+          className="h-auto w-36 sm:w-40"
+        />
+        <figcaption className="mt-4 text-[0.9375rem] leading-relaxed text-ink-muted">
+          For homes. Residential lifetime is defined as <strong className="font-medium text-navy">25 years</strong>.
+        </figcaption>
+      </figure>
+      <figure className="max-w-[12rem]">
+        <Image
+          src="/brand/warranty-commercial-10-year.png"
+          alt="Commercial 10 year warranty"
+          width={485}
+          height={486}
+          sizes="(min-width: 640px) 10rem, 9rem"
+          className="h-auto w-36 sm:w-40"
+        />
+        <figcaption className="mt-4 text-[0.9375rem] leading-relaxed text-ink-muted">
+          For <strong className="font-medium text-navy">light and medium traffic</strong> commercial areas. Not applicable to heavy traffic areas.
+        </figcaption>
+      </figure>
     </div>
   );
 }

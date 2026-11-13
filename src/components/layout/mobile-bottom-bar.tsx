@@ -2,15 +2,21 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useRef, useState, type ComponentType, type MouseEvent } from "react";
+import { useRef, useState, type ComponentProps, type ComponentType, type MouseEvent } from "react";
 import { Briefcase, Pin, Planks, Swatches } from "@/components/ui/icons";
 import { cn } from "@/lib/cn";
+import { SampleTrayLink } from "@/components/samples/sample-tray-link";
 import { isActive, SampleCount } from "./site-header";
+
+/** Samples opens the tray rather than navigating; the rest are plain links. */
+function TabLink({ href, ...props }: ComponentProps<typeof Link> & { href: string }) {
+  return href === "/samples" ? <SampleTrayLink {...props} /> : <Link href={href} {...props} />;
+}
 
 const ITEMS: { href: string; label: string; icon: ComponentType<{ size?: number }> }[] = [
   { href: "/range", label: "Range", icon: Planks },
   { href: "/samples", label: "Samples", icon: Swatches },
-  { href: "/where-to-buy", label: "Where to buy", icon: Pin },
+  { href: "/where-to-buy", label: "Where to Buy", icon: Pin },
   { href: "/trade", label: "Trade", icon: Briefcase },
 ];
 
@@ -35,7 +41,7 @@ export function MobileBottomBar() {
 
   const onTap = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
-    if (isActive(pathname, href)) return;
+    if (isActive(pathname, href) || href === "/samples") return;
     setPending({ href, from: pathname });
     clearTimeout(timer.current);
     timer.current = setTimeout(() => setPending(null), PENDING_TIMEOUT);
@@ -45,7 +51,7 @@ export function MobileBottomBar() {
     <nav
       aria-label="Quick links"
       style={{ viewTransitionName: "bottom-bar" }}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-off-white/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-off-white pb-[env(safe-area-inset-bottom)] lg:hidden"
     >
       <ul className="mx-auto grid h-bottom-bar max-w-xl grid-cols-4">
         {ITEMS.map(({ href, label, icon: IconC }) => {
@@ -61,7 +67,7 @@ export function MobileBottomBar() {
                   selected ? "scale-x-100" : "scale-x-0",
                 )}
               />
-              <Link
+              <TabLink
                 href={href}
                 aria-current={current ? "page" : undefined}
                 onClick={(e) => onTap(e, href)}
@@ -81,7 +87,7 @@ export function MobileBottomBar() {
                   {href === "/samples" && <SampleCount className="absolute -right-3 -top-2" />}
                 </span>
                 {label}
-              </Link>
+              </TabLink>
             </li>
           );
         })}

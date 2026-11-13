@@ -9,6 +9,8 @@ import type { NavData } from "@/lib/catalogue/nav";
 import { cn } from "@/lib/cn";
 import { TRADE_NAV } from "@/lib/config";
 import { finishMenuNav, MobileMenu } from "./mobile-menu";
+import { SampleTrayLink } from "@/components/samples/sample-tray-link";
+import { SavedLink } from "./saved-link";
 import { ScrollProgress } from "./scroll-progress";
 import { RangeMenu } from "./range-menu";
 import { SampleCount } from "./sample-count";
@@ -20,11 +22,11 @@ export function isActive(pathname: string, href: string) {
 }
 
 /** Pages whose hero is a full-bleed photo the header can sit over. */
-const OVERLAY_ROUTES = new Set(["/"]);
+const OVERLAY_ROUTES = new Set(["/", "/range", "/inspiration", "/samples", "/where-to-buy", "/trade"]);
 
 const LEFT_NAV = [
   { href: "/inspiration", label: "Inspiration" },
-  { href: "/where-to-buy", label: "Where to buy" },
+  { href: "/where-to-buy", label: "Where to Buy" },
 ];
 
 export function SiteHeader({ nav }: { nav: NavData }) {
@@ -68,7 +70,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
   const linkClass = (active: boolean) =>
     cn(
-      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] transition-colors duration-300",
+      "relative flex min-h-tap items-center gap-2 px-4 text-[0.9375rem] font-medium transition-colors duration-300",
       "after:absolute after:inset-x-4 after:bottom-2 after:h-px after:origin-left after:scale-x-0 after:bg-green after:transition-transform after:duration-300 after:ease-calm",
       "hover:after:scale-x-100",
       active && "after:scale-x-100",
@@ -82,9 +84,9 @@ export function SiteHeader({ nav }: { nav: NavData }) {
       className={cn(
         "sticky top-0 z-40 border-b transition-[background-color,box-shadow,border-color,backdrop-filter] duration-300 ease-calm",
         overlay
-          ? "border-white/15 bg-transparent"
+          ? "border-transparent bg-transparent"
           : "border-line bg-off-white/95 backdrop-blur-md supports-[backdrop-filter]:bg-off-white/85",
-        !overlay && scrolled && "border-transparent shadow-[0_10px_30px_-18px_rgb(24_54_76/0.35)]",
+        !overlay && scrolled && "border-transparent shadow-card",
       )}
     >
       {/* Soft scrim so white text stays legible over any photo. */}
@@ -116,19 +118,19 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
         {/* Wordmark: left on mobile, centred on desktop */}
         <Link href="/" className="-mx-2 flex min-h-tap items-center px-2 lg:mx-0 lg:justify-self-center" aria-label="Duratek home">
-          <Wordmark tone={overlay ? "dark" : "light"} className="h-[22px] lg:h-[26px]" />
+          <Wordmark tone={overlay ? "dark" : "light"} className="h-[30px] lg:h-[36px]" />
         </Link>
 
         {/* Desktop: right nav */}
         <div className="hidden items-center justify-self-end lg:-mr-3 lg:flex">
-          <Link
-            href="/samples"
+          <SavedLink onDark={overlay} />
+          <SampleTrayLink
             aria-current={isActive(pathname, "/samples") ? "page" : undefined}
             className={linkClass(isActive(pathname, "/samples"))}
           >
             Samples
             <SampleCount />
-          </Link>
+          </SampleTrayLink>
           <span className={cn("mx-2 h-5 w-px transition-colors duration-300", overlay ? "bg-white/30" : "bg-line")} aria-hidden="true" />
           <Link
             href={TRADE_NAV.href}
@@ -146,6 +148,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
 
         {/* Mobile and tablet controls */}
         <div className={cn("-mr-2 flex items-center transition-colors duration-300 lg:hidden", overlay ? "text-white" : "text-navy")}>
+          <SavedLink onDark={overlay} />
           <button
             type="button"
             className="flex size-tap items-center justify-center"
@@ -191,7 +194,7 @@ export function SiteHeader({ nav }: { nav: NavData }) {
               type="search"
               placeholder="Search finishes, e.g. Keswick"
               autoComplete="off"
-              className="min-h-tap w-full border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
+              className="min-h-tap w-full rounded-control border border-line bg-white px-4 text-base text-navy placeholder:text-ink-muted"
             />
             <button
               type="submit"

@@ -22,7 +22,7 @@ export function NavSwatch({
 }) {
   return (
     <Link href={`/range/${finish.slug}`} onClick={onNavigate} className={cn("group block", className)} style={style}>
-      <span className="relative block aspect-square overflow-hidden bg-line">
+      <span className="relative block aspect-square overflow-hidden rounded-control bg-line">
         {finish.image && (
           <Image
             src={finish.image.src}
